@@ -6,10 +6,10 @@ import TaskList from './TaskList'
 export default function App() {
   const style = {
     display: "flex",
-    flexDirection: "column"
+    flexDirection: "column",
   }
   return (
-    <div style={{style}}>
+    <div style={style}>
       <Title />
       <TaskChart />
       <TaskList />

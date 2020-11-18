@@ -8,6 +8,7 @@
   "content_scripts": [{
     "matches": ["https://*.instructure.com/*]",
     "js": ["contentScript.bundle.js"],
+    "css": ["content.styles.css"]
   }],
   "web_accessible_resources": [
     "icon-128.png",

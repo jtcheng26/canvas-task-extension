@@ -7,6 +7,7 @@ const ChartContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  border: 2px solid #EFEFEF;
 `
 
 export default function TaskChart() {

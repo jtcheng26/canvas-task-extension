@@ -11,7 +11,7 @@ export default function Title() {
   return (
     <>
       <TitleDiv>
-        To Do
+        Tasks
       </TitleDiv>
     </>
   )

@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import Task from './Task'
 
 const ListContainer = styled.div`
   width: 100%;
@@ -8,17 +9,21 @@ const ListContainer = styled.div`
   align-items: center;
   margin: 10px 0px;
   overflow-y: scroll;
+  max-height: 400px;
+  padding: 0px 5px;
 `
+
+const demoAssignment = {
+  "name": "Demo Assignment",
+  "html_url": "https://hcpss.instructure.com/",
+  "points_possible": "15.0",
+  "due_at": "2020-11-09T08:30:00-05:00"
+}
 
 export default function TaskList() {
   return (
     <ListContainer>
-      <div>Task 1</div>
-      <div>Task 2</div>
-      <div>Task 3</div>
-      <div>Task 4</div>
-      <div>Task 5</div>
-      <div>Task 6</div>
+      <Task assignment={demoAssignment}/>
     </ListContainer>
   )
 }
