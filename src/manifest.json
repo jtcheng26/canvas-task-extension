@@ -1,0 +1,18 @@
+{
+  "name": "Canvas Tasklist",
+  "description": "A better to-do list for Canvas Instructure!",
+  "options_page": "options.html",
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "content_scripts": [{
+    "matches": ["https://*.instructure.com/*]",
+    "js": ["contentScript.bundle.js"],
+  }],
+  "web_accessible_resources": [
+    "icon-128.png",
+    "icon-34.png"
+  ],
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'"
+}
