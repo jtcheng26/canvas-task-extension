@@ -5,7 +5,7 @@ const TaskContainer = styled.div`
   width: 100%;
   height: 70px;
   margin: 5px;
-  background-color: #EFEFEF;
+  background-color: #FFFFFF;
   border-radius: 4px;
   display: flex;
   flex-direction: column;
@@ -28,7 +28,7 @@ const TaskBottom = styled.div`
   border-radius: 0px 0px 4px 4px;
   padding-left: 15px;
   padding-top: 5px;
-  color: #959595;
+  color: var(--ic-brand-font-color-dark-lightened-30);
 `
 
 const TaskLink = styled.a`

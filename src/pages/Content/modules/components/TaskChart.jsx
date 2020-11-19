@@ -8,7 +8,7 @@ const ChartContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 10px 0px 5px 0px;
+  margin: 10px 0px 0px 0px;
 `
 
 export default function TaskChart({ assignments }) {

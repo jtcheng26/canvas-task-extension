@@ -1,6 +1,6 @@
 {
   "name": "canvas-tasklist",
-  "version": "3.1.2",
+  "version": "1.0.0",
   "description": "A chrome extension that improves the Canvas Instructure To Do sidebar!",
   "repository": {
     "type": "git",

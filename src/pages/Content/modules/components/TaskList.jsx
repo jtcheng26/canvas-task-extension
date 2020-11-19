@@ -7,7 +7,7 @@ const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 0px 0px 10px 0px;
+  margin: 5px 0px 10px 0px;
   overflow-y: scroll;
   max-height: 400px;
   padding: 0px 5px;

@@ -1,5 +1,6 @@
 import React from 'react'
 import Title from './Title'
+import Subtitle from './Subtitle'
 import TaskChart from './TaskChart'
 import TaskList from './TaskList'
 import axios from 'axios'
@@ -16,7 +17,7 @@ function getPrevMonday() {
   if (date.getDay() === 0) {
       prevMonday.setDate(date.getDate() - 7);
   }
-  else{
+  else {
       prevMonday.setDate(date.getDate() - (day-1));
   }
 
@@ -85,7 +86,12 @@ export default function App() {
       <Title weekStart={getPrevMonday()} weekEnd={getNextMonday()} />
       {isPending && <h1>Loading...</h1>}
       {!isPending && !error && <TaskChart assignments={taskList} />}
-      {!isPending && !error && <TaskList assignments={taskList} />}
+      {!isPending && !error &&
+        <>
+          <Subtitle />
+          <TaskList assignments={taskList} />
+        </>
+      }
       {error && <h1>Failed to load</h1>}
     </div>
   )
