@@ -5,8 +5,34 @@ import TaskList from './TaskList'
 import axios from 'axios'
 import { useAsync } from 'react-async'
 
+function compareDates(a, b) {
+  return new Date(a.due_at) - new Date(b.due_at)
+}
+
+function getPrevMonday() {
+  var date = new Date();
+  var day = date.getDay();
+  var prevMonday = new Date();
+  if(date.getDay() == 0){
+      prevMonday.setDate(date.getDate() - 7);
+  }
+  else{
+      prevMonday.setDate(date.getDate() - (day-1));
+  }
+
+  return prevMonday;
+}
+
+function getNextMonday() {
+  var d = new Date();
+  d.setDate(d.getDate() + (1 + 7 - d.getDay()) % 7);
+  return d
+}
+
 const getRelevantAssignments = async () => {
   let data
+  let prev = getPrevMonday()
+  let next = getNextMonday()
   try {
     let colors = await axios.get(`https://${location.hostname}/api/v1/users/self/colors`)
     colors = colors.data.custom_colors
@@ -14,28 +40,27 @@ const getRelevantAssignments = async () => {
     courses = courses.data.filter((course) => {
       return "name" in course
     })
-    let totalAssignments = []
-    let assignments = courses.map(course => {
-      return axios.get(`https://${location.hostname}/api/v1/courses/${course.id}/assignments?per_page=100&include=submission`)
+    let courseList = ""
+    courses.map(course => {
+      courseList += `&context_codes[]=course_${course.id}`
     })
-    assignments = await axios.all(assignments)
-    assignments.forEach(assignment => {
-      let assignmentsData = assignment.data.filter(task => {
-        task.color = colors[`course_${task.course_id}`]
-        return task.submission.attempt == null && new Date(task.due_at) > Date.now()
-      })
-      totalAssignments = totalAssignments.concat(assignmentsData)
+    let assignments = await axios.get(`https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prev.toISOString()}&end_date=${next.toISOString()}&include=submission${courseList}`)
+    let assignmentData = assignments.data.map(task => {
+      return task.assignment
     })
-    data = totalAssignments
+    assignmentData = assignmentData.filter(task => {
+      task.color = colors[`course_${task.course_id}`]
+      const due = new Date(task.due_at).setHours(0, 0, 0, 0)
+      prev.setHours(0, 0, 0, 0)
+      next.setHours(0, 0, 0, 0)
+      return due.valueOf() >= prev.valueOf() && due.valueOf() <= next.valueOf()
+    })
+    data = assignmentData
   }
   catch (error) {
     console.error(error)
   }
   return data
-}
-
-function cmp(a, b) {
-  return new Date(a.due_at) - new Date(b.due_at)
 }
 
 export default function App() {
@@ -46,7 +71,7 @@ export default function App() {
   const { data, error, isPending } = useAsync({ promiseFn: getRelevantAssignments })
   let taskList = []
   if (!isPending && !error) {
-    let assignments = data.sort(cmp)
+    let assignments = data.sort(compareDates)
     taskList = assignments.filter(assignment => {
       let due = new Date(assignment.due_at)
       return due > Date.now()
@@ -54,7 +79,7 @@ export default function App() {
   }
   return (
     <div style={style}>
-      <Title />
+      <Title weekStart={getPrevMonday()} weekEnd={getNextMonday()} />
       {isPending && <h1>Loading...</h1>}
       {!isPending && !error && <TaskChart assignments={taskList} />}
       {!isPending && !error && <TaskList assignments={taskList} />}
