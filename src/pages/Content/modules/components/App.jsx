@@ -13,7 +13,7 @@ function getPrevMonday() {
   var date = new Date();
   var day = date.getDay();
   var prevMonday = new Date();
-  if(date.getDay() == 0){
+  if (date.getDay() === 0) {
       prevMonday.setDate(date.getDate() - 7);
   }
   else{
@@ -37,8 +37,13 @@ const getRelevantAssignments = async () => {
     let colors = await axios.get(`https://${location.hostname}/api/v1/users/self/colors`)
     colors = colors.data.custom_colors
     let courses = await axios.get(`https://${location.hostname}/api/v1/courses?per_page=100`)
+    let names = {}
     courses = courses.data.filter((course) => {
-      return "name" in course
+      if ("name" in course) {
+        names[course.id] = course.name
+        return true
+      }
+      return false
     })
     let courseList = ""
     courses.map(course => {
@@ -50,7 +55,9 @@ const getRelevantAssignments = async () => {
     })
     assignmentData = assignmentData.filter(task => {
       task.color = colors[`course_${task.course_id}`]
-      const due = new Date(task.due_at).setHours(0, 0, 0, 0)
+      task.course_name = names[task.course_id]
+      const due = new Date(task.due_at)
+      due.setHours(0, 0, 0, 0)
       prev.setHours(0, 0, 0, 0)
       next.setHours(0, 0, 0, 0)
       return due.valueOf() >= prev.valueOf() && due.valueOf() <= next.valueOf()
@@ -71,11 +78,7 @@ export default function App() {
   const { data, error, isPending } = useAsync({ promiseFn: getRelevantAssignments })
   let taskList = []
   if (!isPending && !error) {
-    let assignments = data.sort(compareDates)
-    taskList = assignments.filter(assignment => {
-      let due = new Date(assignment.due_at)
-      return due > Date.now()
-    })
+    taskList = data.sort(compareDates)
   }
   return (
     <div style={style}>

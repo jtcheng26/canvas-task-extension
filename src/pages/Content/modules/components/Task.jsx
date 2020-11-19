@@ -12,6 +12,13 @@ const TaskContainer = styled.div`
   font-weight: bold;
   font-size: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  &:hover {
+    a {
+      text-decoration: underline;
+    }
+    cursor: pointer;
+    box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+  }
 `
 
 const TaskBottom = styled.div`
@@ -46,7 +53,10 @@ export default function Task({ assignment }) { /* Demo Task */
     backgroundColor: assignment.color
   }
   return (
-    <TaskContainer>
+    <TaskContainer onClick={(e) => {
+      e.preventDefault();
+      window.location.href=assignment.html_url;
+    }}>
       <div style={TaskTopStyle}>
         <TaskLink href={assignment.html_url}>
           {assignment.name}
