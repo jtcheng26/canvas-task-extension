@@ -10,7 +10,7 @@ const ChartContainer = styled.div`
   border: 2px solid #EFEFEF;
 `
 
-export default function TaskChart() {
+export default function TaskChart({ assignments }) {
   return (
     <ChartContainer>
       Chart

@@ -13,16 +13,6 @@ const TaskContainer = styled.div`
   font-size: 12px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 `
-const TaskTop = styled.div`
-  box-sizing: border-box;
-  width: 100%;
-  height: 35px;
-  background-color: #91349B;
-  border-radius: 4px 4px 0px 0px;
-  padding-left: 15px;
-  padding-top: 15px;
-  color: #FFFFFF;
-`
 
 const TaskBottom = styled.div`
   box-sizing: border-box;
@@ -37,19 +27,31 @@ const TaskBottom = styled.div`
 const TaskLink = styled.a`
   color: #FFFFFF;
   overflow-x: scroll;
+  &:hover {
+    color: #FFFFFF;
+  }
 `
 
 export default function Task({ assignment }) { /* Demo Task */
   const due_at = new Date(assignment.due_at);
   const due_date = due_at.toLocaleString('en-US', { month: 'short', day: 'numeric' })
   const due_time = due_at.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+  const TaskTopStyle = {
+    boxSizing: "border-box",
+    width: "100%",
+    height: "35px",
+    borderRadius: "4px 4px 0px 0px",
+    paddingLeft: "15px",
+    paddingTop: "15px",
+    backgroundColor: assignment.color
+  }
   return (
     <TaskContainer>
-      <TaskTop>
+      <div style={TaskTopStyle}>
         <TaskLink href={assignment.html_url}>
           {assignment.name}
         </TaskLink>
-      </TaskTop>
+      </div>
       <TaskBottom>
         {parseFloat(assignment.points_possible) + " points \xa0|\xa0 " + due_date + " at " + due_time}
       </TaskBottom>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import styled from 'styled-components'
 import Task from './Task'
 
@@ -20,10 +20,15 @@ const demoAssignment = {
   "due_at": "2020-11-09T08:30:00-05:00"
 }
 
-export default function TaskList() {
+export default function TaskList({ assignments }) {
+  assignments.filter((assignment) => {
+    return assignment.submission.attempt == null
+  })
   return (
     <ListContainer>
-      <Task assignment={demoAssignment}/>
+      {assignments.map((assignment) => {
+        return <Task assignment={assignment} key={assignment.id} />
+      })}
     </ListContainer>
   )
 }

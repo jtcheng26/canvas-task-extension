@@ -16,6 +16,7 @@ export default function run() {
       createSidebar(container)
     } else if (counter >= 300) {
       clearInterval(interval)
+      console.log("Container not found")
     }
   }
 
@@ -26,7 +27,6 @@ export default function run() {
       </React.StrictMode>,
       container
     );
-    //container.appendChild(document.createTextNode("Hello"))
   }
   let interval = setInterval(findContainer, 10)
 }
