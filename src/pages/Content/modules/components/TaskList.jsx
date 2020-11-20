@@ -9,8 +9,9 @@ const ListContainer = styled.div`
   align-items: center;
   margin: 5px 0px 10px 0px;
   overflow-y: scroll;
-  max-height: 400px;
+  max-height: 450px;
   padding: 0px 5px;
+  padding-bottom: 5px;
 `
 
 const demoAssignment = {

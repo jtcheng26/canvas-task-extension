@@ -17,7 +17,7 @@ const TaskContainer = styled.div`
       text-decoration: underline;
     }
     cursor: pointer;
-    box-shadow: 0 5px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 4px 7px rgba(0,0,0,0.3);
   }
 `
 

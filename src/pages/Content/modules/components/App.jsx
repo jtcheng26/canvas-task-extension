@@ -13,25 +13,26 @@ function compareDates(a, b) {
 function getPrevMonday() {
   var date = new Date();
   var day = date.getDay();
-  var prevMonday = new Date();
+  var prevMonday = new Date()
   if (date.getDay() === 0) {
       prevMonday.setDate(date.getDate() - 7);
   }
   else {
       prevMonday.setDate(date.getDate() - (day-1));
   }
-
+  prevMonday.setHours(23, 59, 59)
   return prevMonday;
 }
 
 function getNextMonday() {
-  var d = new Date();
+  var d = new Date()
   d.setDate(d.getDate() + (1 + 7 - d.getDay()) % 7);
+  d.setHours(23, 59, 59)
   return d
 }
 
 const getRelevantAssignments = async () => {
-  let data
+  let data = {}
   let prev = getPrevMonday()
   let next = getNextMonday()
   try {
@@ -58,12 +59,10 @@ const getRelevantAssignments = async () => {
       task.color = colors[`course_${task.course_id}`]
       task.course_name = names[task.course_id]
       const due = new Date(task.due_at)
-      due.setHours(0, 0, 0, 0)
-      prev.setHours(0, 0, 0, 0)
-      next.setHours(0, 0, 0, 0)
       return due.valueOf() >= prev.valueOf() && due.valueOf() <= next.valueOf()
     })
-    data = assignmentData
+    data.assignments = assignmentData
+    data.courses = courses
   }
   catch (error) {
     console.error(error)
@@ -77,19 +76,15 @@ export default function App() {
     flexDirection: "column",
   }
   const { data, error, isPending } = useAsync({ promiseFn: getRelevantAssignments })
-  let taskList = []
-  if (!isPending && !error) {
-    taskList = data.sort(compareDates)
-  }
   return (
     <div style={style}>
       <Title weekStart={getPrevMonday()} weekEnd={getNextMonday()} />
       {isPending && <h1>Loading...</h1>}
-      {!isPending && !error && <TaskChart assignments={taskList} />}
+      {!isPending && !error && <TaskChart courses={data.courses} assignments={data.assignments.sort(compareDates)} />}
       {!isPending && !error &&
         <>
           <Subtitle />
-          <TaskList assignments={taskList} />
+          <TaskList assignments={data.assignments} />
         </>
       }
       {error && <h1>Failed to load</h1>}

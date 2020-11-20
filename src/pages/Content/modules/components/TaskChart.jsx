@@ -11,11 +11,12 @@ const ChartContainer = styled.div`
   margin: 10px 0px 0px 0px;
 `
 
-export default function TaskChart({ assignments }) {
+export default function TaskChart({ courses, assignments }) {
   const classes = {}
+  courses.forEach(course => {
+    classes[course.id] = { total: 0, done: 0 }
+  })
   assignments.forEach(assignment => {
-    if (!(assignment.course_id in classes))
-      classes[assignment.course_id] = { total: 0, done: 0 }
     classes[assignment.course_id].total++
     if (assignment.submission.attempt !== null)
       classes[assignment.course_id].done++
@@ -28,11 +29,13 @@ export default function TaskChart({ assignments }) {
   const colors = []
   const labels = []
   for (let course in classes) {
-    doneTotal += classes[course].done
-    total += classes[course].total
-    series.push(100 * classes[course].done / classes[course].total)
-    colors.push(classes[course].color)
-    labels.push(classes[course].name)
+    if (classes[course].total > 0) {
+      doneTotal += classes[course].done
+      total += classes[course].total
+      series.push(100 * classes[course].done / classes[course].total)
+      colors.push(classes[course].color)
+      labels.push(classes[course].name)
+    }
   }
   const options = {
     chart: {
