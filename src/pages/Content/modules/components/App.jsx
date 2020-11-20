@@ -3,71 +3,11 @@ import Title from './Title'
 import Subtitle from './Subtitle'
 import TaskChart from './TaskChart'
 import TaskList from './TaskList'
-import axios from 'axios'
+import { getRelevantAssignments } from '../api/APIcalls'
 import { useAsync } from 'react-async'
 
 function compareDates(a, b) {
   return new Date(a.due_at) - new Date(b.due_at)
-}
-
-function getPrevMonday() {
-  var date = new Date();
-  var day = date.getDay();
-  var prevMonday = new Date()
-  if (date.getDay() === 0) {
-      prevMonday.setDate(date.getDate() - 7);
-  }
-  else {
-      prevMonday.setDate(date.getDate() - (day-1));
-  }
-  prevMonday.setHours(23, 59, 59)
-  return prevMonday;
-}
-
-function getNextMonday() {
-  var d = new Date()
-  d.setDate(d.getDate() + (1 + 7 - d.getDay()) % 7);
-  d.setHours(23, 59, 59)
-  return d
-}
-
-const getRelevantAssignments = async () => {
-  let data = {}
-  let prev = getPrevMonday()
-  let next = getNextMonday()
-  try {
-    let colors = await axios.get(`https://${location.hostname}/api/v1/users/self/colors`)
-    colors = colors.data.custom_colors
-    let courses = await axios.get(`https://${location.hostname}/api/v1/courses?per_page=100`)
-    let names = {}
-    courses = courses.data.filter((course) => {
-      if ("name" in course) {
-        names[course.id] = course.name
-        return true
-      }
-      return false
-    })
-    let courseList = ""
-    courses.map(course => {
-      courseList += `&context_codes[]=course_${course.id}`
-    })
-    let assignments = await axios.get(`https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prev.toISOString()}&end_date=${next.toISOString()}&include=submission${courseList}`)
-    let assignmentData = assignments.data.map(task => {
-      return task.assignment
-    })
-    assignmentData = assignmentData.filter(task => {
-      task.color = colors[`course_${task.course_id}`]
-      task.course_name = names[task.course_id]
-      const due = new Date(task.due_at)
-      return due.valueOf() >= prev.valueOf() && due.valueOf() <= next.valueOf()
-    })
-    data.assignments = assignmentData
-    data.courses = courses
-  }
-  catch (error) {
-    console.error(error)
-  }
-  return data
 }
 
 export default function App() {
@@ -78,7 +18,7 @@ export default function App() {
   const { data, error, isPending } = useAsync({ promiseFn: getRelevantAssignments })
   return (
     <div style={style}>
-      <Title weekStart={getPrevMonday()} weekEnd={getNextMonday()} />
+      {!isPending && !error && <Title weekStart={data.prevMonday} weekEnd={data.nextMonday} />}
       {isPending && <h1>Loading...</h1>}
       {!isPending && !error && <TaskChart courses={data.courses} assignments={data.assignments.sort(compareDates)} />}
       {!isPending && !error &&

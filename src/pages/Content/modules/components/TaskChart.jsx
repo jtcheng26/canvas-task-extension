@@ -13,15 +13,17 @@ const ChartContainer = styled.div`
 
 export default function TaskChart({ courses, assignments }) {
   const classes = {}
-  courses.forEach(course => {
-    classes[course.id] = { total: 0, done: 0 }
+  courses.map(course => {
+    classes[course.id] = {
+      total: 0,
+      done: 0,
+      color: course.color,
+    }
   })
   assignments.forEach(assignment => {
     classes[assignment.course_id].total++
     if (assignment.submission.attempt !== null)
       classes[assignment.course_id].done++
-    classes[assignment.course_id].color = assignment.color
-    classes[assignment.course_id].name = assignment.course_name
   })
   let doneTotal = 0
   let total = 0
@@ -29,13 +31,14 @@ export default function TaskChart({ courses, assignments }) {
   const colors = []
   const labels = []
   for (let course in classes) {
-    if (classes[course].total > 0) {
       doneTotal += classes[course].done
       total += classes[course].total
-      series.push(100 * classes[course].done / classes[course].total)
+      if (classes[course].total > 0)
+        series.push(100 * classes[course].done / classes[course].total)
+      else
+        series.push(100)
       colors.push(classes[course].color)
-      labels.push(classes[course].name)
-    }
+      labels.push(course)
   }
   const options = {
     chart: {
