@@ -33,7 +33,7 @@ const TaskBottom = styled.div`
 
 const TaskLink = styled.a`
   color: #FFFFFF;
-  overflow-x: scroll;
+  overflow-x: auto;
   &:hover {
     color: #FFFFFF;
   }
