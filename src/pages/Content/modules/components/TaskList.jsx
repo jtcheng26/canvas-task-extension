@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import Task from './Task';
 import PropTypes from 'prop-types';
+import Subtitle from './Subtitle';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -32,11 +33,14 @@ export default function TaskList({ assignments }) {
     return assignment.submission.attempt === null;
   });
   return (
-    <ListContainer>
-      {assignments.map((assignment) => {
-        return <Task assignment={assignment} key={assignment.id} />;
-      })}
-    </ListContainer>
+    <>
+      {assignments.length > 0 && <Subtitle />}
+      <ListContainer>
+        {assignments.map((assignment) => {
+          return <Task assignment={assignment} key={assignment.id} />;
+        })}
+      </ListContainer>
+    </>
   );
 }
 

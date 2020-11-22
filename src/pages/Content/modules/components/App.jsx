@@ -1,6 +1,5 @@
 import React from 'react';
 import Title from './Title';
-import Subtitle from './Subtitle';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
 import { getRelevantAssignments } from '../api/APIcalls';
@@ -32,12 +31,7 @@ export default function App() {
           courses={data.courses}
         />
       )}
-      {!isPending && !error && (
-        <>
-          <Subtitle />
-          <TaskList assignments={data.assignments} />
-        </>
-      )}
+      {!isPending && !error && <TaskList assignments={data.assignments} />}
       {error && <h1>{failed}</h1>}
     </div>
   );
