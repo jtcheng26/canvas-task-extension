@@ -1,5 +1,3 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import run from './modules/init'
+import run from "./modules/init";
 
-run()
+run();
