@@ -1,3 +1,3 @@
-import run from "./modules/init";
+import run from './modules/init';
 
 run();

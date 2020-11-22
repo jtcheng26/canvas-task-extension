@@ -23,11 +23,11 @@ export default function run() {
 
   function createSidebar(container) {
     ReactDOM.render(
-        <React.StrictMode>
-            <App />
-        </React.StrictMode>,
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>,
       container
     );
   }
-  let interval = setInterval(findContainer, 10);
+  const interval = setInterval(findContainer, 10);
 }

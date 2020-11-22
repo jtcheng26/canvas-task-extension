@@ -9,7 +9,7 @@
   "scripts": {
     "build": "node utils/build.js",
     "start": "node utils/webserver.js",
-    "prettier": "prettier --write '**/*.{js,jsx,css,html}'",
+    "prettier": "prettier --write 'src/**/*.{js,jsx,css,html}'",
     "lint": "eslint src/**/*.js src/**/*.jsx"
   },
   "dependencies": {
@@ -38,10 +38,12 @@
     "copy-webpack-plugin": "^6.2.1",
     "css-loader": "^5.0.0",
     "eslint": "^7.12.1",
+    "eslint-config-prettier": "^6.15.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^5.2.0",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-jsx-a11y": "^6.4.1",
+    "eslint-plugin-prettier": "^3.1.4",
     "eslint-plugin-react": "^7.21.5",
     "eslint-plugin-react-hooks": "^4.2.0",
     "file-loader": "^6.1.1",

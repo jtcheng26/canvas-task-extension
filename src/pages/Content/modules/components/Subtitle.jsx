@@ -7,12 +7,10 @@ const SubtitleDiv = styled.div`
 `;
 
 export default function Subtitle() {
-  const unfinished = "Unfinished"
+  const unfinished = 'Unfinished';
   return (
-      <SubtitleDiv>
-          <div style={{ float: 'left' }}>
-              {unfinished}
-          </div>
-      </SubtitleDiv>
+    <SubtitleDiv>
+      <div style={{ float: 'left' }}>{unfinished}</div>
+    </SubtitleDiv>
   );
 }

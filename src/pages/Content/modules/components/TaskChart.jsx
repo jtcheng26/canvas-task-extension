@@ -26,12 +26,12 @@ export default function TaskChart({ courses, assignments }) {
     if (assignment.submission.attempt !== null)
       classes[assignment.course_id].done++;
   });
-  let doneTotal = 0;
-  let total = 0;
-  const series = [];
-  const colors = [];
-  const labels = [];
-  for (let course in classes) {
+  let doneTotal = 0,
+    total = 0;
+  const series = [],
+    colors = [],
+    labels = [];
+  for (const course in classes) {
     doneTotal += classes[course].done;
     total += classes[course].total;
     if (classes[course].total > 0)
@@ -51,7 +51,7 @@ export default function TaskChart({ courses, assignments }) {
           name: {
             fontSize: '20px',
             offsetY: 25,
-            formatter: function () {
+            formatter() {
               return 'Complete';
             },
           },
@@ -59,36 +59,36 @@ export default function TaskChart({ courses, assignments }) {
             offsetY: -15,
             fontSize: '30px',
             fontWeight: 'bold',
-            formatter: function (val) {
-              return Math.floor(val) + '%';
+            formatter(val) {
+              return `${Math.floor(val)}%`;
             },
           },
           total: {
             show: true,
             label: 'Complete',
-            formatter: function () {
-              return Math.floor((100 * doneTotal) / total) + '%';
+            formatter() {
+              return `${Math.floor((100 * doneTotal) / total)}%`;
             },
           },
         },
       },
     },
-    labels: labels,
-    colors: colors,
+    labels,
+    colors,
   };
   return (
-      <ChartContainer>
-          <ReactApexChart
-              height={300}
-              options={options}
-              series={series}
-              type="radialBar"
-          />
-      </ChartContainer>
+    <ChartContainer>
+      <ReactApexChart
+        height={300}
+        options={options}
+        series={series}
+        type="radialBar"
+      />
+    </ChartContainer>
   );
 }
 
 TaskChart.propTypes = {
   assignments: PropTypes.arrayOf(PropTypes.object).isRequired,
   courses: PropTypes.arrayOf(PropTypes.object).isRequired,
-}
+};

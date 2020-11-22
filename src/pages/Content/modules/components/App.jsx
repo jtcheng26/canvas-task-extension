@@ -12,42 +12,33 @@ function compareDates(a, b) {
 
 export default function App() {
   const style = {
-    display: 'flex',
-    flexDirection: 'column',
-  };
-  const { data, error, isPending } = useAsync({
-    promiseFn: getRelevantAssignments,
-  });
-  const loading = 'Loading...'
-  const failed = 'Failed to load'
+      display: 'flex',
+      flexDirection: 'column',
+    },
+    { data, error, isPending } = useAsync({
+      promiseFn: getRelevantAssignments,
+    }),
+    loading = 'Loading...',
+    failed = 'Failed to load';
   return (
-      <div style={style}>
-          {!isPending && !error && (
-          <Title
-              weekEnd={data.nextMonday}
-              weekStart={data.prevMonday}
-          />
+    <div style={style}>
+      {!isPending && !error && (
+        <Title weekEnd={data.nextMonday} weekStart={data.prevMonday} />
       )}
-          {isPending &&
-          <h1>
-              {loading}
-          </h1>}
-          {!isPending && !error && (
-          <TaskChart
-              assignments={data.assignments.sort(compareDates)}
-              courses={data.courses}
-          />
+      {isPending && <h1>{loading}</h1>}
+      {!isPending && !error && (
+        <TaskChart
+          assignments={data.assignments.sort(compareDates)}
+          courses={data.courses}
+        />
       )}
-          {!isPending && !error && (
-          <>
-              <Subtitle />
-              <TaskList assignments={data.assignments} />
-          </>
+      {!isPending && !error && (
+        <>
+          <Subtitle />
+          <TaskList assignments={data.assignments} />
+        </>
       )}
-          {error &&
-          <h1>
-              {failed}
-          </h1>}
-      </div>
+      {error && <h1>{failed}</h1>}
+    </div>
   );
 }

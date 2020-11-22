@@ -10,25 +10,21 @@ const TitleDiv = styled.div`
 `;
 
 export default function Title({ weekStart, weekEnd }) {
-  let start = weekStart.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-  let end = weekEnd.toLocaleString('en-US', { month: 'short', day: 'numeric' });
-  const tasks = "Tasks"
+  const start = weekStart.toLocaleString('en-US', {
+      month: 'short',
+      day: 'numeric',
+    }),
+    end = weekEnd.toLocaleString('en-US', { month: 'short', day: 'numeric' }),
+    tasks = 'Tasks';
   return (
-      <TitleDiv>
-          <div style={{ float: 'left' }}>
-              {tasks}
-          </div>
-          <div style={{ float: 'right' }}>
-              {`${start} to ${end}`}
-          </div>
-      </TitleDiv>
+    <TitleDiv>
+      <div style={{ float: 'left' }}>{tasks}</div>
+      <div style={{ float: 'right' }}>{`${start} to ${end}`}</div>
+    </TitleDiv>
   );
 }
 
 Title.propTypes = {
   weekEnd: PropTypes.instanceOf(Date).isRequired,
   weekStart: PropTypes.instanceOf(Date).isRequired,
-}
+};

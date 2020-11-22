@@ -2,7 +2,12 @@
   "plugins": [
     "react",
   ],
-  "extends": ["eslint:recommended", "plugin:react/all"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:react/all",
+    "plugin:prettier/recommended",
+    "prettier/react"
+  ],
   "globals": {
     "chrome": "readonly",
   },
