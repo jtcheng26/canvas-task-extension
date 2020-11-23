@@ -29,7 +29,7 @@ export const getRelevantAssignments = async () => {
       data.courses = links.map((link) => {
         const obj = {},
           id = parseInt(link.pathname.split('/').pop());
-        obj.id = id;
+        obj.id = parseInt(id);
         obj.color = colors[`course_${id}`];
         return obj;
       });
@@ -37,7 +37,7 @@ export const getRelevantAssignments = async () => {
       const id = location.pathname.split('/').pop();
       data.courses = [
         {
-          id: id,
+          id: parseInt(id),
           color: colors[`course_${id}`],
         },
       ];

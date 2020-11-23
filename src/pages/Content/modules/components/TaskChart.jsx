@@ -113,6 +113,19 @@ export default function TaskChart({ courses, assignments }) {
 }
 
 TaskChart.propTypes = {
-  assignments: PropTypes.arrayOf(PropTypes.object).isRequired,
-  courses: PropTypes.arrayOf(PropTypes.object).isRequired,
+  assignments: PropTypes.arrayOf(
+    PropTypes.shape({
+      color: PropTypes.string,
+      html_url: PropTypes.string,
+      name: PropTypes.string,
+      points_possible: PropTypes.number,
+      due_at: PropTypes.string,
+    })
+  ).isRequired,
+  courses: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      color: PropTypes.string,
+    })
+  ).isRequired,
 };
