@@ -25,13 +25,23 @@ export const getRelevantAssignments = async () => {
       links = Array.from(
         document.getElementsByClassName('ic-DashboardCard__link')
       );
-    data.courses = links.map((link) => {
-      const obj = {},
-        id = parseInt(link.pathname.split('/').pop());
-      obj.id = id;
-      obj.color = colors[`course_${id}`];
-      return obj;
-    });
+    if (links.length > 0) {
+      data.courses = links.map((link) => {
+        const obj = {},
+          id = parseInt(link.pathname.split('/').pop());
+        obj.id = id;
+        obj.color = colors[`course_${id}`];
+        return obj;
+      });
+    } else {
+      const id = location.pathname.split('/').pop();
+      data.courses = [
+        {
+          id: id,
+          color: colors[`course_${id}`],
+        },
+      ];
+    }
     let courseList = '';
     data.courses.forEach((course) => {
       courseList += `&context_codes[]=course_${course.id}`;

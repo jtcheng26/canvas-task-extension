@@ -43,7 +43,7 @@ export default function TaskChart({ courses, assignments }) {
   }
   const options = {
     chart: {
-      height: 350,
+      height: 370,
       type: 'radialBar',
     },
     plotOptions: {
@@ -70,14 +70,18 @@ export default function TaskChart({ courses, assignments }) {
             color: 'black',
             label: `${doneTotal}/${total}`,
             formatter() {
-              return `${Math.floor((100 * doneTotal) / total)}%`;
+              if (total > 0) return `${Math.floor((100 * doneTotal) / total)}%`;
+              else return '100%';
             },
           },
         },
         hollow: {
-          size: '40%',
+          size: '35%',
         },
       },
+    },
+    fill: {
+      opacity: 1.0,
     },
     labels,
     colors,
