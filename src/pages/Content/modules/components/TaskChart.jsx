@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
 import PropTypes from 'prop-types';
@@ -6,8 +6,10 @@ import '../../content.styles.css';
 
 const ChartContainer = styled.div`
   height: 240px;
+  padding-top: 20px;
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 10px 0px 0px 0px;
@@ -20,6 +22,7 @@ export default function TaskChart({ courses, assignments }) {
       total: 0,
       done: 0,
       color: course.color,
+      name: course.name,
     };
   });
   assignments.forEach((assignment) => {
@@ -31,7 +34,8 @@ export default function TaskChart({ courses, assignments }) {
     total = 0;
   const series = [],
     colors = [],
-    labels = [];
+    labels = [],
+    names = [];
   for (const course in classes) {
     doneTotal += classes[course].done;
     total += classes[course].total;
@@ -40,11 +44,22 @@ export default function TaskChart({ courses, assignments }) {
     else series.push(100);
     colors.push(classes[course].color);
     labels.push(`${classes[course].done}/${classes[course].total}`);
+    names.push(classes[course].name);
   }
+  const [hoverIdx, setHoverIdx] = useState(-1);
   const options = {
     chart: {
       height: 370,
       type: 'radialBar',
+      events: {
+        dataPointMouseEnter: function (event) {
+          const idx = event.srcElement.attributes.j.value;
+          setHoverIdx(idx);
+        },
+        dataPointMouseLeave: function () {
+          setHoverIdx(-1);
+        },
+      },
     },
     plotOptions: {
       radialBar: {
@@ -90,7 +105,7 @@ export default function TaskChart({ courses, assignments }) {
     position: 'absolute',
     left: '50%',
     transform: 'translate(-50%, 0)',
-    top: '56%',
+    top: '155px',
     margin: 'auto',
     zIndex: '10',
     color: 'black',
@@ -98,9 +113,33 @@ export default function TaskChart({ courses, assignments }) {
     fontWeight: '500',
     fontSize: '13px',
   };
+  const courseTitle = {
+    position: 'absolute',
+    height: '20px',
+    top: '-5px',
+    zIndex: '5',
+    color:
+      hoverIdx == -1 && colors.length > 1
+        ? 'black'
+        : colors.length > 1
+        ? colors[hoverIdx]
+        : colors[0],
+    fontFamily: 'Lato Extended',
+    fontWeight: 'bold',
+    fontSize: '14px',
+    lineHeight: '1.2',
+    textAlign: 'center',
+  };
   const complete = 'Complete';
   return (
     <ChartContainer>
+      <div style={courseTitle}>
+        {hoverIdx == -1 && names.length > 1
+          ? 'All Courses'
+          : names.length > 1
+          ? names[hoverIdx]
+          : names[0]}
+      </div>
       <ReactApexChart
         height={300}
         options={options}
