@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
 import PropTypes from 'prop-types';
@@ -6,7 +6,6 @@ import '../../content.styles.css';
 
 const ChartContainer = styled.div`
   height: 240px;
-  padding-top: 20px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -15,7 +14,7 @@ const ChartContainer = styled.div`
   margin: 10px 0px 0px 0px;
 `;
 
-export default function TaskChart({ courses, assignments }) {
+export default function TaskChart({ courses, assignments, setCourse }) {
   const classes = {};
   courses.map((course) => {
     classes[course.id] = {
@@ -46,7 +45,6 @@ export default function TaskChart({ courses, assignments }) {
     labels.push(`${classes[course].done}/${classes[course].total}`);
     names.push(classes[course].name);
   }
-  const [hoverIdx, setHoverIdx] = useState(-1);
   const options = {
     chart: {
       height: 370,
@@ -54,10 +52,11 @@ export default function TaskChart({ courses, assignments }) {
       events: {
         dataPointMouseEnter: function (event) {
           const idx = event.srcElement.attributes.j.value;
-          setHoverIdx(idx);
+          setCourse(names[idx], colors[idx]);
         },
         dataPointMouseLeave: function () {
-          setHoverIdx(-1);
+          if (names.length == 1) setCourse(names[0], colors[0]);
+          else setCourse('-1', 'black');
         },
       },
     },
@@ -105,7 +104,7 @@ export default function TaskChart({ courses, assignments }) {
     position: 'absolute',
     left: '50%',
     transform: 'translate(-50%, 0)',
-    top: '155px',
+    top: '135px',
     margin: 'auto',
     zIndex: '10',
     color: 'black',
@@ -113,33 +112,9 @@ export default function TaskChart({ courses, assignments }) {
     fontWeight: '500',
     fontSize: '13px',
   };
-  const courseTitle = {
-    position: 'absolute',
-    height: '20px',
-    top: '-5px',
-    zIndex: '5',
-    color:
-      hoverIdx == -1 && colors.length > 1
-        ? 'black'
-        : colors.length > 1
-        ? colors[hoverIdx]
-        : colors[0],
-    fontFamily: 'Lato Extended',
-    fontWeight: 'bold',
-    fontSize: '14px',
-    lineHeight: '1.2',
-    textAlign: 'center',
-  };
   const complete = 'Complete';
   return (
     <ChartContainer>
-      <div style={courseTitle}>
-        {hoverIdx == -1 && names.length > 1
-          ? 'All Courses'
-          : names.length > 1
-          ? names[hoverIdx]
-          : names[0]}
-      </div>
       <ReactApexChart
         height={300}
         options={options}
@@ -165,6 +140,8 @@ TaskChart.propTypes = {
     PropTypes.shape({
       id: PropTypes.number,
       color: PropTypes.string,
+      name: PropTypes.string,
     })
   ).isRequired,
+  setCourse: PropTypes.func.isRequired,
 };

@@ -28,21 +28,36 @@ const ListContainer = styled.div`
  *};
  */
 
-export default function TaskList({ assignments }) {
+export default function TaskList({ assignments, course }) {
   assignments = assignments.filter((assignment) => {
     return assignment.submission.attempt === null;
   });
+  const containerStyle = {
+    height: `${Math.max(50, Math.min(25 + assignments.length * 85, 450))}px`,
+    marginBottom: '10px',
+  };
+  if (course != '-1') {
+    assignments = assignments.filter((assignment) => {
+      return assignment.course_id == course;
+    });
+  }
   return (
-    <>
-      {assignments.length > 0 && <Subtitle />}
+    <div style={containerStyle}>
+      <Subtitle />
       <ListContainer>
-        {assignments.map((assignment) => {
-          return <Task assignment={assignment} key={assignment.id} />;
-        })}
+        {assignments.length > 0
+          ? assignments.map((assignment) => {
+              return <Task assignment={assignment} key={assignment.id} />;
+            })
+          : 'None'}
       </ListContainer>
-    </>
+    </div>
   );
 }
+
+TaskList.defaultProps = {
+  course: '-1',
+};
 
 TaskList.propTypes = {
   assignments: PropTypes.arrayOf(
@@ -54,4 +69,5 @@ TaskList.propTypes = {
       due_at: PropTypes.string,
     })
   ).isRequired,
+  course: PropTypes.string,
 };

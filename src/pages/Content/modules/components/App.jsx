@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Title from './Title';
+import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
 import { getRelevantAssignments } from '../api/APIcalls';
@@ -19,6 +20,10 @@ export default function App() {
     }),
     loading = 'Loading...',
     failed = 'Failed to load';
+  const [course, setCourse] = useState({ code: '-1', color: 'black' });
+  function setCourseCallback(code, color) {
+    setCourse({ code, color });
+  }
   return (
     <div style={style}>
       {!isPending && !error && (
@@ -26,12 +31,25 @@ export default function App() {
       )}
       {isPending && <h1>{loading}</h1>}
       {!isPending && !error && (
-        <TaskChart
-          assignments={data.assignments.sort(compareDates)}
-          courses={data.courses}
-        />
+        <>
+          <CourseName
+            color={
+              data.courses.length > 1 ? course.color : data.courses[0].color
+            }
+            courseCode={
+              data.courses.length > 1 ? course.code : data.courses[0].name
+            }
+          />
+          <TaskChart
+            assignments={data.assignments.sort(compareDates)}
+            courses={data.courses}
+            setCourse={setCourseCallback}
+          />
+        </>
       )}
-      {!isPending && !error && <TaskList assignments={data.assignments} />}
+      {!isPending && !error && (
+        <TaskList assignments={data.assignments} course={course.code} />
+      )}
       {error && <h1>{failed}</h1>}
     </div>
   );
