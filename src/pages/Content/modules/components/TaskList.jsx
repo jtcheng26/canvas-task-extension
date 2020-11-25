@@ -28,7 +28,7 @@ const ListContainer = styled.div`
  *};
  */
 
-export default function TaskList({ assignments, course }) {
+export default function TaskList({ assignments, course_id }) {
   assignments = assignments.filter((assignment) => {
     return assignment.submission.attempt === null;
   });
@@ -36,9 +36,9 @@ export default function TaskList({ assignments, course }) {
     height: `${Math.max(50, Math.min(25 + assignments.length * 85, 450))}px`,
     marginBottom: '10px',
   };
-  if (course != '-1') {
+  if (course_id != -1) {
     assignments = assignments.filter((assignment) => {
-      return assignment.course_id == course;
+      return assignment.course_id == course_id;
     });
   }
   return (
@@ -56,7 +56,7 @@ export default function TaskList({ assignments, course }) {
 }
 
 TaskList.defaultProps = {
-  course: '-1',
+  course_id: -1,
 };
 
 TaskList.propTypes = {
@@ -67,7 +67,11 @@ TaskList.propTypes = {
       name: PropTypes.string,
       points_possible: PropTypes.number,
       due_at: PropTypes.string,
+      course_id: PropTypes.number,
+      submission: PropTypes.shape({
+        attempt: PropTypes.number,
+      }),
     })
   ).isRequired,
-  course: PropTypes.string,
+  course_id: PropTypes.number,
 };

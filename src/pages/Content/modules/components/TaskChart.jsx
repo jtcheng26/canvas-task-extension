@@ -34,7 +34,8 @@ export default function TaskChart({ courses, assignments, setCourse }) {
   const series = [],
     colors = [],
     labels = [],
-    names = [];
+    names = [],
+    ids = [];
   for (const course in classes) {
     doneTotal += classes[course].done;
     total += classes[course].total;
@@ -44,6 +45,7 @@ export default function TaskChart({ courses, assignments, setCourse }) {
     colors.push(classes[course].color);
     labels.push(`${classes[course].done}/${classes[course].total}`);
     names.push(classes[course].name);
+    ids.push(course);
   }
   const options = {
     chart: {
@@ -52,11 +54,12 @@ export default function TaskChart({ courses, assignments, setCourse }) {
       events: {
         dataPointMouseEnter: function (event) {
           const idx = event.srcElement.attributes.j.value;
-          setCourse(names[idx], colors[idx]);
+          setCourse(names[idx], parseInt(ids[idx]), colors[idx]);
         },
         dataPointMouseLeave: function () {
-          if (names.length == 1) setCourse(names[0], colors[0]);
-          else setCourse('-1', 'black');
+          if (names.length == 1)
+            setCourse(names[0], parseInt(ids[0]), colors[0]);
+          else setCourse('-1', -1, 'black');
         },
       },
     },

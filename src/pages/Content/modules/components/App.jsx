@@ -20,9 +20,9 @@ export default function App() {
     }),
     loading = 'Loading...',
     failed = 'Failed to load';
-  const [course, setCourse] = useState({ code: '-1', color: 'black' });
-  function setCourseCallback(code, color) {
-    setCourse({ code, color });
+  const [course, setCourse] = useState({ code: '-1', id: -1, color: 'black' });
+  function setCourseCallback(code, id, color) {
+    setCourse({ code, id, color });
   }
   return (
     <div style={style}>
@@ -48,7 +48,7 @@ export default function App() {
         </>
       )}
       {!isPending && !error && (
-        <TaskList assignments={data.assignments} course={course.code} />
+        <TaskList assignments={data.assignments} course={course.id} />
       )}
       {error && <h1>{failed}</h1>}
     </div>
