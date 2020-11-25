@@ -68,6 +68,7 @@ TaskList.propTypes = {
       points_possible: PropTypes.number,
       due_at: PropTypes.string,
       course_id: PropTypes.number,
+      id: PropTypes.number,
       submission: PropTypes.shape({
         attempt: PropTypes.number,
       }),
