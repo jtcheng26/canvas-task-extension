@@ -84,7 +84,7 @@ export default function TaskChart({ courses, assignments, setCourse }) {
             fontSize: '13px',
             fontFamily: 'Roboto',
             fontWeight: 500,
-            color: 'black',
+            color: '#000',
             label: `${doneTotal}/${total}`,
             formatter() {
               if (total > 0) return `${Math.floor((100 * doneTotal) / total)}%`;
@@ -110,7 +110,7 @@ export default function TaskChart({ courses, assignments, setCourse }) {
     top: '135px',
     margin: 'auto',
     zIndex: '10',
-    color: 'black',
+    color: '#000',
     fontFamily: 'Roboto',
     fontWeight: '500',
     fontSize: '13px',

@@ -6,7 +6,7 @@ export default function CourseName({ courseCode, color }) {
     paddingTop: '5px',
     paddingBottom: '5px',
     height: '15px',
-    color: courseCode == '-1' ? 'black' : color,
+    color: courseCode == '-1' ? '#000' : color,
     fontFamily: 'Lato Extended',
     fontWeight: 'bold',
     fontSize: '14px',
@@ -21,7 +21,7 @@ export default function CourseName({ courseCode, color }) {
 }
 
 CourseName.defaultProps = {
-  color: 'black',
+  color: '#000',
   courseCode: '-1',
 };
 
