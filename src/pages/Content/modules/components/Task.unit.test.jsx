@@ -1,21 +1,6 @@
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { shallow } from 'enzyme';
 import Task from './Task';
-
-let container = null;
-beforeEach(() => {
-  // setup a DOM element as a render target
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  // cleanup on exiting
-  unmountComponentAtNode(container);
-  container.remove();
-  container = null;
-});
 
 const color = 'rgb(0, 0, 0)',
   html_url = 'https://this.is.a.test/',
@@ -35,32 +20,29 @@ const mockData = {
   due_at,
 };
 
-it('renders color', () => {
-  act(() => {
-    render(<Task assignment={mockData} />, container);
+describe('<Task />', () => {
+  it('renders color', () => {
+    let wrapper = shallow(<Task assignment={mockData} />);
+    expect(wrapper.find('.task-top').prop('style')).toHaveProperty(
+      'backgroundColor',
+      color
+    );
   });
-  expect(container.firstChild.firstChild.style.backgroundColor).toBe(color);
-});
 
-it('renders name', () => {
-  act(() => {
-    render(<Task assignment={mockData} />, container);
+  it('renders name', () => {
+    let wrapper = shallow(<Task assignment={mockData} />);
+    expect(wrapper.find('TaskLink').text()).toBe(name);
   });
-  expect(container.firstChild.firstChild.textContent).toBe(name);
-});
 
-it('renders points and due date', () => {
-  act(() => {
-    render(<Task assignment={mockData} />, container);
+  it('renders points and due date', () => {
+    let wrapper = shallow(<Task assignment={mockData} />);
+    expect(wrapper.find('TaskBottom').text()).toBe(
+      points_possible + ' points \xa0|\xa0 ' + 'Feb 1 at 10:10 AM'
+    );
   });
-  expect(container.firstChild.lastChild.textContent).toBe(
-    points_possible + ' points \xa0|\xa0 ' + 'Feb 1 at 10:10 AM'
-  );
-});
 
-it('sets link', () => {
-  act(() => {
-    render(<Task assignment={mockData} />, container);
+  it('sets link', () => {
+    let wrapper = shallow(<Task assignment={mockData} />);
+    expect(wrapper.find('TaskLink').prop('href')).toBe(html_url);
   });
-  expect(container.firstChild.firstChild.firstChild.href).toBe(html_url);
 });

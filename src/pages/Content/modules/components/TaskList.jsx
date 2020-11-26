@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Task from './Task';
 import PropTypes from 'prop-types';
@@ -9,51 +9,57 @@ const ListContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 5px 0px 10px 0px;
-  overflow-y: auto;
-  max-height: 450px;
+  margin-top: 5px;
   padding: 0px 5px;
   padding-bottom: 5px;
 `;
 
-/*
- *Const demoAssignment = {
- *  name: 'Demo Assignment',
- *  html_url: 'https://hcpss.instructure.com/',
- *  points_possible: '15.0',
- *  due_at: '2020-11-09T08:30:00-05:00',
- *  color: '#D41E00',
- *  course_name: 'Course Name',
- *  course_id: 12345,
- *};
- */
-
 export default function TaskList({ assignments, course_id }) {
+  const [viewingMore, setViewingMore] = useState(false);
   assignments = assignments.filter((assignment) => {
     return assignment.submission.attempt === null;
   });
+  const height = !viewingMore
+    ? `${25 + Math.min(assignments.length, 4) * 80}px`
+    : `${25 + assignments.length * 80}px`;
   const containerStyle = {
-    height: `${Math.max(50, Math.min(25 + assignments.length * 85, 450))}px`,
-    marginBottom: '10px',
+    height,
+    margin: '10px 0px 25px 0px',
   };
   if (course_id != -1) {
     assignments = assignments.filter((assignment) => {
       return assignment.course_id == course_id;
     });
   }
+  let viewMoreText = 'View less';
+  let renderedAssignments = assignments;
+  if (!viewingMore) {
+    renderedAssignments = assignments.slice(0, Math.min(4, assignments.length));
+    viewMoreText = `View ${assignments.length - 4} more`;
+  }
+  function onClick() {
+    setViewingMore(!viewingMore);
+  }
   return (
     <div style={containerStyle}>
       <Subtitle />
       <ListContainer>
-        {assignments.length > 0
-          ? assignments.map((assignment) => {
+        {renderedAssignments.length > 0
+          ? renderedAssignments.map((assignment) => {
               return <Task assignment={assignment} key={assignment.id} />;
             })
           : 'None'}
       </ListContainer>
+      {assignments.length > 4 && (
+        <a href="#" onClick={onClick} style={{ fontSize: '0.9rem' }}>
+          {viewMoreText}
+        </a>
+      )}
     </div>
   );
 }
+
+ListContainer.displayName = 'ListContainer';
 
 TaskList.defaultProps = {
   course_id: -1,

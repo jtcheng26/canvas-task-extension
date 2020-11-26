@@ -65,7 +65,7 @@ export default function Task({ assignment }) {
   }
   return (
     <TaskContainer onClick={onClick}>
-      <div style={TaskTopStyle}>
+      <div className="task-top" style={TaskTopStyle}>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
       </div>
       <TaskBottom>
@@ -76,6 +76,9 @@ export default function Task({ assignment }) {
     </TaskContainer>
   );
 }
+
+TaskBottom.displayName = 'TaskBottom';
+TaskLink.displayName = 'TaskLink';
 
 Task.propTypes = {
   assignment: PropTypes.shape({

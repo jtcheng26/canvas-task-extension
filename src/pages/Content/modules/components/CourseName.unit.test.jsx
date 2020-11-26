@@ -1,49 +1,28 @@
 import React from 'react';
-import { render, unmountComponentAtNode } from 'react-dom';
-import { act } from 'react-dom/test-utils';
+import { shallow } from 'enzyme';
 import CourseName from './CourseName';
-
-let container = null;
-beforeEach(() => {
-  // setup a DOM element as a render target
-  container = document.createElement('div');
-  document.body.appendChild(container);
-});
-
-afterEach(() => {
-  // cleanup on exiting
-  unmountComponentAtNode(container);
-  container.remove();
-  container = null;
-});
 
 const code = 'Dummy Course Code',
   color = 'rgb(255, 0, 0)';
 
-it("defaults text to 'All Courses'", () => {
-  act(() => {
-    render(<CourseName color={color} courseCode="-1" />, container);
+describe('<CourseName />', () => {
+  it("defaults text to 'All Courses'", () => {
+    let wrapper = shallow(<CourseName color={color} courseCode="-1" />);
+    expect(wrapper.text()).toBe('All Courses');
   });
-  expect(container.firstChild.textContent).toBe('All Courses');
-});
 
-it('defaults color to black', () => {
-  act(() => {
-    render(<CourseName color={color} courseCode="-1" />, container);
+  it('defaults color to black', () => {
+    let wrapper = shallow(<CourseName color={color} courseCode="-1" />);
+    expect(wrapper.prop('style')).toHaveProperty('color', '#000');
   });
-  expect(container.firstChild.style.color).toBe('rgb(0, 0, 0)');
-});
 
-it('renders course code', () => {
-  act(() => {
-    render(<CourseName color={color} courseCode={code} />, container);
+  it('renders course code', () => {
+    let wrapper = shallow(<CourseName color={color} courseCode={code} />);
+    expect(wrapper.text()).toBe(code);
   });
-  expect(container.firstChild.textContent).toBe(code);
-});
 
-it('renders course color', () => {
-  act(() => {
-    render(<CourseName color={color} courseCode={code} />, container);
+  it('renders course color', () => {
+    let wrapper = shallow(<CourseName color={color} courseCode={code} />);
+    expect(wrapper.prop('style')).toHaveProperty('color', color);
   });
-  expect(container.firstChild.style.color).toBe(color);
 });
