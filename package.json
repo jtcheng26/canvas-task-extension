@@ -2,6 +2,8 @@
   "name": "canvas-tasklist",
   "version": "1.0.0",
   "description": "A chrome extension that improves the Canvas Instructure To Do sidebar!",
+  "homepage": "https://github.com/jtcheng26/canvas-task-extension",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/jtcheng26/canvas-task-extension.git"
