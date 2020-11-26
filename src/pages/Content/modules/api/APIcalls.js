@@ -21,17 +21,25 @@ export const getRelevantAssignments = async () => {
   data.prevMonday = getPrevMonday();
   data.nextMonday = getNextMonday();
   try {
-    const colors = (
-        await axios.get(`https://${location.hostname}/api/v1/users/self/colors`)
-      ).data.custom_colors,
-      links = Array.from(
-        document.getElementsByClassName('ic-DashboardCard__link')
-      );
-    if (links.length > 0) {
+    const userData = {
+      colors: axios.get(
+        `https://${location.hostname}/api/v1/users/self/colors`
+      ),
+      positions: axios.get(
+        `https://${location.hostname}/api/v1/users/self/dashboard_positions`
+      ),
+    };
+    const userDataGet = await axios.all([userData.colors, userData.positions]);
+    userData.colors = userDataGet[0].data.custom_colors;
+    (userData.links = Array.from(
+      document.getElementsByClassName('ic-DashboardCard__link')
+    )),
+      (userData.positions = userDataGet[1].data.dashboard_positions);
+    if (userData.links.length > 0) {
       // if on dashboard and not course page
       const courseNames = {};
       let requests = [];
-      for (let link of links) {
+      for (let link of userData.links) {
         const id = parseInt(link.pathname.split('/').pop());
         requests.push(
           axios.get(`https://${location.hostname}/api/v1/courses/${id}`)
@@ -41,12 +49,13 @@ export const getRelevantAssignments = async () => {
       requests = requests.map((request) => {
         courseNames[request.data.id] = request.data.course_code;
       });
-      data.courses = links.map((link) => {
+      data.courses = userData.links.map((link) => {
         const obj = {},
           id = parseInt(link.pathname.split('/').pop());
         obj.id = parseInt(id);
-        obj.color = colors[`course_${id}`];
+        obj.color = userData.colors[`course_${id}`];
         obj.name = courseNames[parseInt(id)];
+        obj.position = userData.positions[`course_${id}`];
         return obj;
       });
     } else {
@@ -58,8 +67,9 @@ export const getRelevantAssignments = async () => {
       data.courses = [
         {
           id: parseInt(id),
-          color: colors[`course_${id}`],
+          color: userData.colors[`course_${id}`],
           name: name,
+          position: 0,
         },
       ];
     }
@@ -74,7 +84,7 @@ export const getRelevantAssignments = async () => {
     );
     data.assignments = assignments.data.map((task) => task.assignment);
     data.assignments = data.assignments.filter((task) => {
-      task.color = colors[`course_${task.course_id}`];
+      task.color = userData.colors[`course_${task.course_id}`];
       const due = new Date(task.due_at);
       return (
         due.getDate() > data.prevMonday.getDate() &&

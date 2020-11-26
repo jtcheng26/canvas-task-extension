@@ -22,6 +22,7 @@ export default function TaskChart({ courses, assignments, setCourse }) {
       done: 0,
       color: course.color,
       name: course.name,
+      idx: course.position,
     };
   });
   assignments.forEach((assignment) => {
@@ -42,10 +43,12 @@ export default function TaskChart({ courses, assignments, setCourse }) {
     if (classes[course].total > 0)
       series.push((100 * classes[course].done) / classes[course].total);
     else series.push(100);
-    colors.push(classes[course].color);
-    labels.push(`${classes[course].done}/${classes[course].total}`);
-    names.push(classes[course].name);
-    ids.push(course);
+    colors[classes[course].idx] = classes[course].color;
+    labels[
+      classes[course].idx
+    ] = `${classes[course].done}/${classes[course].total}`;
+    names[classes[course].idx] = classes[course].name;
+    ids[classes[course].idx] = course;
   }
   const options = {
     chart: {
