@@ -3,6 +3,8 @@ import Title from './Title';
 import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
+import MoonLoader from 'react-spinners/MoonLoader';
+import { css } from '@emotion/core';
 import { getRelevantAssignments } from '../api/APIcalls';
 import { useAsync } from 'react-async';
 
@@ -18,18 +20,26 @@ export default function App() {
     { data, error, isPending } = useAsync({
       promiseFn: getRelevantAssignments,
     }),
-    loading = 'Loading...',
     failed = 'Failed to load';
   const [course, setCourse] = useState({ code: '-1', id: -1, color: 'black' });
   function setCourseCallback(code, id, color) {
     setCourse({ code, id, color });
   }
   return (
-    <div style={style}>
+    <div className="bootstrap-iso" style={style}>
       {!isPending && !error && (
         <Title weekEnd={data.nextMonday} weekStart={data.prevMonday} />
       )}
-      {isPending && <h1>{loading}</h1>}
+      {isPending && (
+        <MoonLoader
+          color="var(--ic-link-color)"
+          css={css`
+            align-self: center;
+          `}
+          loading
+          size={50}
+        />
+      )}
       {!isPending && !error && (
         <>
           <CourseName
