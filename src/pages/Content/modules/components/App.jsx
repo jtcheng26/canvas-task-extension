@@ -58,7 +58,7 @@ export default function App() {
         </>
       )}
       {!isPending && !error && (
-        <TaskList assignments={data.assignments} course={course.id} />
+        <TaskList assignments={data.assignments} course_id={course.id} />
       )}
       {error && <h1>{failed}</h1>}
     </div>
