@@ -41,8 +41,9 @@ export default function TaskChart({ courses, assignments, setCourse }) {
     doneTotal += classes[course].done;
     total += classes[course].total;
     if (classes[course].total > 0)
-      series.push((100 * classes[course].done) / classes[course].total);
-    else series.push(100);
+      series[classes[course].idx] =
+        (100 * classes[course].done) / classes[course].total;
+    else series[classes[course].idx] = 100;
     colors[classes[course].idx] = classes[course].color;
     labels[
       classes[course].idx

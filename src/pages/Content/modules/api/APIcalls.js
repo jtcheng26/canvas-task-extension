@@ -3,6 +3,7 @@ import axios from 'axios';
 function getPrevMonday() {
   const d = new Date();
   d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
+  d.setHours(23, 59, 59);
   return d;
 }
 
@@ -13,6 +14,7 @@ function getNextMonday() {
   } else {
     d.setDate(d.getDate() + 7);
   }
+  d.setHours(23, 59, 59);
   return d;
 }
 
@@ -87,8 +89,8 @@ export const getRelevantAssignments = async () => {
       task.color = userData.colors[`course_${task.course_id}`];
       const due = new Date(task.due_at);
       return (
-        due.getDate() > data.prevMonday.getDate() &&
-        due.getDate() <= data.nextMonday.getDate()
+        due.valueOf() > data.prevMonday.valueOf() &&
+        due.valueOf() <= data.nextMonday.valueOf()
       );
     });
   } catch (error) {
