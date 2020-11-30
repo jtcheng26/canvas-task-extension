@@ -82,7 +82,7 @@ export const getRelevantAssignments = async () => {
     const assignments = await axios.get(
       `https://${
         location.hostname
-      }/api/v1/calendar_events?type=assignment&start_date=${data.prevMonday.toISOString()}&end_date=${data.nextMonday.toISOString()}&include=submission${courseList}`
+      }/api/v1/calendar_events?type=assignment&start_date=${data.prevMonday.toISOString()}&end_date=${data.nextMonday.toISOString()}${courseList}`
     );
     data.assignments = assignments.data.map((task) => task.assignment);
     data.assignments = data.assignments.filter((task) => {

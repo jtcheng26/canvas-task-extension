@@ -17,7 +17,7 @@ const ListContainer = styled.div`
 export default function TaskList({ assignments, course_id }) {
   const [viewingMore, setViewingMore] = useState(false);
   assignments = assignments.filter((assignment) => {
-    return assignment.submission.attempt === null;
+    return !assignment.user_submitted;
   });
   const height = !viewingMore
     ? `${25 + Math.min(assignments.length, 4) * 80}px`
@@ -76,9 +76,7 @@ TaskList.propTypes = {
       due_at: PropTypes.string,
       course_id: PropTypes.number,
       id: PropTypes.number,
-      submission: PropTypes.shape({
-        attempt: PropTypes.number,
-      }),
+      user_submitted: PropTypes.bool,
     })
   ).isRequired,
   course_id: PropTypes.number,

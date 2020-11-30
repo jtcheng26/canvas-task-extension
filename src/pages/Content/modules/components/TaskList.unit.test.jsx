@@ -11,9 +11,7 @@ const finishedAssignment = {
   due_at: new Date().toISOString(),
   course_id: 123456,
   id: 1,
-  submission: {
-    attempt: 1,
-  },
+  user_submitted: true,
 };
 const finishedAssignments = [];
 const assignmentCount = 6;
@@ -27,9 +25,7 @@ for (let i = 1; i <= assignmentCount; i++) {
     due_at: new Date().toISOString(),
     course_id: i <= assignmentCount / 2 ? 1 : 2,
     id: 10 + i,
-    submission: {
-      attempt: 1,
-    },
+    user_submitted: true,
   });
 }
 
@@ -41,9 +37,7 @@ const unfinishedAssignment = {
   due_at: new Date().toISOString(),
   course_id: 123456,
   id: 2,
-  submission: {
-    attempt: null,
-  },
+  user_submitted: false,
 };
 
 const unfinishedAssignments = [];
@@ -57,9 +51,7 @@ for (let i = 1; i <= assignmentCount; i++) {
     due_at: new Date().toISOString(),
     course_id: i <= assignmentCount / 2 ? 1 : 2,
     id: 20 + i,
-    submission: {
-      attempt: null,
-    },
+    user_submitted: false,
   });
 }
 

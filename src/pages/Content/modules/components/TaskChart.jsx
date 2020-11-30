@@ -27,8 +27,7 @@ export default function TaskChart({ courses, assignments, setCourse }) {
   });
   assignments.forEach((assignment) => {
     classes[assignment.course_id].total++;
-    if (assignment.submission.attempt !== null)
-      classes[assignment.course_id].done++;
+    if (assignment.user_submitted) classes[assignment.course_id].done++;
   });
   let doneTotal = 0,
     total = 0;
@@ -143,9 +142,7 @@ TaskChart.propTypes = {
       due_at: PropTypes.string,
       course_id: PropTypes.number,
       id: PropTypes.number,
-      submission: PropTypes.shape({
-        attempt: PropTypes.number,
-      }),
+      user_submitted: PropTypes.bool,
     })
   ).isRequired,
   courses: PropTypes.arrayOf(
