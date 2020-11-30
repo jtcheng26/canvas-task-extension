@@ -37,7 +37,8 @@ export default function TaskList({ assignments, course_id }) {
     renderedAssignments = assignments.slice(0, Math.min(4, assignments.length));
     viewMoreText = `View ${assignments.length - 4} more`;
   }
-  function onClick() {
+  function onClick(event) {
+    event.preventDefault();
     setViewingMore(!viewingMore);
   }
   return (

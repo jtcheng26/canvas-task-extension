@@ -97,8 +97,9 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount)
     );
+    const e = { preventDefault: () => {} };
     if (assignmentCount > visibleAssignmentCount) {
-      wrapper.find('a').props().onClick();
+      wrapper.find('a').props().onClick(e);
     }
     expect(wrapper.find(Task).length).toBe(assignmentCount);
   });
@@ -117,8 +118,9 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount)
     );
+    const e = { preventDefault: () => {} };
     if (assignmentCount > visibleAssignmentCount) {
-      wrapper.find('a').props().onClick();
+      wrapper.find('a').props().onClick(e);
     }
     expect(wrapper.find(Task).length).toBe(assignmentCount);
   });
@@ -138,8 +140,9 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount / 2)
     );
+    const e = { preventDefault: () => {} };
     if (assignmentCount / 2 > visibleAssignmentCount) {
-      wrapper.find('a').props().onClick();
+      wrapper.find('a').props().onClick(e);
     }
     expect(wrapper.find(Task).length).toBe(assignmentCount / 2);
     wrapper = shallow(
@@ -149,7 +152,7 @@ describe('<TaskList />', () => {
       Math.min(visibleAssignmentCount, assignmentCount / 2)
     );
     if (assignmentCount / 2 > visibleAssignmentCount) {
-      wrapper.find('a').props().onClick();
+      wrapper.find('a').props().onClick(e);
     }
     expect(wrapper.find(Task).length).toBe(assignmentCount / 2);
 
