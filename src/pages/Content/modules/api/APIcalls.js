@@ -3,7 +3,7 @@ import axios from 'axios';
 function getPrevMonday() {
   const d = new Date();
   d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
-  d.setHours(23, 59, 59);
+  d.setHours(0, 0, 0);
   return d;
 }
 
@@ -14,7 +14,7 @@ function getNextMonday() {
   } else {
     d.setDate(d.getDate() + 7);
   }
-  d.setHours(23, 59, 59);
+  d.setHours(0, 0, 0);
   return d;
 }
 
@@ -79,19 +79,37 @@ export const getRelevantAssignments = async () => {
     data.courses.forEach((course) => {
       courseList += `&context_codes[]=course_${course.id}`;
     });
-    const assignments = await axios.get(
-      `https://${
-        location.hostname
-      }/api/v1/calendar_events?type=assignment&start_date=${data.prevMonday.toISOString()}&end_date=${data.nextMonday.toISOString()}${courseList}`
+    const prevMondayLocal = new Date(
+      data.prevMonday.getTime() -
+        data.prevMonday.getTimezoneOffset() * 60 * 1000
     );
-    data.assignments = assignments.data.map((task) => task.assignment);
+    const nextMondayLocal = new Date(
+      data.nextMonday.getTime() -
+        data.nextMonday.getTimezoneOffset() * 60 * 1000
+    );
+    const prevMondayStr = prevMondayLocal.toISOString().split('T')[0];
+    const nextMondayStr = nextMondayLocal.toISOString().split('T')[0];
+    const assignments = await axios.get(
+      `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${courseList}&per_page=100`
+    );
+    data.assignments = assignments.data.map((task) => {
+      task.assignment.color =
+        userData.colors[`course_${task.assignment.course_id}`];
+      return task.assignment;
+    });
+    /*
+      filters by due date times, might be different for different districts
+      In my school system, classes end around 3:00pm, so I put all assignments due before that time on Monday the previous week's work
+      Similarly, I made assignments due after 3:00pm on Monday are this week's work.
+      Thinking about making these options customizable in the future.
+    */
     data.assignments = data.assignments.filter((task) => {
-      task.color = userData.colors[`course_${task.course_id}`];
-      const due = new Date(task.due_at);
-      return (
-        due.valueOf() > data.prevMonday.valueOf() &&
-        due.valueOf() <= data.nextMonday.valueOf()
-      );
+      const due_date = new Date(task.due_at);
+      if (due_date.getDate() == data.prevMonday.getDate())
+        return due_date.getHours() >= 15;
+      else if (due_date.getDate() == data.nextMonday.getDate())
+        return due_date.getHours() < 15;
+      return true;
     });
   } catch (error) {
     console.error(error);
