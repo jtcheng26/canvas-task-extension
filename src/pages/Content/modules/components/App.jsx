@@ -26,7 +26,7 @@ export default function App() {
     setCourse({ code, id, color });
   }
   return (
-    <div className="bootstrap-iso" style={style}>
+    <div style={style}>
       {!isPending && !error && (
         <Title weekEnd={data.nextMonday} weekStart={data.prevMonday} />
       )}
