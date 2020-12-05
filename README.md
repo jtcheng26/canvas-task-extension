@@ -2,9 +2,20 @@
 
 ### Work in progress
 
-Ever had trouble finding your weekly assignments? Wish you had a nice taskbar to motivate you to complete everything?  
+Ever had trouble finding your weekly assignments? Wish you had a nice progress bar to motivate you to complete everything?  
 
 No? Well either way, the **Canvas Tasks Browser Extension** is here to help!
+
+## Features
+
+#### Stay on Track
+Colorful task items ensure that you'll never miss an assignment again.
+
+#### Track Your Progress
+Visual progress bars for each of your courses show how far you are in completing your assignments this week.
+
+#### Make It Your Own
+Task items and progress bars correspond with your chosen dashboard colors and positions.
 
 ## Installing and Running
 
@@ -20,9 +31,5 @@ No? Well either way, the **Canvas Tasks Browser Extension** is here to help!
    3. Click on `Load unpacked extension`
    4. Select the `build` folder.
 8. Happy hacking.
-
-## Features
-
-### WIP
 
 Built with [Chrome Extension Boilerplate with React 17 and Webpack 5](https://github.com/lxieyang/chrome-extension-boilerplate-react.git)
