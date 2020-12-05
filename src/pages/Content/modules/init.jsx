@@ -14,6 +14,9 @@ export default function run() {
       clearInterval(interval);
       container = container[0];
       while (container.firstChild) container.removeChild(container.lastChild);
+      console.log(
+        'Check out the repo! https://github.com/jtcheng26/canvas-task-extension'
+      );
       createSidebar(container);
     } else if (counter >= 300) {
       clearInterval(interval);
