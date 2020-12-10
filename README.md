@@ -1,7 +1,5 @@
 # Canvas Tasks Browser Extension
 
-### Work in progress
-
 Ever had trouble finding your weekly assignments? Wish you had a nice progress bar to motivate you to complete everything?  
 
 No? Well either way, the **Canvas Tasks Browser Extension** is here to help!
