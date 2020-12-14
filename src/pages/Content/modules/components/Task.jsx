@@ -65,6 +65,9 @@ export default function Task({ assignment }) {
       backgroundColor: assignment.color,
       padding: '6px',
       boxSizing: 'border-box',
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     CourseNameStyle = {
       color: assignment.color,
@@ -79,8 +82,8 @@ export default function Task({ assignment }) {
     assignment: (
       <svg
         style={{
-          marginLeft: '3px',
-          marginTop: '2px',
+          //marginLeft: '3px',
+          //marginTop: '2px',
           fill: 'white',
           height: '22px',
           width: '22px',
@@ -100,8 +103,8 @@ export default function Task({ assignment }) {
     quiz: (
       <svg
         style={{
-          marginLeft: '1px',
-          marginTop: '2px',
+          //marginLeft: '1px',
+          //marginTop: '2px',
           fill: 'white',
           height: '22px',
           width: '22px',
@@ -119,8 +122,8 @@ export default function Task({ assignment }) {
     discussion: (
       <svg
         style={{
-          marginLeft: '1px',
-          marginTop: '2px',
+          //marginLeft: '1px',
+          //marginTop: '2px',
           fill: 'white',
           height: '25px',
           width: '25px',
@@ -152,9 +155,9 @@ export default function Task({ assignment }) {
       <TaskInfo>
         <div style={CourseNameStyle}>{assignment.course_code}</div>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
-        {`${parseFloat(
-          assignment.points_possible
-        )} points \xa0|\xa0 ${due_date} at ${due_time}`}
+        {`${parseFloat(assignment.points_possible)} point${
+          assignment.points_possible > 1 ? 's' : ''
+        } \xa0|\xa0 ${due_date} at ${due_time}`}
       </TaskInfo>
     </TaskContainer>
   );
