@@ -30,13 +30,21 @@ export const getRelevantAssignments = async () => {
       positions: axios.get(
         `https://${location.hostname}/api/v1/users/self/dashboard_positions`
       ),
+      graded: axios.get(
+        `https://${location.hostname}/api/v1/users/self/graded_submissions?per_page=20`
+      ),
     };
-    const userDataGet = await axios.all([userData.colors, userData.positions]);
+    const userDataGet = await axios.all([
+      userData.colors,
+      userData.positions,
+      userData.graded,
+    ]);
     userData.colors = userDataGet[0].data.custom_colors;
     (userData.links = Array.from(
       document.getElementsByClassName('ic-DashboardCard__link')
     )),
       (userData.positions = userDataGet[1].data.dashboard_positions);
+    userData.graded = userDataGet[2].data;
     const courseNames = {};
     if (userData.links.length > 0) {
       // if on dashboard and not course page
@@ -93,9 +101,17 @@ export const getRelevantAssignments = async () => {
     const assignments = await axios.get(
       `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${courseList}&per_page=100`
     );
+    console.log(userData.graded);
+    const gradedSubmissions = {};
+    userData.graded.forEach((graded) => {
+      gradedSubmissions[graded.assignment_id] = graded;
+    });
     data.assignments = assignments.data.map((task) => {
       task.assignment.color =
         userData.colors[`course_${task.assignment.course_id}`];
+      if (task.assignment.id in gradedSubmissions)
+        task.assignment.grade = gradedSubmissions[task.assignment.id].score;
+      else task.assignment.grade = 0;
       task.assignment.course_code =
         courseNames[parseInt(task.assignment.course_id)];
       return task.assignment;

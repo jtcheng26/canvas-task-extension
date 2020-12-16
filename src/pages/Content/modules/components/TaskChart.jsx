@@ -27,7 +27,8 @@ export default function TaskChart({ courses, assignments, setCourse }) {
   });
   assignments.forEach((assignment) => {
     classes[assignment.course_id].total++;
-    if (assignment.user_submitted) classes[assignment.course_id].done++;
+    if (assignment.user_submitted || assignment.grade > 0)
+      classes[assignment.course_id].done++;
   });
   let doneTotal = 0,
     total = 0;

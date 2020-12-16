@@ -64,6 +64,7 @@ export default function Task({ assignment }) {
       borderRadius: '4px 0px 0px 4px',
       backgroundColor: assignment.color,
       padding: '6px',
+      paddingBottom: '8px',
       boxSizing: 'border-box',
       display: 'flex',
       justifyContent: 'center',
