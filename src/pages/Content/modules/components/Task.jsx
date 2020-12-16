@@ -14,11 +14,12 @@ const TaskContainer = styled.div`
     font-size: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     &:hover {
-      a {
-        text-decoration: underline;
-      }
-      cursor: pointer;
       box-shadow: 0 4px 7px rgba(0, 0, 0, 0.3);
+    }
+    .task-left {
+      &:hover {
+        cursor: pointer;
+      }
     }
   `,
   TaskInfo = styled.div`
@@ -149,8 +150,8 @@ export default function Task({ assignment }) {
     assignmentIcon = icon.discussion;
   }
   return (
-    <TaskContainer onClick={onClick}>
-      <div className="task-left" style={TaskLeftStyle}>
+    <TaskContainer>
+      <div className="task-left" onClick={onClick} style={TaskLeftStyle}>
         {assignmentIcon}
       </div>
       <TaskInfo>
