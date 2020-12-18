@@ -101,7 +101,6 @@ export const getRelevantAssignments = async () => {
     const assignments = await axios.get(
       `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${courseList}&per_page=100`
     );
-    console.log(userData.graded);
     const gradedSubmissions = {};
     userData.graded.forEach((graded) => {
       gradedSubmissions[graded.assignment_id] = graded;
