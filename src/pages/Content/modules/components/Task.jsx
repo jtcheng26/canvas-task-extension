@@ -158,7 +158,7 @@ export default function Task({ assignment }) {
         <div style={CourseNameStyle}>{assignment.course_code}</div>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
         {`${parseFloat(assignment.points_possible)} point${
-          assignment.points_possible > 1 ? 's' : ''
+          assignment.points_possible != 1 ? 's' : ''
         } \xa0|\xa0 ${due_date} at ${due_time}`}
       </TaskInfo>
     </TaskContainer>
