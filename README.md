@@ -6,20 +6,20 @@ No? Well either way, the **Tasks Browser Extension for Canvas** is here to help!
 
 ## Features
 
-#### Stay on Track
+### Stay on Track
 Colorful task items ensure that you'll never miss an assignment again.
 
-![](Demo1.png)
+![](demo/Demo1.png)
 
-#### Track Your Progress
+### Track Your Progress
 Visual progress bars for each of your courses show how far you are in completing your assignments this week.
 
-![](Demo2.png)
+![](demo/Demo2.png)
 
-#### Make It Your Own
+### Make It Your Own
 Task items and progress bars correspond with your chosen dashboard colors and positions.
 
-![](Demo3.png)
+![](demo/Demo3.png)
 
 ## Installing and Running
 
