@@ -77,6 +77,8 @@ TaskList.propTypes = {
       course_id: PropTypes.number,
       id: PropTypes.number,
       user_submitted: PropTypes.bool,
+      is_quiz_assignment: PropTypes.bool,
+      course_code: PropTypes.string,
       grade: PropTypes.number,
     })
   ).isRequired,

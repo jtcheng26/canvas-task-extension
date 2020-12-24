@@ -84,8 +84,6 @@ export default function Task({ assignment }) {
     assignment: (
       <svg
         style={{
-          //marginLeft: '3px',
-          //marginTop: '2px',
           fill: 'white',
           height: '22px',
           width: '22px',
@@ -105,8 +103,6 @@ export default function Task({ assignment }) {
     quiz: (
       <svg
         style={{
-          //marginLeft: '1px',
-          //marginTop: '2px',
           fill: 'white',
           height: '22px',
           width: '22px',
@@ -124,8 +120,6 @@ export default function Task({ assignment }) {
     discussion: (
       <svg
         style={{
-          //marginLeft: '1px',
-          //marginTop: '2px',
           fill: 'white',
           height: '25px',
           width: '25px',
@@ -179,5 +173,6 @@ Task.propTypes = {
     user_submitted: PropTypes.bool,
     is_quiz_assignment: PropTypes.bool,
     course_code: PropTypes.string,
+    grade: PropTypes.number,
   }).isRequired,
 };
