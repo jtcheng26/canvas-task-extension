@@ -2,76 +2,17 @@ import React from 'react';
 import TaskList from './TaskList';
 import { shallow } from 'enzyme';
 import Task from './Task';
+import {
+  finishedAssignments,
+  unfinishedAssignments,
+  unsubmittedButGradedAssignment,
+  unfinishedAssignment,
+  finishedAssignment,
+} from '../test/assignment';
 
-const finishedAssignment = {
-  color: 'rgb(0, 0, 0)',
-  html_url: 'https://this.is.a.test/',
-  name: `Finished Assignment Test`,
-  points_possible: 5,
-  due_at: new Date().toISOString(),
-  course_id: 123456,
-  id: 1,
-  user_submitted: true,
-  grade: 1,
-};
-const finishedAssignments = [];
-const assignmentCount = 6;
-
-for (let i = 1; i <= assignmentCount; i++) {
-  finishedAssignments.push({
-    color: 'rgb(0, 0, 0)',
-    html_url: 'https://this.is.a.test/',
-    name: `Finished Assignment Test ${i}`,
-    points_possible: 5,
-    due_at: new Date().toISOString(),
-    course_id: i <= assignmentCount / 2 ? 1 : 2,
-    id: 10 + i,
-    user_submitted: true,
-    grade: 1,
-  });
-}
-
-const unfinishedAssignment = {
-  color: 'rgb(0, 0, 0)',
-  html_url: 'https://this.is.a.test/',
-  name: `Unfinished Assignment Test`,
-  points_possible: 5,
-  due_at: new Date().toISOString(),
-  course_id: 123456,
-  id: 2,
-  user_submitted: false,
-  grade: 0,
-};
-
-const unfinishedAssignments = [];
-
-for (let i = 1; i <= assignmentCount; i++) {
-  unfinishedAssignments.push({
-    color: 'rgb(0, 0, 0)',
-    html_url: 'https://this.is.a.test/',
-    name: `Unfinished Assignment Test ${i}`,
-    points_possible: 5,
-    due_at: new Date().toISOString(),
-    course_id: i <= assignmentCount / 2 ? 1 : 2,
-    id: 20 + i,
-    user_submitted: false,
-    grade: 0,
-  });
-}
-
-const unsubmittedButGradedAssignment = {
-  color: 'rgb(0, 0, 0)',
-  html_url: 'https://this.is.a.test/',
-  name: `Unfinished Assignment Test`,
-  points_possible: 5,
-  due_at: new Date().toISOString(),
-  course_id: 123456,
-  id: 100,
-  user_submitted: false,
-  grade: 1,
-};
-
-const visibleAssignmentCount = 4;
+const assignmentCount = unfinishedAssignments.length;
+const visibleAssignmentCount = 4; // max visible assignments before extending
+const e = { preventDefault: () => {} }; // event mock
 
 describe('<TaskList />', () => {
   it("renders 'None' when there are no assignments regardless of current course", () => {
@@ -105,7 +46,6 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount)
     );
-    const e = { preventDefault: () => {} };
     if (assignmentCount > visibleAssignmentCount) {
       wrapper.find('a').props().onClick(e);
     }
@@ -126,7 +66,6 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount)
     );
-    const e = { preventDefault: () => {} };
     if (assignmentCount > visibleAssignmentCount) {
       wrapper.find('a').props().onClick(e);
     }
@@ -148,7 +87,6 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount / 2)
     );
-    const e = { preventDefault: () => {} };
     if (assignmentCount / 2 > visibleAssignmentCount) {
       wrapper.find('a').props().onClick(e);
     }
@@ -210,7 +148,7 @@ describe('<TaskList />', () => {
       Math.min(visibleAssignmentCount, assignmentCount / 2)
     );
     if (assignmentCount / 2 > visibleAssignmentCount) {
-      wrapper.find('a').props().onClick();
+      wrapper.find('a').props().onClick(e);
     }
     expect(wrapper.find(Task).length).toBe(assignmentCount / 2);
 
@@ -224,7 +162,7 @@ describe('<TaskList />', () => {
       Math.min(visibleAssignmentCount, assignmentCount / 2)
     );
     if (assignmentCount / 2 > visibleAssignmentCount) {
-      wrapper.find('a').props().onClick();
+      wrapper.find('a').props().onClick(e);
     }
     expect(wrapper.find(Task).length).toBe(assignmentCount / 2);
 
@@ -258,7 +196,6 @@ describe('<TaskList />', () => {
     expect(wrapper.find(Task).length).toBe(
       Math.min(visibleAssignmentCount, assignmentCount)
     );
-    const e = { preventDefault: () => {} };
     if (assignmentCount > visibleAssignmentCount) {
       wrapper.find('a').props().onClick(e);
     }
