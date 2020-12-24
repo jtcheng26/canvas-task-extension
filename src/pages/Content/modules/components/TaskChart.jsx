@@ -154,6 +154,7 @@ TaskChart.propTypes = {
       id: PropTypes.number,
       color: PropTypes.string,
       name: PropTypes.string,
+      position: PropTypes.number,
     })
   ).isRequired,
   setCourse: PropTypes.func.isRequired,
