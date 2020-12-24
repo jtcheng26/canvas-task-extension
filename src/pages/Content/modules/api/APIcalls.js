@@ -37,9 +37,9 @@ export const getRelevantAssignments = async () => {
       document.getElementsByClassName('ic-DashboardCard__link')
     )),
       (userData.positions = userDataGet[1].data.dashboard_positions);
+    const courseNames = {};
     if (userData.links.length > 0) {
       // if on dashboard and not course page
-      const courseNames = {};
       let requests = [];
       for (let link of userData.links) {
         const id = parseInt(link.pathname.split('/').pop());
@@ -66,6 +66,7 @@ export const getRelevantAssignments = async () => {
       const name = (
         await axios.get(`https://${location.hostname}/api/v1/courses/${id}`)
       ).data.course_code;
+      courseNames[id] = name;
       data.courses = [
         {
           id: parseInt(id),
@@ -90,11 +91,17 @@ export const getRelevantAssignments = async () => {
     const prevMondayStr = prevMondayLocal.toISOString().split('T')[0];
     const nextMondayStr = nextMondayLocal.toISOString().split('T')[0];
     const assignments = await axios.get(
-      `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${courseList}&per_page=100`
+      `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${courseList}&per_page=100&include=submission`
     );
     data.assignments = assignments.data.map((task) => {
       task.assignment.color =
         userData.colors[`course_${task.assignment.course_id}`];
+      task.assignment.grade =
+        task.assignment.submission.score === null
+          ? 0
+          : task.assignment.submission.score;
+      task.assignment.course_code =
+        courseNames[parseInt(task.assignment.course_id)];
       return task.assignment;
     });
     /*

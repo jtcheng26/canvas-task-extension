@@ -12,6 +12,7 @@ const finishedAssignment = {
   course_id: 123456,
   id: 1,
   user_submitted: true,
+  grade: 1,
 };
 const finishedAssignments = [];
 const assignmentCount = 6;
@@ -26,6 +27,7 @@ for (let i = 1; i <= assignmentCount; i++) {
     course_id: i <= assignmentCount / 2 ? 1 : 2,
     id: 10 + i,
     user_submitted: true,
+    grade: 1,
   });
 }
 
@@ -38,6 +40,7 @@ const unfinishedAssignment = {
   course_id: 123456,
   id: 2,
   user_submitted: false,
+  grade: 0,
 };
 
 const unfinishedAssignments = [];
@@ -52,8 +55,21 @@ for (let i = 1; i <= assignmentCount; i++) {
     course_id: i <= assignmentCount / 2 ? 1 : 2,
     id: 20 + i,
     user_submitted: false,
+    grade: 0,
   });
 }
+
+const unsubmittedButGradedAssignment = {
+  color: 'rgb(0, 0, 0)',
+  html_url: 'https://this.is.a.test/',
+  name: `Unfinished Assignment Test`,
+  points_possible: 5,
+  due_at: new Date().toISOString(),
+  course_id: 123456,
+  id: 100,
+  user_submitted: false,
+  grade: 1,
+};
 
 const visibleAssignmentCount = 4;
 
@@ -219,5 +235,33 @@ describe('<TaskList />', () => {
       />
     );
     expect(wrapper.find(Task).length).toBe(0);
+  });
+  it('does not render assignments if unsubmitted but graded already', () => {
+    let wrapper = shallow(
+      <TaskList
+        assignments={[
+          unfinishedAssignment,
+          finishedAssignment,
+          unsubmittedButGradedAssignment,
+        ]}
+      />
+    );
+    expect(wrapper.find(Task).length).toBe(1);
+    wrapper = shallow(
+      <TaskList
+        assignments={unfinishedAssignments
+          .concat(finishedAssignments)
+          .concat([unsubmittedButGradedAssignment])}
+        course_id={-1}
+      />
+    );
+    expect(wrapper.find(Task).length).toBe(
+      Math.min(visibleAssignmentCount, assignmentCount)
+    );
+    const e = { preventDefault: () => {} };
+    if (assignmentCount > visibleAssignmentCount) {
+      wrapper.find('a').props().onClick(e);
+    }
+    expect(wrapper.find(Task).length).toBe(assignmentCount);
   });
 });
