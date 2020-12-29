@@ -11,9 +11,9 @@ describe('<CourseName />', () => {
     expect(wrapper.text()).toBe('All Courses');
   });
 
-  it('defaults color to black', () => {
+  it('default color if no course selected', () => {
     let wrapper = shallow(<CourseName color={color} courseCode="-1" />);
-    expect(wrapper.prop('style')).toHaveProperty('color', '#000');
+    expect(wrapper.prop('style')).not.toHaveProperty('color', color);
   });
 
   it('renders course code', () => {

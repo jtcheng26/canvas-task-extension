@@ -6,7 +6,7 @@ export default function CourseName({ courseCode, color }) {
     paddingTop: '5px',
     paddingBottom: '5px',
     height: '15px',
-    color: courseCode == '-1' ? '#000' : color,
+    color: courseCode == '-1' ? 'var(--ic-brand-font-color-dark)' : color,
     fontFamily: 'Lato Extended',
     fontWeight: 'bold',
     fontSize: '14px',

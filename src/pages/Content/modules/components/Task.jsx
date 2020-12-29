@@ -35,7 +35,7 @@ const TaskContainer = styled.div`
     color: var(--ic-brand-font-color-dark-lightened-30);
   `,
   TaskLink = styled.a`
-    color: #000;
+    color: var(--ic-brand-font-color-dark);
     font-weight: 700;
     font-size: 15px;
     overflow-x: auto;
@@ -43,7 +43,7 @@ const TaskContainer = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     &:hover {
-      color: #000;
+      color: var(--ic-brand-font-color-dark);
     }
   `;
 

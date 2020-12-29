@@ -77,8 +77,9 @@ export default function TaskChart({ courses, assignments, setCourse }) {
           value: {
             offsetY: -20,
             fontSize: '25px',
-            fontFamily: 'Roboto',
-            fontWeight: 900,
+            fontFamily: 'Lato Extended',
+            fontWeight: 'bold',
+            color: 'var(--ic-brand-font-color-dark)',
             formatter(val) {
               return `${Math.floor(val)}%`;
             },
@@ -86,9 +87,9 @@ export default function TaskChart({ courses, assignments, setCourse }) {
           total: {
             show: true,
             fontSize: '13px',
-            fontFamily: 'Roboto',
-            fontWeight: 500,
-            color: '#000',
+            fontFamily: 'Lato Extended',
+            fontWeight: 'bold',
+            color: 'var(--ic-brand-font-color-dark)',
             label: `${doneTotal}/${total}`,
             formatter() {
               if (total > 0) return `${Math.floor((100 * doneTotal) / total)}%`;
@@ -114,9 +115,9 @@ export default function TaskChart({ courses, assignments, setCourse }) {
     top: '135px',
     margin: 'auto',
     zIndex: '10',
-    color: '#000',
-    fontFamily: 'Roboto',
-    fontWeight: '500',
+    color: 'var(--ic-brand-font-color-dark)',
+    fontFamily: 'Lato Extended',
+    fontWeight: 'bold',
     fontSize: '13px',
   };
   const complete = 'Complete';
