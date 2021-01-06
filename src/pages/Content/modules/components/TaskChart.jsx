@@ -24,14 +24,13 @@ export default function TaskChart({ courses, assignments, setCourse }) {
       name: course.name,
       idx: course.position,
     };
-  });/*
-  assignments = assignments.filter((assignment) => {
-    return assignment.points_possible > 0; // don't include 0-point assignments in chart
-  });*/
+  });
   assignments.forEach((assignment) => {
-    classes[assignment.course_id].total++;
-    if (assignment.user_submitted || assignment.grade > 0)
-      classes[assignment.course_id].done++;
+    if (assignment.points_possible > 0) {
+      classes[assignment.course_id].total++;
+      if (assignment.user_submitted || assignment.grade > 0)
+        classes[assignment.course_id].done++;
+    }
   });
   let doneTotal = 0,
     total = 0;
