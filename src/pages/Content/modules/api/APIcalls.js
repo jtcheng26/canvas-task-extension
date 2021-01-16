@@ -93,7 +93,10 @@ export const getRelevantAssignments = async () => {
     const assignments = await axios.get(
       `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${courseList}&per_page=100&include=submission`
     );
-    data.assignments = assignments.data.map((task) => {
+    data.assignments = assignments.data.filter((task) => {
+      return task.assignment.course_id in courseNames;
+    });
+    data.assignments = data.assignments.map((task) => {
       task.assignment.color =
         userData.colors[`course_${task.assignment.course_id}`];
       task.assignment.grade =
