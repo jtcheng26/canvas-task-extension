@@ -17,25 +17,20 @@ const ChartContainer = styled.div`
 export default function TaskChart({ courses, assignments, setCourse }) {
   const classes = {};
   const convertToIndex = {};
-  const courseIndexes = [];
-  courses.forEach((course) => {
-    if (!(course.position in convertToIndex)) {
-      convertToIndex[course.position] = -1;
-      courseIndexes.push(course.position);
-    }
+  courses.sort((a, b) => {
+    return a.position < b.position;
   });
   let curr = 0;
-  courseIndexes.sort();
-  for (let course of courseIndexes) {
-    convertToIndex[course] = curr++;
-  }
-  courses.map((course) => {
+  courses.forEach((course) => {
+    convertToIndex[course.id] = curr++;
+  });
+  courses.forEach((course) => {
     classes[course.id] = {
       total: 0,
       done: 0,
       color: course.color,
       name: course.name,
-      idx: convertToIndex[course.position],
+      idx: convertToIndex[course.id],
     };
   });
 
