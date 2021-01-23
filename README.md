@@ -25,6 +25,7 @@ Task items and progress bars correspond with your chosen dashboard colors and po
 - The sidebar only works in Card View.  
 - Only assignments from courses that are visible on the dashboard will appear.
   - To change your dashboard courses, go to **Courses** in the left sidebar, go to **All Courses** and star the classes that you want on your dashboard.
+- The **Unfinished** assignments list will show all assignments from the dashboard courses that are both unsubmitted and ungraded.
 
 ## Installing and Running
 
