@@ -21,6 +21,11 @@ Task items and progress bars correspond with your chosen dashboard colors and po
 
 ![](demo/Demo3.png)
 
+### Notes
+- The sidebar only works in Card View.  
+- Only assignments from courses that are visible on the dashboard will appear.
+ - To change your dashboard courses, go to **Courses** in the left sidebar, go to **All Courses** and star the classes that you want on your dashboard.
+
 ## Installing and Running
 
 ### Procedures:
