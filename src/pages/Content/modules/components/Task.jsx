@@ -143,6 +143,7 @@ export default function Task({ assignment }) {
   } else if ('discussion_topic' in assignment) {
     assignmentIcon = icon.discussion;
   }
+  const points_possible = parseFloat(assignment.points_possible);
   return (
     <TaskContainer>
       <div className="task-left" onClick={onClick} style={TaskLeftStyle}>
@@ -151,9 +152,11 @@ export default function Task({ assignment }) {
       <TaskInfo>
         <div style={CourseNameStyle}>{assignment.course_code}</div>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
-        {`${parseFloat(assignment.points_possible)} point${
-          assignment.points_possible != 1 ? 's' : ''
-        } \xa0|\xa0 ${due_date} at ${due_time}`}
+        {(!isNaN(points_possible) && points_possible !== undefined
+          ? `${points_possible} point${
+              assignment.points_possible != 1 ? 's' : ''
+            } \xa0|\xa0`
+          : '') + `${due_date} at ${due_time}`}
       </TaskInfo>
     </TaskContainer>
   );
