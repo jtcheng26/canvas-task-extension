@@ -5,7 +5,7 @@ import TaskChart from './TaskChart';
 import TaskList from './TaskList';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
-import { getRelevantAssignments } from '../api/APIcalls';
+import { dataFetcher } from '../api/APIcalls';
 import { useAsync } from 'react-async';
 
 function compareDates(a, b) {
@@ -18,7 +18,7 @@ export default function App() {
       flexDirection: 'column',
     },
     { data, error, isPending } = useAsync({
-      promiseFn: getRelevantAssignments,
+      promiseFn: dataFetcher.getRelevantAssignments,
     }),
     failed = 'Failed to load';
   const [course, setCourse] = useState({ code: '-1', id: -1, color: 'black' });
