@@ -155,7 +155,7 @@ export default function Task({ assignment }) {
         {(!isNaN(points_possible) && points_possible !== undefined
           ? `${points_possible} point${
               assignment.points_possible != 1 ? 's' : ''
-            } \xa0|\xa0`
+            } \xa0|\xa0 `
           : '') + `${due_date} at ${due_time}`}
       </TaskInfo>
     </TaskContainer>
