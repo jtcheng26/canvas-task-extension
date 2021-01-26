@@ -1,48 +1,13 @@
 import axios from 'axios';
 
-function getPrevMonday() {
-  const d = new Date();
-  d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
-  d.setHours(0, 0, 0);
-  return d;
-}
-
-function getNextMonday() {
-  const d = new Date();
-  if (d.getDay() != 1) {
-    d.setDate(d.getDate() + ((1 + 7 - d.getDay()) % 7));
-  } else {
-    d.setDate(d.getDate() + 7);
-  }
-  d.setHours(0, 0, 0);
-  return d;
-}
-
 export const dataFetcher = {
-  delta: 0, // weeks after/before current week
   courseList: '', // string list of courses for api calls
   courseNames: {},
-  updateAssignmentData: async () => {
-    dataFetcher.data.prevMonday = getPrevMonday();
-    dataFetcher.data.nextMonday = getNextMonday();
-    dataFetcher.data.prevMonday.setDate(
-      dataFetcher.data.prevMonday.getDate() + 7 * dataFetcher.delta
-    );
-    dataFetcher.data.nextMonday.setDate(
-      dataFetcher.data.nextMonday.getDate() + 7 * dataFetcher.delta
-    );
-    const prevMondayLocal = new Date(
-      dataFetcher.data.prevMonday.getTime() -
-        dataFetcher.data.prevMonday.getTimezoneOffset() * 60 * 1000
-    );
-    const nextMondayLocal = new Date(
-      dataFetcher.data.nextMonday.getTime() -
-        dataFetcher.data.nextMonday.getTimezoneOffset() * 60 * 1000
-    );
-    const prevMondayStr = prevMondayLocal.toISOString().split('T')[0];
-    const nextMondayStr = nextMondayLocal.toISOString().split('T')[0];
+  updateAssignmentData: async (startDate, endDate) => {
+    const startStr = startDate.toISOString().split('T')[0];
+    const endStr = endDate.toISOString().split('T')[0];
     const assignments = await axios.get(
-      `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${prevMondayStr}&end_date=${nextMondayStr}${dataFetcher.courseList}&per_page=100&include=submission`
+      `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${dataFetcher.courseList}&per_page=100&include=submission`
     );
     dataFetcher.data.assignments = assignments.data.filter((task) => {
       return task.assignment.course_id in dataFetcher.courseNames;
@@ -67,13 +32,14 @@ export const dataFetcher = {
     dataFetcher.data.assignments = dataFetcher.data.assignments.filter(
       (task) => {
         const due_date = new Date(task.due_at);
-        if (due_date.getDate() == dataFetcher.data.prevMonday.getDate())
+        if (due_date.getDate() == startDate.getDate())
           return due_date.getHours() >= 15;
-        else if (due_date.getDate() == dataFetcher.data.nextMonday.getDate())
+        else if (due_date.getDate() == endDate.getDate())
           return due_date.getHours() < 15;
         return true;
       }
     );
+    return dataFetcher.data;
   },
   userData: {},
   data: {},
@@ -141,11 +107,13 @@ export const dataFetcher = {
       (dataFetcher.userData.positions =
         userDataGet[1].data.dashboard_positions);
   },
-  getRelevantAssignments: async () => {
+  getRelevantAssignments: async ({ startDate, endDate }) => {
     try {
-      await dataFetcher.getUserData();
-      await dataFetcher.getCourseData();
-      await dataFetcher.updateAssignmentData();
+      if (Object.keys(dataFetcher.data).length == 0) {
+        await dataFetcher.getUserData();
+        await dataFetcher.getCourseData();
+      }
+      await dataFetcher.updateAssignmentData(startDate, endDate);
     } catch (error) {
       console.error(error);
     }

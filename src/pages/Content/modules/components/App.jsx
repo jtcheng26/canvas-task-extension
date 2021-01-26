@@ -1,65 +1,72 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Title from './Title';
-import CourseName from './CourseName';
-import TaskChart from './TaskChart';
-import TaskList from './TaskList';
 import MoonLoader from 'react-spinners/MoonLoader';
+import TaskContainer from './TaskContainer';
 import { css } from '@emotion/core';
 import { dataFetcher } from '../api/APIcalls';
 import { useAsync } from 'react-async';
 
-function compareDates(a, b) {
-  return new Date(a.due_at) - new Date(b.due_at);
-}
-
 export default function App() {
+  const delta = 0;
+  function getPrevMonday() {
+    const d = new Date();
+    d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
+    d.setHours(0, 0, 0);
+    return d;
+  }
+  function getNextMonday() {
+    const d = new Date();
+    if (d.getDay() != 1) {
+      d.setDate(d.getDate() + ((1 + 7 - d.getDay()) % 7));
+    } else {
+      d.setDate(d.getDate() + 7);
+    }
+    d.setHours(0, 0, 0);
+    return d;
+  }
+  const prevMonday = getPrevMonday();
+  const nextMonday = getNextMonday();
+  prevMonday.setDate(prevMonday.getDate() + 7 * delta);
+  nextMonday.setDate(nextMonday.getDate() + 7 * delta);
+  const prevMondayLocal = new Date(
+    prevMonday.getTime() + prevMonday.getTimezoneOffset() * 60 * 1000
+  );
+  const nextMondayLocal = new Date(
+    nextMonday.getTime() + nextMonday.getTimezoneOffset() * 60 * 1000
+  );
   const style = {
       display: 'flex',
       flexDirection: 'column',
     },
     { data, error, isPending } = useAsync({
       promiseFn: dataFetcher.getRelevantAssignments,
+      startDate: prevMondayLocal,
+      endDate: nextMondayLocal,
     }),
     failed = 'Failed to load';
-  const [course, setCourse] = useState({ code: '-1', id: -1, color: 'black' });
-  function setCourseCallback(code, id, color) {
-    setCourse({ code, id, color });
-  }
   return (
     <div style={style}>
-      {!isPending && !error && (
-        <Title weekEnd={data.nextMonday} weekStart={data.prevMonday} />
-      )}
+      <Title weekEnd={nextMonday} weekStart={prevMonday} />
       {isPending && (
-        <MoonLoader
-          color="var(--ic-link-color)"
-          css={css`
-            align-self: center;
-          `}
-          loading
-          size={50}
-        />
-      )}
-      {!isPending && !error && (
-        <>
-          <CourseName
-            color={
-              data.courses.length > 1 ? course.color : data.courses[0].color
-            }
-            courseCode={
-              data.courses.length > 1 ? course.code : data.courses[0].name
-            }
+        <div
+          style={{
+            paddingTop: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <MoonLoader
+            color="var(--ic-link-color)"
+            css={css`
+              align-self: center;
+            `}
+            loading
+            size={50}
           />
-          <TaskChart
-            assignments={data.assignments.sort(compareDates)}
-            courses={data.courses}
-            setCourse={setCourseCallback}
-          />
-        </>
+        </div>
       )}
-      {!isPending && !error && (
-        <TaskList assignments={data.assignments} course_id={course.id} />
-      )}
+      {!isPending && !error && <TaskContainer data={data} />}
       {error && <h1>{failed}</h1>}
     </div>
   );
