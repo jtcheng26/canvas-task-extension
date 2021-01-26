@@ -9,7 +9,7 @@ const TitleDiv = styled.div`
   display: inline-block;
 `;
 
-const PrevButton = styled.button`
+const NextButton = styled.button`
   border: 2px solid rgba(0, 0, 0, 40%);
   border-width: 2px 2px 0px 0px;
   transform: rotate(45deg);
@@ -23,7 +23,7 @@ const PrevButton = styled.button`
   }
 `;
 
-const NextButton = styled.button`
+const PrevButton = styled.button`
   border: 2px solid rgba(0, 0, 0, 40%);
   border-width: 2px 0px 0px 2px;
   transform: rotate(-45deg);
@@ -59,11 +59,11 @@ export default function Title({
     <TitleDiv>
       <div style={{ float: 'left' }}>{tasks}</div>
       <ButtonContainer>
-        <PrevButton disabled={!clickable} onClick={onPrevClick} type="button" />
+        <NextButton disabled={!clickable} onClick={onNextClick} type="button" />
       </ButtonContainer>
       <div style={{ float: 'right' }}>{`${start} to ${end}`}</div>
       <ButtonContainer>
-        <NextButton disabled={!clickable} onClick={onNextClick} type="button" />
+        <PrevButton disabled={!clickable} onClick={onPrevClick} type="button" />
       </ButtonContainer>
     </TitleDiv>
   );
