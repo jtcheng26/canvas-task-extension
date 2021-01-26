@@ -10,8 +10,7 @@ const TitleDiv = styled.div`
 `;
 
 const NextButton = styled.div`
-  margin: 0px 5px;
-  margin-bottom: 2px;
+  margin: 0px 0px 2px 5px;
   display: inline-block;
   width: 0;
   height: 0;
@@ -21,7 +20,6 @@ const NextButton = styled.div`
       props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
   border-bottom: 4px solid transparent;
   background: transparent;
-  /*margin: 0px 2px 2px 0px;*/
   &:hover {
     cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
     border-left: 7px solid
@@ -31,8 +29,7 @@ const NextButton = styled.div`
 `;
 
 const PrevButton = styled.div`
-  margin: 0px 5px;
-  margin-bottom: 2px;
+  margin: 0px 5px 2px 0px;
   display: inline-block;
   width: 0;
   height: 0;
@@ -42,7 +39,6 @@ const PrevButton = styled.div`
       props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
   border-bottom: 4px solid transparent;
   background: transparent;
-  /*margin: 0px 2px 2px 0px;*/
   &:hover {
     cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
     border-right: 7px solid
