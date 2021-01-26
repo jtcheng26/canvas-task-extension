@@ -9,36 +9,53 @@ const TitleDiv = styled.div`
   display: inline-block;
 `;
 
-const NextButton = styled.button`
-  border: 2px solid rgba(0, 0, 0, 40%);
-  border-width: 2px 2px 0px 0px;
-  transform: rotate(45deg);
-  width: 7px;
-  height: 7px;
-  padding: 2px;
+const NextButton = styled.div`
+  margin: 0px 5px;
+  margin-bottom: 2px;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-left: 7px solid
+    ${(props) =>
+      props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
+  border-bottom: 4px solid transparent;
   background: transparent;
-  margin: 0px 2px 2px 0px;
+  /*margin: 0px 2px 2px 0px;*/
   &:hover {
-    border-color: rgba(0, 0, 0, 75%);
+    cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
+    border-left: 7px solid
+      ${(props) =>
+        props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
   }
 `;
 
-const PrevButton = styled.button`
-  border: 2px solid rgba(0, 0, 0, 40%);
-  border-width: 2px 0px 0px 2px;
-  transform: rotate(-45deg);
-  width: 7px;
-  height: 7px;
-  padding: 2px;
-  margin: 0px 0px 2px 2px;
+const PrevButton = styled.div`
+  margin: 0px 5px;
+  margin-bottom: 2px;
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 4px solid transparent;
+  border-right: 7px solid
+    ${(props) =>
+      props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
+  border-bottom: 4px solid transparent;
   background: transparent;
+  /*margin: 0px 2px 2px 0px;*/
   &:hover {
-    border-color: rgba(0, 0, 0, 75%);
+    cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
+    border-right: 7px solid
+      ${(props) =>
+        props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
   }
 `;
-const ButtonContainer = styled.div`
-  display: inline-block;
-  margin: 0px 3px;
+
+const LeftFloat = styled.div`
+  float: left;
+`;
+
+const RightFloat = styled.div`
   float: right;
 `;
 
@@ -55,16 +72,24 @@ export default function Title({
     }),
     end = weekEnd.toLocaleString('en-US', { month: 'short', day: 'numeric' }),
     tasks = 'Tasks';
+  function prevClick() {
+    if (clickable) {
+      onPrevClick();
+    }
+  }
+  function nextClick() {
+    if (clickable) {
+      onNextClick();
+    }
+  }
   return (
     <TitleDiv>
-      <div style={{ float: 'left' }}>{tasks}</div>
-      <ButtonContainer>
-        <NextButton disabled={!clickable} onClick={onNextClick} type="button" />
-      </ButtonContainer>
-      <div style={{ float: 'right' }}>{`${start} to ${end}`}</div>
-      <ButtonContainer>
-        <PrevButton disabled={!clickable} onClick={onPrevClick} type="button" />
-      </ButtonContainer>
+      <LeftFloat>{tasks}</LeftFloat>
+      <RightFloat>
+        <PrevButton clickable={clickable} onClick={prevClick} />
+        {`${start} to ${end}`}
+        <NextButton clickable={clickable} onClick={nextClick} />
+      </RightFloat>
     </TitleDiv>
   );
 }
