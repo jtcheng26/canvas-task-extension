@@ -107,7 +107,7 @@ export const dataFetcher = {
       (dataFetcher.userData.positions =
         userDataGet[1].data.dashboard_positions);
   },
-  getRelevantAssignments: async ({ startDate, endDate }) => {
+  getRelevantAssignments: async (startDate, endDate) => {
     try {
       if (Object.keys(dataFetcher.data).length == 0) {
         await dataFetcher.getUserData();

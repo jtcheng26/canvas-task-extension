@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Title from './Title';
-import MoonLoader from 'react-spinners/MoonLoader';
-import TaskContainer from './TaskContainer';
-import { css } from '@emotion/core';
-import { dataFetcher } from '../api/APIcalls';
-import { useAsync } from 'react-async';
+import ContentLoader from './ContentLoader';
 
 export default function App() {
-  const delta = 0;
+  const [delta, setDelta] = useState(0); // 0: initial call, 1/2: updates
+  const [clickable, setClickable] = useState(true);
   function getPrevMonday() {
     const d = new Date();
     d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
@@ -35,39 +32,37 @@ export default function App() {
     nextMonday.getTime() + nextMonday.getTimezoneOffset() * 60 * 1000
   );
   const style = {
-      display: 'flex',
-      flexDirection: 'column',
-    },
-    { data, error, isPending } = useAsync({
-      promiseFn: dataFetcher.getRelevantAssignments,
-      startDate: prevMondayLocal,
-      endDate: nextMondayLocal,
-    }),
-    failed = 'Failed to load';
+    display: 'flex',
+    flexDirection: 'column',
+  };
+  function incrementDelta(d) {
+    setDelta(delta + d);
+  }
+  function loadedCallback() {
+    setClickable(true);
+  }
+  function onPrevClick() {
+    setClickable(false);
+    incrementDelta(-1);
+  }
+  function onNextClick() {
+    setClickable(false);
+    incrementDelta(1);
+  }
   return (
     <div style={style}>
-      <Title weekEnd={nextMonday} weekStart={prevMonday} />
-      {isPending && (
-        <div
-          style={{
-            paddingTop: '20px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
-          <MoonLoader
-            color="var(--ic-link-color)"
-            css={css`
-              align-self: center;
-            `}
-            loading
-            size={50}
-          />
-        </div>
-      )}
-      {!isPending && !error && <TaskContainer data={data} />}
-      {error && <h1>{failed}</h1>}
+      <Title
+        clickable={clickable}
+        onNextClick={onNextClick}
+        onPrevClick={onPrevClick}
+        weekEnd={nextMonday}
+        weekStart={prevMonday}
+      />
+      <ContentLoader
+        endDate={nextMondayLocal}
+        loadedCallback={loadedCallback}
+        startDate={prevMondayLocal}
+      />
     </div>
   );
 }

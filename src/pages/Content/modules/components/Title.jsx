@@ -9,7 +9,46 @@ const TitleDiv = styled.div`
   display: inline-block;
 `;
 
-export default function Title({ weekStart, weekEnd }) {
+const PrevButton = styled.button`
+  border: 2px solid rgba(0, 0, 0, 40%);
+  border-width: 2px 2px 0px 0px;
+  transform: rotate(45deg);
+  width: 7px;
+  height: 7px;
+  padding: 2px;
+  background: transparent;
+  margin: 0px 2px 2px 0px;
+  &:hover {
+    border-color: rgba(0, 0, 0, 75%);
+  }
+`;
+
+const NextButton = styled.button`
+  border: 2px solid rgba(0, 0, 0, 40%);
+  border-width: 2px 0px 0px 2px;
+  transform: rotate(-45deg);
+  width: 7px;
+  height: 7px;
+  padding: 2px;
+  margin: 0px 0px 2px 2px;
+  background: transparent;
+  &:hover {
+    border-color: rgba(0, 0, 0, 75%);
+  }
+`;
+const ButtonContainer = styled.div`
+  display: inline-block;
+  margin: 0px 3px;
+  float: right;
+`;
+
+export default function Title({
+  weekStart,
+  weekEnd,
+  clickable,
+  onPrevClick,
+  onNextClick,
+}) {
   const start = weekStart.toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -19,12 +58,27 @@ export default function Title({ weekStart, weekEnd }) {
   return (
     <TitleDiv>
       <div style={{ float: 'left' }}>{tasks}</div>
+      <ButtonContainer>
+        <PrevButton disabled={!clickable} onClick={onPrevClick} type="button" />
+      </ButtonContainer>
       <div style={{ float: 'right' }}>{`${start} to ${end}`}</div>
+      <ButtonContainer>
+        <NextButton disabled={!clickable} onClick={onNextClick} type="button" />
+      </ButtonContainer>
     </TitleDiv>
   );
 }
 
+Title.defaultProps = {
+  clickable: false,
+  onNextClick: () => {},
+  onPrevClick: () => {},
+};
+
 Title.propTypes = {
+  clickable: PropTypes.bool,
+  onNextClick: PropTypes.func,
+  onPrevClick: PropTypes.func,
   weekEnd: PropTypes.instanceOf(Date).isRequired,
   weekStart: PropTypes.instanceOf(Date).isRequired,
 };
