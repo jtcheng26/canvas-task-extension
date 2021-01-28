@@ -14,7 +14,7 @@ const ChartContainer = styled.div`
   margin: 10px 0px 0px 0px;
 `;
 
-export default function TaskChart({ courses, assignments, setCourse }) {
+export default function TaskChart({ courses, assignments }) {
   const classes = {};
   const convertToIndex = {};
   courses.sort((a, b) => {
@@ -67,14 +67,14 @@ export default function TaskChart({ courses, assignments, setCourse }) {
       height: 370,
       type: 'radialBar',
       events: {
-        dataPointMouseEnter: function (event) {
-          const idx = event.srcElement.attributes.j.value;
-          setCourse(names[idx], parseInt(ids[idx]), colors[idx]);
+        dataPointMouseEnter: function () {
+          //const idx = event.srcElement.attributes.j.value;
+          //setCourse(parseInt(ids[idx]));
         },
         dataPointMouseLeave: function () {
-          if (names.length == 1)
-            setCourse(names[0], parseInt(ids[0]), colors[0]);
-          else setCourse('-1', -1, 'black');
+          //if (names.length == 1)
+          //setCourse(parseInt(ids[0]));
+          //else setCourse(selectedCourseId);
         },
       },
     },
@@ -169,5 +169,4 @@ TaskChart.propTypes = {
       position: PropTypes.number,
     })
   ).isRequired,
-  setCourse: PropTypes.func.isRequired,
 };

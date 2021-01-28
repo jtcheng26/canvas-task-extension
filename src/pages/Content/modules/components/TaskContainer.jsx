@@ -5,9 +5,9 @@ import TaskChart from './TaskChart';
 import TaskList from './TaskList';
 
 export default function TaskContainer({ data }) {
-  const [course, setCourse] = useState({ code: '-1', id: -1, color: 'black' });
-  function setCourseCallback(code, id, color) {
-    setCourse({ code, id, color });
+  const [course, setCourse] = useState(-1);
+  function setCourseCallback(id) {
+    setCourse(id);
   }
   function compareDates(a, b) {
     return new Date(a.due_at) - new Date(b.due_at);
@@ -15,17 +15,17 @@ export default function TaskContainer({ data }) {
   return (
     <>
       <CourseName
-        color={data.courses.length > 1 ? course.color : data.courses[0].color}
-        courseCode={
-          data.courses.length > 1 ? course.code : data.courses[0].name
-        }
+        courses={data.courses}
+        selectedCourseId={course}
+        setCourse={setCourseCallback}
       />
       <TaskChart
         assignments={data.assignments.sort(compareDates)}
         courses={data.courses}
+        selectedCourseId={course}
         setCourse={setCourseCallback}
       />
-      <TaskList assignments={data.assignments} course_id={course.id} />
+      <TaskList assignments={data.assignments} course_id={course} />
     </>
   );
 }
