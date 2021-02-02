@@ -11,7 +11,7 @@ const ChartContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 10px 0px 0px 0px;
+  margin-top: 10px;
 `;
 
 export default function TaskChart({

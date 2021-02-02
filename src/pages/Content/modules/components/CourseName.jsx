@@ -45,6 +45,7 @@ const CourseTitle = styled.div`
   &:hover {
     cursor: pointer;
   }
+  z-index: 20;
 `;
 
 const CourseDropdown = styled.div`
