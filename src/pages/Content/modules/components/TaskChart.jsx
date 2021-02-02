@@ -14,7 +14,12 @@ const ChartContainer = styled.div`
   margin: 10px 0px 0px 0px;
 `;
 
-export default function TaskChart({ courses, assignments }) {
+export default function TaskChart({
+  courses,
+  assignments,
+  selectedCourseId,
+  setCourse,
+}) {
   const classes = {};
   const convertToIndex = {};
   courses.sort((a, b) => {
@@ -67,44 +72,29 @@ export default function TaskChart({ courses, assignments }) {
       height: 370,
       type: 'radialBar',
       events: {
-        dataPointMouseEnter: function () {
-          //const idx = event.srcElement.attributes.j.value;
-          //setCourse(parseInt(ids[idx]));
-        },
-        dataPointMouseLeave: function () {
-          //if (names.length == 1)
-          //setCourse(parseInt(ids[0]));
-          //else setCourse(selectedCourseId);
+        dataPointSelection: function (event) {
+          const idx = event.srcElement.attributes.j.value;
+          setCourse(parseInt(ids[idx]));
         },
       },
     },
     plotOptions: {
       radialBar: {
         dataLabels: {
+          enabled: false,
           name: {
-            fontSize: '20px',
-            offsetY: 16,
+            formatter() {
+              return '';
+            },
           },
           value: {
-            offsetY: -20,
-            fontSize: '25px',
-            fontFamily: 'Lato Extended',
-            fontWeight: 'bold',
-            color: 'var(--ic-brand-font-color-dark)',
-            formatter(val) {
-              return `${Math.floor(val)}%`;
+            formatter() {
+              return '';
             },
           },
           total: {
-            show: true,
-            fontSize: '13px',
-            fontFamily: 'Lato Extended',
-            fontWeight: 'bold',
-            color: 'var(--ic-brand-font-color-dark)',
-            label: `${doneTotal}/${total}`,
             formatter() {
-              if (total > 0) return `${Math.floor((100 * doneTotal) / total)}%`;
-              else return '100%';
+              return '';
             },
           },
         },
@@ -116,8 +106,35 @@ export default function TaskChart({ courses, assignments }) {
     fill: {
       opacity: 1.0,
     },
-    labels,
     colors,
+  };
+  const totalText = {
+    fontSize: '25px',
+    fontFamily: 'Lato Extended',
+    fontWeight: 'bold',
+    color: `${
+      selectedCourseId === -1
+        ? 'var(--ic-brand-font-color-dark)'
+        : colors[classes[selectedCourseId].idx]
+    }`,
+    position: 'absolute',
+    margin: 'auto',
+    bottom: '49%',
+    zIndex: '10',
+  };
+  const progressText = {
+    fontSize: '13px',
+    fontFamily: 'Lato Extended',
+    fontWeight: 'bold',
+    position: 'absolute',
+    margin: 'auto',
+    top: '50%',
+    zIndex: '10',
+    color: `${
+      selectedCourseId === -1
+        ? 'var(--ic-brand-font-color-dark)'
+        : colors[classes[selectedCourseId].idx]
+    }`,
   };
   const centerText = {
     position: 'absolute',
@@ -126,12 +143,26 @@ export default function TaskChart({ courses, assignments }) {
     top: '135px',
     margin: 'auto',
     zIndex: '10',
-    color: 'var(--ic-brand-font-color-dark)',
+    color: `${
+      selectedCourseId === -1
+        ? 'var(--ic-brand-font-color-dark)'
+        : colors[classes[selectedCourseId].idx]
+    }`,
     fontFamily: 'Lato Extended',
     fontWeight: 'bold',
     fontSize: '13px',
   };
   const complete = 'Complete';
+  const totalValue =
+    selectedCourseId === -1
+      ? total === 0
+        ? '100%'
+        : `${Math.floor((100 * doneTotal) / total)}%`
+      : `${Math.floor(series[classes[selectedCourseId].idx])}%`;
+  const progressValue =
+    selectedCourseId === -1
+      ? `${doneTotal}/${total}`
+      : `${classes[selectedCourseId].done}/${classes[selectedCourseId].total}`;
   return (
     <ChartContainer>
       <ReactApexChart
@@ -140,10 +171,17 @@ export default function TaskChart({ courses, assignments }) {
         series={series}
         type="radialBar"
       />
+      <div style={totalText}>{totalValue}</div>
+      <div style={progressText}>{progressValue}</div>
       <div style={centerText}>{complete}</div>
     </ChartContainer>
   );
 }
+
+TaskChart.defaultProps = {
+  selectedCourseId: -1,
+  setCourse: () => {},
+};
 
 TaskChart.propTypes = {
   assignments: PropTypes.arrayOf(
@@ -169,4 +207,6 @@ TaskChart.propTypes = {
       position: PropTypes.number,
     })
   ).isRequired,
+  selectedCourseId: PropTypes.number,
+  setCourse: PropTypes.func,
 };

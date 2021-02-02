@@ -39,7 +39,7 @@ const CourseTitle = styled.div`
     z-index: 20;
     &:hover {
       cursor: pointer;
-      background: #dddddd;
+      background: #eeeeee;
     }
   }
   &:hover {
@@ -48,8 +48,10 @@ const CourseTitle = styled.div`
 `;
 
 const CourseDropdown = styled.div`
+  position: relative;
+  z-index: 20;
   margin-top: 5px;
-  border: ${(props) => (props.menuVisible ? '1px solid #BBBBBB' : 'none')};
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 `;
 
 export default function CourseName({ courses, selectedCourseId, setCourse }) {
