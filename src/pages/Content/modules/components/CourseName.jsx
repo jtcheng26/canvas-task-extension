@@ -12,10 +12,13 @@ const SelectArrow = styled.div`
   width: 0;
   height: 0;
   border-left: 4px solid transparent;
-  border-top: 7px solid
-    rgba(0, 0, 0, ${(props) => (props.hovering ? '75%' : '40%')});
+  border-top: 7px solid rgba(0, 0, 0, 40%);
   border-right: 4px solid transparent;
   background: transparent;
+  transform: rotate(${(props) => (props.menuVisible ? '180deg' : '0deg')});
+  &:hover {
+    border-top: 7px solid rgba(0, 0, 0, 75%);
+  }
 `;
 
 const CourseTitle = styled.div`
@@ -69,7 +72,7 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
       <div style={{ padding: '0px 10px' }}>
         {courseSelection === -1 ? 'All Courses' : courseSelection.name}
       </div>
-      <SelectArrow hovering={menuVisible} />
+      <SelectArrow menuVisible={menuVisible} />
       <CourseDropdown menuVisible={menuVisible}>
         {courseSelection !== -1 && (
           <CourseButton
