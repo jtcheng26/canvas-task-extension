@@ -13,6 +13,7 @@ export default function TaskContainer({ data }) {
     return new Date(a.due_at) - new Date(b.due_at);
   }
   data.assignments.sort(compareDates);
+  console.log(data.assignments);
   const unfinishedAssignments = data.assignments.filter((assignment) => {
     return !assignment.user_submitted && assignment.grade === 0;
   });

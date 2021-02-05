@@ -15,10 +15,9 @@ export const dataFetcher = {
     dataFetcher.data.assignments = dataFetcher.data.assignments.map((task) => {
       task.assignment.color =
         dataFetcher.userData.colors[`course_${task.assignment.course_id}`];
-      task.assignment.grade =
-        task.assignment.submission.score === null
-          ? 0
-          : task.assignment.submission.score;
+      task.assignment.grade = task.assignment.submission.score
+        ? task.assignment.submission.score
+        : 0;
       task.assignment.course_code =
         dataFetcher.courseNames[parseInt(task.assignment.course_id)];
       return task.assignment;
