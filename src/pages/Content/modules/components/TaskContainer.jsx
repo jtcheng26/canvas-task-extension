@@ -12,6 +12,13 @@ export default function TaskContainer({ data }) {
   function compareDates(a, b) {
     return new Date(a.due_at) - new Date(b.due_at);
   }
+  data.assignments.sort(compareDates);
+  const unfinishedAssignments = data.assignments.filter((assignment) => {
+    return !assignment.user_submitted && assignment.grade === 0;
+  });
+  const finishedAssignments = data.assignments.filter((assignment) => {
+    return assignment.user_submitted || assignment.grade !== 0;
+  });
   return (
     <>
       <CourseName
@@ -20,12 +27,13 @@ export default function TaskContainer({ data }) {
         setCourse={setCourseCallback}
       />
       <TaskChart
-        assignments={data.assignments.sort(compareDates)}
         courses={data.courses}
+        finishedAssignments={finishedAssignments}
         selectedCourseId={course}
         setCourse={setCourseCallback}
+        unfinishedAssignments={unfinishedAssignments}
       />
-      <TaskList assignments={data.assignments} course_id={course} />
+      <TaskList assignments={unfinishedAssignments} selectedCourseId={course} />
     </>
   );
 }

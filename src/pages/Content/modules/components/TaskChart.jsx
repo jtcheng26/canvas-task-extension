@@ -16,7 +16,8 @@ const ChartContainer = styled.div`
 
 export default function TaskChart({
   courses,
-  assignments,
+  unfinishedAssignments,
+  finishedAssignments,
   selectedCourseId,
   setCourse,
 }) {
@@ -38,13 +39,12 @@ export default function TaskChart({
       idx: convertToIndex[course.id],
     };
   });
-
-  assignments.forEach((assignment) => {
-    if (assignment.points_possible > 0) {
-      classes[assignment.course_id].total++;
-      if (assignment.user_submitted || assignment.grade > 0)
-        classes[assignment.course_id].done++;
-    }
+  unfinishedAssignments.forEach((assignment) => {
+    classes[assignment.course_id].total++;
+  });
+  finishedAssignments.forEach((assignment) => {
+    classes[assignment.course_id].done++;
+    classes[assignment.course_id].total++;
   });
   let doneTotal = 0,
     total = 0;
@@ -184,7 +184,15 @@ TaskChart.defaultProps = {
 };
 
 TaskChart.propTypes = {
-  assignments: PropTypes.arrayOf(
+  courses: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      color: PropTypes.string,
+      name: PropTypes.string,
+      position: PropTypes.number,
+    })
+  ).isRequired,
+  finishedAssignments: PropTypes.arrayOf(
     PropTypes.shape({
       color: PropTypes.string,
       html_url: PropTypes.string,
@@ -199,14 +207,21 @@ TaskChart.propTypes = {
       grade: PropTypes.number,
     })
   ).isRequired,
-  courses: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      color: PropTypes.string,
-      name: PropTypes.string,
-      position: PropTypes.number,
-    })
-  ).isRequired,
   selectedCourseId: PropTypes.number,
   setCourse: PropTypes.func,
+  unfinishedAssignments: PropTypes.arrayOf(
+    PropTypes.shape({
+      color: PropTypes.string,
+      html_url: PropTypes.string,
+      name: PropTypes.string,
+      points_possible: PropTypes.number,
+      due_at: PropTypes.string,
+      course_id: PropTypes.number,
+      id: PropTypes.number,
+      user_submitted: PropTypes.bool,
+      is_quiz_assignment: PropTypes.bool,
+      course_code: PropTypes.string,
+      grade: PropTypes.number,
+    })
+  ).isRequired,
 };

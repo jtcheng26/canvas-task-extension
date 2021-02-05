@@ -14,11 +14,8 @@ const ListContainer = styled.div`
   padding-bottom: 5px;
 `;
 
-export default function TaskList({ assignments, course_id }) {
+export default function TaskList({ assignments, selectedCourseId }) {
   const [viewingMore, setViewingMore] = useState(false);
-  assignments = assignments.filter((assignment) => {
-    return !assignment.user_submitted && assignment.grade == 0;
-  });
   const height = !viewingMore
     ? `${25 + Math.min(assignments.length, 4) * 80}px`
     : `${25 + assignments.length * 80}px`;
@@ -26,9 +23,9 @@ export default function TaskList({ assignments, course_id }) {
     height,
     margin: '10px 0px 25px 0px',
   };
-  if (course_id != -1) {
+  if (selectedCourseId !== -1) {
     assignments = assignments.filter((assignment) => {
-      return assignment.course_id == course_id;
+      return assignment.course_id === selectedCourseId;
     });
   }
   let viewMoreText = 'View less';
@@ -63,7 +60,7 @@ export default function TaskList({ assignments, course_id }) {
 ListContainer.displayName = 'ListContainer';
 
 TaskList.defaultProps = {
-  course_id: -1,
+  selectedCourseId: -1,
 };
 
 TaskList.propTypes = {
@@ -82,5 +79,5 @@ TaskList.propTypes = {
       grade: PropTypes.number,
     })
   ).isRequired,
-  course_id: PropTypes.number,
+  selectedCourseId: PropTypes.number,
 };
