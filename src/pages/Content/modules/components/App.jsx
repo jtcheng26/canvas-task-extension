@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Title from './Title';
 import ContentLoader from './ContentLoader';
 
-export default function App() {
+export default function App({ userOptions }) {
+  console.log(userOptions);
   const [delta, setDelta] = useState(0); // 0: initial call, 1/2: updates
   const [clickable, setClickable] = useState(true);
   function getPrevMonday() {
     const d = new Date();
-    d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
+    d.setDate(d.getDate() - ((d.getDay() - userOptions.startDate + 7) % 7));
     d.setHours(0, 0, 0);
     return d;
   }
   function getNextMonday() {
     const d = new Date();
-    if (d.getDay() != 1) {
-      d.setDate(d.getDate() + ((1 + 7 - d.getDay()) % 7));
+    if (d.getDay() != userOptions.startDate) {
+      d.setDate(d.getDate() + ((userOptions.startDate + 7 - d.getDay()) % 7));
     } else {
       d.setDate(d.getDate() + 7);
     }
@@ -59,10 +61,19 @@ export default function App() {
         weekStart={prevMonday}
       />
       <ContentLoader
+        userOptions={userOptions}
         endDate={nextMondayLocal}
         loadedCallback={loadedCallback}
         startDate={prevMondayLocal}
       />
     </div>
   );
+}
+
+App.propTypes = {
+  userOptions: PropTypes.shape({
+    startDate: PropTypes.number,
+    startHour: PropTypes.number,
+    startMinutes: PropTypes.number,
+  }).isRequired,
 }

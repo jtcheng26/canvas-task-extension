@@ -2,9 +2,10 @@
   "name": "Canvas Tasks",
   "description": "A better to-do list sidebar for Canvas Instructure!",
   "options_page": "options.html",
-  "icons": {
-    "128": "icon-128.png"
-  },
+  "permissions": [
+    "storage"
+  ],
+
   "content_scripts": [{
     "matches": ["https://*.instructure.com/*"],
     "js": ["contentScript.bundle.js"],

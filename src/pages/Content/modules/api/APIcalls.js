@@ -3,7 +3,7 @@ import axios from 'axios';
 export const dataFetcher = {
   courseList: '', // string list of courses for api calls
   courseNames: {},
-  updateAssignmentData: async (startDate, endDate) => {
+  updateAssignmentData: async (userOptions, startDate, endDate) => {
     const startStr = startDate.toISOString().split('T')[0];
     const endStr = endDate.toISOString().split('T')[0];
     const assignments = await axios.get(
@@ -31,10 +31,20 @@ export const dataFetcher = {
     dataFetcher.data.assignments = dataFetcher.data.assignments.filter(
       (task) => {
         const due_date = new Date(task.due_at);
-        if (due_date.getDate() == startDate.getDate())
-          return due_date.getHours() >= 15;
-        else if (due_date.getDate() == endDate.getDate())
-          return due_date.getHours() < 15;
+        if (due_date.getDate() == startDate.getDate()) {
+          if (due_date.getHours() == startDate.getHours()) {
+            return due_date.getMinutes() >= userOptions.startMinutes;
+          } else {
+            return due_date.getHours() >= userOptions.startHour;
+          }
+        }
+        else if (due_date.getDate() == endDate.getDate()) {
+          if (due_date.getHours() == endDate.getHours()) {
+            return due_date.getMinutes() < userOptions.startMinutes;
+          } else {
+            return due_date.getHours() < userOptions.startHour;
+          }
+        }
         return true;
       }
     );
@@ -106,13 +116,13 @@ export const dataFetcher = {
       (dataFetcher.userData.positions =
         userDataGet[1].data.dashboard_positions);
   },
-  getRelevantAssignments: async (startDate, endDate) => {
+  getRelevantAssignments: async (userOptions, startDate, endDate) => {
     try {
       if (Object.keys(dataFetcher.data).length == 0) {
         await dataFetcher.getUserData();
         await dataFetcher.getCourseData();
       }
-      await dataFetcher.updateAssignmentData(startDate, endDate);
+      await dataFetcher.updateAssignmentData(userOptions, startDate, endDate);
     } catch (error) {
       console.error(error);
     }

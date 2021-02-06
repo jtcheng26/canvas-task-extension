@@ -12,7 +12,7 @@ function compareProps(prevProps, nextProps) {
   );
 }
 
-function ContentLoader({ startDate, endDate, loadedCallback }) {
+function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
   const [data, setData] = useState({});
   const [isPending, setPending] = useState(true);
   const [error, setError] = useState(false);
@@ -22,6 +22,7 @@ function ContentLoader({ startDate, endDate, loadedCallback }) {
         setPending(true);
         setError(false);
         const response = await dataFetcher.getRelevantAssignments(
+          userOptions,
           startDate,
           endDate
         );
@@ -35,7 +36,7 @@ function ContentLoader({ startDate, endDate, loadedCallback }) {
       }
     }
     fetchData();
-  }, [startDate, endDate, setData, setPending, setError]);
+  }, [userOptions, startDate, endDate, setData, setPending, setError]);
   const failed = 'Failed to load';
   return (
     <>
@@ -72,6 +73,11 @@ ContentLoader.propTypes = {
   endDate: PropTypes.instanceOf(Date).isRequired,
   loadedCallback: PropTypes.func,
   startDate: PropTypes.instanceOf(Date).isRequired,
+  userOptions: PropTypes.shape({
+    startDate: PropTypes.number,
+    startHour: PropTypes.number,
+    startMinutes: PropTypes.number,
+  }).isRequired,
 };
 
 export default React.memo(ContentLoader, compareProps);
