@@ -4,7 +4,6 @@ import Title from './Title';
 import ContentLoader from './ContentLoader';
 
 export default function App({ userOptions }) {
-  console.log(userOptions);
   const [delta, setDelta] = useState(0); // 0: initial call, 1/2: updates
   const [clickable, setClickable] = useState(true);
   function getPrevMonday() {
@@ -61,10 +60,10 @@ export default function App({ userOptions }) {
         weekStart={prevMonday}
       />
       <ContentLoader
-        userOptions={userOptions}
         endDate={nextMondayLocal}
         loadedCallback={loadedCallback}
         startDate={prevMondayLocal}
+        userOptions={userOptions}
       />
     </div>
   );
@@ -76,4 +75,4 @@ App.propTypes = {
     startHour: PropTypes.number,
     startMinutes: PropTypes.number,
   }).isRequired,
-}
+};

@@ -6,5 +6,5 @@ ReactDOM.render(
   <React.StrictMode>
     <Options />
   </React.StrictMode>,
-  document.getElementById("app-container")
+  document.getElementById('app-container')
 );

@@ -5,7 +5,6 @@
   "permissions": [
     "storage"
   ],
-
   "content_scripts": [{
     "matches": ["https://*.instructure.com/*"],
     "js": ["contentScript.bundle.js"],

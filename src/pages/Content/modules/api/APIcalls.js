@@ -32,14 +32,13 @@ export const dataFetcher = {
       (task) => {
         const due_date = new Date(task.due_at);
         if (due_date.getDate() == startDate.getDate()) {
-          if (due_date.getHours() == startDate.getHours()) {
+          if (due_date.getHours() == userOptions.startHour) {
             return due_date.getMinutes() >= userOptions.startMinutes;
           } else {
             return due_date.getHours() >= userOptions.startHour;
           }
-        }
-        else if (due_date.getDate() == endDate.getDate()) {
-          if (due_date.getHours() == endDate.getHours()) {
+        } else if (due_date.getDate() == endDate.getDate()) {
+          if (due_date.getHours() == userOptions.startHour) {
             return due_date.getMinutes() < userOptions.startMinutes;
           } else {
             return due_date.getHours() < userOptions.startHour;

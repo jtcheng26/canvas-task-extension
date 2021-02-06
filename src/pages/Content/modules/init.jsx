@@ -6,7 +6,7 @@ export default function runApp(container) {
   chrome.storage.sync.get(null, function (data) {
     ReactDOM.render(
       <React.StrictMode>
-        <App userOptions={data}/>
+        <App userOptions={data} />
       </React.StrictMode>,
       container
     );
