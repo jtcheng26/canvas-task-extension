@@ -6,13 +6,13 @@ import ContentLoader from './ContentLoader';
 export default function App({ userOptions }) {
   const [delta, setDelta] = useState(0); // 0: initial call, 1/2: updates
   const [clickable, setClickable] = useState(true);
-  function getPrevMonday() {
+  function getWeekStart() {
     const d = new Date();
     d.setDate(d.getDate() - ((d.getDay() - userOptions.startDate + 7) % 7));
     d.setHours(0, 0, 0);
     return d;
   }
-  function getNextMonday() {
+  function getWeekEnd() {
     const d = new Date();
     if (d.getDay() != userOptions.startDate) {
       d.setDate(d.getDate() + ((userOptions.startDate + 7 - d.getDay()) % 7));
@@ -22,15 +22,53 @@ export default function App({ userOptions }) {
     d.setHours(0, 0, 0);
     return d;
   }
-  const prevMonday = getPrevMonday();
-  const nextMonday = getNextMonday();
-  prevMonday.setDate(prevMonday.getDate() + 7 * delta);
-  nextMonday.setDate(nextMonday.getDate() + 7 * delta);
-  const prevMondayLocal = new Date(
-    prevMonday.getTime() + prevMonday.getTimezoneOffset() * 60 * 1000
+  function getMonthStart() {
+    const d = new Date();
+    d.setDate(1);
+    d.setHours(0, 0, 0);
+    return d;
+  }
+  function getMonthEnd() {
+    const d = new Date();
+    d.setDate(1);
+    d.setMonth(d.getMonth() + 1);
+    d.setHours(0, 0, 0);
+    return d;
+  }
+  function getDayStart() {
+    const d = new Date();
+    d.setHours(0, 0, 0);
+    return d;
+  }
+  function getDayEnd() {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(0, 0, 0);
+    return d;
+  }
+  let prevPeriodStart;
+  let nextPeriodStart;
+  if (userOptions.period === 'Month') {
+    prevPeriodStart = getMonthStart();
+    nextPeriodStart = getMonthEnd();
+    prevPeriodStart.setMonth(prevPeriodStart.getMonth() + delta);
+    nextPeriodStart.setMonth(nextPeriodStart.getMonth() + delta);
+  } else if (userOptions.period === 'Day') {
+    prevPeriodStart = getDayStart();
+    nextPeriodStart = getDayEnd();
+    prevPeriodStart.setDate(prevPeriodStart.getDate() + delta);
+    nextPeriodStart.setDate(nextPeriodStart.getDate() + delta);
+  } else if (userOptions.period === 'Week') {
+    prevPeriodStart = getWeekStart();
+    nextPeriodStart = getWeekEnd();
+    prevPeriodStart.setDate(prevPeriodStart.getDate() + 7 * delta);
+    nextPeriodStart.setDate(nextPeriodStart.getDate() + 7 * delta);
+  }
+  const prevPeriodStartLocal = new Date(
+    prevPeriodStart.getTime() + prevPeriodStart.getTimezoneOffset() * 60 * 1000
   );
-  const nextMondayLocal = new Date(
-    nextMonday.getTime() + nextMonday.getTimezoneOffset() * 60 * 1000
+  const nextPeriodStartLocal = new Date(
+    nextPeriodStart.getTime() + nextPeriodStart.getTimezoneOffset() * 60 * 1000
   );
   const style = {
     display: 'flex',
@@ -56,13 +94,13 @@ export default function App({ userOptions }) {
         clickable={clickable}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}
-        weekEnd={nextMonday}
-        weekStart={prevMonday}
+        weekEnd={nextPeriodStart}
+        weekStart={prevPeriodStart}
       />
       <ContentLoader
-        endDate={nextMondayLocal}
+        endDate={nextPeriodStartLocal}
         loadedCallback={loadedCallback}
-        startDate={prevMondayLocal}
+        startDate={prevPeriodStartLocal}
         userOptions={userOptions}
       />
     </div>
@@ -71,6 +109,7 @@ export default function App({ userOptions }) {
 
 App.propTypes = {
   userOptions: PropTypes.shape({
+    period: PropTypes.string,
     startDate: PropTypes.number,
     startHour: PropTypes.number,
     startMinutes: PropTypes.number,

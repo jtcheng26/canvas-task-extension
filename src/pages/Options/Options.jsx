@@ -27,17 +27,14 @@ const Title = styled.div`
 `;
 
 export default function Options() {
-  chrome.storage.sync.get(null, function (result) {
-    if (!result.startDate) {
-      chrome.storage.sync.set({ startDate: 1 }, function () {});
-    }
-    if (!result.startHour) {
-      chrome.storage.sync.set({ startHour: 15 }, function () {});
-    }
-    if (!result.startMinutes) {
-      chrome.storage.sync.set({ startMinutes: 0 }, function () {});
-    }
-  });
+  const [day, setDay] = useState(1);
+  const [period, setPeriod] = useState(1);
+  const periods = ['Day', 'Week', 'Month'];
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const title = 'Canvas Tasks Options';
+  const prompt0 = 'Choose a time period: ';
+  const prompt1 = 'Choose a start day for the week:';
+  const prompt2 = 'Choose a start time for the week:';
   function handleChange(value) {
     chrome.storage.sync.set(
       { startHour: parseInt(value.substring(0, 2)) },
@@ -53,15 +50,29 @@ export default function Options() {
     chrome.storage.sync.set({ startDate: index }, function () {});
     setDay(index);
   }
-  const [day, setDay] = useState(1);
-  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const title = 'Canvas Tasks Options';
-  const prompt1 = 'Choose a start day for the week:';
-  const prompt2 = 'Choose a start time for the week:';
+  function handlePeriodClick(index) {
+    chrome.storage.sync.set({ period: periods[index] });
+    setPeriod(index);
+  }
   return (
     <OptionsDiv>
       <Row>
         <Title>{title}</Title>
+      </Row>
+      <Row>
+        <Label>{prompt0}</Label>
+        {periods.map((p, i) => {
+          return (
+            <DayButton
+              handleClick={handlePeriodClick}
+              id={i}
+              key={p}
+              selected={period == i}
+            >
+              {p}
+            </DayButton>
+          );
+        })}
       </Row>
       <Row>
         <Label>{prompt1}</Label>

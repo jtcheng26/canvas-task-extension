@@ -31,13 +31,19 @@ export const dataFetcher = {
     dataFetcher.data.assignments = dataFetcher.data.assignments.filter(
       (task) => {
         const due_date = new Date(task.due_at);
-        if (due_date.getDate() == startDate.getDate()) {
+        if (
+          due_date.getMonth() == startDate.getMonth() &&
+          due_date.getDate() == startDate.getDate()
+        ) {
           if (due_date.getHours() == userOptions.startHour) {
             return due_date.getMinutes() >= userOptions.startMinutes;
           } else {
             return due_date.getHours() >= userOptions.startHour;
           }
-        } else if (due_date.getDate() == endDate.getDate()) {
+        } else if (
+          due_date.getMonth() == endDate.getMonth() &&
+          due_date.getDate() == endDate.getDate()
+        ) {
           if (due_date.getHours() == userOptions.startHour) {
             return due_date.getMinutes() < userOptions.startMinutes;
           } else {

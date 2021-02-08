@@ -7,7 +7,9 @@ import { dataFetcher } from '../api/APIcalls';
 
 function compareProps(prevProps, nextProps) {
   return (
+    prevProps.startDate.getMonth() == nextProps.startDate.getMonth() &&
     prevProps.startDate.getDate() == nextProps.startDate.getDate() &&
+    prevProps.endDate.getMonth() == nextProps.endDate.getMonth() &&
     prevProps.endDate.getDate() == nextProps.endDate.getDate()
   );
 }
@@ -74,6 +76,7 @@ ContentLoader.propTypes = {
   loadedCallback: PropTypes.func,
   startDate: PropTypes.instanceOf(Date).isRequired,
   userOptions: PropTypes.shape({
+    period: PropTypes.string,
     startDate: PropTypes.number,
     startHour: PropTypes.number,
     startMinutes: PropTypes.number,

@@ -9,9 +9,9 @@ const StyledButton = styled.div`
   align-items: center;
   justify-content: center;
   padding: 5px 0px;
-  background: ${(props) => (props.selected ? '#AAAAFF' : '#EFEFEF')};
+  background: ${(props) => (props.selected ? '#EE5533' : '#EFEFEF')};
   &:hover {
-    background: ${(props) => (props.selected ? '#AAAAFF' : '#CCCCCC')};
+    background: ${(props) => (props.selected ? '#EE5533' : '#CCCCCC')};
   }
 `;
 
