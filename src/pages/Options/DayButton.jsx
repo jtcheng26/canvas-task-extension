@@ -4,11 +4,10 @@ import PropTypes from 'prop-types';
 
 const StyledButton = styled.div`
   margin: 2px;
-  width: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 5px 0px;
+  padding: 5px 8px;
   background: ${(props) => (props.selected ? '#EE5533' : '#EFEFEF')};
   &:hover {
     background: ${(props) => (props.selected ? '#EE5533' : '#CCCCCC')};
