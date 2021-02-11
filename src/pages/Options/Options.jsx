@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TimePicker from 'react-time-picker';
 import DayButton from './DayButton';
@@ -27,8 +27,10 @@ const Title = styled.div`
 `;
 
 export default function Options() {
-  const [day, setDay] = useState(1);
-  const [period, setPeriod] = useState(1);
+  const [day, setDay] = useState(-1);
+  const [period, setPeriod] = useState(-1);
+  const [hour, setHour] = useState(-1);
+  const [minutes, setMinutes] = useState(-1);
   const periods = ['Day', 'Week', 'Month'];
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const title = 'Canvas Tasks Options';
@@ -44,7 +46,6 @@ export default function Options() {
       { startMinutes: parseInt(value.substring(3, 5)) },
       function () {}
     );
-    console.log(value);
   }
   function handleDayClick(index) {
     chrome.storage.sync.set({ startDate: index }, function () {});
@@ -54,6 +55,17 @@ export default function Options() {
     chrome.storage.sync.set({ period: periods[index] });
     setPeriod(index);
   }
+  useEffect(() => {
+    chrome.storage.sync.get(
+      ['startDate', 'period', 'startHour', 'startMinutes'],
+      function (result) {
+        setDay(result.startDate);
+        setPeriod(periods.indexOf(result.period));
+        setHour(result.startHour);
+        setMinutes(result.startMinutes);
+      }
+    );
+  }, [setPeriod, setDay, setHour, setMinutes]);
   return (
     <OptionsDiv>
       <Row>
@@ -91,7 +103,13 @@ export default function Options() {
       </Row>
       <Row>
         <Label>{prompt2}</Label>
-        <TimePicker disableClock onChange={handleChange} />
+        <TimePicker
+          disableClock
+          onChange={handleChange}
+          value={
+            hour >= 0 && minutes >= 0 ? new Date(0, 0, 0, hour, minutes) : null
+          }
+        />
       </Row>
     </OptionsDiv>
   );
