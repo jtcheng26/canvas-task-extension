@@ -1,28 +1,28 @@
 {
   "plugins": [
     "react",
-    "jest",
+    "jest"
   ],
   "extends": [
     "eslint:recommended",
     "plugin:react/all",
     "plugin:prettier/recommended",
     "prettier/react",
-    "plugin:jest/recommended",
+    "plugin:jest/recommended"
   ],
   "globals": {
-    "chrome": "readonly",
+    "chrome": "readonly"
   },
   "parser": "babel-eslint",
   "settings": {
     "react": {
-      "version": "detect",
+      "version": "detect"
     }
   },
   "env": {
-    browser: true,
-    es6: true,
-    node: true,
-    jest/globals: true,
-  },
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest/globals": true
+  }
 }
