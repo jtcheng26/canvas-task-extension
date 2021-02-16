@@ -4,7 +4,7 @@ import Title from './Title';
 import ContentLoader from './ContentLoader';
 
 export default function App({ userOptions }) {
-  const [delta, setDelta] = useState(0); // 0: initial call, 1/2: updates
+  const [delta, setDelta] = useState(0);
   const [clickable, setClickable] = useState(true);
   function getWeekStart() {
     const d = new Date();

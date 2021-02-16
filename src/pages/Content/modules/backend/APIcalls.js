@@ -22,12 +22,6 @@ export const dataFetcher = {
         dataFetcher.courseNames[parseInt(task.assignment.course_id)];
       return task.assignment;
     });
-    /*
-      filters by due date times, might be different for different districts
-      In my school system, classes end around 3:00pm, so I put all assignments due before that time on Monday the previous week's work
-      Similarly, I made assignments due after 3:00pm on Monday are this week's work.
-      Thinking about making these options customizable in the future.
-    */
     dataFetcher.data.assignments = dataFetcher.data.assignments.filter(
       (task) => {
         const due_date = new Date(task.due_at);

@@ -5,6 +5,7 @@ export default function CourseButton({
   name,
   color,
   id,
+  last,
   setCourse,
   menuVisible,
   setMenuVisible,
@@ -15,7 +16,7 @@ export default function CourseButton({
   }
   return (
     <div
-      className="course-btn"
+      className={`course-btn${last ? ' course-btn-last' : ''}`}
       onClick={handleClick}
       style={{
         display: menuVisible ? 'block' : 'none',
@@ -30,11 +31,13 @@ export default function CourseButton({
 CourseButton.defaultProps = {
   color: 'black',
   id: -1,
+  last: false,
 };
 
 CourseButton.propTypes = {
   color: PropTypes.string,
   id: PropTypes.number,
+  last: PropTypes.bool,
   menuVisible: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   setCourse: PropTypes.func.isRequired,

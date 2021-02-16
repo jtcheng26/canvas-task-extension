@@ -22,8 +22,8 @@ const SelectArrow = styled.div`
 `;
 
 const CourseTitle = styled.div`
-  padding-top: 5px;
-  padding-bottom: 5px;
+  display: flex;
+  padding: 5px 10px;
   height: 15px;
   color: ${(props) =>
     props.courseSelection === -1
@@ -33,9 +33,28 @@ const CourseTitle = styled.div`
   font-weight: bold;
   font-size: 14px;
   line-height: 1.2;
-  text-align: center;
   position: relative;
+  border-bottom: 1px solid #eeeeee;
+  &:hover {
+    cursor: pointer;
+  }
+  z-index: 20;
+  height: auto;
+`;
+
+const CourseDropdown = styled.div`
+  position: absolute;
+  z-index: 20;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  background: white;
+  border-radius: 0px 0px 4px 4px;
+  width: 100%;
   .course-btn {
+    border-bottom: 1px solid #eeeeee;
+    font-family: Lato Extended;
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 1.4;
     position: relative;
     padding: 5px;
     background: white;
@@ -45,17 +64,10 @@ const CourseTitle = styled.div`
       background: #eeeeee;
     }
   }
-  &:hover {
-    cursor: pointer;
+  .course-btn-last {
+    border-radius: 0px 0px 4px 4px;
+    border-bottom: none;
   }
-  z-index: 20;
-`;
-
-const CourseDropdown = styled.div`
-  position: relative;
-  z-index: 20;
-  margin-top: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 `;
 
 export default function CourseName({ courses, selectedCourseId, setCourse }) {
@@ -68,11 +80,11 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
     setMenuVisible(!menuVisible);
   }
   return (
-    <CourseTitle courseSelection={courseSelection} onClick={toggleMenu}>
-      <div style={{ padding: '0px 10px' }}>
+    <div style={{ position: 'relative' }}>
+      <CourseTitle courseSelection={courseSelection} onClick={toggleMenu}>
         {courseSelection === -1 ? 'All Courses' : courseSelection.name}
-      </div>
-      <SelectArrow menuVisible={menuVisible} />
+        <SelectArrow menuVisible={menuVisible} />
+      </CourseTitle>
       <CourseDropdown menuVisible={menuVisible}>
         {courseSelection !== -1 && (
           <CourseButton
@@ -84,11 +96,12 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
             setMenuVisible={setMenuVisible}
           />
         )}
-        {courses.map((course) => (
+        {courses.map((course, i) => (
           <CourseButton
             color={course.color}
             id={course.id}
             key={`course-btn-${course.id}`}
+            last={i === courses.length - 1}
             menuVisible={menuVisible}
             name={course.name}
             setCourse={setCourse}
@@ -96,7 +109,7 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
           />
         ))}
       </CourseDropdown>
-    </CourseTitle>
+    </div>
   );
 }
 

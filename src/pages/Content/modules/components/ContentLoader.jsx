@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
-import { dataFetcher } from '../api/APIcalls';
+import { dataFetcher } from '../backend/APIcalls';
 
 function compareProps(prevProps, nextProps) {
   return (

@@ -81,6 +81,9 @@ export default function TaskChart({
     },
     plotOptions: {
       radialBar: {
+        track: {
+          margin: courses.length > 4 ? 2 : 5,
+        },
         dataLabels: {
           enabled: false,
           name: {
