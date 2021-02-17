@@ -10,7 +10,6 @@ const TaskContainer = styled.div`
     border-radius: 4px;
     display: flex;
     flex-direction: row;
-    font-weight: bold;
     font-size: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     &:hover {
@@ -32,7 +31,7 @@ const TaskContainer = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--ic-brand-font-color-dark-lightened-30);
+    color: var(--ic-brand-font-color-dark-lightened-15);
   `,
   TaskLink = styled.a`
     color: var(--ic-brand-font-color-dark);
@@ -143,6 +142,8 @@ export default function Task({ assignment }) {
   } else if ('discussion_topic' in assignment) {
     assignmentIcon = icon.discussion;
   }
+  const due = 'Due';
+  const DueLabel = <strong>{due}</strong>;
   const points_possible = parseFloat(assignment.points_possible);
   return (
     <TaskContainer>
@@ -152,11 +153,15 @@ export default function Task({ assignment }) {
       <TaskInfo>
         <div style={CourseNameStyle}>{assignment.course_code}</div>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
-        {(!isNaN(points_possible) && points_possible !== undefined
-          ? `${points_possible} point${
-              assignment.points_possible != 1 ? 's' : ''
-            } \xa0|\xa0 `
-          : '') + `${due_date} at ${due_time}`}
+        <div>
+          {DueLabel}
+          {` ${due_date} at ${due_time} \xa0|\xa0 ` +
+            (!isNaN(points_possible) && points_possible !== undefined
+              ? `${points_possible} point${
+                  assignment.points_possible != 1 ? 's' : ''
+                }`
+              : '')}
+        </div>
       </TaskInfo>
     </TaskContainer>
   );
