@@ -21,5 +21,38 @@ else
 
 function createSidebar(container) {
   observer.disconnect();
-  runApp(container);
+  chrome.storage.sync.get(
+    ['startDate', 'period', 'startHour', 'startMinutes', 'sidebar'],
+    function (result) {
+      chrome.storage.sync.set(
+        {
+          startDate: !result.startDate ? 1 : result.startDate,
+          startHour: !result.startHour ? 15 : result.startHour,
+          startMinutes: !result.startMinutes ? 0 : result.startMinutes,
+          period: !(
+            result.period === 'Day' ||
+            result.period === 'Week' ||
+            result.period === 'Month'
+          )
+            ? 'Week'
+            : result.period,
+          sidebar:
+            result.sidebar !== false && result.sidebar !== true
+              ? true
+              : result.sidebar,
+        },
+        function () {
+          chrome.storage.sync.get(null, function (result2) {
+            if (!result2.sidebar) {
+              runApp(container, result2);
+            } else {
+              const newContainer = document.createElement('div');
+              container.parentNode.insertBefore(newContainer, container);
+              runApp(newContainer, result2);
+            }
+          });
+        }
+      );
+    }
+  );
 }

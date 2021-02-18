@@ -31,12 +31,14 @@ export default function Options() {
   const [period, setPeriod] = useState(-1);
   const [hour, setHour] = useState(-1);
   const [minutes, setMinutes] = useState(-1);
+  const [sidebar, setSidebar] = useState(true);
   const periods = ['Day', 'Week', 'Month'];
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
   const title = 'Canvas Tasks Options';
   const prompt0 = 'Choose a time period: ';
   const prompt1 = 'Choose a start day for the week:';
   const prompt2 = 'Choose a start time for the week:';
+  const prompt3 = 'Hide default To Do sidebar:';
   function handleChange(value) {
     chrome.storage.sync.set(
       { startHour: parseInt(value.substring(0, 2)) },
@@ -48,24 +50,29 @@ export default function Options() {
     );
   }
   function handleDayClick(index) {
-    chrome.storage.sync.set({ startDate: index }, function () {});
+    chrome.storage.sync.set({ startDate: index });
     setDay(index);
   }
   function handlePeriodClick(index) {
     chrome.storage.sync.set({ period: periods[index] });
     setPeriod(index);
   }
+  function toggleSidebar() {
+    chrome.storage.sync.set({ sidebar: !sidebar });
+    setSidebar(!sidebar);
+  }
   useEffect(() => {
     chrome.storage.sync.get(
-      ['startDate', 'period', 'startHour', 'startMinutes'],
+      ['startDate', 'period', 'startHour', 'startMinutes', 'sidebar'],
       function (result) {
         setDay(result.startDate);
         setPeriod(periods.indexOf(result.period));
         setHour(result.startHour);
         setMinutes(result.startMinutes);
+        setSidebar(result.sidebar);
       }
     );
-  }, [setPeriod, setDay, setHour, setMinutes]);
+  }, [setPeriod, setDay, setHour, setMinutes, setSidebar]);
   return (
     <OptionsDiv>
       <Row>
@@ -110,6 +117,10 @@ export default function Options() {
             hour >= 0 && minutes >= 0 ? new Date(0, 0, 0, hour, minutes) : null
           }
         />
+      </Row>
+      <Row>
+        <Label>{prompt3}</Label>
+        <input checked={!sidebar} onChange={toggleSidebar} type="checkbox" />
       </Row>
     </OptionsDiv>
   );
