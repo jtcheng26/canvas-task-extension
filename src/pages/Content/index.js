@@ -1,5 +1,9 @@
 import runApp from './modules/init';
+import './content.styles.css';
 
+/*
+  mutation observer waits for sidebar to load then injects content
+*/
 const observer = new MutationObserver(function (mutations) {
   mutations.forEach(function (mutation) {
     for (let addedNode of mutation.addedNodes) {
@@ -12,6 +16,9 @@ const observer = new MutationObserver(function (mutations) {
   });
 });
 
+/*
+  in case the element is already there and not caught by mutation observer
+*/
 const containerList = document.getElementsByClassName(
   'Sidebar__TodoListContainer'
 );
@@ -43,13 +50,18 @@ function createSidebar(container) {
         },
         function () {
           chrome.storage.sync.get(null, function (result2) {
+            /*
+              insert new div at top of sidebar to hold content
+            */
+            const newContainer = document.createElement('div');
+            container.parentNode.insertBefore(newContainer, container);
+            /*
+              only visually hide sidebar to prevent issues with DOM modification
+            */
             if (!result2.sidebar) {
-              runApp(container, result2);
-            } else {
-              const newContainer = document.createElement('div');
-              container.parentNode.insertBefore(newContainer, container);
-              runApp(newContainer, result2);
+              container.className += ' hidden-sidebar';
             }
+            runApp(newContainer, result2);
           });
         }
       );
