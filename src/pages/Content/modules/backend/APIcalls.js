@@ -18,6 +18,8 @@ export const dataFetcher = {
       task.assignment.grade = task.assignment.submission.score
         ? task.assignment.submission.score
         : 0;
+      if (task.assignment.submission.grade === 'complete')
+        task.assignment.grade = 1;
       task.assignment.course_code =
         dataFetcher.courseNames[parseInt(task.assignment.course_id)];
       return task.assignment;
@@ -125,6 +127,7 @@ export const dataFetcher = {
     } catch (error) {
       console.error(error);
     }
+    console.log(dataFetcher.data);
     return dataFetcher.data;
   },
 };
