@@ -2,28 +2,31 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TimePicker from 'react-time-picker';
 import DayButton from './DayButton';
-
-const OptionsDiv = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-`;
-
-const Row = styled.div`
-  display: flex;
-  flex-direction: row;
-  padding: 5px;
-`;
+import './Options.css';
+import OptionsRow from './OptionsRow';
 
 const Label = styled.div`
   padding-top: 5px;
   padding-right: 10px;
-  font-family: sans-serif;
   font-size: 15px;
 `;
 
-const Title = styled.div`
-  font-size: 30px;
+const CenterContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+`;
+
+const LeftSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  float: left;
+`;
+
+const RightSide = styled.div`
+  display: flex;
+  flex-direction: column;
+  float: right;
 `;
 
 export default function Options() {
@@ -34,11 +37,10 @@ export default function Options() {
   const [sidebar, setSidebar] = useState(true);
   const periods = ['Day', 'Week', 'Month'];
   const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-  const title = 'Canvas Tasks Options';
-  const prompt0 = 'Choose a time period: ';
-  const prompt1 = 'Choose a start day for the week:';
-  const prompt2 = 'Choose a start time for the week:';
-  const prompt3 = 'Hide default To Do sidebar:';
+  const prompt0 = 'Time period shown';
+  const prompt1 = 'Start day for period';
+  const prompt2 = 'Start time for period';
+  const prompt3 = 'Hide default To Do sidebar';
   function handleChange(value) {
     chrome.storage.sync.set(
       { startHour: parseInt(value.substring(0, 2)) },
@@ -74,54 +76,73 @@ export default function Options() {
     );
   }, [setPeriod, setDay, setHour, setMinutes, setSidebar]);
   return (
-    <OptionsDiv>
-      <Row>
-        <Title>{title}</Title>
-      </Row>
-      <Row>
-        <Label>{prompt0}</Label>
-        {periods.map((p, i) => {
-          return (
-            <DayButton
-              handleClick={handlePeriodClick}
-              id={i}
-              key={p}
-              selected={period == i}
-            >
-              {p}
-            </DayButton>
-          );
-        })}
-      </Row>
-      <Row>
-        <Label>{prompt1}</Label>
-        {days.map((d, i) => {
-          return (
-            <DayButton
-              handleClick={handleDayClick}
-              id={i + 1}
-              key={d}
-              selected={day - 1 == i}
-            >
-              {d}
-            </DayButton>
-          );
-        })}
-      </Row>
-      <Row>
-        <Label>{prompt2}</Label>
-        <TimePicker
-          disableClock
-          onChange={handleChange}
-          value={
-            hour >= 0 && minutes >= 0 ? new Date(0, 0, 0, hour, minutes) : null
+    <CenterContainer>
+      <LeftSide>
+        <OptionsRow content={<Label>{prompt0}</Label>} />
+        {period === 1 && <OptionsRow content={<Label>{prompt1}</Label>} />}
+        <OptionsRow content={<Label>{prompt2}</Label>} />
+        <OptionsRow content={<Label>{prompt3}</Label>} />
+      </LeftSide>
+      <RightSide>
+        <OptionsRow
+          contentList={periods.map((p, i) => {
+            return (
+              <DayButton
+                handleClick={handlePeriodClick}
+                id={i}
+                key={p}
+                selected={period == i}
+              >
+                {p}
+              </DayButton>
+            );
+          })}
+          keyList={periods.map((p) => {
+            return p;
+          })}
+        />
+        {period === 1 && (
+          <OptionsRow
+            contentList={days.map((d, i) => {
+              return (
+                <DayButton
+                  handleClick={handleDayClick}
+                  id={i + 1}
+                  key={d}
+                  selected={day - 1 == i}
+                >
+                  {d}
+                </DayButton>
+              );
+            })}
+            keyList={days.map((d) => {
+              return d;
+            })}
+          />
+        )}
+        <OptionsRow
+          content={
+            <TimePicker
+              disableClock
+              onChange={handleChange}
+              value={
+                hour >= 0 && minutes >= 0
+                  ? new Date(0, 0, 0, hour, minutes)
+                  : null
+              }
+            />
           }
         />
-      </Row>
-      <Row>
-        <Label>{prompt3}</Label>
-        <input checked={!sidebar} onChange={toggleSidebar} type="checkbox" />
-      </Row>
-    </OptionsDiv>
+        <OptionsRow
+          content={
+            <input
+              checked={!sidebar}
+              onChange={toggleSidebar}
+              type="checkbox"
+            />
+          }
+        />
+      </RightSide>
+    </CenterContainer>
   );
 }
