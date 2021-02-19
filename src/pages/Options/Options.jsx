@@ -4,11 +4,13 @@ import TimePicker from 'react-time-picker';
 import DayButton from './DayButton';
 import './Options.css';
 import OptionsRow from './OptionsRow';
+import Switch from 'react-switch';
 
 const Label = styled.div`
   padding-top: 5px;
   padding-right: 10px;
   font-size: 15px;
+  color: ${(props) => (props.disabled ? '#B5B5B5' : 'black')};
 `;
 
 const CenterContainer = styled.div`
@@ -79,7 +81,9 @@ export default function Options() {
     <CenterContainer>
       <LeftSide>
         <OptionsRow content={<Label>{prompt0}</Label>} />
-        {period === 1 && <OptionsRow content={<Label>{prompt1}</Label>} />}
+        <OptionsRow
+          content={<Label disabled={period !== 1}>{prompt1}</Label>}
+        />
         <OptionsRow content={<Label>{prompt2}</Label>} />
         <OptionsRow content={<Label>{prompt3}</Label>} />
       </LeftSide>
@@ -101,25 +105,24 @@ export default function Options() {
             return p;
           })}
         />
-        {period === 1 && (
-          <OptionsRow
-            contentList={days.map((d, i) => {
-              return (
-                <DayButton
-                  handleClick={handleDayClick}
-                  id={i + 1}
-                  key={d}
-                  selected={day - 1 == i}
-                >
-                  {d}
-                </DayButton>
-              );
-            })}
-            keyList={days.map((d) => {
-              return d;
-            })}
-          />
-        )}
+        <OptionsRow
+          contentList={days.map((d, i) => {
+            return (
+              <DayButton
+                disabled={period !== 1}
+                handleClick={handleDayClick}
+                id={i + 1}
+                key={d}
+                selected={day - 1 == i}
+              >
+                {d}
+              </DayButton>
+            );
+          })}
+          keyList={days.map((d) => {
+            return d;
+          })}
+        />
         <OptionsRow
           content={
             <TimePicker
@@ -135,10 +138,10 @@ export default function Options() {
         />
         <OptionsRow
           content={
-            <input
+            <Switch
               checked={!sidebar}
               onChange={toggleSidebar}
-              type="checkbox"
+              onColor="#EE5533"
             />
           }
         />
