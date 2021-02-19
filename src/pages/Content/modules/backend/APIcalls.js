@@ -1,4 +1,5 @@
 import axios from 'axios';
+// import { demoAssignments, demoCourses } from '../test/demo'
 
 export const dataFetcher = {
   courseList: '', // string list of courses for api calls
@@ -127,7 +128,7 @@ export const dataFetcher = {
     } catch (error) {
       console.error(error);
     }
-    console.log(dataFetcher.data);
+    // dataFetcher.data = {assignments: demoAssignments, courses: demoCourses}
     return dataFetcher.data;
   },
 };

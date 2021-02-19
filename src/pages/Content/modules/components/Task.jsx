@@ -20,6 +20,12 @@ const TaskContainer = styled.div`
         cursor: pointer;
       }
     }
+    .text-overflow-ellipses {
+      overflow-x: auto;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
   `,
   TaskInfo = styled.div`
     display: flex;
@@ -28,22 +34,23 @@ const TaskContainer = styled.div`
     box-sizing: border-box;
     width: 100%;
     font-size: 11px;
+    color: var(--ic-brand-font-color-dark-lightened-15);
+    overflow-x: auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: var(--ic-brand-font-color-dark-lightened-15);
   `,
   TaskLink = styled.a`
     color: var(--ic-brand-font-color-dark);
     font-weight: 700;
     font-size: 15px;
+    &:hover {
+      color: var(--ic-brand-font-color-dark);
+    }
     overflow-x: auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    &:hover {
-      color: var(--ic-brand-font-color-dark);
-    }
   `;
 
 export default function Task({ assignment }) {
@@ -151,9 +158,11 @@ export default function Task({ assignment }) {
         {assignmentIcon}
       </div>
       <TaskInfo>
-        <div style={CourseNameStyle}>{assignment.course_code}</div>
+        <div className="text-overflow-ellipses" style={CourseNameStyle}>
+          {assignment.course_code}
+        </div>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
-        <div>
+        <div className="text-overflow-ellipses">
           {DueLabel}
           {` ${due_date} at ${due_time} \xa0|\xa0 ` +
             (!isNaN(points_possible) && points_possible !== undefined

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import '../../content.styles.css';
 
 const ChartContainer = styled.div`
-  height: 240px;
+  height: 220px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -84,7 +84,7 @@ export default function TaskChart({
     plotOptions: {
       radialBar: {
         track: {
-          margin: courses.length > 4 ? 2 : 5,
+          margin: courses.length > 5 ? 1.5 : 5,
         },
         dataLabels: {
           enabled: false,
@@ -146,7 +146,7 @@ export default function TaskChart({
     position: 'absolute',
     left: '50%',
     transform: 'translate(-50%, 0)',
-    top: '135px',
+    top: '125px',
     margin: 'auto',
     zIndex: '10',
     color: `${
@@ -172,7 +172,7 @@ export default function TaskChart({
   return (
     <ChartContainer>
       <ReactApexChart
-        height={300}
+        height={280}
         options={options}
         series={series}
         type="radialBar"
