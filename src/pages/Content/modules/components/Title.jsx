@@ -55,6 +55,10 @@ const RightFloat = styled.div`
   float: right;
 `;
 
+/*
+  Renders the title of the app, bounds for current time period, and prev/next buttons
+*/
+
 export default function Title({
   weekStart,
   weekEnd,

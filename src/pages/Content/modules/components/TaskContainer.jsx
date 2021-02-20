@@ -4,15 +4,19 @@ import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
 
+/*
+  Main app component that renders all async content
+*/
+
 export default function TaskContainer({ data }) {
   const [course, setCourse] = useState(-1);
-  function setCourseCallback(id) {
-    setCourse(id);
-  }
   function compareDates(a, b) {
     return new Date(a.due_at) - new Date(b.due_at);
   }
   data.assignments.sort(compareDates);
+  /*
+    unfinished assignments are assignments that are neither submitted nor graded
+  */
   const unfinishedAssignments = data.assignments.filter((assignment) => {
     return !assignment.user_submitted && assignment.grade === 0;
   });
@@ -24,13 +28,13 @@ export default function TaskContainer({ data }) {
       <CourseName
         courses={data.courses}
         selectedCourseId={course}
-        setCourse={setCourseCallback}
+        setCourse={setCourse}
       />
       <TaskChart
         courses={data.courses}
         finishedAssignments={finishedAssignments}
         selectedCourseId={course}
-        setCourse={setCourseCallback}
+        setCourse={setCourse}
         unfinishedAssignments={unfinishedAssignments}
       />
       <TaskList assignments={unfinishedAssignments} selectedCourseId={course} />

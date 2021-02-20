@@ -70,6 +70,14 @@ const CourseDropdown = styled.div`
   }
 `;
 
+const CourseNameContainer = styled.div`
+  position: relative;
+`;
+
+/*
+  Renders the current filtered course and dropdown menu to change the current course
+*/
+
 export default function CourseName({ courses, selectedCourseId, setCourse }) {
   const [menuVisible, setMenuVisible] = useState(false);
   let courseSelection = courses.filter((course) => {
@@ -80,7 +88,7 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
     setMenuVisible(!menuVisible);
   }
   return (
-    <div style={{ position: 'relative' }}>
+    <CourseNameContainer>
       <CourseTitle courseSelection={courseSelection} onClick={toggleMenu}>
         {courseSelection === -1 ? 'All Courses' : courseSelection.name}
         <SelectArrow menuVisible={menuVisible} />
@@ -109,7 +117,7 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
           />
         ))}
       </CourseDropdown>
-    </div>
+    </CourseNameContainer>
   );
 }
 

@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/*
+  Individual options in course name dropdown
+*/
+
 export default function CourseButton({
   name,
   color,

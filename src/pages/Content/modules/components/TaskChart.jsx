@@ -4,6 +4,10 @@ import ReactApexChart from 'react-apexcharts';
 import PropTypes from 'prop-types';
 import '../../content.styles.css';
 
+/*
+  Renders progress chart
+*/
+
 const ChartContainer = styled.div`
   height: 220px;
   width: 100%;
@@ -12,6 +16,41 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin-top: 15px;
+`;
+
+const TotalText = styled.div`
+  font-size: 25px;
+  font-family: Lato Extended;
+  font-weight: bold;
+  color: ${(props) => props.color};
+  position: absolute;
+  margin: auto;
+  bottom: 49%;
+  zindex: 10;
+`;
+
+const ProgressText = styled.div`
+  font-size: 13px;
+  font-family: Lato Extended;
+  font-weight: bold;
+  position: absolute;
+  margin: auto;
+  top: 50%;
+  z-index: 10;
+  color: ${(props) => props.color};
+`;
+
+const CompleteText = styled.div`
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
+  top: 125px;
+  margin: auto;
+  z-index: 10;
+  color: ${(props) => props.color};
+  font-family: Lato Extended;
+  font-weight: bold;
+  font-size: 13px;
 `;
 
 export default function TaskChart({
@@ -114,50 +153,6 @@ export default function TaskChart({
     },
     colors,
   };
-  const totalText = {
-    fontSize: '25px',
-    fontFamily: 'Lato Extended',
-    fontWeight: 'bold',
-    color: `${
-      selectedCourseId === -1
-        ? 'var(--ic-brand-font-color-dark)'
-        : colors[classes[selectedCourseId].idx]
-    }`,
-    position: 'absolute',
-    margin: 'auto',
-    bottom: '49%',
-    zIndex: '10',
-  };
-  const progressText = {
-    fontSize: '13px',
-    fontFamily: 'Lato Extended',
-    fontWeight: 'bold',
-    position: 'absolute',
-    margin: 'auto',
-    top: '50%',
-    zIndex: '10',
-    color: `${
-      selectedCourseId === -1
-        ? 'var(--ic-brand-font-color-dark)'
-        : colors[classes[selectedCourseId].idx]
-    }`,
-  };
-  const centerText = {
-    position: 'absolute',
-    left: '50%',
-    transform: 'translate(-50%, 0)',
-    top: '125px',
-    margin: 'auto',
-    zIndex: '10',
-    color: `${
-      selectedCourseId === -1
-        ? 'var(--ic-brand-font-color-dark)'
-        : colors[classes[selectedCourseId].idx]
-    }`,
-    fontFamily: 'Lato Extended',
-    fontWeight: 'bold',
-    fontSize: '13px',
-  };
   const complete = 'Complete';
   const totalValue =
     selectedCourseId === -1
@@ -169,6 +164,10 @@ export default function TaskChart({
     selectedCourseId === -1
       ? `${doneTotal}/${total}`
       : `${classes[selectedCourseId].done}/${classes[selectedCourseId].total}`;
+  const centerColor =
+    selectedCourseId === -1
+      ? 'var(--ic-brand-font-color-dark)'
+      : colors[classes[selectedCourseId].idx];
   return (
     <ChartContainer>
       <ReactApexChart
@@ -177,9 +176,9 @@ export default function TaskChart({
         series={series}
         type="radialBar"
       />
-      <div style={totalText}>{totalValue}</div>
-      <div style={progressText}>{progressValue}</div>
-      <div style={centerText}>{complete}</div>
+      <TotalText color={centerColor}>{totalValue}</TotalText>
+      <ProgressText color={centerColor}>{progressValue}</ProgressText>
+      <CompleteText color={centerColor}>{complete}</CompleteText>
     </ChartContainer>
   );
 }

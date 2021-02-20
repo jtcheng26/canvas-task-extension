@@ -5,6 +5,10 @@ import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
 import { dataFetcher } from '../backend/APIcalls';
 
+/*
+  compareProps function so content is re-rendered properly when prev and next buttons clicked
+*/
+
 function compareProps(prevProps, nextProps) {
   return (
     prevProps.startDate.getMonth() == nextProps.startDate.getMonth() &&
@@ -13,6 +17,10 @@ function compareProps(prevProps, nextProps) {
     prevProps.endDate.getDate() == nextProps.endDate.getDate()
   );
 }
+
+/*
+  utility component that fetches async data and re-renders content when necessary
+*/
 
 function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
   const [data, setData] = useState({});

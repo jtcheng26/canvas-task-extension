@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
 
+/*
+  render app function
+*/
+
 export default function runApp(container, data) {
   ReactDOM.render(
     <React.StrictMode>

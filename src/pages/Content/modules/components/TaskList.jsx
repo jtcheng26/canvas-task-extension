@@ -14,15 +14,24 @@ const ListContainer = styled.div`
   padding-bottom: 5px;
 `;
 
+const ListWrapper = styled.div`
+  height: ${(props) => props.height}px;
+  margin: 10px 0px 25px 0px;
+`;
+
+const ViewMore = styled.a`
+  font-size: 0.9rem;
+`;
+
+/*
+  Renders all unfinished assignments
+*/
+
 export default function TaskList({ assignments, selectedCourseId }) {
   const [viewingMore, setViewingMore] = useState(false);
   const height = !viewingMore
-    ? `${25 + Math.min(assignments.length, 4) * 80}px`
-    : `${25 + assignments.length * 80}px`;
-  const containerStyle = {
-    height,
-    margin: '10px 0px 25px 0px',
-  };
+    ? 25 + Math.min(assignments.length, 4) * 80
+    : 25 + assignments.length * 80;
   if (selectedCourseId !== -1) {
     assignments = assignments.filter((assignment) => {
       return assignment.course_id === selectedCourseId;
@@ -39,8 +48,8 @@ export default function TaskList({ assignments, selectedCourseId }) {
     setViewingMore(!viewingMore);
   }
   return (
-    <div style={containerStyle}>
-      <Subtitle />
+    <ListWrapper height={height}>
+      <Subtitle text="Unfinished" />
       <ListContainer>
         {renderedAssignments.length > 0
           ? renderedAssignments.map((assignment) => {
@@ -49,15 +58,13 @@ export default function TaskList({ assignments, selectedCourseId }) {
           : 'None'}
       </ListContainer>
       {assignments.length > 4 && (
-        <a href="#" onClick={onClick} style={{ fontSize: '0.9rem' }}>
+        <ViewMore href="#" onClick={onClick}>
           {viewMoreText}
-        </a>
+        </ViewMore>
       )}
-    </div>
+    </ListWrapper>
   );
 }
-
-ListContainer.displayName = 'ListContainer';
 
 TaskList.defaultProps = {
   selectedCourseId: -1,
