@@ -117,7 +117,7 @@ var options = {
           from: 'src/manifest.json',
           to: path.join(__dirname, 'build'),
           force: true,
-          transform: function (content, path) {
+          transform: function (content) {
             // generates the manifest file using the package.json informations
             return Buffer.from(
               JSON.stringify({
@@ -134,6 +134,15 @@ var options = {
       patterns: [
         {
           from: 'src/pages/Content/content.styles.css',
+          to: path.join(__dirname, 'build'),
+          force: true,
+        },
+      ],
+    }),
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: 'src/assets/img',
           to: path.join(__dirname, 'build'),
           force: true,
         },
