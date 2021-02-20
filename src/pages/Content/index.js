@@ -45,7 +45,7 @@ function createSidebar(container) {
             : result.period,
           sidebar:
             result.sidebar !== false && result.sidebar !== true
-              ? true
+              ? false
               : result.sidebar,
         },
         function () {
