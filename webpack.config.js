@@ -3,6 +3,7 @@ var webpack = require('webpack'),
   fileSystem = require('fs-extra'),
   env = require('./utils/env'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
+  BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin');
@@ -154,6 +155,7 @@ var options = {
       chunks: ['options'],
       cache: false,
     }),
+    // new BundleAnalyzerPlugin(),
   ],
   infrastructureLogging: {
     level: 'info',
