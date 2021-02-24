@@ -60,54 +60,60 @@ export default function TaskChart({
   selectedCourseId,
   setCourse,
 }) {
-  const classes = {};
-  const convertToIndex = {};
-  courses.sort((a, b) => {
-    return a.position < b.position;
-  });
-  let curr = 0;
-  courses.forEach((course) => {
-    convertToIndex[course.id] = curr++;
-  });
-  courses.forEach((course) => {
-    classes[course.id] = {
-      total: 0,
-      done: 0,
-      color: course.color,
-      name: course.name,
-      idx: convertToIndex[course.id],
-    };
-  });
-  unfinishedAssignments.forEach((assignment) => {
-    if (!assignment.points_possible) classes[assignment.course_id].done++;
-    classes[assignment.course_id].total++;
-  });
-  finishedAssignments.forEach((assignment) => {
-    if (assignment.points_possible) {
-      classes[assignment.course_id].done++;
-      classes[assignment.course_id].total++;
-    }
-  });
-  let doneTotal = 0,
-    total = 0;
   const series = [],
     colors = [],
     labels = [],
     names = [],
-    ids = [];
-  for (const course in classes) {
-    doneTotal += classes[course].done;
-    total += classes[course].total;
-    if (classes[course].total > 0)
-      series[classes[course].idx] =
-        (100 * classes[course].done) / classes[course].total;
-    else series[classes[course].idx] = 100;
-    colors[classes[course].idx] = classes[course].color;
-    labels[
-      classes[course].idx
-    ] = `${classes[course].done}/${classes[course].total}`;
-    names[classes[course].idx] = classes[course].name;
-    ids[classes[course].idx] = course;
+    ids = [],
+    classes = {};
+  let doneTotal = 0,
+    total = 0;
+  if (unfinishedAssignments.length > 0 || finishedAssignments.length > 0) {
+    const convertToIndex = {};
+    courses.sort((a, b) => {
+      return a.position < b.position;
+    });
+    let curr = 0;
+    courses.forEach((course) => {
+      convertToIndex[course.id] = curr++;
+    });
+    courses.forEach((course) => {
+      classes[course.id] = {
+        total: 0,
+        done: 0,
+        color: course.color,
+        name: course.name,
+        idx: convertToIndex[course.id],
+      };
+    });
+    unfinishedAssignments.forEach((assignment) => {
+      if (!assignment.points_possible) classes[assignment.course_id].done++;
+      classes[assignment.course_id].total++;
+    });
+    finishedAssignments.forEach((assignment) => {
+      if (assignment.points_possible) {
+        classes[assignment.course_id].done++;
+        classes[assignment.course_id].total++;
+      }
+    });
+    for (const course in classes) {
+      doneTotal += classes[course].done;
+      total += classes[course].total;
+      if (classes[course].total > 0)
+        series[classes[course].idx] =
+          (100 * classes[course].done) / classes[course].total;
+      else series[classes[course].idx] = 100;
+      colors[classes[course].idx] = classes[course].color;
+      labels[
+        classes[course].idx
+      ] = `${classes[course].done}/${classes[course].total}`;
+      names[classes[course].idx] = classes[course].name;
+      ids[classes[course].idx] = course;
+    }
+  } else {
+    series.push(100);
+    colors.push('#000000');
+    ids.push(-1);
   }
   const options = {
     chart: {
@@ -144,7 +150,7 @@ export default function TaskChart({
           },
         },
         hollow: {
-          size: '35%',
+          size: colors.length < 4 ? '40%' : '35%',
         },
       },
     },

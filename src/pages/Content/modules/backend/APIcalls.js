@@ -2,21 +2,41 @@ import axios from 'axios';
 // import { demoAssignments, demoCourses } from '../test/demo'
 
 export const dataFetcher = {
-  courseList: '' /* string list of courses for api calls */,
   courseNames: {},
+  courseData: [],
   updateAssignmentData: async (userOptions, startDate, endDate) => {
     /*
       Fetch assignments based on course list. Uses calendar events api for improved performance, but as a result, will only show assignments that have a due date
     */
     const startStr = startDate.toISOString().split('T')[0];
     const endStr = endDate.toISOString().split('T')[0];
-    const assignments = await axios.get(
-      `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${dataFetcher.courseList}&per_page=100&include=submission`
-    );
+    let page = 0;
+    let requests = [];
+    while (page * 10 < dataFetcher.courseData.length) {
+      let courseList = '';
+      for (
+        let i = 10 * page;
+        i < 10 * page + 10 && i < dataFetcher.courseData.length;
+        i++
+      ) {
+        courseList += `&context_codes[]=course_${dataFetcher.courseData[i].id}`;
+      }
+      requests.push(
+        axios.get(
+          `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${courseList}&per_page=100&include=submission`
+        )
+      );
+      page++;
+    }
+    requests = await axios.all(requests);
+    let assignments = [];
+    requests.forEach((request) => {
+      assignments = assignments.concat(request.data);
+    });
     /* 
       filter by visible courses and exclude locked assignments
     */
-    dataFetcher.data.assignments = assignments.data.filter((task) => {
+    dataFetcher.data.assignments = assignments.filter((task) => {
       return (
         !task.assignment.locked_for_user &&
         task.assignment.course_id in dataFetcher.courseNames
@@ -65,6 +85,16 @@ export const dataFetcher = {
         return true;
       }
     );
+    const assignment_count = {};
+    for (let course_id in dataFetcher.courseNames) {
+      assignment_count[course_id] = 0;
+    }
+    dataFetcher.data.assignments.forEach((assignment) => {
+      assignment_count[assignment.course_id]++;
+    });
+    dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
+      return assignment_count[course.id] > 0;
+    });
     return dataFetcher.data;
   },
   userData: {},
@@ -73,36 +103,15 @@ export const dataFetcher = {
     /*
       Course Data = course id, color, name, position
     */
-    if (dataFetcher.userData.links.length > 0) {
-      // if on dashboard and not course page
-      let requests = [];
-      for (let link of dataFetcher.userData.links) {
-        const id = parseInt(link.pathname.split('/').pop());
-        requests.push(
-          axios.get(`https://${location.hostname}/api/v1/courses/${id}`)
-        );
-      }
-      requests = await axios.all(requests);
-      requests = requests.map((request) => {
-        dataFetcher.courseNames[request.data.id] = request.data.course_code;
-      });
-      dataFetcher.data.courses = dataFetcher.userData.links.map((link) => {
-        const obj = {},
-          id = parseInt(link.pathname.split('/').pop());
-        obj.id = parseInt(id);
-        obj.color = dataFetcher.userData.colors[`course_${id}`];
-        obj.name = dataFetcher.courseNames[parseInt(id)];
-        obj.position = dataFetcher.userData.positions[`course_${id}`];
-        return obj;
-      });
-    } else {
+    const url = location.pathname.split('/');
+    if (url.length === 3 && url[url.length - 2] === 'courses') {
       /* on course page */
-      const id = location.pathname.split('/').pop();
+      const id = url.pop();
       const name = (
         await axios.get(`https://${location.hostname}/api/v1/courses/${id}`)
       ).data.course_code;
       dataFetcher.courseNames[id] = name;
-      dataFetcher.data.courses = [
+      dataFetcher.courseData = [
         {
           id: parseInt(id),
           color: dataFetcher.userData.colors[`course_${id}`],
@@ -110,16 +119,27 @@ export const dataFetcher = {
           position: 0,
         },
       ];
+    } else {
+      /* if on dashboard and not course page */
+      dataFetcher.courseData = dataFetcher.courseData.map((course) => {
+        const obj = {},
+          id = course.id;
+        obj.id = parseInt(id);
+        obj.color = dataFetcher.userData.colors[`course_${id}`];
+        obj.name = dataFetcher.courseNames[parseInt(id)];
+        obj.position = dataFetcher.userData.positions[`course_${id}`];
+        return obj;
+      });
     }
-    dataFetcher.courseList = '';
-    dataFetcher.data.courses.forEach((course) => {
-      dataFetcher.courseList += `&context_codes[]=course_${course.id}`;
-    });
+    dataFetcher.data.courses = dataFetcher.courseData;
   },
   getUserData: async () => {
     /*
       'User Data' = dashboard colors and dashboard positions
     */
+    const request = axios.get(
+      `https://${location.hostname}/api/v1/courses?per_page=100`
+    );
     dataFetcher.userData = {
       colors: axios.get(
         `https://${location.hostname}/api/v1/users/self/colors`
@@ -131,13 +151,20 @@ export const dataFetcher = {
     const userDataGet = await axios.all([
       dataFetcher.userData.colors,
       dataFetcher.userData.positions,
+      request,
     ]);
     dataFetcher.userData.colors = userDataGet[0].data.custom_colors;
-    (dataFetcher.userData.links = Array.from(
+    dataFetcher.userData.positions = userDataGet[1].data.dashboard_positions;
+    dataFetcher.courseData = userDataGet[2].data.filter((course) => {
+      return !course.access_restricted_by_date;
+    });
+    dataFetcher.courseData.forEach((course) => {
+      dataFetcher.courseNames[course.id] = course.course_code;
+    });
+    /*(dataFetcher.userData.links = Array.from(
       document.getElementsByClassName('ic-DashboardCard__link')
     )),
-      (dataFetcher.userData.positions =
-        userDataGet[1].data.dashboard_positions);
+    console.log(dataFetcher.userData.positions);*/
   },
   getRelevantAssignments: async (userOptions, startDate, endDate) => {
     /*
@@ -152,7 +179,7 @@ export const dataFetcher = {
     } catch (error) {
       console.error(error);
     }
-    console.log(dataFetcher.data);
+    // console.log(dataFetcher.data);
     // dataFetcher.data = {assignments: demoAssignments, courses: demoCourses}
     return dataFetcher.data;
   },
