@@ -161,10 +161,6 @@ export const dataFetcher = {
     dataFetcher.courseData.forEach((course) => {
       dataFetcher.courseNames[course.id] = course.course_code;
     });
-    /*(dataFetcher.userData.links = Array.from(
-      document.getElementsByClassName('ic-DashboardCard__link')
-    )),
-    console.log(dataFetcher.userData.positions);*/
   },
   getRelevantAssignments: async (userOptions, startDate, endDate) => {
     /*

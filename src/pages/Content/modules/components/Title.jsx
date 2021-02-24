@@ -10,8 +10,6 @@ const TitleDiv = styled.div`
 `;
 
 const NextButton = styled.div`
-  margin: 0px 0px 2px 5px;
-  display: inline-block;
   width: 0;
   height: 0;
   border-top: 4px solid transparent;
@@ -20,17 +18,9 @@ const NextButton = styled.div`
       props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
   border-bottom: 4px solid transparent;
   background: transparent;
-  &:hover {
-    cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
-    border-left: 7px solid
-      ${(props) =>
-        props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
-  }
 `;
 
 const PrevButton = styled.div`
-  margin: 0px 5px 2px 0px;
-  display: inline-block;
   width: 0;
   height: 0;
   border-top: 4px solid transparent;
@@ -39,11 +29,41 @@ const PrevButton = styled.div`
       props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
   border-bottom: 4px solid transparent;
   background: transparent;
+`;
+
+const ButtonContainerLeft = styled.div`
+  padding: 5px;
+  border-radius: 100%;
+  display: inline-block;
+  margin: 0px 2px 0px 2px;
+  background: white;
   &:hover {
     cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
-    border-right: 7px solid
-      ${(props) =>
-        props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
+    background: ${(props) =>
+      props.clickable ? 'rgba(0, 0, 0, 10%)' : 'white'};
+    div {
+      border-right: 7px solid
+        ${(props) =>
+          props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
+    }
+  }
+`;
+
+const ButtonContainerRight = styled.div`
+  padding: 5px;
+  border-radius: 100%;
+  display: inline-block;
+  margin: 0px 2px 0px 2px;
+  background: white;
+  &:hover {
+    cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
+    background: ${(props) =>
+      props.clickable ? 'rgba(0, 0, 0, 10%)' : 'white'};
+    div {
+      border-left: 7px solid
+        ${(props) =>
+          props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
+    }
   }
 `;
 
@@ -53,6 +73,9 @@ const LeftFloat = styled.div`
 
 const RightFloat = styled.div`
   float: right;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `;
 
 /*
@@ -82,13 +105,19 @@ export default function Title({
       onNextClick();
     }
   }
+  const ButtonLeft = <PrevButton clickable={clickable} />;
+  const ButtonRight = <NextButton clickable={clickable} onClick={nextClick} />;
   return (
     <TitleDiv>
       <LeftFloat>{tasks}</LeftFloat>
       <RightFloat>
-        <PrevButton clickable={clickable} onClick={prevClick} />
+        <ButtonContainerLeft clickable={clickable} onClick={prevClick}>
+          {ButtonLeft}
+        </ButtonContainerLeft>
         {`${start} to ${end}`}
-        <NextButton clickable={clickable} onClick={nextClick} />
+        <ButtonContainerRight clickable={clickable} onClick={nextClick}>
+          {ButtonRight}
+        </ButtonContainerRight>
       </RightFloat>
     </TitleDiv>
   );

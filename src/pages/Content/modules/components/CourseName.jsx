@@ -16,9 +16,6 @@ const SelectArrow = styled.div`
   border-right: 4px solid transparent;
   background: transparent;
   transform: rotate(${(props) => (props.menuVisible ? '180deg' : '0deg')});
-  &:hover {
-    border-top: 7px solid rgba(0, 0, 0, 75%);
-  }
 `;
 
 const CourseTitle = styled.div`
@@ -37,6 +34,9 @@ const CourseTitle = styled.div`
   border-bottom: 1px solid #eeeeee;
   &:hover {
     cursor: pointer;
+    div {
+      border-top: 7px solid rgba(0, 0, 0, 75%);
+    }
   }
   z-index: 20;
   height: auto;
