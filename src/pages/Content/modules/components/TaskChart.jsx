@@ -71,7 +71,7 @@ export default function TaskChart({
   if (courses.length > 0) {
     const convertToIndex = {};
     courses.sort((a, b) => {
-      return a.position < b.position;
+      return a.position - b.position;
     });
     let curr = 0;
     courses.forEach((course) => {
