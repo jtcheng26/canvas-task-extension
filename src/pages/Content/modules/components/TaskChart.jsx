@@ -68,7 +68,7 @@ export default function TaskChart({
     classes = {};
   let doneTotal = 0,
     total = 0;
-  if (unfinishedAssignments.length > 0 || finishedAssignments.length > 0) {
+  if (courses.length > 0) {
     const convertToIndex = {};
     courses.sort((a, b) => {
       return a.position < b.position;

@@ -88,6 +88,8 @@ ContentLoader.propTypes = {
     startDate: PropTypes.number,
     startHour: PropTypes.number,
     startMinutes: PropTypes.number,
+    sidebar: PropTypes.bool,
+    user_courses: PropTypes.bool,
   }).isRequired,
 };
 

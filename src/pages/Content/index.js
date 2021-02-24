@@ -29,7 +29,14 @@ else
 function createSidebar(container) {
   observer.disconnect();
   chrome.storage.sync.get(
-    ['startDate', 'period', 'startHour', 'startMinutes', 'sidebar'],
+    [
+      'startDate',
+      'period',
+      'startHour',
+      'startMinutes',
+      'sidebar',
+      'dash_courses',
+    ],
     function (result) {
       chrome.storage.sync.set(
         {
@@ -47,6 +54,10 @@ function createSidebar(container) {
             result.sidebar !== false && result.sidebar !== true
               ? false
               : result.sidebar,
+          dash_courses:
+            result.dash_courses !== false && result.dash_courses !== true
+              ? false
+              : result.dash_courses,
         },
         function () {
           chrome.storage.sync.get(null, function (result2) {

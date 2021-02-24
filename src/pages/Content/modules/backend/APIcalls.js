@@ -92,9 +92,40 @@ export const dataFetcher = {
     dataFetcher.data.assignments.forEach((assignment) => {
       assignment_count[assignment.course_id]++;
     });
-    dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
-      return assignment_count[course.id] > 0;
-    });
+    const url = location.pathname.split('/');
+    if (url.length === 3 && url[url.length - 2] === 'courses') {
+      /* course page */
+      const id = parseInt(url.pop());
+      dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
+        return course.id === id;
+      });
+    } else {
+      /* dashboard */
+      let cardView = true;
+      if (userOptions.dash_courses) {
+        const links = Array.from(
+          document.getElementsByClassName('ic-DashboardCard__link')
+        );
+        if (links.length === 0) {
+          cardView = false;
+        } else {
+          /* card view */
+          const onDash = {};
+          links.forEach((link) => {
+            const id = link.href.split('/').pop();
+            onDash[id] = true;
+          });
+          dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
+            return onDash[course.id];
+          });
+        }
+      }
+      if (!cardView || !userOptions.dash_courses) {
+        dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
+          return assignment_count[course.id] > 0;
+        });
+      }
+    }
     return dataFetcher.data;
   },
   userData: {},

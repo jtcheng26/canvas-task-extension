@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 const Row = styled.div`
   display: flex;
   flex-direction: row;
+  align-items: center;
   margin: 5px;
   height: 30px;
 `;
