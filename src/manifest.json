@@ -1,7 +1,7 @@
 {
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas Instructure.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "options_page": "options.html",
   "permissions": [
     "storage"
