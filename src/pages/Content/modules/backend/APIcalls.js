@@ -54,7 +54,7 @@ export const dataFetcher = {
       if (task.assignment.submission.grade === 'complete')
         task.assignment.grade = 1;
       task.assignment.course_code =
-        dataFetcher.courseNames[parseInt(task.assignment.course_id)];
+        dataFetcher.courseNames[task.assignment.course_id];
       return task.assignment;
     });
     /*
@@ -112,7 +112,7 @@ export const dataFetcher = {
           /* card view */
           const onDash = {};
           links.forEach((link) => {
-            const id = link.href.split('/').pop();
+            const id = parseInt(link.href.split('/').pop());
             onDash[id] = true;
           });
           dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
@@ -137,16 +137,12 @@ export const dataFetcher = {
     const url = location.pathname.split('/');
     if (url.length === 3 && url[url.length - 2] === 'courses') {
       /* on course page */
-      const id = url.pop();
-      const name = (
-        await axios.get(`https://${location.hostname}/api/v1/courses/${id}`)
-      ).data.course_code;
-      dataFetcher.courseNames[id] = name;
+      const id = parseInt(url.pop());
       dataFetcher.courseData = [
         {
-          id: parseInt(id),
+          id: id,
           color: dataFetcher.userData.colors[`course_${id}`],
-          name: name,
+          name: dataFetcher.courseNames[id],
           position: 0,
         },
       ];
@@ -155,10 +151,12 @@ export const dataFetcher = {
       dataFetcher.courseData = dataFetcher.courseData.map((course) => {
         const obj = {},
           id = course.id;
-        obj.id = parseInt(id);
+        obj.id = id;
         obj.color = dataFetcher.userData.colors[`course_${id}`];
-        obj.name = dataFetcher.courseNames[parseInt(id)];
-        obj.position = dataFetcher.userData.positions[`course_${id}`];
+        obj.name = dataFetcher.courseNames[id];
+        obj.position = dataFetcher.userData.positions[`course_${id}`]
+          ? dataFetcher.userData.positions[`course_${id}`]
+          : 10;
         return obj;
       });
     }
@@ -169,7 +167,7 @@ export const dataFetcher = {
       'User Data' = dashboard colors and dashboard positions
     */
     const request = axios.get(
-      `https://${location.hostname}/api/v1/courses?per_page=100`
+      `https://${location.hostname}/api/v1/courses?per_page=200`
     );
     dataFetcher.userData = {
       colors: axios.get(
@@ -200,9 +198,12 @@ export const dataFetcher = {
     try {
       if (Object.keys(dataFetcher.data).length == 0) {
         await dataFetcher.getUserData();
+        //console.log(dataFetcher.userData);
         await dataFetcher.getCourseData();
+        //console.log(dataFetcher.courseData);
       }
       await dataFetcher.updateAssignmentData(userOptions, startDate, endDate);
+      //console.log(dataFetcher.data);
     } catch (error) {
       console.error(error);
     }

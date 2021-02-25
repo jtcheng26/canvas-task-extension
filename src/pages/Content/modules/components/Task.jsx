@@ -170,9 +170,9 @@ export default function Task({ assignment }) {
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
         <TaskDetailsText>
           {DueLabel}
-          {` ${due_date} at ${due_time} \xa0|\xa0 ` +
+          {` ${due_date} at ${due_time}` +
             (!isNaN(points_possible) && points_possible !== undefined
-              ? `${points_possible} point${
+              ? ` \xa0|\xa0 ${points_possible} point${
                   assignment.points_possible != 1 ? 's' : ''
                 }`
               : '')}

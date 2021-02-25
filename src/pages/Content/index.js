@@ -9,7 +9,8 @@ const observer = new MutationObserver(function (mutations) {
     for (let addedNode of mutation.addedNodes) {
       if (
         'classList' in addedNode &&
-        addedNode.classList.contains('Sidebar__TodoListContainer')
+        (addedNode.classList.contains('Sidebar__TodoListContainer') ||
+          addedNode.classList.contains('todo-list-header'))
       )
         createSidebar(addedNode);
     }
@@ -22,7 +23,12 @@ const observer = new MutationObserver(function (mutations) {
 const containerList = document.getElementsByClassName(
   'Sidebar__TodoListContainer'
 );
+const teacherContainerList = document.getElementsByClassName(
+  'todo-list-header'
+);
 if (containerList.length > 0) createSidebar(containerList[0]);
+else if (teacherContainerList.length > 0)
+  createSidebar(teacherContainerList[0]);
 else
   observer.observe(document.getElementById('right-side'), { childList: true });
 
@@ -61,6 +67,7 @@ function createSidebar(container) {
         },
         function () {
           chrome.storage.sync.get(null, function (result2) {
+            //console.log(result2);
             /*
               insert new div at top of sidebar to hold content
             */
@@ -70,7 +77,8 @@ function createSidebar(container) {
               only visually hide sidebar to prevent issues with DOM modification
             */
             if (!result2.sidebar) {
-              container.className += ' hidden-sidebar';
+              document.getElementById('right-side').className +=
+                'hidden-sidebar';
             }
             runApp(newContainer, result2);
           });
