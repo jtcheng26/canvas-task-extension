@@ -109,6 +109,8 @@ export default function TaskChart({
       ] = `${classes[course].done}/${classes[course].total}`;
       names[classes[course].idx] = classes[course].name;
       ids[classes[course].idx] = course;
+      if (selectedCourseId !== -1 && parseInt(course) !== selectedCourseId)
+        series[classes[course].idx] = 0;
     }
   } else {
     series.push(100);

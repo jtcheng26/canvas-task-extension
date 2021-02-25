@@ -154,9 +154,11 @@ export const dataFetcher = {
         obj.id = id;
         obj.color = dataFetcher.userData.colors[`course_${id}`];
         obj.name = dataFetcher.courseNames[id];
-        obj.position = dataFetcher.userData.positions[`course_${id}`]
-          ? dataFetcher.userData.positions[`course_${id}`]
-          : 10;
+        obj.position =
+          dataFetcher.userData.positions[`course_${id}`] ||
+          dataFetcher.userData.positions[`course_${id}`] === 0
+            ? dataFetcher.userData.positions[`course_${id}`]
+            : 10;
         return obj;
       });
     }
