@@ -38,8 +38,11 @@ export const dataFetcher = {
     */
     dataFetcher.data.assignments = assignments.filter((task) => {
       return (
-        !task.assignment.locked_for_user &&
-        task.assignment.course_id in dataFetcher.courseNames
+        !(
+          task.assignment.locked_for_user &&
+          !task.assignment.submission.attempt &&
+          !task.assignment.submission.score
+        ) && task.assignment.course_id in dataFetcher.courseNames
       );
     });
     /*
