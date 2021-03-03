@@ -4,10 +4,7 @@ import PropTypes from 'prop-types';
 import CourseButton from './CourseButton';
 
 const SelectArrow = styled.div`
-  position: absolute;
-  right: 0px;
-  top: 10px;
-  margin: 0px 4px;
+  margin: 0px 0px 0px 4px;
   display: inline-block;
   width: 0;
   height: 0;
@@ -20,7 +17,10 @@ const SelectArrow = styled.div`
 
 const CourseTitle = styled.div`
   display: flex;
-  padding: 5px 10px;
+  align-items: center;
+  justify-content: space-between;
+  flex-direction: row;
+  padding: 8px 10px;
   height: 15px;
   color: ${(props) =>
     props.courseSelection === -1
@@ -56,7 +56,7 @@ const CourseDropdown = styled.div`
     font-size: 14px;
     line-height: 1.4;
     position: relative;
-    padding: 5px;
+    padding: 8px;
     background: white;
     z-index: 20;
     &:hover {
@@ -78,7 +78,12 @@ const CourseNameContainer = styled.div`
   Renders the current filtered course and dropdown menu to change the current course
 */
 
-export default function CourseName({ courses, selectedCourseId, setCourse }) {
+export default function CourseName({
+  courses,
+  selectedCourseId,
+  setCourse,
+  onCoursePage,
+}) {
   const [menuVisible, setMenuVisible] = useState(false);
   let courseSelection = courses.filter((course) => {
     return course.id === selectedCourseId;
@@ -94,7 +99,7 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
         <SelectArrow menuVisible={menuVisible} />
       </CourseTitle>
       <CourseDropdown menuVisible={menuVisible}>
-        {courseSelection !== -1 && (
+        {!onCoursePage && courseSelection !== -1 && (
           <CourseButton
             color="black"
             id={-1}
@@ -122,6 +127,7 @@ export default function CourseName({ courses, selectedCourseId, setCourse }) {
 }
 
 CourseName.defaultProps = {
+  onCoursePage: false,
   selectedCourseId: -1,
 };
 
@@ -134,6 +140,7 @@ CourseName.propTypes = {
       position: PropTypes.number,
     })
   ).isRequired,
+  onCoursePage: PropTypes.bool,
   selectedCourseId: PropTypes.number,
   setCourse: PropTypes.func.isRequired,
 };

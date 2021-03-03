@@ -9,7 +9,9 @@ import TaskList from './TaskList';
 */
 
 export default function TaskContainer({ data }) {
-  const [course, setCourse] = useState(-1);
+  const url = location.pathname.split('/');
+  const onCoursePage = url.length === 3 && url[url.length - 2] === 'courses';
+  const [course, setCourse] = useState(onCoursePage ? data.courses[0].id : -1);
   function compareDates(a, b) {
     return new Date(a.due_at) - new Date(b.due_at);
   }
@@ -27,6 +29,7 @@ export default function TaskContainer({ data }) {
     <>
       <CourseName
         courses={data.courses}
+        onCoursePage={onCoursePage}
         selectedCourseId={course}
         setCourse={setCourse}
       />
