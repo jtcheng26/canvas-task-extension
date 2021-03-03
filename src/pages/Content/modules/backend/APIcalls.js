@@ -23,7 +23,7 @@ export const dataFetcher = {
       }
       requests.push(
         axios.get(
-          `https://${location.hostname}/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${courseList}&per_page=100&include=submission`
+          `${location.origin}/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${courseList}&per_page=100&include=submission`
         )
       );
       page++;
@@ -51,11 +51,21 @@ export const dataFetcher = {
     dataFetcher.data.assignments = dataFetcher.data.assignments.map((task) => {
       task.assignment.color =
         dataFetcher.userData.colors[`course_${task.assignment.course_id}`];
-      task.assignment.grade = task.assignment.submission.score
-        ? task.assignment.submission.score
-        : 0;
-      if (task.assignment.submission.grade === 'complete')
-        task.assignment.grade = 1;
+      if ('submission' in task.assignment) {
+        task.assignment.grade = task.assignment.submission.score
+          ? task.assignment.submission.score
+          : 0;
+        if (task.assignment.submission.grade === 'complete')
+          task.assignment.grade = 1;
+        if (
+          typeof task.assignment.submission.grade === 'string' &&
+          task.assignment.submission.grade.length === 1 &&
+          task.assignment.submission.grade.match(/[A-E]/i)
+        )
+          task.assignment.grade = 1;
+      } else {
+        task.assignment.grade = 0;
+      }
       task.assignment.course_code =
         dataFetcher.courseNames[task.assignment.course_id];
       return task.assignment;
@@ -171,15 +181,11 @@ export const dataFetcher = {
     /*
       'User Data' = dashboard colors and dashboard positions
     */
-    const request = axios.get(
-      `https://${location.hostname}/api/v1/courses?per_page=200`
-    );
+    const request = axios.get(`${location.origin}/api/v1/courses?per_page=200`);
     dataFetcher.userData = {
-      colors: axios.get(
-        `https://${location.hostname}/api/v1/users/self/colors`
-      ),
+      colors: axios.get(`${location.origin}/api/v1/users/self/colors`),
       positions: axios.get(
-        `https://${location.hostname}/api/v1/users/self/dashboard_positions`
+        `${location.origin}/api/v1/users/self/dashboard_positions`
       ),
     };
     const userDataGet = await axios.all([

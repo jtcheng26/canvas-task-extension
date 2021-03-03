@@ -87,8 +87,7 @@ export default function TaskChart({
       };
     });
     unfinishedAssignments.forEach((assignment) => {
-      if (!assignment.points_possible) classes[assignment.course_id].done++;
-      classes[assignment.course_id].total++;
+      if (assignment.points_possible) classes[assignment.course_id].total++;
     });
     finishedAssignments.forEach((assignment) => {
       if (assignment.points_possible) {
