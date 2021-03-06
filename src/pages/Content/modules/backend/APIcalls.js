@@ -23,7 +23,9 @@ export const dataFetcher = {
       }
       requests.push(
         axios.get(
-          `${location.origin}/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${courseList}&per_page=100&include=submission`
+          `${
+            location.protocol + '//' + location.hostname
+          }/api/v1/calendar_events?type=assignment&start_date=${startStr}&end_date=${endStr}${courseList}&per_page=100&include=submission`
         )
       );
       page++;
@@ -34,16 +36,23 @@ export const dataFetcher = {
       assignments = assignments.concat(request.data);
     });
     /* 
-      filter by visible courses and exclude locked assignments
+      filter 1: visible courses and exclude locked assignments
     */
     dataFetcher.data.assignments = assignments.filter((task) => {
-      return (
-        !(
-          task.assignment.locked_for_user &&
-          !task.assignment.submission.attempt &&
-          !task.assignment.submission.score
-        ) && task.assignment.course_id in dataFetcher.courseNames
-      );
+      if (!(task.assignment.course_id in dataFetcher.courseNames)) {
+        return false;
+      } else if (task.assignment.locked_for_user) {
+        if ('submission' in task.assignment) {
+          return (
+            task.assignment.submission.attempt ||
+            task.assignment.submission.score
+          );
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
     });
     /*
       set color and grade for assignments
@@ -71,7 +80,7 @@ export const dataFetcher = {
       return task.assignment;
     });
     /*
-      Filter by start and end time
+      filter 2: start and end time
     */
     dataFetcher.data.assignments = dataFetcher.data.assignments.filter(
       (task) => {
@@ -98,6 +107,9 @@ export const dataFetcher = {
         return true;
       }
     );
+    /* 
+      count # of assignments for each course
+    */
     const assignment_count = {};
     for (let course_id in dataFetcher.courseNames) {
       assignment_count[course_id] = 0;
@@ -105,9 +117,11 @@ export const dataFetcher = {
     dataFetcher.data.assignments.forEach((assignment) => {
       assignment_count[assignment.course_id]++;
     });
+    /*
+      if on course page, filter to course
+    */
     const url = location.pathname.split('/');
     if (url.length === 3 && url[url.length - 2] === 'courses') {
-      /* course page */
       const id = parseInt(url.pop());
       dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
         return course.id === id;
@@ -133,6 +147,9 @@ export const dataFetcher = {
           });
         }
       }
+      /* 
+        filter 3: courses w/ active assignments
+      */
       if (!cardView || !userOptions.dash_courses) {
         dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
           return assignment_count[course.id] > 0;
@@ -181,11 +198,21 @@ export const dataFetcher = {
     /*
       'User Data' = dashboard colors and dashboard positions
     */
-    const request = axios.get(`${location.origin}/api/v1/courses?per_page=200`);
+    const request = axios.get(
+      `${
+        location.protocol + '//' + location.hostname
+      }/api/v1/courses?per_page=200`
+    );
     dataFetcher.userData = {
-      colors: axios.get(`${location.origin}/api/v1/users/self/colors`),
+      colors: axios.get(
+        `${
+          location.protocol + '//' + location.hostname
+        }/api/v1/users/self/colors`
+      ),
       positions: axios.get(
-        `${location.origin}/api/v1/users/self/dashboard_positions`
+        `${
+          location.protocol + '//' + location.hostname
+        }/api/v1/users/self/dashboard_positions`
       ),
     };
     const userDataGet = await axios.all([
