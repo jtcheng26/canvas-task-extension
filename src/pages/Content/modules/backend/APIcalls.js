@@ -145,6 +145,11 @@ export const dataFetcher = {
           dataFetcher.data.courses = dataFetcher.courseData.filter((course) => {
             return onDash[course.id];
           });
+          dataFetcher.data.assignments = dataFetcher.data.assignments.filter(
+            (assignment) => {
+              return onDash[assignment.course_id];
+            }
+          );
         }
       }
       /* 
