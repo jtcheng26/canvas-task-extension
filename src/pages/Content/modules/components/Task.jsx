@@ -150,7 +150,7 @@ export default function Task({ assignment }) {
     discussion: DiscussionIcon,
   };
   let assignmentIcon = icon.assignment;
-  if (assignment.is_quiz_assignment) {
+  if (assignment.is_quiz_assignment || assignment.is_quiz_lti_assignment) {
     assignmentIcon = icon.quiz;
   } else if ('discussion_topic' in assignment) {
     assignmentIcon = icon.discussion;
@@ -195,6 +195,7 @@ Task.propTypes = {
     id: PropTypes.number,
     user_submitted: PropTypes.bool,
     is_quiz_assignment: PropTypes.bool,
+    is_quiz_lti_assignment: PropTypes.bool,
     course_code: PropTypes.string,
     grade: PropTypes.number,
   }).isRequired,

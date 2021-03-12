@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
-import { dataFetcher } from '../backend/APIcalls';
+import { dataFetcher } from '../utils/fetcher';
 
 /*
   compareProps function so content is re-rendered properly when prev and next buttons clicked
