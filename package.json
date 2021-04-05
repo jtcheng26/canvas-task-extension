@@ -1,7 +1,7 @@
 {
   "name": "canvas-task-extension",
-  "version": "1.0.4",
-  "description": "A chrome extension that improves the Canvas Instructure To Do sidebar!",
+  "version": "1.0.5",
+  "description": "A chrome extension that improves the Canvas LMS To Do sidebar!",
   "homepage": "https://github.com/jtcheng26/canvas-task-extension",
   "license": "MIT",
   "repository": {
@@ -10,6 +10,7 @@
   },
   "scripts": {
     "build": "node utils/build.js",
+    "zip": "zip -r build.zip build -x \"build/.*\" -x \"build/__MACOSX\"",
     "start": "node utils/webserver.js",
     "prettier": "prettier --write 'src/**/*.{js,jsx,css,html}'",
     "lint": "eslint src/**/*.js src/**/*.jsx",
