@@ -139,7 +139,6 @@ export default function TaskChart({
       type: 'radialBar',
       events: {
         dataPointSelection: function (event: React.MouseEvent<SVGPathElement>) {
-          console.log(event);
           const idx = parseInt(
             (event.target as SVGPathElement).attributes[13].value
           );

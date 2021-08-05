@@ -1,3 +1,5 @@
+import { Assignment } from '../types';
+
 /*
   Pretty demo assignments
 */
@@ -17,7 +19,7 @@ for (let i = 1; i < 7; i++) {
   days.push(day.toISOString());
 }
 
-let demoUnfinishedAssignments = [
+let demoUnfinishedAssignments: Assignment[] = [
   {
     color: '#8F3E97',
     html_url: '#',
@@ -101,7 +103,7 @@ let demoUnfinishedAssignments = [
   },
 ];
 
-let demoFinishedAssignments = [];
+let demoFinishedAssignments: Assignment[] = [];
 
 for (let i = 0; i < 2; i++) {
   demoFinishedAssignments.push({

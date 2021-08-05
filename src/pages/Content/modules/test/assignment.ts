@@ -1,4 +1,6 @@
-const finishedAssignment = {
+import { Assignment } from '../types';
+
+const finishedAssignment: Assignment = {
   color: 'rgb(0, 0, 0)',
   html_url: 'https://this.is.a.test/',
   name: `Finished Assignment Test`,
@@ -8,8 +10,10 @@ const finishedAssignment = {
   id: -3,
   user_submitted: true,
   grade: 1,
+  is_quiz_assignment: false,
+  course_code: 'Code 123456',
 };
-const finishedAssignments = [];
+const finishedAssignments: Assignment[] = [];
 const assignmentCount = 1000;
 
 for (let i = 1; i <= assignmentCount; i++) {
@@ -23,17 +27,19 @@ for (let i = 1; i <= assignmentCount; i++) {
     id: 20 + assignmentCount + i,
     user_submitted: true,
     grade: 1,
+    is_quiz_assignment: false,
+    course_code: `Code ${20 + assignmentCount + i}`,
   });
 }
 
-let due_at = new Date();
+let due_at: Date | string = new Date();
 due_at.setMonth(1);
 due_at.setDate(1);
 due_at.setFullYear(1990);
 due_at.setHours(10, 10, 10, 10);
 due_at = due_at.toISOString();
 
-const unfinishedAssignment2 = {
+const unfinishedAssignment2: Assignment = {
   color: 'rgb(0, 0, 0)',
   html_url: 'https://this.is.a.test/',
   name: `Dummy Assignment`,
@@ -43,9 +49,11 @@ const unfinishedAssignment2 = {
   id: -4,
   user_submitted: false,
   grade: 0,
+  is_quiz_assignment: false,
+  course_code: 'Code 123456',
 };
 
-const unfinishedAssignment = {
+const unfinishedAssignment: Assignment = {
   color: 'rgb(0, 0, 0)',
   html_url: 'https://this.is.a.test/',
   name: `Unfinished Assignment Test`,
@@ -55,9 +63,11 @@ const unfinishedAssignment = {
   id: -2,
   user_submitted: false,
   grade: 0,
+  is_quiz_assignment: false,
+  course_code: 'Code 123456',
 };
 
-const unfinishedAssignments = [];
+const unfinishedAssignments: Assignment[] = [];
 
 for (let i = 1; i <= assignmentCount; i++) {
   unfinishedAssignments.push({
@@ -70,10 +80,12 @@ for (let i = 1; i <= assignmentCount; i++) {
     id: 20 + i,
     user_submitted: false,
     grade: 0,
+    is_quiz_assignment: false,
+    course_code: `Code ${20 + i}`,
   });
 }
 
-const unsubmittedButGradedAssignment = {
+const unsubmittedButGradedAssignment: Assignment = {
   color: 'rgb(0, 0, 0)',
   html_url: 'https://this.is.a.test/',
   name: `Unfinished Assignment Test`,
@@ -83,6 +95,8 @@ const unsubmittedButGradedAssignment = {
   id: -1,
   user_submitted: false,
   grade: 1,
+  is_quiz_assignment: false,
+  course_code: 'Code 123456',
 };
 
 finishedAssignments.push(unsubmittedButGradedAssignment);

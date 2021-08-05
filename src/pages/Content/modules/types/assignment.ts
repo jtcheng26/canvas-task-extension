@@ -11,6 +11,7 @@ interface Assignment {
   is_quiz_lti_assignment?: boolean;
   course_code: string;
   grade: number;
+  discussion_topic?: string | 0;
 }
 
 export default Assignment;
