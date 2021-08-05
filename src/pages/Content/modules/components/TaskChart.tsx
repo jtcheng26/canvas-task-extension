@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import ReactApexChart from 'react-apexcharts';
-import PropTypes from 'prop-types';
 import '../../content.styles.css';
+import { Assignment, Course } from '../types';
 
 /*
   Renders progress chart
@@ -26,7 +26,6 @@ const TotalText = styled.div`
   position: absolute;
   margin: auto;
   bottom: 49%;
-  zindex: 10;
 `;
 
 const ProgressText = styled.div`
@@ -53,23 +52,41 @@ const CompleteText = styled.div`
   font-size: 13px;
 `;
 
+interface TaskChartProps {
+  courses: Course[];
+  unfinishedAssignments: Assignment[];
+  finishedAssignments: Assignment[];
+  selectedCourseId: number;
+  setCourse: (id: number) => void;
+}
+
 export default function TaskChart({
   courses,
   unfinishedAssignments,
   finishedAssignments,
-  selectedCourseId,
+  selectedCourseId = -1,
   setCourse,
-}) {
+}: TaskChartProps) {
   const series = [],
-    colors = [],
-    labels = [],
-    names = [],
-    ids = [],
-    classes = {};
+    colors: string[] = [],
+    labels: string[] = [],
+    names: string[] = [],
+    ids: number[] = [],
+    classes: {
+      [key: string]: {
+        total: number;
+        done: number;
+        color: string;
+        name: string;
+        idx: number;
+      };
+    } = {};
   let doneTotal = 0,
     total = 0;
   if (courses.length > 0) {
-    const convertToIndex = {};
+    const convertToIndex: {
+      [key: string]: number;
+    } = {};
     courses.sort((a, b) => {
       return a.position - b.position;
     });
@@ -107,7 +124,7 @@ export default function TaskChart({
         classes[course].idx
       ] = `${classes[course].done}/${classes[course].total}`;
       names[classes[course].idx] = classes[course].name;
-      ids[classes[course].idx] = course;
+      ids[classes[course].idx] = parseInt(course);
       if (selectedCourseId !== -1 && parseInt(course) !== selectedCourseId)
         series[classes[course].idx] = 0;
     }
@@ -121,9 +138,12 @@ export default function TaskChart({
       height: 370,
       type: 'radialBar',
       events: {
-        dataPointSelection: function (event) {
-          const idx = event.srcElement.attributes.j.value;
-          setCourse(parseInt(ids[idx]));
+        dataPointSelection: function (event: React.MouseEvent<SVGPathElement>) {
+          console.log(event);
+          const idx = parseInt(
+            (event.target as SVGPathElement).attributes[13].value
+          );
+          setCourse(ids[idx]);
         },
       },
     },
@@ -189,51 +209,3 @@ export default function TaskChart({
     </ChartContainer>
   );
 }
-
-TaskChart.defaultProps = {
-  selectedCourseId: -1,
-  setCourse: () => {},
-};
-
-TaskChart.propTypes = {
-  courses: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      color: PropTypes.string,
-      name: PropTypes.string,
-      position: PropTypes.number,
-    })
-  ).isRequired,
-  finishedAssignments: PropTypes.arrayOf(
-    PropTypes.shape({
-      color: PropTypes.string,
-      html_url: PropTypes.string,
-      name: PropTypes.string,
-      points_possible: PropTypes.number,
-      due_at: PropTypes.string,
-      course_id: PropTypes.number,
-      id: PropTypes.number,
-      user_submitted: PropTypes.bool,
-      is_quiz_assignment: PropTypes.bool,
-      course_code: PropTypes.string,
-      grade: PropTypes.number,
-    })
-  ).isRequired,
-  selectedCourseId: PropTypes.number,
-  setCourse: PropTypes.func,
-  unfinishedAssignments: PropTypes.arrayOf(
-    PropTypes.shape({
-      color: PropTypes.string,
-      html_url: PropTypes.string,
-      name: PropTypes.string,
-      points_possible: PropTypes.number,
-      due_at: PropTypes.string,
-      course_id: PropTypes.number,
-      id: PropTypes.number,
-      user_submitted: PropTypes.bool,
-      is_quiz_assignment: PropTypes.bool,
-      course_code: PropTypes.string,
-      grade: PropTypes.number,
-    })
-  ).isRequired,
-};

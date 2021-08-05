@@ -1,4 +1,5 @@
 import Course from './course';
 import Assignment from './assignment';
+import Data from './data';
 
-export { Course, Assignment };
+export { Data, Course, Assignment };
