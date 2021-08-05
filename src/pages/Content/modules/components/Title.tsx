@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 const TitleDiv = styled.div`
   border-bottom: 1px solid #c7cdd1;
@@ -9,7 +8,10 @@ const TitleDiv = styled.div`
   display: inline-block;
 `;
 
-const NextButton = styled.div`
+interface ButtonProps {
+  clickable: boolean;
+}
+const NextButton = styled.div<ButtonProps>`
   width: 0;
   height: 0;
   border-top: 4px solid transparent;
@@ -20,7 +22,7 @@ const NextButton = styled.div`
   background: transparent;
 `;
 
-const PrevButton = styled.div`
+const PrevButton = styled.div<ButtonProps>`
   width: 0;
   height: 0;
   border-top: 4px solid transparent;
@@ -31,7 +33,7 @@ const PrevButton = styled.div`
   background: transparent;
 `;
 
-const ButtonContainerLeft = styled.div`
+const ButtonContainerLeft = styled.div<ButtonProps>`
   padding: 5px;
   border-radius: 100%;
   display: inline-block;
@@ -49,7 +51,7 @@ const ButtonContainerLeft = styled.div`
   }
 `;
 
-const ButtonContainerRight = styled.div`
+const ButtonContainerRight = styled.div<ButtonProps>`
   padding: 5px;
   border-radius: 100%;
   display: inline-block;
@@ -78,17 +80,24 @@ const RightFloat = styled.div`
   align-items: center;
 `;
 
+interface TitleProps {
+  weekStart: Date;
+  weekEnd: Date;
+  clickable: boolean;
+  onPrevClick: () => void;
+  onNextClick: () => void;
+}
+
 /*
   Renders the title of the app, bounds for current time period, and prev/next buttons
 */
-
 export default function Title({
   weekStart,
   weekEnd,
-  clickable,
+  clickable = false,
   onPrevClick,
   onNextClick,
-}) {
+}: TitleProps) {
   const start = weekStart.toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',
@@ -122,17 +131,3 @@ export default function Title({
     </TitleDiv>
   );
 }
-
-Title.defaultProps = {
-  clickable: false,
-  onNextClick: () => {},
-  onPrevClick: () => {},
-};
-
-Title.propTypes = {
-  clickable: PropTypes.bool,
-  onNextClick: PropTypes.func,
-  onPrevClick: PropTypes.func,
-  weekEnd: PropTypes.instanceOf(Date).isRequired,
-  weekStart: PropTypes.instanceOf(Date).isRequired,
-};
