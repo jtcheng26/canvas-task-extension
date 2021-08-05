@@ -1,4 +1,4 @@
-import runApp from './modules/init';
+import runApp from './modules';
 import './content.styles.css';
 
 /*

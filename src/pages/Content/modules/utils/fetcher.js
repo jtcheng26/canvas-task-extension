@@ -1,5 +1,5 @@
 import axios from 'axios';
-// import { demoAssignments, demoCourses } from '../test/demo'
+import { demoAssignments, demoCourses } from '../test/demo';
 
 export const dataFetcher = {
   courseNames: {},
@@ -251,7 +251,7 @@ export const dataFetcher = {
       console.error(error);
     }
     // console.log(dataFetcher.data);
-    // dataFetcher.data = {assignments: demoAssignments, courses: demoCourses}
+    dataFetcher.data = { assignments: demoAssignments, courses: demoCourses };
     return dataFetcher.data;
   },
 };
