@@ -1,19 +1,23 @@
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
 import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
+import { Assignment, Data } from '../types';
+
+interface TaskContainerProps {
+  data: Data;
+}
 
 /*
   Main app component that renders all async content
 */
 
-export default function TaskContainer({ data }) {
+export default function TaskContainer({ data }: TaskContainerProps) {
   const url = location.pathname.split('/');
   const onCoursePage = url.length === 3 && url[url.length - 2] === 'courses';
   const [course, setCourse] = useState(onCoursePage ? data.courses[0].id : -1);
-  function compareDates(a, b) {
-    return new Date(a.due_at) - new Date(b.due_at);
+  function compareDates(a: Assignment, b: Assignment) {
+    return new Date(a.due_at).valueOf() - new Date(b.due_at).valueOf();
   }
   data.assignments.sort(compareDates);
   /*
@@ -44,31 +48,3 @@ export default function TaskContainer({ data }) {
     </>
   );
 }
-
-TaskContainer.propTypes = {
-  data: PropTypes.shape({
-    courses: PropTypes.arrayOf(
-      PropTypes.shape({
-        id: PropTypes.number,
-        color: PropTypes.string,
-        name: PropTypes.string,
-        position: PropTypes.number,
-      })
-    ),
-    assignments: PropTypes.arrayOf(
-      PropTypes.shape({
-        color: PropTypes.string,
-        html_url: PropTypes.string,
-        name: PropTypes.string,
-        points_possible: PropTypes.number,
-        due_at: PropTypes.string,
-        course_id: PropTypes.number,
-        id: PropTypes.number,
-        user_submitted: PropTypes.bool,
-        is_quiz_assignment: PropTypes.bool,
-        course_code: PropTypes.string,
-        grade: PropTypes.number,
-      })
-    ),
-  }).isRequired,
-};
