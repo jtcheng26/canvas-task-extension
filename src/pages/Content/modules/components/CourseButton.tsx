@@ -5,7 +5,7 @@ interface CourseButtonProps {
   color: string;
   id: number;
   last: boolean;
-  setCourse: (course: number) => void;
+  setCourse: (id: number) => void;
   menuVisible: boolean;
   setMenuVisible: (menuVisible: boolean) => void;
 }

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import CourseButton from './CourseButton';
+import { Course } from '../types';
 
-const SelectArrow = styled.div`
+interface SelectArrowProps {
+  menuVisible: boolean;
+}
+const SelectArrow = styled.div<SelectArrowProps>`
   margin: 0px 0px 0px 4px;
   display: inline-block;
   width: 0;
@@ -12,20 +15,23 @@ const SelectArrow = styled.div`
   border-top: 7px solid rgba(0, 0, 0, 40%);
   border-right: 4px solid transparent;
   background: transparent;
-  transform: rotate(${(props) => (props.menuVisible ? '180deg' : '0deg')});
+  transform: rotate(${(p) => (p.menuVisible ? '180deg' : '0deg')});
 `;
 
-const CourseTitle = styled.div`
+interface CourseTitleProps {
+  courseSelection: Course | -1;
+}
+const CourseTitle = styled.div<CourseTitleProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: row;
   padding: 8px 10px;
   height: 15px;
-  color: ${(props) =>
-    props.courseSelection === -1
+  color: ${(p) =>
+    p.courseSelection === -1
       ? 'var(--ic-brand-font-color-dark)'
-      : props.courseSelection.color};
+      : p.courseSelection.color};
   font-family: Lato Extended;
   font-weight: bold;
   font-size: 14px;
@@ -74,18 +80,24 @@ const CourseNameContainer = styled.div`
   position: relative;
 `;
 
+interface CourseNameProps {
+  courses: Course[];
+  selectedCourseId: number;
+  setCourse: (id: number) => void;
+  onCoursePage: boolean;
+}
+
 /*
   Renders the current filtered course and dropdown menu to change the current course
 */
-
 export default function CourseName({
   courses,
-  selectedCourseId,
+  selectedCourseId = -1,
   setCourse,
-  onCoursePage,
-}) {
+  onCoursePage = false,
+}: CourseNameProps) {
   const [menuVisible, setMenuVisible] = useState(false);
-  let courseSelection = courses.filter((course) => {
+  let courseSelection: -1 | Course[] | Course = courses.filter((course) => {
     return course.id === selectedCourseId;
   });
   courseSelection = courseSelection.length === 0 ? -1 : courseSelection[0];
@@ -98,11 +110,12 @@ export default function CourseName({
         {courseSelection === -1 ? 'All Courses' : courseSelection.name}
         <SelectArrow menuVisible={menuVisible} />
       </CourseTitle>
-      <CourseDropdown menuVisible={menuVisible}>
+      <CourseDropdown>
         {!onCoursePage && courseSelection !== -1 && (
           <CourseButton
             color="black"
             id={-1}
+            last={false}
             menuVisible={menuVisible}
             name="All Courses"
             setCourse={setCourse}
@@ -125,22 +138,3 @@ export default function CourseName({
     </CourseNameContainer>
   );
 }
-
-CourseName.defaultProps = {
-  onCoursePage: false,
-  selectedCourseId: -1,
-};
-
-CourseName.propTypes = {
-  courses: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.number,
-      color: PropTypes.string,
-      name: PropTypes.string,
-      position: PropTypes.number,
-    })
-  ).isRequired,
-  onCoursePage: PropTypes.bool,
-  selectedCourseId: PropTypes.number,
-  setCourse: PropTypes.func.isRequired,
-};
