@@ -1,19 +1,27 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+
+interface CourseButtonProps {
+  name: string;
+  color: string;
+  id: number;
+  last: boolean;
+  setCourse: (course: number) => void;
+  menuVisible: boolean;
+  setMenuVisible: (menuVisible: boolean) => void;
+}
 
 /*
   Individual options in course name dropdown
 */
-
 export default function CourseButton({
   name,
-  color,
-  id,
-  last,
+  color = 'black',
+  id = -1,
+  last = false,
   setCourse,
   menuVisible,
   setMenuVisible,
-}) {
+}: CourseButtonProps) {
   function handleClick() {
     setCourse(id);
     setMenuVisible(false);
@@ -31,19 +39,3 @@ export default function CourseButton({
     </div>
   );
 }
-
-CourseButton.defaultProps = {
-  color: 'black',
-  id: -1,
-  last: false,
-};
-
-CourseButton.propTypes = {
-  color: PropTypes.string,
-  id: PropTypes.number,
-  last: PropTypes.bool,
-  menuVisible: PropTypes.bool.isRequired,
-  name: PropTypes.string.isRequired,
-  setCourse: PropTypes.func.isRequired,
-  setMenuVisible: PropTypes.func.isRequired,
-};
