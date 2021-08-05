@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Task from './Task';
-import PropTypes from 'prop-types';
 import Subtitle from './Subtitle';
+import { Assignment } from '../types';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -14,20 +14,34 @@ const ListContainer = styled.div`
   padding-bottom: 5px;
 `;
 
-const ListWrapper = styled.div`
+interface ListWrapperProps {
+  height: number;
+}
+const ListWrapper = styled.div<ListWrapperProps>`
   height: ${(props) => props.height}px;
   margin: 10px 0px 25px 0px;
 `;
 
-const ViewMore = styled.a`
+interface ViewMoreProps {
+  href: string;
+  onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+}
+const ViewMore = styled.a<ViewMoreProps>`
   font-size: 0.9rem;
 `;
+
+interface TaskListProps {
+  assignments: Assignment[];
+  selectedCourseId: number;
+}
 
 /*
   Renders all unfinished assignments
 */
-
-export default function TaskList({ assignments, selectedCourseId }) {
+export default function TaskList({
+  assignments,
+  selectedCourseId = -1,
+}: TaskListProps) {
   const [viewingMore, setViewingMore] = useState(false);
   const height = !viewingMore
     ? 25 + Math.min(assignments.length, 4) * 80
@@ -43,7 +57,7 @@ export default function TaskList({ assignments, selectedCourseId }) {
     renderedAssignments = assignments.slice(0, Math.min(4, assignments.length));
     viewMoreText = `View ${assignments.length - 4} more`;
   }
-  function onClick(event) {
+  function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
     setViewingMore(!viewingMore);
   }
@@ -58,33 +72,10 @@ export default function TaskList({ assignments, selectedCourseId }) {
           : 'None'}
       </ListContainer>
       {assignments.length > 4 && (
-        <ViewMore href="#" onClick={onClick}>
+        <ViewMore href="#" onClick={handleClick}>
           {viewMoreText}
         </ViewMore>
       )}
     </ListWrapper>
   );
 }
-
-TaskList.defaultProps = {
-  selectedCourseId: -1,
-};
-
-TaskList.propTypes = {
-  assignments: PropTypes.arrayOf(
-    PropTypes.shape({
-      color: PropTypes.string,
-      html_url: PropTypes.string,
-      name: PropTypes.string,
-      points_possible: PropTypes.number,
-      due_at: PropTypes.string,
-      course_id: PropTypes.number,
-      id: PropTypes.number,
-      user_submitted: PropTypes.bool,
-      is_quiz_assignment: PropTypes.bool,
-      course_code: PropTypes.string,
-      grade: PropTypes.number,
-    })
-  ).isRequired,
-  selectedCourseId: PropTypes.number,
-};
