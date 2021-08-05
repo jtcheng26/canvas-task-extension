@@ -1,8 +1,5 @@
 {
-  "plugins": [
-    "react",
-    "jest"
-  ],
+  "plugins": ["react", "jest"],
   "extends": [
     "eslint:recommended",
     "plugin:react/all",
@@ -10,6 +7,12 @@
     "prettier/react",
     "plugin:jest/recommended"
   ],
+  "rules": {
+    "react/jsx-filename-extension": [
+      2,
+      { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
+    ]
+  },
   "globals": {
     "chrome": "readonly"
   },

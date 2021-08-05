@@ -7,11 +7,14 @@ const SubtitleDiv = styled.div`
   height: 25px;
 `;
 
+type SubtitleProps = {
+  text: string;
+};
+
 /*
   Renders a subtitle within the app
 */
-
-export default function Subtitle({ text }) {
+export default function Subtitle({ text }: SubtitleProps) {
   return (
     <SubtitleDiv>
       <div style={{ float: 'left' }}>{text}</div>
