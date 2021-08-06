@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 import Title from './Title';
 import ContentLoader from './ContentLoader';
+import { Options } from '../types';
 
 /*
   functions to get the previous and next occurence of a specific day of the week
 */
 
-function getWeekStart(startDate) {
+function getWeekStart(startDate: number) {
   const d = new Date();
   d.setDate(d.getDate() - ((d.getDay() - startDate + 7) % 7));
   d.setHours(0, 0, 0);
   return d;
 }
-function getWeekEnd(startDate) {
+function getWeekEnd(startDate: number) {
   const d = new Date();
   if (d.getDay() != startDate) {
     d.setDate(d.getDate() + ((startDate + 7 - d.getDay()) % 7));
@@ -60,27 +60,29 @@ const AppContainer = styled.div`
   flex-direction: column;
 `;
 
-export default function App({ userOptions }) {
+interface AppProps {
+  options: Options;
+}
+
+export default function App({ options }: AppProps) {
   const [delta, setDelta] = useState(0);
   const [clickable, setClickable] = useState(true);
-  let prevPeriodStart;
-  let nextPeriodStart;
+  let prevPeriodStart = getMonthStart();
+  let nextPeriodStart = getMonthEnd();
   /*
     set time period based on user-selected options and set delta based on current period
   */
-  if (userOptions.period === 'Month') {
-    prevPeriodStart = getMonthStart();
-    nextPeriodStart = getMonthEnd();
+  if (options.period === 'Month') {
     prevPeriodStart.setMonth(prevPeriodStart.getMonth() + delta);
     nextPeriodStart.setMonth(nextPeriodStart.getMonth() + delta);
-  } else if (userOptions.period === 'Day') {
+  } else if (options.period === 'Day') {
     prevPeriodStart = getDayStart();
     nextPeriodStart = getDayEnd();
     prevPeriodStart.setDate(prevPeriodStart.getDate() + delta);
     nextPeriodStart.setDate(nextPeriodStart.getDate() + delta);
-  } else if (userOptions.period === 'Week') {
-    prevPeriodStart = getWeekStart(userOptions.startDate);
-    nextPeriodStart = getWeekEnd(userOptions.startDate);
+  } else if (options.period === 'Week') {
+    prevPeriodStart = getWeekStart(options.startDate);
+    nextPeriodStart = getWeekEnd(options.startDate);
     prevPeriodStart.setDate(prevPeriodStart.getDate() + 7 * delta);
     nextPeriodStart.setDate(nextPeriodStart.getDate() + 7 * delta);
   }
@@ -96,7 +98,7 @@ export default function App({ userOptions }) {
   /*
     when prev/next buttons clicked
   */
-  function incrementDelta(d) {
+  function incrementDelta(d: number) {
     setDelta(delta + d);
   }
   /*
@@ -126,17 +128,8 @@ export default function App({ userOptions }) {
         endDate={nextPeriodStartLocal}
         loadedCallback={loadedCallback}
         startDate={prevPeriodStartLocal}
-        options={userOptions}
+        options={options}
       />
     </AppContainer>
   );
 }
-
-App.propTypes = {
-  userOptions: PropTypes.shape({
-    period: PropTypes.string,
-    startDate: PropTypes.number,
-    startHour: PropTypes.number,
-    startMinutes: PropTypes.number,
-  }).isRequired,
-};

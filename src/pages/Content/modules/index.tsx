@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
+import { Options } from './types';
 
 /*
   render app function
 */
 
-export default function runApp(container, data) {
+export default function runApp(container: HTMLElement, options: Options) {
   ReactDOM.render(
     <React.StrictMode>
-      <App userOptions={data} />
+      <App options={options} />
     </React.StrictMode>,
     container
   );
