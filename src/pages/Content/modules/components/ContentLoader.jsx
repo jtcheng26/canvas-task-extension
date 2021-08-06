@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
-import { dataFetcher } from '../utils/fetcher';
+// import { dataFetcher } from '../utils/fetcher';
+import getData from '../networking/getData';
 
 /*
   compareProps function so content is re-rendered properly when prev and next buttons clicked
@@ -31,11 +32,7 @@ function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
       try {
         setPending(true);
         setError(false);
-        const response = await dataFetcher.getRelevantAssignments(
-          userOptions,
-          startDate,
-          endDate
-        );
+        const response = await getData(userOptions, startDate, endDate);
         setData(response);
         loadedCallback();
         setPending(false);
