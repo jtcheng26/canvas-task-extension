@@ -25,9 +25,8 @@ const observer = new MutationObserver((mutations) => {
 const containerList = document.getElementsByClassName(
   'Sidebar__TodoListContainer'
 );
-const teacherContainerList = document.getElementsByClassName(
-  'todo-list-header'
-);
+const teacherContainerList =
+  document.getElementsByClassName('todo-list-header');
 if (containerList.length > 0) createSidebar(containerList[0] as HTMLElement);
 else if (teacherContainerList.length > 0)
   createSidebar(teacherContainerList[0] as HTMLElement);
@@ -85,9 +84,9 @@ function createSidebar(container: HTMLElement) {
               only visually hide sidebar to prevent issues with DOM modification
             */
             if (!result2.sidebar) {
-              (document.getElementById(
-                'right-side'
-              ) as HTMLElement).className += 'hidden-sidebar';
+              (
+                document.getElementById('right-side') as HTMLElement
+              ).className += 'hidden-sidebar';
             }
             runApp(newContainer, data);
           });

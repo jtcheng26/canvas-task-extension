@@ -1,11 +1,11 @@
 .hidden-sidebar .Sidebar__TodoListContainer {
-    display: none;
+  display: none;
 }
 
 .hidden-sidebar .todo-list-header {
-    display: none;
+  display: none;
 }
 
 .hidden-sidebar .to-do-list {
-    display: none;
+  display: none;
 }
