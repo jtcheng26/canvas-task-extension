@@ -14,7 +14,9 @@ interface TaskContainerProps {
   Main app component that renders all async content
 */
 
-export default function TaskContainer({ data }: TaskContainerProps) {
+export default function TaskContainer({
+  data,
+}: TaskContainerProps): JSX.Element {
   const onCourse = onCoursePage();
   const [course, setCourse] = useState(onCourse ? data.courses[0].id : -1);
   data.assignments = sortByDate(data.assignments);

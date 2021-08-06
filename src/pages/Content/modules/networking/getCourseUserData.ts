@@ -8,7 +8,9 @@ import { ColorsRequest, CoursesRequest, PositionsRequest } from './requests';
     Fetches intermediary 'User Data' (dashboard colors, dashboard positions, course names)
     along with course data and then processes it to return one course mapping
 */
-export default async function getCourseUserData() {
+export default async function getCourseUserData(): Promise<
+  [Course[], UserData]
+> {
   // Make requests in parallel
   const requests = await axios.all([
     ColorsRequest(),

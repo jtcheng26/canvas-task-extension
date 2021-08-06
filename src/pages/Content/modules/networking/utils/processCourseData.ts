@@ -4,7 +4,7 @@ import { Course, UserData } from '../../types';
 export default function processCourseData(
   courseData: Course[],
   userData: UserData
-) {
+): Course[] {
   /*
     Course Data = course id, color, name, position
   */

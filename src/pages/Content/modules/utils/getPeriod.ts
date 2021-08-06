@@ -7,7 +7,7 @@ export default function getPeriod(
   period: Period,
   startDate: number,
   delta: number
-) {
+): { start: Date; end: Date } {
   let prevPeriodStart = getMonthStart();
   let nextPeriodStart = getMonthEnd();
   /*

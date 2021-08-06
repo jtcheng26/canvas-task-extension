@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /* Get user dashboard course positions */
-export default function PositionsRequest() {
+export default function PositionsRequest(): Promise<AxiosResponse> {
   return axios.get(
     `${
       location.protocol + '//' + location.hostname

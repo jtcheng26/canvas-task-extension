@@ -21,7 +21,7 @@ export default function CourseButton({
   setCourse,
   menuVisible,
   setMenuVisible,
-}: CourseButtonProps) {
+}: CourseButtonProps): JSX.Element {
   function handleClick() {
     setCourse(id);
     setMenuVisible(false);

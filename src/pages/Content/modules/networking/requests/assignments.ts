@@ -1,11 +1,11 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /* Get assignments for a stringified list of up to 10 courses */
 export default function AssignmentsRequest(
   start: string,
   end: string,
   courseList: string
-) {
+): Promise<AxiosResponse> {
   return axios.get(
     `${
       location.protocol + '//' + location.hostname

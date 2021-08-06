@@ -15,10 +15,10 @@ interface OptionsRowProps {
   keyList?: string[];
 }
 export default function OptionsRow({
-  content = <></>,
+  content,
   contentList = [],
   keyList = [],
-}: OptionsRowProps) {
+}: OptionsRowProps): JSX.Element {
   return (
     <Row>
       {content}

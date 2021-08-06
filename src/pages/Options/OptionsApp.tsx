@@ -34,7 +34,7 @@ const Title = styled.div`
   padding: 10px 10px 10px 0px;
 `;
 
-export default function OptionsApp() {
+export default function OptionsApp(): JSX.Element {
   const title = 'Canvas Tasks Options';
   const notice = 'Reload Canvas to see changes.';
   return (

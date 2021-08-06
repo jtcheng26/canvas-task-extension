@@ -41,7 +41,7 @@ interface TaskListProps {
 export default function TaskList({
   assignments,
   selectedCourseId = -1,
-}: TaskListProps) {
+}: TaskListProps): JSX.Element {
   const [viewingMore, setViewingMore] = useState(false);
   const height = !viewingMore
     ? 25 + Math.min(assignments.length, 4) * 80

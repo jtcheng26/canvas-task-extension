@@ -97,7 +97,7 @@ export default function Title({
   clickable = false,
   onPrevClick,
   onNextClick,
-}: TitleProps) {
+}: TitleProps): JSX.Element {
   const start = weekStart.toLocaleString('en-US', {
       month: 'short',
       day: 'numeric',

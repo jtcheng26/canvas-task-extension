@@ -46,7 +46,7 @@ export default function DayButton({
   handleClick,
   children,
   disabled = false,
-}: DayButtonProps) {
+}: DayButtonProps): JSX.Element {
   function onClick() {
     handleClick(id);
   }

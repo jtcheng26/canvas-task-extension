@@ -66,7 +66,7 @@ export default function TaskChart({
   finishedAssignments,
   selectedCourseId = -1,
   setCourse,
-}: TaskChartProps) {
+}: TaskChartProps): JSX.Element {
   const series = [],
     colors: string[] = [],
     labels: string[] = [],

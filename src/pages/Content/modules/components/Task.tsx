@@ -80,7 +80,7 @@ interface TaskProps {
     Renders an individual task item
 */
 
-export default function Task({ assignment }: TaskProps) {
+export default function Task({ assignment }: TaskProps): JSX.Element {
   const due_at = new Date(assignment.due_at),
     due_date = due_at.toLocaleString('en-US', {
       month: 'short',

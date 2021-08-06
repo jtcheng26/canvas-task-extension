@@ -95,7 +95,7 @@ export default function CourseName({
   selectedCourseId = -1,
   setCourse,
   onCoursePage = false,
-}: CourseNameProps) {
+}: CourseNameProps): JSX.Element {
   const [menuVisible, setMenuVisible] = useState(false);
   let courseSelection: -1 | Course[] | Course = courses.filter((course) => {
     return course.id === selectedCourseId;

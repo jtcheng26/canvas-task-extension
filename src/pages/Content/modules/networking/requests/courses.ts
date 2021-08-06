@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
-export default function CoursesRequest() {
+export default function CoursesRequest(): Promise<AxiosResponse> {
   return axios.get(
     `${
       location.protocol + '//' + location.hostname

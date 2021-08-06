@@ -1,25 +1,19 @@
 import { Assignment } from '../types';
+import { getWeekStart } from '../utils/getWeek';
 
 /*
   Pretty demo assignments
 */
 
-function getPrevMonday() {
-  const d = new Date();
-  d.setDate(d.getDate() - ((d.getDay() - 1 + 7) % 7));
-  d.setHours(0, 0, 0);
-  return d;
-}
-
 const days = [];
 for (let i = 1; i < 7; i++) {
-  const day = getPrevMonday();
+  const day = getWeekStart(1);
   day.setDate(day.getDate() + i);
   day.setHours(8, 30, 0);
   days.push(day.toISOString());
 }
 
-let demoUnfinishedAssignments: Assignment[] = [
+const demoUnfinishedAssignments: Assignment[] = [
   {
     color: '#8F3E97',
     html_url: '#',
@@ -103,7 +97,7 @@ let demoUnfinishedAssignments: Assignment[] = [
   },
 ];
 
-let demoFinishedAssignments: Assignment[] = [];
+const demoFinishedAssignments: Assignment[] = [];
 
 for (let i = 0; i < 2; i++) {
   demoFinishedAssignments.push({

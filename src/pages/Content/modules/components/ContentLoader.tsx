@@ -30,7 +30,7 @@ function ContentLoader({
   startDate,
   endDate,
   loadedCallback,
-}: ContentLoaderProps) {
+}: ContentLoaderProps): JSX.Element {
   const [data, setData] = useState({});
   const [isPending, setPending] = useState(true);
   const [error, setError] = useState(false);

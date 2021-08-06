@@ -40,7 +40,7 @@ const ExplainText = styled.div`
   color: rgba(0, 0, 0, 50%);
 `;
 
-export default function Options() {
+export default function Options(): JSX.Element {
   const [day, setDay] = useState(-1);
   const [period, setPeriod] = useState(-1);
   const [hour, setHour] = useState(-1);
@@ -58,14 +58,10 @@ export default function Options() {
     'If unchecked, only courses with active assignments are given a ring.';
   function handleChange(value: TimePickerValue) {
     const dateStr = value.toLocaleString();
-    chrome.storage.sync.set(
-      { startHour: parseInt(dateStr.substring(0, 2)) },
-      function () {}
-    );
-    chrome.storage.sync.set(
-      { startMinutes: parseInt(dateStr.substring(3, 5)) },
-      function () {}
-    );
+    chrome.storage.sync.set({ startHour: parseInt(dateStr.substring(0, 2)) });
+    chrome.storage.sync.set({
+      startMinutes: parseInt(dateStr.substring(3, 5)),
+    });
   }
   function handleDayClick(index: number) {
     chrome.storage.sync.set({ startDate: index });

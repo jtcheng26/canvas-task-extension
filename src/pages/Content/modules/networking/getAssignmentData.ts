@@ -10,7 +10,7 @@ export default async function getAssignmentData(
   options: Options,
   startDate: Date,
   endDate: Date
-) {
+): Promise<Data> {
   /*
     Fetch assignments based on course list. Uses calendar events api for improved performance, but as a result, will only show assignments that have a due date
   */
@@ -87,7 +87,7 @@ export default async function getAssignmentData(
     count # of assignments for each course
   */
   const assignment_count: { [key: number]: number } = {};
-  for (let course_id in userData.names) {
+  for (const course_id in userData.names) {
     assignment_count[course_id] = 0;
   }
   assignments.forEach((assignment) => {

@@ -13,7 +13,7 @@ interface SubtitleProps {
 /*
   Renders a subtitle within the app
 */
-export default function Subtitle({ text }: SubtitleProps) {
+export default function Subtitle({ text }: SubtitleProps): JSX.Element {
   return (
     <SubtitleDiv>
       <div style={{ float: 'left' }}>{text}</div>

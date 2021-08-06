@@ -14,7 +14,7 @@ interface AppProps {
   options: Options;
 }
 
-export default function App({ options }: AppProps) {
+export default function App({ options }: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
   const [clickable, setClickable] = useState(true);
   const { start, end } = getPeriod(options.period, options.startDate, delta);
@@ -59,8 +59,8 @@ export default function App({ options }: AppProps) {
       <ContentLoader
         endDate={endLocal}
         loadedCallback={loadedCallback}
-        startDate={startLocal}
         options={options}
+        startDate={startLocal}
       />
     </AppContainer>
   );

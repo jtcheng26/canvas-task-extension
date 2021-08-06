@@ -7,7 +7,7 @@ import { Options } from './types';
   render app function
 */
 
-export default function runApp(container: HTMLElement, options: Options) {
+export default function runApp(container: HTMLElement, options: Options): void {
   ReactDOM.render(
     <React.StrictMode>
       <App options={options} />

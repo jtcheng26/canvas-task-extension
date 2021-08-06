@@ -8,7 +8,7 @@ export default async function GetData(
   options: Options,
   startDate: Date,
   endDate: Date
-) {
+): Promise<Data> {
   /*
     fetches everything
   */
