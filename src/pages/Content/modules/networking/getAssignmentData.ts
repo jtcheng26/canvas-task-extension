@@ -1,5 +1,7 @@
 import axios from 'axios';
 import { Options, Course, Assignment, UserData, Data } from '../types';
+import CompareMonthDate from '../utils/compareMonthDate';
+import onCoursePage from '../utils/onCoursePage';
 import AllAssignmentsRequest from './requests/allAssignments';
 
 export default async function getAssignmentData(
@@ -66,19 +68,13 @@ export default async function getAssignmentData(
   */
   assignments = assignments.filter((assignment) => {
     const due_date = new Date(assignment.due_at);
-    if (
-      due_date.getMonth() == startDate.getMonth() &&
-      due_date.getDate() == startDate.getDate()
-    ) {
+    if (CompareMonthDate(startDate, due_date)) {
       if (due_date.getHours() == options.startHour) {
         return due_date.getMinutes() >= options.startMinutes;
       } else {
         return due_date.getHours() >= options.startHour;
       }
-    } else if (
-      due_date.getMonth() == endDate.getMonth() &&
-      due_date.getDate() == endDate.getDate()
-    ) {
+    } else if (CompareMonthDate(endDate, due_date)) {
       if (due_date.getHours() == options.startHour) {
         return due_date.getMinutes() < options.startMinutes;
       } else {
@@ -102,7 +98,7 @@ export default async function getAssignmentData(
   */
   let courses: Course[] = [];
   const url = location.pathname.split('/');
-  if (url.length === 3 && url[url.length - 2] === 'courses') {
+  if (onCoursePage()) {
     const id = parseInt(url.pop() as string);
     courses = courseData.filter((course) => {
       return course.id === id;

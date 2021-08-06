@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import styled from 'styled-components';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
@@ -6,24 +7,18 @@ import getData from '../networking/getData';
 import { Data, Options } from '../types';
 import CompareMonthDate from '../utils/compareMonthDate';
 
+const LoadingDiv = styled.div`
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
 interface ContentLoaderProps {
   options: Options;
   startDate: Date;
   endDate: Date;
   loadedCallback: () => void;
-}
-
-/*
-  compareProps function so content is re-rendered properly when prev and next buttons clicked
-*/
-function compareProps(
-  prevProps: ContentLoaderProps,
-  nextProps: ContentLoaderProps
-) {
-  return (
-    CompareMonthDate(prevProps.startDate, nextProps.startDate) &&
-    CompareMonthDate(prevProps.endDate, nextProps.endDate)
-  );
 }
 
 /*
@@ -60,14 +55,7 @@ function ContentLoader({
   return (
     <>
       {isPending && !error && (
-        <div
-          style={{
-            paddingTop: '20px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}
-        >
+        <LoadingDiv>
           <MoonLoader
             color="var(--ic-link-color)"
             css={css`
@@ -76,11 +64,24 @@ function ContentLoader({
             loading
             size={50}
           />
-        </div>
+        </LoadingDiv>
       )}
       {!isPending && !error && <TaskContainer data={data as Data} />}
       {error && <h1>{failed}</h1>}
     </>
+  );
+}
+
+/*
+  compareProps function so content is re-rendered properly when prev and next buttons clicked
+*/
+function compareProps(
+  prevProps: ContentLoaderProps,
+  nextProps: ContentLoaderProps
+) {
+  return (
+    CompareMonthDate(prevProps.startDate, nextProps.startDate) &&
+    CompareMonthDate(prevProps.endDate, nextProps.endDate)
   );
 }
 

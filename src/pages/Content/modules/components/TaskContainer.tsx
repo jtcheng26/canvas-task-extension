@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
-import { Assignment, Data } from '../types';
+import { Data } from '../types';
+import onCoursePage from '../utils/onCoursePage';
+import sortByDate from '../utils/sortByDate';
 
 interface TaskContainerProps {
   data: Data;
@@ -13,13 +15,9 @@ interface TaskContainerProps {
 */
 
 export default function TaskContainer({ data }: TaskContainerProps) {
-  const url = location.pathname.split('/');
-  const onCoursePage = url.length === 3 && url[url.length - 2] === 'courses';
-  const [course, setCourse] = useState(onCoursePage ? data.courses[0].id : -1);
-  function compareDates(a: Assignment, b: Assignment) {
-    return new Date(a.due_at).valueOf() - new Date(b.due_at).valueOf();
-  }
-  data.assignments.sort(compareDates);
+  const onCourse = onCoursePage();
+  const [course, setCourse] = useState(onCourse ? data.courses[0].id : -1);
+  data.assignments = sortByDate(data.assignments);
   /*
     unfinished assignments are assignments that are neither submitted nor graded
   */
@@ -33,7 +31,7 @@ export default function TaskContainer({ data }: TaskContainerProps) {
     <>
       <CourseName
         courses={data.courses}
-        onCoursePage={onCoursePage}
+        onCoursePage={onCourse}
         selectedCourseId={course}
         setCourse={setCourse}
       />

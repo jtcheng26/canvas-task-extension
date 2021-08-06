@@ -1,4 +1,4 @@
-type Period = 'Day' | 'Week' | 'Month';
+export type Period = 'Day' | 'Week' | 'Month';
 
 interface Options {
   startDate: number;
