@@ -1,21 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
 import { css } from '@emotion/core';
-// import { dataFetcher } from '../utils/fetcher';
 import getData from '../networking/getData';
+import { Data, Options } from '../types';
+import CompareMonthDate from '../utils/compareMonthDate';
+
+interface ContentLoaderProps {
+  options: Options;
+  startDate: Date;
+  endDate: Date;
+  loadedCallback: () => void;
+}
 
 /*
   compareProps function so content is re-rendered properly when prev and next buttons clicked
 */
-
-function compareProps(prevProps, nextProps) {
+function compareProps(
+  prevProps: ContentLoaderProps,
+  nextProps: ContentLoaderProps
+) {
   return (
-    prevProps.startDate.getMonth() == nextProps.startDate.getMonth() &&
-    prevProps.startDate.getDate() == nextProps.startDate.getDate() &&
-    prevProps.endDate.getMonth() == nextProps.endDate.getMonth() &&
-    prevProps.endDate.getDate() == nextProps.endDate.getDate()
+    CompareMonthDate(prevProps.startDate, nextProps.startDate) &&
+    CompareMonthDate(prevProps.endDate, nextProps.endDate)
   );
 }
 
@@ -23,7 +30,12 @@ function compareProps(prevProps, nextProps) {
   utility component that fetches async data and re-renders content when necessary
 */
 
-function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
+function ContentLoader({
+  options,
+  startDate,
+  endDate,
+  loadedCallback,
+}: ContentLoaderProps) {
   const [data, setData] = useState({});
   const [isPending, setPending] = useState(true);
   const [error, setError] = useState(false);
@@ -32,7 +44,7 @@ function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
       try {
         setPending(true);
         setError(false);
-        const response = await getData(userOptions, startDate, endDate);
+        const response = (await getData(options, startDate, endDate)) as Data;
         setData(response);
         loadedCallback();
         setPending(false);
@@ -43,7 +55,7 @@ function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
       }
     }
     fetchData();
-  }, [userOptions, startDate, endDate, setData, setPending, setError]);
+  }, [options, startDate, endDate, setData, setPending, setError]);
   const failed = 'Failed to load';
   return (
     <>
@@ -66,28 +78,10 @@ function ContentLoader({ userOptions, startDate, endDate, loadedCallback }) {
           />
         </div>
       )}
-      {!isPending && !error && <TaskContainer data={data} />}
+      {!isPending && !error && <TaskContainer data={data as Data} />}
       {error && <h1>{failed}</h1>}
     </>
   );
 }
-
-ContentLoader.defaultProps = {
-  loadedCallback: () => {},
-};
-
-ContentLoader.propTypes = {
-  endDate: PropTypes.instanceOf(Date).isRequired,
-  loadedCallback: PropTypes.func,
-  startDate: PropTypes.instanceOf(Date).isRequired,
-  userOptions: PropTypes.shape({
-    period: PropTypes.string,
-    startDate: PropTypes.number,
-    startHour: PropTypes.number,
-    startMinutes: PropTypes.number,
-    sidebar: PropTypes.bool,
-    user_courses: PropTypes.bool,
-  }).isRequired,
-};
 
 export default React.memo(ContentLoader, compareProps);

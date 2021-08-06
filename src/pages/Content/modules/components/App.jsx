@@ -126,7 +126,7 @@ export default function App({ userOptions }) {
         endDate={nextPeriodStartLocal}
         loadedCallback={loadedCallback}
         startDate={prevPeriodStartLocal}
-        userOptions={userOptions}
+        options={userOptions}
       />
     </AppContainer>
   );
