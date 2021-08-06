@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
 const Row = styled.div`
   display: flex;
@@ -10,7 +9,16 @@ const Row = styled.div`
   height: 30px;
 `;
 
-export default function OptionsRow({ content, contentList, keyList }) {
+interface OptionsRowProps {
+  content?: React.ReactNode;
+  contentList?: React.ReactNode[];
+  keyList?: string[];
+}
+export default function OptionsRow({
+  content = <></>,
+  contentList = [],
+  keyList = [],
+}: OptionsRowProps) {
   return (
     <Row>
       {content}
@@ -20,15 +28,3 @@ export default function OptionsRow({ content, contentList, keyList }) {
     </Row>
   );
 }
-
-OptionsRow.defaultProps = {
-  content: <div />,
-  contentList: [<div key="0" />],
-  keyList: ['0'],
-};
-
-OptionsRow.propTypes = {
-  content: PropTypes.element,
-  contentList: PropTypes.arrayOf(PropTypes.element),
-  keyList: PropTypes.arrayOf(PropTypes.string),
-};

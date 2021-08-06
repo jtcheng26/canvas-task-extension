@@ -1,8 +1,10 @@
+type Period = 'Day' | 'Week' | 'Month';
+
 interface Options {
   startDate: number;
   startHour: number;
   startMinutes: number;
-  period: 'Day' | 'Week' | 'Month';
+  period: Period;
   sidebar: boolean;
   dash_courses: boolean;
 }

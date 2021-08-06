@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
-import TimePicker from 'react-time-picker';
+import TimePicker, { TimePickerValue } from 'react-time-picker';
 import DayButton from './DayButton';
 import './Options.css';
 import OptionsRow from './OptionsRow';
 import Switch from 'react-switch';
 
-const Label = styled.div`
+interface LabelProps {
+  disabled?: boolean;
+}
+const Label = styled.div<LabelProps>`
   padding-top: 5px;
   padding-right: 10px;
   font-size: 15px;
@@ -53,21 +56,22 @@ export default function Options() {
   const prompt4 = 'Show ring for each dashboard course';
   const explain4 =
     'If unchecked, only courses with active assignments are given a ring.';
-  function handleChange(value) {
+  function handleChange(value: TimePickerValue) {
+    const dateStr = value.toLocaleString();
     chrome.storage.sync.set(
-      { startHour: parseInt(value.substring(0, 2)) },
+      { startHour: parseInt(dateStr.substring(0, 2)) },
       function () {}
     );
     chrome.storage.sync.set(
-      { startMinutes: parseInt(value.substring(3, 5)) },
+      { startMinutes: parseInt(dateStr.substring(3, 5)) },
       function () {}
     );
   }
-  function handleDayClick(index) {
+  function handleDayClick(index: number) {
     chrome.storage.sync.set({ startDate: index });
     setDay(index);
   }
-  function handlePeriodClick(index) {
+  function handlePeriodClick(index: number) {
     chrome.storage.sync.set({ period: periods[index] });
     setPeriod(index);
   }
@@ -154,7 +158,7 @@ export default function Options() {
               value={
                 hour >= 0 && minutes >= 0
                   ? new Date(0, 0, 0, hour, minutes)
-                  : null
+                  : new Date(0, 0, 0, 0, 0)
               }
             />
           }

@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
-import PropTypes from 'prop-types';
 
-const StyledButton = styled.div`
+interface StyledButtonProps {
+  disabled: boolean;
+  selected: boolean;
+}
+const StyledButton = styled.div<StyledButtonProps>`
   font-family: Lato;
   font-weight: bold;
   min-width: 40px;
@@ -30,13 +33,20 @@ const StyledButton = styled.div`
   cursor: ${(props) => (props.disabled ? 'auto' : 'pointer')};
 `;
 
+interface DayButtonProps {
+  selected?: boolean;
+  id: number;
+  handleClick: (id: number) => void;
+  disabled?: boolean;
+  children: React.ReactNode;
+}
 export default function DayButton({
-  selected,
+  selected = false,
   id,
   handleClick,
   children,
-  disabled,
-}) {
+  disabled = false,
+}: DayButtonProps) {
   function onClick() {
     handleClick(id);
   }
@@ -46,18 +56,3 @@ export default function DayButton({
     </StyledButton>
   );
 }
-
-DayButton.defaultProps = {
-  disabled: false,
-};
-
-DayButton.propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]).isRequired,
-  disabled: PropTypes.bool,
-  handleClick: PropTypes.func.isRequired,
-  id: PropTypes.number.isRequired,
-  selected: PropTypes.bool.isRequired,
-};
