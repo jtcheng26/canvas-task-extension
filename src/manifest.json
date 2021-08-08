@@ -3,24 +3,24 @@
   "description": "A better to-do list sidebar for Canvas.",
   "version": "1.0.5",
   "options_page": "options.html",
-  "permissions": [
-    "storage"
-  ],
-  "host_permissions": [
-    "https://*.instructure.com/*"
-  ],
+  "permissions": ["storage"],
+  "host_permissions": ["https://*.instructure.com/*"],
   "icons": {
     "128": "icon-128.png"
   },
-  "content_scripts": [{
-    "matches": ["https://*.instructure.com/*"],
-    "js": ["contentScript.bundle.js"],
-    "css": ["content.styles.css"]
-  }],
-  "web_accessible_resources": [{
-    "resources": ["icon-128.png"],
-    "matches": ["https://*.instructure.com/*"] 
-  }],
+  "content_scripts": [
+    {
+      "matches": ["https://*.instructure.com/*"],
+      "js": ["contentScript.bundle.js"],
+      "css": ["content.styles.css"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["icon-128.png"],
+      "matches": ["https://*.instructure.com/*"]
+    }
+  ],
   "manifest_version": 3,
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
