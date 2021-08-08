@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
-import { css } from '@emotion/core';
 import getData from '../networking/getData';
 import { Data, Options } from '../types';
 import CompareMonthDate from '../utils/compareMonthDate';
@@ -58,9 +57,7 @@ function ContentLoader({
         <LoadingDiv>
           <MoonLoader
             color="var(--ic-link-color)"
-            css={css`
-              align-self: center;
-            `}
+            css="align-self: center;"
             loading
             size={50}
           />

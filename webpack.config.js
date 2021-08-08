@@ -52,7 +52,7 @@ var options = {
     rules: [
       {
         // look for .css or .scss files
-        test: /\.(css|scss)$/,
+        test: /\.(css)$/,
         // in the `src` directory
         use: [
           {
@@ -60,12 +60,6 @@ var options = {
           },
           {
             loader: 'css-loader',
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              sourceMap: true,
-            },
           },
         ],
       },
