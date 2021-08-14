@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import Task from './Task';
 import Subtitle from './Subtitle';
 import { Assignment } from '../types';
+import useCourseNames from '../hooks/useCourseNames';
+import useCourseColors from '../hooks/useCourseColors';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -32,25 +34,16 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 interface TaskListProps {
   assignments: Assignment[];
-  selectedCourseId: number;
 }
 
 /*
   Renders all unfinished assignments
 */
-export default function TaskList({
-  assignments,
-  selectedCourseId = -1,
-}: TaskListProps): JSX.Element {
+export default function TaskList({ assignments }: TaskListProps): JSX.Element {
   const [viewingMore, setViewingMore] = useState(false);
   const height = !viewingMore
     ? 25 + Math.min(assignments.length, 4) * 80
     : 25 + assignments.length * 80;
-  if (selectedCourseId !== -1) {
-    assignments = assignments.filter((assignment) => {
-      return assignment.course_id === selectedCourseId;
-    });
-  }
   let viewMoreText = 'View less';
   let renderedAssignments = assignments;
   if (!viewingMore) {
@@ -61,13 +54,24 @@ export default function TaskList({
     event.preventDefault();
     setViewingMore(!viewingMore);
   }
+  // const { data: names } = useCourseNames();
+  // const { data: colors } = useCourseColors();
+  // console.log(names);
+  // console.log(colors);
   return (
     <ListWrapper height={height}>
       <Subtitle text="Unfinished" />
       <ListContainer>
         {renderedAssignments.length > 0
           ? renderedAssignments.map((assignment) => {
-              return <Task assignment={assignment} key={assignment.id} />;
+              return (
+                <Task
+                  assignment={assignment}
+                  color={assignment.color}
+                  key={assignment.id}
+                  name={assignment.course_name}
+                />
+              );
             })
           : 'None'}
       </ListContainer>

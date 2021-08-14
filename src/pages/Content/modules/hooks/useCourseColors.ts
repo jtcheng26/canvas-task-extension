@@ -8,6 +8,10 @@ async function getCourseColors(): Promise<StringStringLookup> {
     `${location.protocol + '//' + location.hostname}/api/v1/users/self/colors`
   );
 
+  Object.keys(data.custom_colors).forEach((course_id) => {
+    data.custom_colors[course_id.substring(7)] = data.custom_colors[course_id];
+  });
+
   return data.custom_colors;
 }
 

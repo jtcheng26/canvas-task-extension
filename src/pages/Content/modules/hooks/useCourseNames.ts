@@ -11,7 +11,7 @@ async function getCourseNames(courses: Course[]): Promise<StringStringLookup> {
   return names;
 }
 
-export default function useCourseNames(): UseQueryResult {
+export default function useCourseNames(): UseQueryResult<StringStringLookup> {
   const { data: courses } = useCourses();
   return useQuery('names', () => getCourseNames(courses as Course[]), {
     staleTime: Infinity,

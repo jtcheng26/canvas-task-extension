@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from 'axios';
-import { Assignment, Options } from '../types';
+import { Assignment, Options, StringStringLookup } from '../types';
 import useCourses from './useCourses';
 import { useQuery, UseQueryResult } from 'react-query';
 import { Course } from '../types';
@@ -7,6 +7,9 @@ import CompareMonthDate from '../utils/compareMonthDate';
 import dashCourses from '../utils/dashCourses';
 import onCoursePage from '../utils/onCoursePage';
 import AssignmentMap from '../types/assignmentMap';
+import useGrade from './useGrade';
+import useCourseNames from './useCourseNames';
+import useCourseColors from './useCourseColors';
 
 /* Get assignments for a stringified list of up to 10 courses */
 function getAssignmentsRequest(
@@ -105,8 +108,11 @@ async function getAssignments(
   startDate: Date,
   endDate: Date,
   options: Options,
+  colors: StringStringLookup,
+  names: StringStringLookup,
   courses: Course[]
 ): Promise<AssignmentMap> {
+  console.log('Getting assignments');
   const startStr = startDate.toISOString().split('T')[0];
   const endStr = endDate.toISOString().split('T')[0];
   const requests = await axios.all(
@@ -120,13 +126,22 @@ async function getAssignments(
 
   requests.forEach((request) => {
     request.data.forEach((data: { assignment: Assignment }) => {
+      data.assignment.color = colors[data.assignment.course_id];
+      data.assignment.course_name = names[data.assignment.course_id];
+      data.assignment.grade = useGrade(data.assignment);
       assignments[data.assignment.course_id].push(data.assignment);
     });
   });
 
+  console.log(assignments);
+
   assignments = onlyUnlockedAssignments(assignments);
 
+  console.log(assignments);
+
   assignments = withinTimeBounds(startDate, endDate, options, assignments);
+
+  console.log(assignments);
 
   if (onCoursePage()) {
     const course_id: number = parseInt(
@@ -142,6 +157,8 @@ async function getAssignments(
     else assignments = onlyActiveAssignments(assignments);
   }
 
+  console.log(assignments);
+
   return assignments;
 }
 
@@ -151,12 +168,22 @@ export default function useAssignments(
   options: Options
 ): UseQueryResult {
   const { data: courses } = useCourses();
+  const { data: colors } = useCourseColors();
+  const { data: names } = useCourseNames();
   return useQuery(
     ['names', startDate, endDate],
-    () => getAssignments(startDate, endDate, options, courses as Course[]),
+    () =>
+      getAssignments(
+        startDate,
+        endDate,
+        options,
+        colors as StringStringLookup,
+        names as StringStringLookup,
+        courses as Course[]
+      ),
     {
       staleTime: 1000 * 60 * 10,
-      enabled: !!courses,
+      enabled: !!courses && !!colors && !!names,
     }
   );
 }

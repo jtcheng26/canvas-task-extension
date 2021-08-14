@@ -9,7 +9,7 @@ interface Assignment {
   user_submitted: boolean;
   is_quiz_assignment: boolean;
   is_quiz_lti_assignment?: boolean;
-  course_code: string;
+  course_name: string;
   grade: number; // via submission score/grade
   discussion_topic?: string | 0;
   locked_for_user?: boolean;
