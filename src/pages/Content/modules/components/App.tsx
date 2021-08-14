@@ -4,6 +4,7 @@ import Title from './Title';
 import ContentLoader from './ContentLoader';
 import { Options } from '../types';
 import getPeriod from '../utils/getPeriod';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 const AppContainer = styled.div`
   display: flex;
@@ -13,6 +14,8 @@ const AppContainer = styled.div`
 interface AppProps {
   options: Options;
 }
+
+const queryClient = new QueryClient();
 
 export default function App({ options }: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
@@ -48,20 +51,22 @@ export default function App({ options }: AppProps): JSX.Element {
     incrementDelta(1);
   }
   return (
-    <AppContainer>
-      <Title
-        clickable={clickable}
-        onNextClick={onNextClick}
-        onPrevClick={onPrevClick}
-        weekEnd={end}
-        weekStart={start}
-      />
-      <ContentLoader
-        endDate={endLocal}
-        loadedCallback={loadedCallback}
-        options={options}
-        startDate={startLocal}
-      />
-    </AppContainer>
+    <QueryClientProvider client={queryClient}>
+      <AppContainer>
+        <Title
+          clickable={clickable}
+          onNextClick={onNextClick}
+          onPrevClick={onPrevClick}
+          weekEnd={end}
+          weekStart={start}
+        />
+        <ContentLoader
+          endDate={endLocal}
+          loadedCallback={loadedCallback}
+          options={options}
+          startDate={startLocal}
+        />
+      </AppContainer>
+    </QueryClientProvider>
   );
 }

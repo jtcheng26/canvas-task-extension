@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Assignment } from '../types';
 import { AssignmentIcon, DiscussionIcon, QuizIcon } from '../icons';
+import useCourseColors from '../hooks/useCourseColors';
 
 const TaskContainer = styled.div`
     width: 100%;
@@ -108,9 +109,13 @@ export default function Task({ assignment }: TaskProps): JSX.Element {
   }
   const due = 'Due';
   const DueLabel = <strong>{due}</strong>;
+  const { data: colors } = useCourseColors();
   return (
     <TaskContainer>
-      <TaskLeft color={assignment.color} onClick={onClick}>
+      <TaskLeft
+        color={(colors && colors[`course_${assignment.course_id}`]) || '000000'}
+        onClick={onClick}
+      >
         {assignmentIcon}
       </TaskLeft>
       <TaskInfo>

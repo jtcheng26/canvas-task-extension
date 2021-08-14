@@ -1,5 +1,5 @@
 interface Assignment {
-  color: string;
+  color: string; // via course_id -> colors[course_id]
   html_url: string;
   name: string;
   points_possible: number;
@@ -10,7 +10,7 @@ interface Assignment {
   is_quiz_assignment: boolean;
   is_quiz_lti_assignment?: boolean;
   course_code: string;
-  grade: number;
+  grade: number; // via submission score/grade
   discussion_topic?: string | 0;
   locked_for_user?: boolean;
   submission?: {

@@ -4,13 +4,13 @@
   "version": "1.0.5",
   "options_page": "options.html",
   "permissions": ["storage"],
-  "host_permissions": ["https://*.instructure.com/*"],
+  "host_permissions": ["https://*.instructure.com/*", "http://canvas.docker/*"],
   "icons": {
     "128": "icon-128.png"
   },
   "content_scripts": [
     {
-      "matches": ["https://*.instructure.com/*"],
+      "matches": ["https://*.instructure.com/*", "http://canvas.docker/*"],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }

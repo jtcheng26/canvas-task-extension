@@ -2,6 +2,7 @@ import axios from 'axios';
 import { UserData } from '../types';
 import { Course } from '../types';
 import { ColorsRequest, CoursesRequest, PositionsRequest } from './requests';
+import processCourseData from './utils/processCourseData';
 
 /*
   Get course and user data from Canvas api
@@ -28,5 +29,5 @@ export default async function getCourseUserData(): Promise<
   courseData.forEach((course: Course) => {
     userData.names[course.id] = course.course_code as string;
   });
-  return [courseData, userData];
+  return [processCourseData(courseData, userData), userData];
 }

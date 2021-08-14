@@ -29,17 +29,13 @@ export default async function getAssignmentData(
     filter 1: visible courses and exclude locked assignments
   */
   assignments = assignments.filter((assignment) => {
-    if (!(assignment.course_id in userData.names)) {
-      return false;
-    } else if (assignment.locked_for_user) {
-      if (assignment.submission) {
+    if (!(assignment.course_id in userData.names)) return false;
+    else if (assignment.locked_for_user) {
+      // if locked but submitted/graded already, include in chart
+      if (assignment.submission)
         return assignment.submission.attempt || assignment.submission.score;
-      } else {
-        return false;
-      }
-    } else {
-      return true;
-    }
+      else return false;
+    } else return true;
   });
   /*
     set color and grade for assignments
@@ -69,17 +65,13 @@ export default async function getAssignmentData(
   assignments = assignments.filter((assignment) => {
     const due_date = new Date(assignment.due_at);
     if (CompareMonthDate(startDate, due_date)) {
-      if (due_date.getHours() == options.startHour) {
+      if (due_date.getHours() == options.startHour)
         return due_date.getMinutes() >= options.startMinutes;
-      } else {
-        return due_date.getHours() >= options.startHour;
-      }
+      else return due_date.getHours() >= options.startHour;
     } else if (CompareMonthDate(endDate, due_date)) {
-      if (due_date.getHours() == options.startHour) {
+      if (due_date.getHours() == options.startHour)
         return due_date.getMinutes() < options.startMinutes;
-      } else {
-        return due_date.getHours() < options.startHour;
-      }
+      else return due_date.getHours() < options.startHour;
     }
     return true;
   });
