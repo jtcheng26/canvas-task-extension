@@ -24,7 +24,7 @@ const demoUnfinishedAssignments: Assignment[] = [
     id: 10,
     user_submitted: false,
     is_quiz_assignment: false,
-    course_code: 'Algebra 2 - Smith',
+    course_name: 'Algebra 2 - Smith',
     grade: 0,
   },
   {
@@ -37,7 +37,7 @@ const demoUnfinishedAssignments: Assignment[] = [
     id: 11,
     user_submitted: false,
     is_quiz_assignment: false,
-    course_code: 'English 11 - Brown',
+    course_name: 'English 11 - Brown',
     grade: 0,
     discussion_topic: 0,
   },
@@ -51,7 +51,7 @@ const demoUnfinishedAssignments: Assignment[] = [
     id: 12,
     user_submitted: false,
     is_quiz_assignment: true,
-    course_code: 'US History - Jones',
+    course_name: 'US History - Jones',
     grade: 0,
   },
   {
@@ -64,7 +64,7 @@ const demoUnfinishedAssignments: Assignment[] = [
     id: 13,
     user_submitted: false,
     is_quiz_assignment: false,
-    course_code: 'Biology - McCoy',
+    course_name: 'Biology - McCoy',
     grade: 0,
   },
   {
@@ -77,7 +77,7 @@ const demoUnfinishedAssignments: Assignment[] = [
     id: 14,
     user_submitted: false,
     is_quiz_assignment: false,
-    course_code: 'English 11 - Brown',
+    course_name: 'English 11 - Brown',
     grade: 0,
     discussion_topic: 0,
   },
@@ -91,7 +91,7 @@ const demoUnfinishedAssignments: Assignment[] = [
     id: 15,
     user_submitted: false,
     is_quiz_assignment: false,
-    course_code: 'English 11 - Brown',
+    course_name: 'English 11 - Brown',
     grade: 0,
     discussion_topic: 0,
   },
@@ -110,7 +110,7 @@ for (let i = 0; i < 2; i++) {
     id: 20 + i,
     user_submitted: true,
     is_quiz_assignment: false,
-    course_code: 'English 11 - Brown',
+    course_name: 'English 11 - Brown',
     grade: 0,
     discussion_topic: 0,
   });
@@ -127,7 +127,7 @@ for (let i = 0; i < 5; i++) {
     id: 40 + i,
     user_submitted: true,
     is_quiz_assignment: false,
-    course_code: 'Biology - McCoy',
+    course_name: 'Biology - McCoy',
     grade: 0,
   });
 }
@@ -143,7 +143,7 @@ for (let i = 0; i < 3; i++) {
     id: 40 + i,
     user_submitted: true,
     is_quiz_assignment: true,
-    course_code: 'US History - Jones',
+    course_name: 'US History - Jones',
     grade: 0,
   });
 }
@@ -158,7 +158,7 @@ demoFinishedAssignments.push({
   id: 10,
   user_submitted: true,
   is_quiz_assignment: false,
-  course_code: 'Algebra 2 - Smith',
+  course_name: 'Algebra 2 - Smith',
   grade: 0,
 });
 

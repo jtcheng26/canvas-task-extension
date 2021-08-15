@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import Task from './Task';
 import Subtitle from './Subtitle';
 import { Assignment } from '../types';
-import useCourseNames from '../hooks/useCourseNames';
-import useCourseColors from '../hooks/useCourseColors';
 
 const ListContainer = styled.div`
   width: 100%;

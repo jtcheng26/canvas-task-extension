@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
-import getData from '../networking/getData';
-import { Data, Options } from '../types';
+import { Options } from '../types';
 import CompareMonthDate from '../utils/compareMonthDate';
 import useAssignments from '../hooks/useAssignments';
 import AssignmentMap from '../types/assignmentMap';

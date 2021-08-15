@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
-import { Data } from '../types';
 import onCoursePage from '../utils/onCoursePage';
 import sortByDate from '../utils/sortByDate';
 import AssignmentMap from '../types/assignmentMap';
@@ -30,9 +29,9 @@ export default function TaskContainer({
   const unfinishedAssignments = assignments.filter((assignment) => {
     return !assignment.user_submitted && useGrade(assignment) === 0;
   });
-  const finishedAssignments = assignments.filter((assignment) => {
-    return assignment.user_submitted || useGrade(assignment) !== 0;
-  });
+  // const finishedAssignments = assignments.filter((assignment) => {
+  //   return assignment.user_submitted || useGrade(assignment) !== 0;
+  // });
   return (
     <>
       <CourseName
@@ -41,13 +40,11 @@ export default function TaskContainer({
         selectedCourseId={course}
         setCourse={setCourse}
       />
-      {/* <TaskChart
-        courses={data.courses}
-        finishedAssignments={finishedAssignments}
+      <TaskChart
+        assignments={data}
         selectedCourseId={course}
         setCourse={setCourse}
-        unfinishedAssignments={unfinishedAssignments}
-      /> */}
+      />
       <TaskList
         assignments={
           course !== -1

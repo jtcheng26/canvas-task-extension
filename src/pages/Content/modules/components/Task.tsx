@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import { Assignment } from '../types';
 import { AssignmentIcon, DiscussionIcon, QuizIcon } from '../icons';
-import useCourseColors from '../hooks/useCourseColors';
 
 const TaskContainer = styled.div`
     width: 100%;

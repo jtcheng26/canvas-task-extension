@@ -11,7 +11,7 @@ const finishedAssignment: Assignment = {
   user_submitted: true,
   grade: 1,
   is_quiz_assignment: false,
-  course_code: 'Code 123456',
+  course_name: 'Code 123456',
 };
 const finishedAssignments: Assignment[] = [];
 const assignmentCount = 1000;
@@ -28,7 +28,7 @@ for (let i = 1; i <= assignmentCount; i++) {
     user_submitted: true,
     grade: 1,
     is_quiz_assignment: false,
-    course_code: `Code ${20 + assignmentCount + i}`,
+    course_name: `Code ${20 + assignmentCount + i}`,
   });
 }
 
@@ -50,7 +50,7 @@ const unfinishedAssignment2: Assignment = {
   user_submitted: false,
   grade: 0,
   is_quiz_assignment: false,
-  course_code: 'Code 123456',
+  course_name: 'Code 123456',
 };
 
 const unfinishedAssignment: Assignment = {
@@ -64,7 +64,7 @@ const unfinishedAssignment: Assignment = {
   user_submitted: false,
   grade: 0,
   is_quiz_assignment: false,
-  course_code: 'Code 123456',
+  course_name: 'Code 123456',
 };
 
 const unfinishedAssignments: Assignment[] = [];
@@ -81,7 +81,7 @@ for (let i = 1; i <= assignmentCount; i++) {
     user_submitted: false,
     grade: 0,
     is_quiz_assignment: false,
-    course_code: `Code ${20 + i}`,
+    course_name: `Code ${20 + i}`,
   });
 }
 
@@ -96,7 +96,7 @@ const unsubmittedButGradedAssignment: Assignment = {
   user_submitted: false,
   grade: 1,
   is_quiz_assignment: false,
-  course_code: 'Code 123456',
+  course_name: 'Code 123456',
 };
 
 finishedAssignments.push(unsubmittedButGradedAssignment);
