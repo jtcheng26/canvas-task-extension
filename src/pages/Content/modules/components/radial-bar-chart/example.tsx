@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart from '.';
 import { ChartData } from './types';
@@ -103,6 +103,7 @@ export default function RadialBarChartExample({ size }: Props): JSX.Element {
       // },
     ],
   };
+  const [selected, setSelected] = useState(-1);
   function onSelect(id: number) {
     console.log(id);
   }
@@ -121,7 +122,8 @@ export default function RadialBarChartExample({ size }: Props): JSX.Element {
       data={chartData}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      onSelect={onSelect}
+      onSelect={setSelected}
+      selectedBar={selected}
       size={size}
     >
       <TitleText>{titleText}</TitleText>

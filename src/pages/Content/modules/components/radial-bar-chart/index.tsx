@@ -43,6 +43,7 @@ interface Props {
   onMouseEnter?: (id: number, e: MouseEvent) => void;
   onMouseLeave?: (id: number, e: MouseEvent) => void;
   onSelect?: (id: number, e: MouseEvent) => void;
+  selectedBar: number;
   size: number;
 }
 
@@ -50,11 +51,11 @@ export default function RadialBarChart({
   data,
   onMouseEnter,
   onMouseLeave,
+  selectedBar,
   onSelect,
   children,
   size,
 }: Props): JSX.Element {
-  const [selectedBar, setSelectedBar] = useState(-1);
   const center = 140;
   const cutout = 45;
   const spaceBetween = computeSpaceBetween(data.bars.length);
@@ -73,10 +74,8 @@ export default function RadialBarChart({
 
   function handleClick(id: number, e: MouseEvent) {
     if (selectedBar === id) {
-      setSelectedBar(-1);
       if (onSelect) onSelect(-1, e);
     } else {
-      setSelectedBar(id);
       if (onSelect) onSelect(id, e);
     }
   }
