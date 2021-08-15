@@ -112,7 +112,7 @@ async function getAssignments(
   names: StringStringLookup,
   courses: Course[]
 ): Promise<AssignmentMap> {
-  console.log('Getting assignments');
+  // console.log('Getting assignments');
   const startStr = startDate.toISOString().split('T')[0];
   const endStr = endDate.toISOString().split('T')[0];
   const requests = await axios.all(
@@ -133,15 +133,15 @@ async function getAssignments(
     });
   });
 
-  console.log(assignments);
+  // console.log(assignments);
 
   assignments = onlyUnlockedAssignments(assignments);
 
-  console.log(assignments);
+  // console.log(assignments);
 
   assignments = withinTimeBounds(startDate, endDate, options, assignments);
 
-  console.log(assignments);
+  // console.log(assignments);
 
   if (onCoursePage()) {
     const course_id: number = parseInt(
@@ -157,7 +157,7 @@ async function getAssignments(
     else assignments = onlyActiveAssignments(assignments);
   }
 
-  console.log(assignments);
+  // console.log(assignments);
 
   return assignments;
 }

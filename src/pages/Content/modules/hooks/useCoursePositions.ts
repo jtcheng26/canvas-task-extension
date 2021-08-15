@@ -4,7 +4,7 @@ import { StringNumberLookup } from '../types/lookup';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<StringNumberLookup> {
-  console.log('Getting course positions');
+  // console.log('Getting course positions');
   const { data } = await axios.get(
     `${
       location.protocol + '//' + location.hostname

@@ -40,26 +40,7 @@ function ContentLoader({
   useEffect(() => {
     if (isSuccess) loadedCallback();
   }, [isSuccess]);
-  // const [data, setData] = useState({});
-  // const [isPending, setPending] = useState(true);
-  // const [error, setError] = useState(false);
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       setPending(true);
-  //       setError(false);
-  //       const response = (await getData(options, startDate, endDate)) as Data;
-  //       setData(response);
-  //       loadedCallback();
-  //       setPending(false);
-  //     } catch (err) {
-  //       setPending(false);
-  //       loadedCallback();
-  //       setError(true);
-  //     }
-  //   }
-  //   fetchData();
-  // }, [options, startDate, endDate, setData, setPending, setError]);
+
   const failed = 'Failed to load';
   return (
     <>

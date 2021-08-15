@@ -4,7 +4,7 @@ import { Course } from '../types';
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
 async function getCourses(): Promise<Course[]> {
-  console.log('Getting courses');
+  // console.log('Getting courses');
   const { data } = await axios.get(
     `${
       location.protocol + '//' + location.hostname

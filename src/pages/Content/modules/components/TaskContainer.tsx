@@ -29,9 +29,7 @@ export default function TaskContainer({
   const unfinishedAssignments = assignments.filter((assignment) => {
     return !assignment.user_submitted && useGrade(assignment) === 0;
   });
-  // const finishedAssignments = assignments.filter((assignment) => {
-  //   return assignment.user_submitted || useGrade(assignment) !== 0;
-  // });
+
   return (
     <>
       <CourseName

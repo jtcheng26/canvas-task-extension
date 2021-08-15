@@ -52,10 +52,6 @@ export default function TaskList({ assignments }: TaskListProps): JSX.Element {
     event.preventDefault();
     setViewingMore(!viewingMore);
   }
-  // const { data: names } = useCourseNames();
-  // const { data: colors } = useCourseColors();
-  // console.log(names);
-  // console.log(colors);
   return (
     <ListWrapper height={height}>
       <Subtitle text="Unfinished" />
