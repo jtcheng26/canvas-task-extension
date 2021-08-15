@@ -103,7 +103,7 @@ export default function RadialBarChart({
             onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            progress={bar.value / data.max}
+            progress={bar.value / bar.max}
             radius={cutout + radius * (i + 1)}
             width={strokeWidth}
           />
