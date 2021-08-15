@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
-import { StringNumberLookup } from '../types';
+import { StringNumberLookup } from '../types/lookup';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<StringNumberLookup> {
@@ -20,6 +20,8 @@ async function getCoursePositions(): Promise<StringNumberLookup> {
 }
 
 /* Use cached course positions, lookup using course id */
-export default function useCoursePositions(): UseQueryResult {
+export default function useCoursePositions(): UseQueryResult<
+  StringNumberLookup
+> {
   return useQuery('positions', getCoursePositions, { staleTime: Infinity });
 }
