@@ -91,7 +91,7 @@ export default function TaskChart({
           id: -1,
           value: 10,
           max: 10,
-          color: 'var(--ic-brand-font-color-dark)',
+          color: 'var(--ic-brand-global-nav-bgd)',
         });
       setChartData(data);
     }
