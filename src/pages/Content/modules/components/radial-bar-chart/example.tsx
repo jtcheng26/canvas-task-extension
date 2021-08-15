@@ -104,9 +104,6 @@ export default function RadialBarChartExample({ size }: Props): JSX.Element {
     ],
   };
   const [selected, setSelected] = useState(-1);
-  function onSelect(id: number) {
-    console.log(id);
-  }
   function onEnter(id: number) {
     console.log(id);
   }

@@ -1,5 +1,4 @@
 import React, { MouseEvent } from 'react';
-import { useState } from 'react';
 import styled from 'styled-components';
 import RadialChartBar from './bar';
 import { ChartData } from './types';
@@ -57,7 +56,7 @@ export default function RadialBarChart({
   size,
 }: Props): JSX.Element {
   const center = 140;
-  const cutout = 45;
+  const cutout = 50;
   const spaceBetween = computeSpaceBetween(data.bars.length);
   const strokeWidth = computeStrokeWidth(
     data.bars.length,

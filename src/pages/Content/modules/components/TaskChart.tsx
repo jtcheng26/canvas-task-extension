@@ -35,6 +35,7 @@ const TitleText = styled.div`
   font-size: 25px;
   font-family: Lato Extended;
   font-weight: bold;
+  line-height: 1.25em;
   color: ${(p) => p.color};
 `;
 
@@ -159,7 +160,7 @@ export default function TaskChart({
         data={chartData}
         onSelect={handleClick}
         selectedBar={selectedCourseId}
-        size={210}
+        size={chartData.bars.length < 7 ? 210 : 280}
       >
         <TitleText color={color}>{percent}</TitleText>
         <SubtitleText color={color}>{progress}</SubtitleText>
