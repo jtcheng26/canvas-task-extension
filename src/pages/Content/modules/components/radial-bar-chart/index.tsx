@@ -1,5 +1,4 @@
 import React, { MouseEvent } from 'react';
-import { useState } from 'react';
 import styled from 'styled-components';
 import RadialChartBar from './bar';
 import { ChartData } from './types';
@@ -43,6 +42,7 @@ interface Props {
   onMouseEnter?: (id: number, e: MouseEvent) => void;
   onMouseLeave?: (id: number, e: MouseEvent) => void;
   onSelect?: (id: number, e: MouseEvent) => void;
+  selectedBar: number;
   size: number;
 }
 
@@ -50,13 +50,13 @@ export default function RadialBarChart({
   data,
   onMouseEnter,
   onMouseLeave,
+  selectedBar,
   onSelect,
   children,
   size,
 }: Props): JSX.Element {
-  const [selectedBar, setSelectedBar] = useState(-1);
   const center = 140;
-  const cutout = 45;
+  const cutout = 50;
   const spaceBetween = computeSpaceBetween(data.bars.length);
   const strokeWidth = computeStrokeWidth(
     data.bars.length,
@@ -73,10 +73,8 @@ export default function RadialBarChart({
 
   function handleClick(id: number, e: MouseEvent) {
     if (selectedBar === id) {
-      setSelectedBar(-1);
       if (onSelect) onSelect(-1, e);
     } else {
-      setSelectedBar(id);
       if (onSelect) onSelect(id, e);
     }
   }
@@ -103,7 +101,7 @@ export default function RadialBarChart({
             onClick={handleClick}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            progress={bar.value / data.max}
+            progress={bar.value / bar.max}
             radius={cutout + radius * (i + 1)}
             width={strokeWidth}
           />

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import CourseButton from './CourseButton';
-import { Course } from '../types';
+import useCourseNames from '../hooks/useCourseNames';
+import useCourseColors from '../hooks/useCourseColors';
 
 interface SelectArrowProps {
   menuVisible: boolean;
@@ -19,7 +20,7 @@ const SelectArrow = styled.div<SelectArrowProps>`
 `;
 
 interface CourseTitleProps {
-  courseSelection: Course | -1;
+  color?: string;
 }
 const CourseTitle = styled.div<CourseTitleProps>`
   display: flex;
@@ -28,10 +29,7 @@ const CourseTitle = styled.div<CourseTitleProps>`
   flex-direction: row;
   padding: 8px 10px;
   height: 15px;
-  color: ${(p) =>
-    p.courseSelection === -1
-      ? 'var(--ic-brand-font-color-dark)'
-      : p.courseSelection.color};
+  color: ${(p) => (!p.color ? 'var(--ic-brand-font-color-dark)' : p.color)};
   font-family: Lato Extended;
   font-weight: bold;
   font-size: 14px;
@@ -81,8 +79,8 @@ const CourseNameContainer = styled.div`
 `;
 
 interface CourseNameProps {
-  courses: Course[];
-  selectedCourseId: number;
+  courses: number[];
+  selectedCourseId?: number;
   setCourse: (id: number) => void;
   onCoursePage: boolean;
 }
@@ -92,22 +90,25 @@ interface CourseNameProps {
 */
 export default function CourseName({
   courses,
-  selectedCourseId = -1,
+  selectedCourseId,
   setCourse,
   onCoursePage = false,
 }: CourseNameProps): JSX.Element {
   const [menuVisible, setMenuVisible] = useState(false);
-  let courseSelection: -1 | Course[] | Course = courses.filter((course) => {
-    return course.id === selectedCourseId;
-  });
-  courseSelection = courseSelection.length === 0 ? -1 : courseSelection[0];
+  const courseSelection = selectedCourseId ? selectedCourseId : -1;
+  const { data: nameData } = useCourseNames();
+  const { data: colorData } = useCourseColors();
+  const name =
+    nameData && courseSelection ? nameData[courseSelection] : 'All Courses';
+  const color =
+    colorData && courseSelection ? colorData[courseSelection] : '#000000';
   function toggleMenu() {
     setMenuVisible(!menuVisible);
   }
   return (
     <CourseNameContainer>
-      <CourseTitle courseSelection={courseSelection} onClick={toggleMenu}>
-        {courseSelection === -1 ? 'All Courses' : courseSelection.name}
+      <CourseTitle color={color} onClick={toggleMenu}>
+        {courseSelection === -1 ? 'All Courses' : name}
         <SelectArrow menuVisible={menuVisible} />
       </CourseTitle>
       <CourseDropdown>
@@ -124,12 +125,12 @@ export default function CourseName({
         )}
         {courses.map((course, i) => (
           <CourseButton
-            color={course.color}
-            id={course.id}
-            key={`course-btn-${course.id}`}
+            color={colorData ? colorData[course] : '#000000'}
+            id={course}
+            key={`course-btn-${course}`}
             last={i === courses.length - 1}
             menuVisible={menuVisible}
-            name={course.name}
+            name={nameData ? nameData[course] : 'Loading'}
             setCourse={setCourse}
             setMenuVisible={setMenuVisible}
           />

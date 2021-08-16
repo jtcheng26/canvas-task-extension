@@ -75,12 +75,18 @@ const TaskContainer = styled.div`
 
 interface TaskProps {
   assignment: Assignment;
+  name: string;
+  color: string;
 }
 /*
     Renders an individual task item
 */
 
-export default function Task({ assignment }: TaskProps): JSX.Element {
+export default function Task({
+  assignment,
+  name,
+  color,
+}: TaskProps): JSX.Element {
   const due_at = new Date(assignment.due_at),
     due_date = due_at.toLocaleString('en-US', {
       month: 'short',
@@ -110,13 +116,11 @@ export default function Task({ assignment }: TaskProps): JSX.Element {
   const DueLabel = <strong>{due}</strong>;
   return (
     <TaskContainer>
-      <TaskLeft color={assignment.color} onClick={onClick}>
+      <TaskLeft color={color || '000000'} onClick={onClick}>
         {assignmentIcon}
       </TaskLeft>
       <TaskInfo>
-        <CourseCodeText color={assignment.color}>
-          {assignment.course_code}
-        </CourseCodeText>
+        <CourseCodeText color={assignment.color}>{name}</CourseCodeText>
         <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
         <TaskDetailsText>
           {DueLabel}

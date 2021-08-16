@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TaskContainer from './TaskContainer';
 import MoonLoader from 'react-spinners/MoonLoader';
-import getData from '../networking/getData';
-import { Data, Options } from '../types';
+import { Options } from '../types';
 import CompareMonthDate from '../utils/compareMonthDate';
+import useAssignments from '../hooks/useAssignments';
+import AssignmentMap from '../types/assignmentMap';
 
 const LoadingDiv = styled.div`
   padding-top: 20px;
@@ -30,30 +31,20 @@ function ContentLoader({
   endDate,
   loadedCallback,
 }: ContentLoaderProps): JSX.Element {
-  const [data, setData] = useState({});
-  const [isPending, setPending] = useState(true);
-  const [error, setError] = useState(false);
+  const { data, isError, isSuccess } = useAssignments(
+    startDate,
+    endDate,
+    options
+  );
+
   useEffect(() => {
-    async function fetchData() {
-      try {
-        setPending(true);
-        setError(false);
-        const response = (await getData(options, startDate, endDate)) as Data;
-        setData(response);
-        loadedCallback();
-        setPending(false);
-      } catch (err) {
-        setPending(false);
-        loadedCallback();
-        setError(true);
-      }
-    }
-    fetchData();
-  }, [options, startDate, endDate, setData, setPending, setError]);
+    if (isSuccess) loadedCallback();
+  }, [isSuccess]);
+
   const failed = 'Failed to load';
   return (
     <>
-      {isPending && !error && (
+      {!isSuccess && !isError && (
         <LoadingDiv>
           <MoonLoader
             color="var(--ic-link-color)"
@@ -63,8 +54,8 @@ function ContentLoader({
           />
         </LoadingDiv>
       )}
-      {!isPending && !error && <TaskContainer data={data as Data} />}
-      {error && <h1>{failed}</h1>}
+      {isSuccess ? <TaskContainer data={data as AssignmentMap} /> : ''}
+      {isError && <h1>{failed}</h1>}
     </>
   );
 }
