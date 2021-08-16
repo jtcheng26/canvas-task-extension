@@ -10,7 +10,7 @@ describe('<Task />', () => {
     const wrapper = shallow(
       <Task assignment={mockData} color="#000000" name={mockData.course_name} />
     );
-    expect(wrapper.find('TaskLink').text()).toBe(mockData.course_name);
+    expect(wrapper.find('TaskLink').text()).toBe(mockData.name);
   });
 
   it('sets link', () => {
