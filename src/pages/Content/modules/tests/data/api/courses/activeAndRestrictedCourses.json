@@ -24,7 +24,7 @@
     "friendly_name": null,
     "apply_assignment_group_weights": false,
     "calendar": {
-      "ics": "http://canvas.docker/feeds/calendars/course_eYZ2ZEcBskBXXQQvlQ4FG4iF1lwZBptln8yMebVA.ics"
+      "ics": "link"
     },
     "time_zone": "America/Denver",
     "blueprint": false,
@@ -67,7 +67,7 @@
     "friendly_name": null,
     "apply_assignment_group_weights": false,
     "calendar": {
-      "ics": "http://canvas.docker/feeds/calendars/course_ZkEP3A7CDfK4Hqu9NUOh0t7AG1BrhMcNzxwMwAzs.ics"
+      "ics": "link"
     },
     "time_zone": "America/Denver",
     "blueprint": false,
@@ -110,7 +110,51 @@
     "friendly_name": null,
     "apply_assignment_group_weights": false,
     "calendar": {
-      "ics": "http://canvas.docker/feeds/calendars/course_TMzwtK3Ks8UkHT29xZ9MDmhWRQuQpN2IedV3uET5.ics"
+      "ics": "link"
+    },
+    "time_zone": "America/Denver",
+    "blueprint": false,
+    "enrollments": [
+      {
+        "type": "student",
+        "role": "StudentEnrollment",
+        "role_id": 19,
+        "user_id": 6,
+        "enrollment_state": "active",
+        "limit_privileges_to_course_section": false
+      }
+    ],
+    "hide_final_grades": false,
+    "workflow_state": "available",
+    "restrict_enrollments_to_course_dates": false
+  },
+  {
+    "access_restricted_by_date": true,
+    "id": 5,
+    "name": "Test Course 4",
+    "account_id": 2,
+    "uuid": "TMzwtK3Ks8UkHT29xZ9MDmhWRQuQpN2IedV3uET5",
+    "start_at": "2021-08-15T19:48:40Z",
+    "grading_standard_id": null,
+    "is_public": null,
+    "created_at": "2021-08-15T19:46:48Z",
+    "course_code": "test-course-3",
+    "default_view": "feed",
+    "root_account_id": 2,
+    "enrollment_term_id": 3,
+    "license": null,
+    "grade_passback_setting": null,
+    "end_at": null,
+    "public_syllabus": false,
+    "public_syllabus_to_auth": false,
+    "storage_quota_mb": 500,
+    "is_public_to_auth_users": false,
+    "homeroom_course": false,
+    "course_color": null,
+    "friendly_name": null,
+    "apply_assignment_group_weights": false,
+    "calendar": {
+      "ics": "link"
     },
     "time_zone": "America/Denver",
     "blueprint": false,
