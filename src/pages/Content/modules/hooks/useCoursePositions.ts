@@ -1,14 +1,13 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import { StringNumberLookup } from '../types/lookup';
+import baseURL from '../utils/baseURL';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<StringNumberLookup> {
   // console.log('Getting course positions');
   const { data } = await axios.get(
-    `${
-      location.protocol + '//' + location.hostname
-    }/api/v1/users/self/dashboard_positions`
+    `${baseURL()}/api/v1/users/self/dashboard_positions`
   );
 
   Object.keys(data.dashboard_positions).forEach((course_id) => {

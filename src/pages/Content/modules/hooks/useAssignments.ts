@@ -10,6 +10,7 @@ import AssignmentMap from '../types/assignmentMap';
 import useGrade from './useGrade';
 import useCourseNames from './useCourseNames';
 import useCourseColors from './useCourseColors';
+import baseURL from '../utils/baseURL';
 
 /* Get assignments for a stringified list of up to 10 courses */
 function getAssignmentsRequest(
@@ -18,9 +19,7 @@ function getAssignmentsRequest(
   courseList: string
 ): Promise<AxiosResponse> {
   return axios.get(
-    `${
-      location.protocol + '//' + location.hostname
-    }/api/v1/calendar_events?type=assignment&start_date=${start}&end_date=${end}${courseList}&per_page=100&include=submission`
+    `${baseURL()}/api/v1/calendar_events?type=assignment&start_date=${start}&end_date=${end}${courseList}&per_page=100&include=submission`
   );
 }
 
@@ -143,12 +142,10 @@ async function getAssignments(
 
   // console.log(assignments);
 
-  if (onCoursePage()) {
-    const course_id: number = parseInt(
-      location.pathname.split('/').pop() as string
-    );
+  const coursePageId = onCoursePage();
+  if (coursePageId !== false) {
     const courseAssignments: AssignmentMap = {};
-    courseAssignments[course_id] = assignments[course_id];
+    courseAssignments[coursePageId] = assignments[coursePageId];
     assignments = courseAssignments;
   } else {
     const dash = dashCourses();
