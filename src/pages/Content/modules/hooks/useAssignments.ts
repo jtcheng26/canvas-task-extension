@@ -182,7 +182,7 @@ export default function useAssignments(
         courses as Course[]
       ),
     {
-      staleTime: 1000 * 60 * 10,
+      staleTime: Infinity,
       enabled: !!courses && !!colors && !!names,
     }
   );
