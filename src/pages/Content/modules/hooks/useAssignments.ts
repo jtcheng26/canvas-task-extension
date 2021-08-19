@@ -23,7 +23,7 @@ function getAssignmentsRequest(
   );
 }
 
-function getAllAssignmentRequests(
+export function getAllAssignmentRequests(
   start: string,
   end: string,
   courses: Course[]
@@ -41,9 +41,12 @@ function getAllAssignmentRequests(
   return requests;
 }
 
-function onlyUnlockedAssignments(assignments: AssignmentMap): AssignmentMap {
+export function onlyUnlockedAssignments(
+  assignments: AssignmentMap
+): AssignmentMap {
+  const newAssignments: AssignmentMap = {};
   Object.keys(assignments).forEach((course) => {
-    assignments[course] = assignments[course].filter((assignment) => {
+    newAssignments[course] = assignments[course].filter((assignment) => {
       if (assignment.locked_for_user) {
         // if locked but submitted/graded already, include in chart
         if (assignment.submission)
@@ -54,17 +57,18 @@ function onlyUnlockedAssignments(assignments: AssignmentMap): AssignmentMap {
     });
   });
 
-  return assignments;
+  return newAssignments;
 }
 
-function withinTimeBounds(
+export function withinTimeBounds(
   startDate: Date,
   endDate: Date,
   options: Options,
   assignments: AssignmentMap
 ): AssignmentMap {
+  const newAssignments: AssignmentMap = {};
   Object.keys(assignments).forEach((course) => {
-    assignments[course] = assignments[course].filter((assignment) => {
+    newAssignments[course] = assignments[course].filter((assignment) => {
       const due_date = new Date(assignment.due_at);
       if (CompareMonthDate(startDate, due_date)) {
         if (due_date.getHours() == options.startHour)
@@ -78,7 +82,7 @@ function withinTimeBounds(
       return true;
     });
   });
-  return assignments;
+  return newAssignments;
 }
 
 function onlyTheseCourses(
@@ -92,7 +96,9 @@ function onlyTheseCourses(
   return newAssignments;
 }
 
-function onlyActiveAssignments(assignments: AssignmentMap): AssignmentMap {
+export function onlyActiveAssignments(
+  assignments: AssignmentMap
+): AssignmentMap {
   const newAssignments: AssignmentMap = {};
   Object.keys(assignments).forEach((course) => {
     if (assignments[course].length) {
