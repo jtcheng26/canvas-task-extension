@@ -3,7 +3,6 @@ import { Assignment, Options, StringStringLookup } from '../types';
 import useCourses from './useCourses';
 import { useQuery, UseQueryResult } from 'react-query';
 import { Course } from '../types';
-import CompareMonthDate from '../utils/compareMonthDate';
 import dashCourses from '../utils/dashCourses';
 import onCoursePage from '../utils/onCoursePage';
 import AssignmentMap from '../types/assignmentMap';
@@ -50,7 +49,11 @@ export function onlyUnlockedAssignments(
       if (assignment.locked_for_user) {
         // if locked but submitted/graded already, include in chart
         if (assignment.submission)
-          return assignment.submission.attempt || assignment.submission.score;
+          return (
+            assignment.submission.attempt ||
+            assignment.submission.score ||
+            assignment.submission.grade
+          );
         return false;
       }
       return true;
@@ -70,22 +73,16 @@ export function withinTimeBounds(
   Object.keys(assignments).forEach((course) => {
     newAssignments[course] = assignments[course].filter((assignment) => {
       const due_date = new Date(assignment.due_at);
-      if (CompareMonthDate(startDate, due_date)) {
-        if (due_date.getHours() == options.startHour)
-          return due_date.getMinutes() >= options.startMinutes;
-        else return due_date.getHours() >= options.startHour;
-      } else if (CompareMonthDate(endDate, due_date)) {
-        if (due_date.getHours() == options.startHour)
-          return due_date.getMinutes() < options.startMinutes;
-        else return due_date.getHours() < options.startHour;
-      }
-      return true;
+      return (
+        due_date.valueOf() >= startDate.valueOf() &&
+        due_date.valueOf() < endDate.valueOf()
+      );
     });
   });
   return newAssignments;
 }
 
-function onlyTheseCourses(
+export function onlyTheseCourses(
   courses: number[],
   assignments: AssignmentMap
 ): AssignmentMap {
@@ -117,9 +114,14 @@ async function getAssignments(
   names: StringStringLookup,
   courses: Course[]
 ): Promise<AssignmentMap> {
-  // console.log('Getting assignments');
-  const startStr = startDate.toISOString().split('T')[0];
-  const endStr = endDate.toISOString().split('T')[0];
+  /* Expand bounds by 1 day to account for possible time zone differences with api */
+  const st = new Date(startDate);
+  st.setDate(startDate.getDate() - 1);
+  const en = new Date(endDate);
+  en.setDate(en.getDate() + 1);
+
+  const startStr = st.toISOString().split('T')[0];
+  const endStr = en.toISOString().split('T')[0];
   const requests = await axios.all(
     getAllAssignmentRequests(startStr, endStr, courses)
   );
@@ -138,29 +140,19 @@ async function getAssignments(
     });
   });
 
-  // console.log(assignments);
-
   assignments = onlyUnlockedAssignments(assignments);
-
-  // console.log(assignments);
 
   assignments = withinTimeBounds(startDate, endDate, options, assignments);
 
-  // console.log(assignments);
-
   const coursePageId = onCoursePage();
   if (coursePageId !== false) {
-    const courseAssignments: AssignmentMap = {};
-    courseAssignments[coursePageId] = assignments[coursePageId];
-    assignments = courseAssignments;
+    assignments = onlyTheseCourses([coursePageId], assignments);
   } else {
     const dash = dashCourses();
     if (options.dash_courses && dash)
       assignments = onlyTheseCourses(Array.from(dash), assignments);
     else assignments = onlyActiveAssignments(assignments);
   }
-
-  // console.log(assignments);
 
   return assignments;
 }

@@ -6,6 +6,8 @@ import { getDayStart, getDayEnd } from '../utils/getDay';
 export default function getPeriod(
   period: Period,
   startDate: number,
+  startHours: number,
+  startMinutes: number,
   delta: number
 ): { start: Date; end: Date } {
   let prevPeriodStart = getMonthStart();
@@ -31,6 +33,12 @@ export default function getPeriod(
       nextPeriodStart.setDate(nextPeriodStart.getDate() + 7 * delta);
       break;
   }
+
+  prevPeriodStart.setHours(startHours);
+  prevPeriodStart.setMinutes(startMinutes);
+
+  nextPeriodStart.setHours(startHours);
+  nextPeriodStart.setMinutes(startMinutes);
 
   return { start: prevPeriodStart, end: nextPeriodStart };
 }

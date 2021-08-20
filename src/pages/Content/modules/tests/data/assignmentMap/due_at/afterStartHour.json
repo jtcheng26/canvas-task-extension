@@ -1,0 +1,14 @@
+{
+  "1": [
+    {
+      "id": 6,
+      "due_at": "2018-02-26T11:00:00Z",
+      "points_possible": 10.0,
+      "course_id": 3,
+      "name": "Percentage test",
+      "user_submitted": false,
+      "is_quiz_assignment": false,
+      "html_url": "http://canvas.docker/courses/3/assignments/6"
+    }
+  ]
+}

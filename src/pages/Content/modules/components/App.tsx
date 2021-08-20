@@ -20,16 +20,16 @@ const queryClient = new QueryClient();
 export default function App({ options }: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
   const [clickable, setClickable] = useState(true);
-  const { start, end } = getPeriod(options.period, options.startDate, delta);
-  /*
-    localize dates
-  */
-  const startLocal = new Date(
-    start.getTime() + start.getTimezoneOffset() * 60 * 1000
+  const { start, end } = getPeriod(
+    options.period,
+    options.startDate,
+    options.startHour,
+    options.startMinutes,
+    delta
   );
-  const endLocal = new Date(
-    end.getTime() + end.getTimezoneOffset() * 60 * 1000
-  );
+
+  console.log(start);
+  console.log(end);
   /*
     when prev/next buttons clicked
   */
@@ -61,10 +61,10 @@ export default function App({ options }: AppProps): JSX.Element {
           weekStart={start}
         />
         <ContentLoader
-          endDate={endLocal}
+          endDate={end}
           loadedCallback={loadedCallback}
           options={options}
-          startDate={startLocal}
+          startDate={start}
         />
       </AppContainer>
     </QueryClientProvider>

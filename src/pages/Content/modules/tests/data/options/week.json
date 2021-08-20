@@ -1,0 +1,8 @@
+{
+  "startDate": 1,
+  "startHour": 10,
+  "startMinutes": 15,
+  "period": "Week",
+  "sidebar": false,
+  "dash_courses": false
+}
