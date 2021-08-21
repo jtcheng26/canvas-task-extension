@@ -1,10 +1,12 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
+import { DemoColors } from '../tests/demo';
 import { StringStringLookup } from '../types';
 import baseURL from '../utils/baseURL';
 
 async function getCourseColors(): Promise<StringStringLookup> {
-  // console.log('Getting course colors');
+  if (process.env.DEMO) return DemoColors;
+
   const { data } = await axios.get(`${baseURL()}/api/v1/users/self/colors`);
 
   Object.keys(data.custom_colors).forEach((course_id) => {

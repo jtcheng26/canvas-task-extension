@@ -1,4 +1,9 @@
-import { Assignment } from '../types';
+import {
+  Assignment,
+  Course,
+  StringNumberLookup,
+  StringStringLookup,
+} from '../types';
 import { getWeekStart } from '../utils/getWeek';
 
 /*
@@ -13,7 +18,7 @@ for (let i = 1; i < 7; i++) {
   days.push(day.toISOString());
 }
 
-const demoUnfinishedAssignments: Assignment[] = [
+const DemoAssignments: Assignment[] = [
   {
     color: '#8F3E97',
     html_url: '#',
@@ -23,6 +28,19 @@ const demoUnfinishedAssignments: Assignment[] = [
     course_id: 1,
     id: 10,
     user_submitted: false,
+    is_quiz_assignment: false,
+    course_name: 'Algebra 2 - Smith',
+    grade: 0,
+  },
+  {
+    color: '#8F3E97',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 10,
+    due_at: days[0],
+    course_id: 1,
+    id: 10,
+    user_submitted: true,
     is_quiz_assignment: false,
     course_name: 'Algebra 2 - Smith',
     grade: 0,
@@ -40,32 +58,6 @@ const demoUnfinishedAssignments: Assignment[] = [
     course_name: 'English 11 - Brown',
     grade: 0,
     discussion_topic: 0,
-  },
-  {
-    color: '#FF2717',
-    html_url: '#',
-    name: 'Monroe Doctrine Quiz',
-    points_possible: 15,
-    due_at: days[2],
-    course_id: 3,
-    id: 12,
-    user_submitted: false,
-    is_quiz_assignment: true,
-    course_name: 'US History - Jones',
-    grade: 0,
-  },
-  {
-    color: '#009606',
-    html_url: '#',
-    name: 'Nitrogen Cycle Worksheet',
-    points_possible: 10,
-    due_at: days[3],
-    course_id: 4,
-    id: 13,
-    user_submitted: false,
-    is_quiz_assignment: false,
-    course_name: 'Biology - McCoy',
-    grade: 0,
   },
   {
     color: '#1770AB',
@@ -95,78 +87,167 @@ const demoUnfinishedAssignments: Assignment[] = [
     grade: 0,
     discussion_topic: 0,
   },
-];
-
-const demoFinishedAssignments: Assignment[] = [];
-
-for (let i = 0; i < 2; i++) {
-  demoFinishedAssignments.push({
+  {
     color: '#1770AB',
     html_url: '#',
     name: 'Done',
     points_possible: 15,
     due_at: days[2],
     course_id: 2,
-    id: 20 + i,
+    id: 21,
     user_submitted: true,
     is_quiz_assignment: false,
     course_name: 'English 11 - Brown',
     grade: 0,
     discussion_topic: 0,
-  });
-}
-
-for (let i = 0; i < 5; i++) {
-  demoFinishedAssignments.push({
-    color: '#009606',
+  },
+  {
+    color: '#1770AB',
     html_url: '#',
     name: 'Done',
-    points_possible: 10,
+    points_possible: 15,
     due_at: days[2],
-    course_id: 4,
-    id: 40 + i,
+    course_id: 2,
+    id: 22,
     user_submitted: true,
     is_quiz_assignment: false,
-    course_name: 'Biology - McCoy',
+    course_name: 'English 11 - Brown',
     grade: 0,
-  });
-}
-
-for (let i = 0; i < 3; i++) {
-  demoFinishedAssignments.push({
+    discussion_topic: 0,
+  },
+  {
     color: '#FF2717',
     html_url: '#',
     name: 'Done',
     points_possible: 15,
     due_at: days[2],
     course_id: 3,
-    id: 40 + i,
+    id: 41,
     user_submitted: true,
     is_quiz_assignment: true,
     course_name: 'US History - Jones',
     grade: 0,
-  });
-}
+  },
+  {
+    color: '#FF2717',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 15,
+    due_at: days[2],
+    course_id: 3,
+    id: 42,
+    user_submitted: true,
+    is_quiz_assignment: true,
+    course_name: 'US History - Jones',
+    grade: 0,
+  },
+  {
+    color: '#FF2717',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 15,
+    due_at: days[2],
+    course_id: 3,
+    id: 43,
+    user_submitted: true,
+    is_quiz_assignment: true,
+    course_name: 'US History - Jones',
+    grade: 0,
+  },
+  {
+    color: '#FF2717',
+    html_url: '#',
+    name: 'Monroe Doctrine Quiz',
+    points_possible: 15,
+    due_at: days[2],
+    course_id: 3,
+    id: 12,
+    user_submitted: false,
+    is_quiz_assignment: true,
+    course_name: 'US History - Jones',
+    grade: 0,
+  },
+  {
+    color: '#009606',
+    html_url: '#',
+    name: 'Nitrogen Cycle Worksheet',
+    points_possible: 10,
+    due_at: days[3],
+    course_id: 4,
+    id: 13,
+    user_submitted: false,
+    is_quiz_assignment: false,
+    course_name: 'Biology - McCoy',
+    grade: 0,
+  },
+  {
+    color: '#009606',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 10,
+    due_at: days[2],
+    course_id: 4,
+    id: 41,
+    user_submitted: true,
+    is_quiz_assignment: false,
+    course_name: 'Biology - McCoy',
+    grade: 0,
+  },
+  {
+    color: '#009606',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 10,
+    due_at: days[2],
+    course_id: 4,
+    id: 42,
+    user_submitted: true,
+    is_quiz_assignment: false,
+    course_name: 'Biology - McCoy',
+    grade: 0,
+  },
+  {
+    color: '#009606',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 10,
+    due_at: days[2],
+    course_id: 4,
+    id: 43,
+    user_submitted: true,
+    is_quiz_assignment: false,
+    course_name: 'Biology - McCoy',
+    grade: 0,
+  },
+  {
+    color: '#009606',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 10,
+    due_at: days[2],
+    course_id: 4,
+    id: 44,
+    user_submitted: true,
+    is_quiz_assignment: false,
+    course_name: 'Biology - McCoy',
+    grade: 0,
+  },
+  {
+    color: '#009606',
+    html_url: '#',
+    name: 'Done',
+    points_possible: 10,
+    due_at: days[2],
+    course_id: 4,
+    id: 45,
+    user_submitted: true,
+    is_quiz_assignment: false,
+    course_name: 'Biology - McCoy',
+    grade: 0,
+  },
+];
 
-demoFinishedAssignments.push({
-  color: '#8F3E97',
-  html_url: '#',
-  name: 'Done',
-  points_possible: 10,
-  due_at: days[0],
-  course_id: 1,
-  id: 10,
-  user_submitted: true,
-  is_quiz_assignment: false,
-  course_name: 'Algebra 2 - Smith',
-  grade: 0,
-});
-
-const demoAssignments = demoUnfinishedAssignments.concat(
-  demoFinishedAssignments
-);
-
-const demoCourses = [
+const DemoCourses: Course[] = [
   {
     id: 1,
     color: '#8F3E97',
@@ -193,4 +274,25 @@ const demoCourses = [
   },
 ];
 
-export { demoAssignments, demoCourses };
+const DemoPositions: StringNumberLookup = {
+  1: 3,
+  2: 2,
+  3: 1,
+  4: 0,
+};
+
+const DemoColors: StringStringLookup = {
+  1: '#8F3E97',
+  2: '#1770AB',
+  3: '#FF2717',
+  4: '#009606',
+};
+
+const DemoNames: StringStringLookup = {
+  1: 'Algebra 2 - Smith',
+  2: 'English 11 - Brown',
+  3: 'US History - Jones',
+  4: 'Biology - McCoy',
+};
+
+export { DemoAssignments, DemoCourses, DemoColors, DemoNames, DemoPositions };

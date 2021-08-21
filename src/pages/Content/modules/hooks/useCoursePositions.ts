@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
+import { DemoPositions } from '../tests/demo';
 import { StringNumberLookup } from '../types/lookup';
 import baseURL from '../utils/baseURL';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<StringNumberLookup> {
-  // console.log('Getting course positions');
+  if (process.env.DEMO) return DemoPositions;
+
   const { data } = await axios.get(
     `${baseURL()}/api/v1/users/self/dashboard_positions`
   );

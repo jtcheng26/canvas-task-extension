@@ -149,6 +149,9 @@ var options = {
       chunks: ['options'],
       cache: false,
     }),
+    new webpack.DefinePlugin({
+      'process.env.DEMO': JSON.stringify(env.DEMO),
+    }),
     // new BundleAnalyzerPlugin(),
   ],
   infrastructureLogging: {

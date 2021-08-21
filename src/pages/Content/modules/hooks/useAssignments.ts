@@ -10,6 +10,7 @@ import useGrade from './useGrade';
 import useCourseNames from './useCourseNames';
 import useCourseColors from './useCourseColors';
 import baseURL from '../utils/baseURL';
+import { DemoAssignments } from '../tests/demo';
 
 /* Get assignments for a stringified list of up to 10 courses */
 function getAssignmentsRequest(
@@ -122,9 +123,17 @@ async function getAssignments(
 
   const startStr = st.toISOString().split('T')[0];
   const endStr = en.toISOString().split('T')[0];
-  const requests = await axios.all(
-    getAllAssignmentRequests(startStr, endStr, courses)
-  );
+  const requests = process.env.DEMO
+    ? [
+        {
+          data: DemoAssignments.map((d) => {
+            return {
+              assignment: d,
+            };
+          }),
+        },
+      ]
+    : await axios.all(getAllAssignmentRequests(startStr, endStr, courses));
 
   let assignments: AssignmentMap = {};
   courses.forEach((course) => {

@@ -28,8 +28,6 @@ export default function App({ options }: AppProps): JSX.Element {
     delta
   );
 
-  console.log(start);
-  console.log(end);
   /*
     when prev/next buttons clicked
   */
