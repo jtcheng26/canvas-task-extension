@@ -9,6 +9,7 @@ import AssignmentMap from '../types/assignmentMap';
 import RadialBarChart from './radial-bar-chart';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
+import { BeatLoader } from 'react-spinners';
 
 /*
   Renders progress chart
@@ -21,6 +22,7 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin: 15px 0px;
+  position: relative;
 `;
 
 const SubtitleText = styled.div`
@@ -39,14 +41,22 @@ const TitleText = styled.div`
   color: ${(p) => p.color};
 `;
 
+const LoadingDiv = styled.div`
+  /* position: absolute;
+  top: -10px;
+  left: 3px; */
+`;
+
 interface TaskChartProps {
   assignments: AssignmentMap;
+  loading?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
 }
 
 export default function TaskChart({
   assignments,
+  loading,
   selectedCourseId = -1,
   setCourse,
 }: TaskChartProps): JSX.Element {
@@ -165,9 +175,21 @@ export default function TaskChart({
         selectedBar={selectedCourseId}
         size={chartData.bars.length < 7 ? 210 : 280}
       >
-        <TitleText color={color}>{percent}</TitleText>
-        <SubtitleText color={color}>{progress}</SubtitleText>
-        <SubtitleText color={color}>{complete}</SubtitleText>
+        {loading ? (
+          <LoadingDiv>
+            <BeatLoader
+              color="var(--ic-brand-font-color-dark-lightened-30)"
+              loading
+              size={10}
+            />
+          </LoadingDiv>
+        ) : (
+          <>
+            <TitleText color={color}>{percent}</TitleText>
+            <SubtitleText color={color}>{progress}</SubtitleText>
+            <SubtitleText color={color}>{complete}</SubtitleText>
+          </>
+        )}
       </RadialBarChart>
     </ChartContainer>
   );

@@ -10,6 +10,7 @@ import useGrade from '../hooks/useGrade';
 
 interface TaskContainerProps {
   data: AssignmentMap;
+  loading?: boolean;
 }
 
 /*
@@ -18,6 +19,7 @@ interface TaskContainerProps {
 
 export default function TaskContainer({
   data,
+  loading,
 }: TaskContainerProps): JSX.Element {
   const onCourse = onCoursePage() ? true : false;
   const courses = Object.keys(data).map((c) => parseInt(c));
@@ -40,6 +42,7 @@ export default function TaskContainer({
       />
       <TaskChart
         assignments={data}
+        loading={loading}
         selectedCourseId={course}
         setCourse={setCourse}
       />
