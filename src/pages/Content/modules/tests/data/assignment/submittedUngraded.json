@@ -1,0 +1,15 @@
+{
+  "id": 6,
+  "due_at": "2021-08-17T05:59:59Z",
+  "points_possible": 10.0,
+  "course_id": 3,
+  "name": "Percentage test",
+  "user_submitted": true,
+  "is_quiz_assignment": false,
+  "html_url": "http://canvas.docker/courses/3/assignments/6",
+  "submission": {
+    "grade": null,
+    "score": null,
+    "attempt": 1
+  }
+}

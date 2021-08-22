@@ -61,9 +61,9 @@ export default function TaskList({ assignments }: TaskListProps): JSX.Element {
               return (
                 <Task
                   assignment={assignment}
-                  color={assignment.color}
+                  color={assignment.color || '#000000'}
                   key={assignment.id}
-                  name={assignment.course_name}
+                  name={assignment.course_name || 'Course'}
                 />
               );
             })

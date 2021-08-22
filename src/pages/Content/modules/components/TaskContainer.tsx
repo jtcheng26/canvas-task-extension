@@ -19,7 +19,7 @@ interface TaskContainerProps {
 export default function TaskContainer({
   data,
 }: TaskContainerProps): JSX.Element {
-  const onCourse = onCoursePage();
+  const onCourse = onCoursePage() ? true : false;
   const courses = Object.keys(data).map((c) => parseInt(c));
   const [course, setCourse] = useState(onCourse ? courses[0] : -1);
   const assignments = sortByDate(assignmentsAsList(data));

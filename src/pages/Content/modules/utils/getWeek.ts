@@ -9,12 +9,8 @@ export function getWeekStart(startDate: number): Date {
   return d;
 }
 export function getWeekEnd(startDate: number): Date {
-  const d = new Date();
-  if (d.getDay() != startDate) {
-    d.setDate(d.getDate() + ((startDate + 7 - d.getDay()) % 7));
-  } else {
-    d.setDate(d.getDate() + 7);
-  }
+  const d = getWeekStart(startDate);
+  d.setDate(d.getDate() + 7);
   d.setHours(0, 0, 0);
   return d;
 }
