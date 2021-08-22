@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import CourseName from './CourseName';
 import TaskChart from './TaskChart';
 import TaskList from './TaskList';
@@ -32,24 +32,32 @@ export default function TaskContainer({
     return !assignment.user_submitted && useGrade(assignment) === 0;
   });
 
+  /* Allow a course filter to be maintained when course is not in period data */
+  const selectedCourse = useMemo(() => {
+    if (course !== -1 && !courses.includes(course)) return -1;
+    return course;
+  }, [loading, course, courses]);
+
   return (
     <>
       <CourseName
         courses={courses}
         onCoursePage={onCourse}
-        selectedCourseId={course}
+        selectedCourseId={selectedCourse}
         setCourse={setCourse}
       />
       <TaskChart
         assignments={data}
         loading={loading}
-        selectedCourseId={course}
+        selectedCourseId={selectedCourse}
         setCourse={setCourse}
       />
       <TaskList
         assignments={
-          course !== -1
-            ? unfinishedAssignments.filter((a) => a.course_id === course)
+          selectedCourse !== -1
+            ? unfinishedAssignments.filter(
+                (a) => a.course_id === selectedCourse
+              )
             : unfinishedAssignments
         }
       />
