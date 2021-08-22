@@ -4,13 +4,27 @@
   "version": "1.0.5",
   "options_page": "options.html",
   "permissions": ["storage"],
-  "host_permissions": ["https://*.instructure.com/*", "http://canvas.docker/*"],
+  "host_permissions": [
+    "https://*.instructure.com/*",
+    "https://*.edu/*",
+    "https://*.au/*",
+    "https://*.nz/*",
+    "https://*.ca/*",
+    "https://*.mx/*"
+  ],
   "icons": {
     "128": "icon-128.png"
   },
   "content_scripts": [
     {
-      "matches": ["https://*.instructure.com/*", "http://canvas.docker/*"],
+      "matches": [
+        "https://*.instructure.com/*",
+        "https://*.edu/*",
+        "https://*.au/*",
+        "https://*.nz/*",
+        "https://*.ca/*",
+        "https://*.mx/*"
+      ],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }
@@ -18,7 +32,14 @@
   "web_accessible_resources": [
     {
       "resources": ["icon-128.png"],
-      "matches": ["https://*.instructure.com/*"]
+      "matches": [
+        "https://*.instructure.com/*",
+        "https://*.edu/*",
+        "https://*.au/*",
+        "https://*.nz/*",
+        "https://*.ca/*",
+        "https://*.mx/*"
+      ]
     }
   ],
   "manifest_version": 3,

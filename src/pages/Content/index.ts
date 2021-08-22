@@ -2,42 +2,13 @@ import runApp from './modules';
 import './content.styles.css';
 import { Options } from './modules/types';
 
-/*
-  mutation observer waits for sidebar to load then injects content
-*/
-const observer = new MutationObserver((mutations) => {
-  mutations.forEach((mutation) => {
-    mutation.addedNodes.forEach((addedNode) => {
-      const element = addedNode as HTMLElement;
-      if (
-        element.classList &&
-        (element.classList.contains('Sidebar__TodoListContainer') ||
-          element.classList.contains('todo-list-header'))
-      )
-        createSidebar(element);
-    });
-  });
-});
+const rightSide = document.getElementById('right-side');
 
-/*
-  in case the element is already there and not caught by mutation observer
-*/
-const containerList = document.getElementsByClassName(
-  'Sidebar__TodoListContainer'
-);
-const teacherContainerList = document.getElementsByClassName(
-  'todo-list-header'
-);
-if (containerList.length > 0) createSidebar(containerList[0] as HTMLElement);
-else if (teacherContainerList.length > 0)
-  createSidebar(teacherContainerList[0] as HTMLElement);
-else
-  observer.observe(document.getElementById('right-side') as Node, {
-    childList: true,
-  });
-
-function createSidebar(container: HTMLElement): void {
-  observer.disconnect();
+function createSidebar(
+  container: HTMLElement,
+  observer?: MutationObserver
+): void {
+  observer?.disconnect();
   chrome.storage.sync.get(
     [
       'startDate',
@@ -72,18 +43,17 @@ function createSidebar(container: HTMLElement): void {
         function () {
           chrome.storage.sync.get(null, function (result2) {
             const data = result2 as Options;
-            //console.log(result2);
             /*
-              insert new div at top of sidebar to hold content
-            */
+            insert new div at top of sidebar to hold content
+          */
             const newContainer = document.createElement('div');
             (container.parentNode as Node).insertBefore(
               newContainer,
               container
             );
             /*
-              only visually hide sidebar to prevent issues with DOM modification
-            */
+            only visually hide sidebar to prevent issues with DOM modification
+          */
             if (!result2.sidebar) {
               (document.getElementById(
                 'right-side'
@@ -95,4 +65,39 @@ function createSidebar(container: HTMLElement): void {
       );
     }
   );
+}
+
+if (rightSide) {
+  /*
+  in case the element is already there and not caught by mutation observer
+*/
+  const containerList = document.getElementsByClassName(
+    'Sidebar__TodoListContainer'
+  );
+  const teacherContainerList = document.getElementsByClassName(
+    'todo-list-header'
+  );
+  /*
+  mutation observer waits for sidebar to load then injects content
+  */
+  const observer = new MutationObserver(() => {
+    const todoListContainers = rightSide?.getElementsByClassName(
+      'Sidebar__TodoListContainer'
+    );
+    const teacherTodoListContainers = rightSide?.getElementsByClassName(
+      'todo-list-header'
+    );
+    if (todoListContainers?.length)
+      createSidebar(todoListContainers[0] as HTMLElement, observer);
+    else if (teacherTodoListContainers?.length)
+      createSidebar(teacherTodoListContainers[0] as HTMLElement, observer);
+  });
+
+  if (containerList.length > 0) createSidebar(containerList[0] as HTMLElement);
+  else if (teacherContainerList.length > 0)
+    createSidebar(teacherContainerList[0] as HTMLElement);
+  else if (rightSide)
+    observer.observe(rightSide as Node, {
+      childList: true,
+    });
 }
