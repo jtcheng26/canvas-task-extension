@@ -10,7 +10,8 @@
     "https://*.au/*",
     "https://*.nz/*",
     "https://*.ca/*",
-    "https://*.mx/*"
+    "https://*.mx/*",
+    "https://*.uk/*"
   ],
   "icons": {
     "128": "icon-128.png"
@@ -23,7 +24,8 @@
         "https://*.au/*",
         "https://*.nz/*",
         "https://*.ca/*",
-        "https://*.mx/*"
+        "https://*.mx/*",
+        "https://*.uk/*"
       ],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
@@ -38,7 +40,8 @@
         "https://*.au/*",
         "https://*.nz/*",
         "https://*.ca/*",
-        "https://*.mx/*"
+        "https://*.mx/*",
+        "https://*.uk/*"
       ]
     }
   ],
