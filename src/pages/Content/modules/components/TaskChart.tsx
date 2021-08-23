@@ -22,7 +22,6 @@ const ChartContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin: 15px 0px;
-  position: relative;
 `;
 
 const SubtitleText = styled.div`
@@ -39,12 +38,6 @@ const TitleText = styled.div`
   font-weight: bold;
   line-height: 1.25em;
   color: ${(p) => p.color};
-`;
-
-const LoadingDiv = styled.div`
-  /* position: absolute;
-  top: -10px;
-  left: 3px; */
 `;
 
 interface TaskChartProps {
@@ -176,13 +169,11 @@ export default function TaskChart({
         size={chartData.bars.length < 7 ? 210 : 280}
       >
         {loading ? (
-          <LoadingDiv>
-            <BeatLoader
-              color="var(--ic-brand-font-color-dark-lightened-30)"
-              loading
-              size={10}
-            />
-          </LoadingDiv>
+          <BeatLoader
+            color="var(--ic-brand-font-color-dark-lightened-30)"
+            loading
+            size={10}
+          />
         ) : (
           <>
             <TitleText color={color}>{percent}</TitleText>
