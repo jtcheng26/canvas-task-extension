@@ -6,6 +6,7 @@ import { Options } from '../types';
 import CompareMonthDate from '../utils/compareMonthDate';
 import useAssignments from '../hooks/useAssignments';
 import AssignmentMap from '../types/assignmentMap';
+import { useState } from 'react';
 
 const LoadingDiv = styled.div`
   padding-top: 20px;
@@ -31,6 +32,8 @@ function ContentLoader({
   endDate,
   loadedCallback,
 }: ContentLoaderProps): JSX.Element {
+  const [assignmentData, setAssignmentData] = useState<AssignmentMap | null>();
+
   const { data, isError, isSuccess } = useAssignments(
     startDate,
     endDate,
@@ -38,13 +41,16 @@ function ContentLoader({
   );
 
   useEffect(() => {
-    if (isSuccess) loadedCallback();
+    if (isSuccess) {
+      setAssignmentData(data as AssignmentMap);
+      loadedCallback();
+    }
   }, [isSuccess]);
 
   const failed = 'Failed to load';
   return (
     <>
-      {!isSuccess && !isError && (
+      {!isSuccess && !isError && !assignmentData && (
         <LoadingDiv>
           <MoonLoader
             color="var(--ic-link-color)"
@@ -54,7 +60,14 @@ function ContentLoader({
           />
         </LoadingDiv>
       )}
-      {isSuccess ? <TaskContainer data={data as AssignmentMap} /> : ''}
+      {assignmentData ? (
+        <TaskContainer
+          data={assignmentData as AssignmentMap}
+          loading={!isSuccess}
+        />
+      ) : (
+        ''
+      )}
       {isError && <h1>{failed}</h1>}
     </>
   );

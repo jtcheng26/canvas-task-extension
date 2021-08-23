@@ -9,6 +9,7 @@ import AssignmentMap from '../types/assignmentMap';
 import RadialBarChart from './radial-bar-chart';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
+import { BeatLoader } from 'react-spinners';
 
 /*
   Renders progress chart
@@ -41,12 +42,14 @@ const TitleText = styled.div`
 
 interface TaskChartProps {
   assignments: AssignmentMap;
+  loading?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
 }
 
 export default function TaskChart({
   assignments,
+  loading,
   selectedCourseId = -1,
   setCourse,
 }: TaskChartProps): JSX.Element {
@@ -165,9 +168,19 @@ export default function TaskChart({
         selectedBar={selectedCourseId}
         size={chartData.bars.length < 7 ? 210 : 280}
       >
-        <TitleText color={color}>{percent}</TitleText>
-        <SubtitleText color={color}>{progress}</SubtitleText>
-        <SubtitleText color={color}>{complete}</SubtitleText>
+        {loading ? (
+          <BeatLoader
+            color="var(--ic-brand-font-color-dark-lightened-30)"
+            loading
+            size={10}
+          />
+        ) : (
+          <>
+            <TitleText color={color}>{percent}</TitleText>
+            <SubtitleText color={color}>{progress}</SubtitleText>
+            <SubtitleText color={color}>{complete}</SubtitleText>
+          </>
+        )}
       </RadialBarChart>
     </ChartContainer>
   );
