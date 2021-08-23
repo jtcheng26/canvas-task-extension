@@ -47,8 +47,13 @@ export default function RadialChartBar({
   const circumference = 2 * Math.PI * radius;
   const [strokeDashoffset, setOffset] = useState(circumference);
   useEffect(() => {
-    setOffset((1 - progress) * circumference);
-  });
+    setOffset(circumference);
+    const timeout = setTimeout(() => {
+      setOffset((1 - progress) * circumference);
+    }, 100);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   function handleClick(e: MouseEvent) {
     if (onClick) onClick(id, e);
