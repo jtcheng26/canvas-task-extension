@@ -1,6 +1,6 @@
 import { Assignment } from '../types';
 
-function ringProgress(assignment: Assignment): 1 | 0 {
+export function ringProgress(assignment: Assignment): 1 | 0 {
   if (!assignment.points_possible) return 0;
   return assignment.user_submitted || (assignment.grade && assignment.grade > 0)
     ? 1
