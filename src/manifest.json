@@ -1,8 +1,13 @@
 {
+  "manifest_version": 2,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
   "version": "1.0.7",
-  "options_page": "options.html",
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": ["icon-128.png"],
+  "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": ["storage"],
   "content_scripts": [
     {
@@ -19,10 +24,15 @@
       "css": ["content.styles.css"]
     }
   ],
-  "icons": {
-    "128": "icon-128.png"
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true,
+    "browser_style": true,
+    "chrome_style": false
   },
-  "web_accessible_resources": ["icon-128.png"],
-  "manifest_version": 2,
-  "content_security_policy": "script-src 'self'; object-src 'self'"
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tasksforcanvas@jtchengdev.com"
+    }
+  }
 }
