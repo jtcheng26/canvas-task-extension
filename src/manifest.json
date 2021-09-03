@@ -4,18 +4,6 @@
   "version": "1.0.7",
   "options_page": "options.html",
   "permissions": ["storage"],
-  "host_permissions": [
-    "https://*.instructure.com/*",
-    "https://*.edu/*",
-    "https://*.au/*",
-    "https://*.nz/*",
-    "https://*.ca/*",
-    "https://*.mx/*",
-    "https://*.uk/*"
-  ],
-  "icons": {
-    "128": "icon-128.png"
-  },
   "content_scripts": [
     {
       "matches": [
@@ -31,22 +19,10 @@
       "css": ["content.styles.css"]
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["icon-128.png"],
-      "matches": [
-        "https://*.instructure.com/*",
-        "https://*.edu/*",
-        "https://*.au/*",
-        "https://*.nz/*",
-        "https://*.ca/*",
-        "https://*.mx/*",
-        "https://*.uk/*"
-      ]
-    }
-  ],
-  "manifest_version": 3,
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
-  }
+  "icons": {
+    "128": "icon-128.png"
+  },
+  "web_accessible_resources": ["icon-128.png"],
+  "manifest_version": 2,
+  "content_security_policy": "script-src 'self'; object-src 'self'"
 }
