@@ -1,21 +1,14 @@
 {
+  "manifest_version": 2,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
-  "version": "1.0.6",
-  "options_page": "options.html",
-  "permissions": ["storage"],
-  "host_permissions": [
-    "https://*.instructure.com/*",
-    "https://*.edu/*",
-    "https://*.au/*",
-    "https://*.nz/*",
-    "https://*.ca/*",
-    "https://*.mx/*",
-    "https://*.uk/*"
-  ],
+  "version": "1.0.7",
   "icons": {
     "128": "icon-128.png"
   },
+  "web_accessible_resources": ["icon-128.png"],
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "permissions": ["storage"],
   "content_scripts": [
     {
       "matches": [
@@ -31,22 +24,15 @@
       "css": ["content.styles.css"]
     }
   ],
-  "web_accessible_resources": [
-    {
-      "resources": ["icon-128.png"],
-      "matches": [
-        "https://*.instructure.com/*",
-        "https://*.edu/*",
-        "https://*.au/*",
-        "https://*.nz/*",
-        "https://*.ca/*",
-        "https://*.mx/*",
-        "https://*.uk/*"
-      ]
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true,
+    "browser_style": true,
+    "chrome_style": false
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "tasksforcanvas@jtchengdev.com"
     }
-  ],
-  "manifest_version": 3,
-  "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'"
   }
 }

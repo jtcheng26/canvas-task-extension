@@ -126,7 +126,8 @@ export default function Task({
           {DueLabel}
           {` ${due_date} at ${due_time}` +
             (!isNaN(assignment.points_possible) &&
-            assignment.points_possible !== undefined
+            assignment.points_possible !== undefined &&
+            assignment.points_possible !== null
               ? ` \xa0|\xa0 ${assignment.points_possible} point${
                   assignment.points_possible != 1 ? 's' : ''
                 }`

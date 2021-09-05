@@ -9,6 +9,8 @@
 # production
 /build
 *.zip
+*.crx
+*.pem
 
 # misc
 .DS_Store
