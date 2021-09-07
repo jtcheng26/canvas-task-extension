@@ -6,7 +6,7 @@
   "icons": {
     "128": "icon-128.png"
   },
-  "web_accessible_resources": ["icon-128.png"],
+  "web_accessible_resources": ["icon-128.png", "options.html"],
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": ["storage"],
   "content_scripts": [
