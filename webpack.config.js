@@ -153,7 +153,7 @@ var options = {
     new webpack.DefinePlugin({
       'process.env.DEMO': JSON.stringify(env.DEMO),
     }),
-    new BundleAnalyzerPlugin(),
+    // new BundleAnalyzerPlugin(),
   ],
   infrastructureLogging: {
     level: 'info',
