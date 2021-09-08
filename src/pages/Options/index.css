@@ -1,3 +1,250 @@
-.OptionsContainer {
-  font-size: 2rem;
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+body {
+  margin: 0px;
+  padding: 0px;
+  font-family: Lato, sans-serif;
+  background-color: rgba(0, 0, 0, 5%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+
+  --text-light: #878787;
+  --text-default: #626e7b;
+  --text-dark: #303b44;
+
+  --bg-default: white;
+  --bg-dark: #efefef;
+  --bg-theme: #ec412d;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.dropdown {
+  position: relative;
+}
+
+.dropdown:nth-of-type(1) {
+  margin-right: 20px;
+}
+
+.dropdown + .dropdown {
+  margin: 0px 5px;
+}
+
+.dropdown-selected {
+  padding: 10px;
+  box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 25%);
+  border-radius: 5px;
+  margin: 10px 0px;
+  display: flex;
+  align-items: center;
+  transition: box-shadow 0.5s;
+  background-color: var(--bg-default);
+}
+
+.dropdown-selected:hover {
+  cursor: pointer;
+  box-shadow: 0px 2px 3px 3px rgba(0, 0, 0, 25%);
+}
+
+.arrow {
+  width: 18px;
+  height: 18px;
+  margin-top: 5px;
+  margin-left: 10px;
+  fill: var(--text-default);
+}
+
+.dropdown-options {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 100%;
+  box-shadow: 0px 2px 3px 1px rgba(0, 0, 0, 25%);
+  min-width: 100%;
+  width: max-content;
+  border-radius: 10px;
+  padding: 10px 0px;
+  background-color: var(--bg-default);
+  max-height: 200px;
+  overflow-y: scroll;
+}
+
+.dropdown-option {
+  font-size: 20px;
+  padding: 5px 10px;
+  border: none;
+  background: var(--bg-default);
+  color: var(--text-light);
+}
+
+.dropdown-option:hover {
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+#app-container {
+  width: 500px;
+  height: 500px;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-default);
+  padding: 30px;
+  border-radius: 50px;
+  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 25%);
+}
+
+#header {
+  display: flex;
+  flex-direction: row;
+}
+
+#logo {
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+}
+
+#content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 30px;
+  padding-bottom: 10px;
+  height: 100%;
+}
+
+#period-selector {
+  width: 100%;
+  background-color: var(--bg-dark);
+  display: flex;
+  flex-direction: row;
+  border-radius: 500px;
+}
+
+.period-option {
+  margin: 5px;
+  text-align: center;
+  width: 33.333333%;
+  padding: 15px 0px;
+  color: var(--text-light);
+  font-size: large;
+  font-weight: bold;
+  transition: all 0.5s;
+}
+
+.period-option:hover {
+  color: var(--text-dark);
+  cursor: pointer;
+}
+
+.selected-period {
+  background-color: var(--bg-default);
+  border-radius: 500px;
+  box-shadow: 0 2px 4px 1px rgba(0, 0, 0, 25%);
+  color: var(--text-dark);
+}
+
+#start-selector {
+  display: flex;
+  margin: 20px 0px;
+  margin-left: 20px;
+  flex-direction: column;
+  width: 100%;
+}
+
+#start-input {
+  font-weight: bold;
+  font-size: x-large;
+  color: var(--text-dark);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+#boolean-options {
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex-grow: 1;
+}
+
+#boolean-options > div {
+  margin: 10px 0px;
+}
+
+#footer {
+  margin-left: 20px;
+}
+
+.label {
+  width: 100%;
+  text-align: left;
+  font-size: medium;
+  font-weight: bold;
+  color: var(--text-default);
+  display: flex;
+  align-items: center;
+}
+
+.checkbox {
+  display: flex;
+  width: 25px;
+  height: 25px;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: var(--bg-dark);
+  margin-right: 20px;
+  transition: all 0.15s;
+}
+
+.checkbox:hover {
+  cursor: pointer;
+  opacity: 60%;
+}
+
+.check {
+  fill: var(--bg-dark);
+  margin: auto;
+}
+
+.checked {
+  background-color: var(--bg-theme);
+}
+
+.checked .check {
+  fill: var(--bg-default);
+}
+
+h5 {
+  margin: 0px;
+  font-size: 24px;
+  color: var(--text-default);
+}
+
+h1 {
+  margin: 0px;
+  font-size: 64px;
+  color: var(--text-dark);
+}
+
+a {
+  text-decoration: none;
+  color: var(--text-default);
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+select {
+  background-color: var(--bg-default);
+  border: none;
 }

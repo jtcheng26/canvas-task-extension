@@ -4,9 +4,15 @@ Ever had trouble finding your weekly assignments? Wish you had a nice progress b
 
 No? Well either way, the **Tasks Browser Extension for Canvas** is here to help!
 
-## Download Link
+## Download
+
+### Chrome
 
 https://chrome.google.com/webstore/detail/tasks-for-canvas/kabafodfnabokkkddjbnkgbcbmipdlmb
+
+### Firefox
+
+https://addons.mozilla.org/en-US/firefox/addon/tasks-for-canvas
 
 ## Features
 

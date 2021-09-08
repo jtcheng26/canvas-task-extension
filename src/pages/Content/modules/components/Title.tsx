@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { SettingsIcon } from '../icons';
 
 const TitleDiv = styled.div`
   border-bottom: 1px solid #c7cdd1;
@@ -71,6 +72,21 @@ const ButtonContainerRight = styled.div<ButtonProps>`
 
 const LeftFloat = styled.div`
   float: left;
+  display: flex;
+  align-items: center;
+
+  .tasks-extension-settings {
+    fill: var(--ic-brand-font-color-dark-lightened-30);
+    &:hover {
+      fill: var(--ic-brand-font-color-dark);
+    }
+  }
+
+  a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 `;
 
 const RightFloat = styled.div`
@@ -118,7 +134,16 @@ export default function Title({
   const ButtonRight = <NextButton clickable={clickable} onClick={nextClick} />;
   return (
     <TitleDiv>
-      <LeftFloat>{tasks}</LeftFloat>
+      <LeftFloat>
+        <span style={{ marginRight: '4px' }}>{tasks}</span>
+        <a
+          href={chrome.runtime.getURL('options.html')}
+          rel="noreferrer"
+          target="_blank"
+        >
+          {SettingsIcon}
+        </a>
+      </LeftFloat>
       <RightFloat>
         <ButtonContainerLeft clickable={clickable} onClick={prevClick}>
           {ButtonLeft}
