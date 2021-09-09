@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import '../../content.styles.css';
-import { Assignment } from '../types';
 import useCoursePositions from '../hooks/useCoursePositions';
 import useCourseColors from '../hooks/useCourseColors';
 import { ChartData } from './radial-bar-chart/types';
@@ -10,6 +9,8 @@ import RadialBarChart from './radial-bar-chart';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
 import { BeatLoader } from 'react-spinners';
+import numDone from '../utils/numDone';
+import numTotal from '../utils/numTotal';
 
 /*
   Renders progress chart
@@ -59,14 +60,6 @@ export default function TaskChart({
   const initialData: ChartData = { bars: [] };
   const [chartData, setChartData] = useState(initialData);
 
-  function ringProgress(assignment: Assignment): 1 | 0 {
-    if (!assignment.points_possible) return 0;
-    return assignment.user_submitted ||
-      (assignment.grade && assignment.grade > 0)
-      ? 1
-      : 0;
-  }
-
   useEffect(() => {
     if (positions && colors) {
       const sortedCourses = Object.keys(assignments).sort((a, b) => {
@@ -79,14 +72,8 @@ export default function TaskChart({
         bars: sortedCourses.map((course_id) => {
           return {
             id: parseInt(course_id),
-            value: assignments[course_id].reduce(
-              (a, b) => a + ringProgress(b),
-              0
-            ),
-            max: assignments[course_id].reduce(
-              (a, b) => a + (b.points_possible === 0 ? 0 : 1),
-              0
-            ),
+            value: numDone(assignments[course_id]),
+            max: numTotal(assignments[course_id]),
             color: colors[course_id],
           };
         }),
@@ -113,35 +100,19 @@ export default function TaskChart({
   const done = useMemo(() => {
     if (selectedCourseId === -1) {
       return Object.keys(assignments).reduce((a, b) => {
-        return (
-          a +
-          assignments[b].reduce((c, d) => {
-            return c + ringProgress(d);
-          }, 0)
-        );
+        return a + numDone(assignments[b]);
       }, 0);
     }
-    return assignments[selectedCourseId].reduce((a, b) => {
-      return a + ringProgress(b);
-    }, 0);
+    return numDone(assignments[selectedCourseId]);
   }, [selectedCourseId, assignments]);
 
   const total = useMemo(() => {
     if (selectedCourseId === -1)
       return Object.keys(assignments).reduce((a, b) => {
-        return (
-          a +
-          assignments[b].reduce(
-            (a, b) => a + (b.points_possible === 0 ? 0 : 1),
-            0
-          )
-        );
+        return a + numTotal(assignments[b]);
       }, 0);
 
-    return assignments[selectedCourseId].reduce(
-      (a, b) => a + (b.points_possible === 0 ? 0 : 1),
-      0
-    );
+    return numTotal(assignments[selectedCourseId]);
   }, [assignments, selectedCourseId]);
 
   const percent = useMemo(() => {

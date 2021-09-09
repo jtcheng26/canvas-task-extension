@@ -13,6 +13,7 @@ interface Assignment {
   grade?: number; // via submission score/grade
   discussion_topic?: string | 0;
   locked_for_user?: boolean;
+  needs_grading_count?: number; // for teachers/graders
   submission?: {
     attempt: number;
     score: number | null;

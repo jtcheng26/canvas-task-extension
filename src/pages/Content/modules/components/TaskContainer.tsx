@@ -6,7 +6,7 @@ import onCoursePage from '../utils/onCoursePage';
 import sortByDate from '../utils/sortByDate';
 import AssignmentMap from '../types/assignmentMap';
 import assignmentsAsList from '../utils/assignmentsAsList';
-import useGrade from '../hooks/useGrade';
+import unfinished from '../utils/unfinished';
 
 interface TaskContainerProps {
   data: AssignmentMap;
@@ -28,9 +28,7 @@ export default function TaskContainer({
   /*
     unfinished assignments are assignments that are neither submitted nor graded
   */
-  const unfinishedAssignments = assignments.filter((assignment) => {
-    return !assignment.user_submitted && useGrade(assignment) === 0;
-  });
+  const unfinishedAssignments = unfinished(assignments);
 
   /* Allow a course filter to be maintained when course is not in period data */
   const selectedCourse = useMemo(() => {

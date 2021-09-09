@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Assignment } from '../types';
 import { AssignmentIcon, DiscussionIcon, QuizIcon } from '../icons';
+import pointsPossible from '../utils/pointsPossible';
 
 const TaskContainer = styled.div`
     width: 100%;
@@ -114,6 +115,7 @@ export default function Task({
   }
   const due = 'Due';
   const DueLabel = <strong>{due}</strong>;
+  const points = pointsPossible(assignment);
   return (
     <TaskContainer>
       <TaskLeft color={color || '000000'} onClick={onClick}>
@@ -125,12 +127,8 @@ export default function Task({
         <TaskDetailsText>
           {DueLabel}
           {` ${due_date} at ${due_time}` +
-            (!isNaN(assignment.points_possible) &&
-            assignment.points_possible !== undefined &&
-            assignment.points_possible !== null
-              ? ` \xa0|\xa0 ${assignment.points_possible} point${
-                  assignment.points_possible != 1 ? 's' : ''
-                }`
+            (points !== null
+              ? ` \xa0|\xa0 ${points} point${points != 1 ? 's' : ''}`
               : '')}
         </TaskDetailsText>
       </TaskInfo>

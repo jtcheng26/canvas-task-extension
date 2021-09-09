@@ -20,19 +20,19 @@ https://addons.mozilla.org/en-US/firefox/addon/tasks-for-canvas
 
 Colorful task items ensure that you'll never miss an assignment again.
 
-![](demo/Demo1.png)
+![](screenshots/Screenshot1.png)
 
 ### Track Your Progress
 
 Visual progress bars for each of your courses show how far you are in completing your assignments this week.
 
-![](demo/Demo2.png)
+![](screenshots/Screenshot2.png)
 
 ### Make It Your Own
 
 Task items and progress bars correspond with your chosen dashboard colors and positions.
 
-![](demo/Demo3.png)
+![](screenshots/Screenshot3.png)
 
 ### Notes
 
