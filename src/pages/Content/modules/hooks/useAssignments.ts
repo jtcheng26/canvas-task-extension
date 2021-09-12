@@ -67,7 +67,6 @@ export function onlyUnlockedAssignments(
 export function withinTimeBounds(
   startDate: Date,
   endDate: Date,
-  options: Options,
   assignments: AssignmentMap
 ): AssignmentMap {
   const newAssignments: AssignmentMap = {};
@@ -151,7 +150,7 @@ async function getAssignments(
 
   assignments = onlyUnlockedAssignments(assignments);
 
-  assignments = withinTimeBounds(startDate, endDate, options, assignments);
+  assignments = withinTimeBounds(startDate, endDate, assignments);
 
   const coursePageId = onCoursePage();
   if (coursePageId !== false) {
