@@ -13,7 +13,7 @@ const SelectArrow = styled.div<SelectArrowProps>`
   width: 0;
   height: 0;
   border-left: 4px solid transparent;
-  border-top: 7px solid rgba(0, 0, 0, 40%);
+  border-top: 7px solid var(--ic-brand-font-color-dark-lightened-30);
   border-right: 4px solid transparent;
   background: transparent;
   transform: rotate(${(p) => (p.menuVisible ? '180deg' : '0deg')});
@@ -29,17 +29,17 @@ const CourseTitle = styled.div<CourseTitleProps>`
   flex-direction: row;
   padding: 8px 10px;
   height: 15px;
-  color: ${(p) => (!p.color ? 'var(--ic-brand-font-color-dark)' : p.color)};
+  color: ${(p) => (!p.color ? 'inherit' : p.color)};
   font-family: Lato Extended;
   font-weight: bold;
   font-size: 14px;
   line-height: 1.2;
   position: relative;
-  border-bottom: 1px solid #eeeeee;
+  border-bottom: 1px solid rgba(199, 205, 209, 0.5);
   &:hover {
     cursor: pointer;
     div {
-      border-top: 7px solid rgba(0, 0, 0, 75%);
+      border-top: 7px solid var(--ic-brand-font-color-dark);
     }
   }
   z-index: 20;
@@ -50,22 +50,23 @@ const CourseDropdown = styled.div`
   position: absolute;
   z-index: 20;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  background: white;
+  background-color: white;
   border-radius: 0px 0px 4px 4px;
   width: 100%;
   .course-btn {
-    border-bottom: 1px solid #eeeeee;
+    border-bottom: 1px solid rgba(199, 205, 209, 0.5);
     font-family: Lato Extended;
     font-weight: bold;
     font-size: 14px;
     line-height: 1.4;
     position: relative;
     padding: 8px;
-    background: white;
+    background-color: inherit;
+    opacity: 100%;
     z-index: 20;
     &:hover {
       cursor: pointer;
-      background: #eeeeee;
+      background: rgba(199, 205, 209, 0.5);
     }
   }
   .course-btn-last {
@@ -101,7 +102,9 @@ export default function CourseName({
   const name =
     nameData && courseSelection ? nameData[courseSelection] : 'All Courses';
   const color =
-    colorData && courseSelection ? colorData[courseSelection] : '#000000';
+    colorData && courseSelection
+      ? colorData[courseSelection]
+      : 'var(--ic-brand-font-color-dark)';
   function toggleMenu() {
     setMenuVisible(!menuVisible);
   }
@@ -114,7 +117,7 @@ export default function CourseName({
       <CourseDropdown>
         {!onCoursePage && courseSelection !== -1 && (
           <CourseButton
-            color="black"
+            color="var(--ic-brand-font-color-dark)"
             id={-1}
             last={false}
             menuVisible={menuVisible}
@@ -125,7 +128,9 @@ export default function CourseName({
         )}
         {courses.map((course, i) => (
           <CourseButton
-            color={colorData ? colorData[course] : '#000000'}
+            color={
+              colorData ? colorData[course] : 'var(--ic-brand-font-color-dark)'
+            }
             id={course}
             key={`course-btn-${course}`}
             last={i === courses.length - 1}

@@ -39,6 +39,7 @@ const CenteredChildren = styled.div`
 interface Props {
   children?: React.ReactNode;
   data: ChartData;
+  bgColor?: string;
   onMouseEnter?: (id: number, e: MouseEvent) => void;
   onMouseLeave?: (id: number, e: MouseEvent) => void;
   onSelect?: (id: number, e: MouseEvent) => void;
@@ -48,6 +49,7 @@ interface Props {
 
 export default function RadialBarChart({
   data,
+  bgColor,
   onMouseEnter,
   onMouseLeave,
   selectedBar,
@@ -97,6 +99,7 @@ export default function RadialBarChart({
       <ChartSVG height={size} viewBox="0 0 280 280" width={size}>
         {data.bars.map((bar, i) => (
           <RadialChartBar
+            bg={bgColor}
             center={center}
             color={
               selectedBar === -1 || selectedBar === bar.id

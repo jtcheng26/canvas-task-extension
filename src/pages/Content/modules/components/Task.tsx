@@ -8,7 +8,7 @@ const TaskContainer = styled.div`
     width: 100%;
     height: 65px;
     margin: 5px;
-    background-color: #ffffff;
+    background-color: inherit;
     border-radius: 4px;
     display: flex;
     flex-direction: row;

@@ -8,15 +8,12 @@ import {
   withinTimeBounds,
 } from './useAssignments';
 import AssignmentMap from '../types/assignmentMap';
-import { Options } from '../types';
 
 import someLocked from '../tests/data/assignmentMap/someLocked.json';
 import lockedButSubmitted from '../tests/data/assignmentMap/lockedButSubmitted.json';
 import lockedButGraded from '../tests/data/assignmentMap/lockedButGraded.json';
 import allCourses from '../tests/data/assignmentMap/allCourses.json';
 import someActive from '../tests/data/assignmentMap/someActive.json';
-
-import weekOptions from '../tests/data/options/week.json';
 
 import beforeStartHour from '../tests/data/assignmentMap/due_at/beforeStartHour.json';
 import afterStartHour from '../tests/data/assignmentMap/due_at/afterStartHour.json';
@@ -110,7 +107,6 @@ describe('withinTimeBounds', () => {
     assertion: (res: AssignmentMap) => void
   ) {
     forEachTZ(() => {
-      const options = weekOptions as Options;
       const startDate = new Date(start);
       const endDate = new Date(end);
 
@@ -124,7 +120,7 @@ describe('withinTimeBounds', () => {
         });
       });
 
-      assertion(withinTimeBounds(startDate, endDate, options, newAssignments));
+      assertion(withinTimeBounds(startDate, endDate, newAssignments));
     });
   }
 

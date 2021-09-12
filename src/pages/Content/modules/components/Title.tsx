@@ -18,7 +18,9 @@ const NextButton = styled.div<ButtonProps>`
   border-top: 4px solid transparent;
   border-left: 7px solid
     ${(props) =>
-      props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
+      props.clickable
+        ? 'var(--ic-brand-font-color-dark-lightened-30)'
+        : 'var(--ic-brand-font-color-dark)'};
   border-bottom: 4px solid transparent;
   background: transparent;
 `;
@@ -29,7 +31,9 @@ const PrevButton = styled.div<ButtonProps>`
   border-top: 4px solid transparent;
   border-right: 7px solid
     ${(props) =>
-      props.clickable ? 'rgba(0, 0, 0, 45%)' : 'rgba(0, 0, 0, 20%)'};
+      props.clickable
+        ? 'var(--ic-brand-font-color-dark-lightened-30)'
+        : 'var(--ic-brand-font-color-dark)'};
   border-bottom: 4px solid transparent;
   background: transparent;
 `;
@@ -39,15 +43,17 @@ const ButtonContainerLeft = styled.div<ButtonProps>`
   border-radius: 100%;
   display: inline-block;
   margin: 0px 2px 0px 2px;
-  background: white;
+  background: transparent;
   &:hover {
     cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
     background: ${(props) =>
-      props.clickable ? 'rgba(0, 0, 0, 10%)' : 'white'};
+      props.clickable ? 'rgba(127, 127, 127, 20%)' : 'transparent'};
     div {
       border-right: 7px solid
         ${(props) =>
-          props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
+          props.clickable
+            ? 'var(--ic-brand-font-color-dark-lightened-30)'
+            : 'var(--ic-brand-font-color-dark)'};
     }
   }
 `;
@@ -57,15 +63,17 @@ const ButtonContainerRight = styled.div<ButtonProps>`
   border-radius: 100%;
   display: inline-block;
   margin: 0px 2px 0px 2px;
-  background: white;
+  background: transparent;
   &:hover {
     cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
     background: ${(props) =>
-      props.clickable ? 'rgba(0, 0, 0, 10%)' : 'white'};
+      props.clickable ? 'rgba(127, 127, 127, 20%)' : 'transparent'};
     div {
       border-left: 7px solid
         ${(props) =>
-          props.clickable ? 'rgba(0, 0, 0, 75%)' : 'rgba(0, 0, 0, 20%)'};
+          props.clickable
+            ? 'var(--ic-brand-font-color-dark-lightened-30)'
+            : 'var(--ic-brand-font-color-dark)'};
     }
   }
 `;
