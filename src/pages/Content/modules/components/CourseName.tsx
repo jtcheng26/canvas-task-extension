@@ -50,7 +50,7 @@ const CourseDropdown = styled.div`
   position: absolute;
   z-index: 20;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  background-color: inherit;
+  background-color: white;
   border-radius: 0px 0px 4px 4px;
   width: 100%;
   .course-btn {
