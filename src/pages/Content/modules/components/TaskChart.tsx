@@ -125,15 +125,14 @@ export default function TaskChart({
 
   const color = useMemo(() => {
     if (colors) {
-      return selectedCourseId === -1
-        ? 'var(--ic-brand-font-color-dark)'
-        : colors[selectedCourseId];
+      return selectedCourseId === -1 ? 'inherit' : colors[selectedCourseId];
     }
-    return 'var(--ic-brand-font-color-dark)';
+    return 'inherit';
   }, [selectedCourseId, colors]);
   return (
     <ChartContainer>
       <RadialBarChart
+        bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
         onSelect={handleClick}
         selectedBar={selectedCourseId}
