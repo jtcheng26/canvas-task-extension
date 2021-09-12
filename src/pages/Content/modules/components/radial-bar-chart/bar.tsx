@@ -24,6 +24,7 @@ const ColorCircle = styled.circle`
 interface Props {
   progress: number;
   color: string;
+  bg?: string;
   center: number;
   radius: number;
   width: number;
@@ -36,6 +37,7 @@ interface Props {
 export default function RadialChartBar({
   progress,
   color,
+  bg,
   center,
   radius,
   width,
@@ -76,7 +78,7 @@ export default function RadialChartBar({
         cx={center}
         cy={center}
         r={radius}
-        stroke="#f2f2f2"
+        stroke={bg || '#f2f2f2'}
         strokeWidth={width}
       />
       <ColorCircle
