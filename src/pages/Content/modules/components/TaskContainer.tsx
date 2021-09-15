@@ -8,6 +8,7 @@ import AssignmentMap from '../types/assignmentMap';
 import assignmentsAsList from '../utils/assignmentsAsList';
 import unfinished from '../utils/unfinished';
 import { Options } from '../types';
+import { onlyUnlockedAssignments } from '../hooks/useAssignments';
 
 interface TaskContainerProps {
   data: AssignmentMap;
@@ -27,7 +28,10 @@ export default function TaskContainer({
   const onCourse = onCoursePage() ? true : false;
   const courses = Object.keys(data).map((c) => parseInt(c));
   const [course, setCourse] = useState(onCourse ? courses[0] : -1);
-  const assignments = sortByDate(assignmentsAsList(data));
+  const onlyUnlocked = !options.show_locked_assignments
+    ? onlyUnlockedAssignments(data)
+    : data;
+  const assignments = sortByDate(assignmentsAsList(onlyUnlocked));
   /*
     unfinished assignments are assignments that are neither submitted nor graded
   */

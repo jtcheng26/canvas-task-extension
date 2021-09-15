@@ -8,6 +8,7 @@ interface Options {
   sidebar: boolean;
   dash_courses: boolean;
   due_date_headings: boolean;
+  show_locked_assignments: boolean;
 }
 
 export default Options;

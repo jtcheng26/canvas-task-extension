@@ -12,6 +12,7 @@ const storedUserOptions = [
   'sidebar',
   'dash_courses',
   'due_date_headings',
+  'show_locked_assignments',
 ];
 
 function optionsOrDefaults(result: Options): Options {
@@ -38,6 +39,11 @@ function optionsOrDefaults(result: Options): Options {
       result.due_date_headings !== false && result.due_date_headings !== true
         ? true
         : result.due_date_headings,
+    show_locked_assignments:
+      result.show_locked_assignments !== false &&
+      result.show_locked_assignments !== true
+        ? true
+        : result.show_locked_assignments,
   };
 }
 

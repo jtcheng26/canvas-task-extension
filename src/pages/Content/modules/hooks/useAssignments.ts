@@ -148,8 +148,6 @@ async function getAssignments(
     });
   });
 
-  assignments = onlyUnlockedAssignments(assignments);
-
   assignments = withinTimeBounds(startDate, endDate, assignments);
 
   const coursePageId = onCoursePage();

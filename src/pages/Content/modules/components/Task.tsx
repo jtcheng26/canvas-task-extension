@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Assignment } from '../types';
-import { AssignmentIcon, DiscussionIcon, QuizIcon } from '../icons';
+import { AssignmentIcon, DiscussionIcon, LockedIcon, QuizIcon } from '../icons';
 import pointsPossible from '../utils/pointsPossible';
 
 const TaskContainer = styled.div`
@@ -106,9 +106,15 @@ export default function Task({
     assignment: AssignmentIcon,
     quiz: QuizIcon,
     discussion: DiscussionIcon,
+    locked: LockedIcon,
   };
   let assignmentIcon = icon.assignment;
-  if (assignment.is_quiz_assignment || assignment.is_quiz_lti_assignment) {
+  if (assignment.locked_for_user) {
+    assignmentIcon = icon.locked;
+  } else if (
+    assignment.is_quiz_assignment ||
+    assignment.is_quiz_lti_assignment
+  ) {
     assignmentIcon = icon.quiz;
   } else if ('discussion_topic' in assignment) {
     assignmentIcon = icon.discussion;
