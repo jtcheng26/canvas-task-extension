@@ -90,7 +90,6 @@ body {
 
 #app-container {
   width: 500px;
-  height: 550px;
   display: flex;
   flex-direction: column;
   background-color: var(--bg-default);

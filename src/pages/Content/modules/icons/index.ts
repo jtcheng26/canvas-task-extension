@@ -2,5 +2,6 @@ import AssignmentIcon from './assignment';
 import DiscussionIcon from './discussion';
 import QuizIcon from './quiz';
 import SettingsIcon from './settings';
+import LockedIcon from './locked';
 
-export { AssignmentIcon, DiscussionIcon, QuizIcon, SettingsIcon };
+export { AssignmentIcon, DiscussionIcon, QuizIcon, SettingsIcon, LockedIcon };

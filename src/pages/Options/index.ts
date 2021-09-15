@@ -9,6 +9,7 @@ const storedUserOptions = [
   'sidebar',
   'dash_courses',
   'due_date_headings',
+  'show_locked_assignments',
 ];
 
 function optionsOrDefaults(result: Options): Options {
@@ -35,6 +36,11 @@ function optionsOrDefaults(result: Options): Options {
       result.due_date_headings !== false && result.due_date_headings !== true
         ? true
         : result.due_date_headings,
+    show_locked_assignments:
+      result.show_locked_assignments !== false &&
+      result.show_locked_assignments !== true
+        ? true
+        : result.show_locked_assignments,
   };
 }
 
@@ -214,6 +220,7 @@ const booleanOptions: { [key: string]: string } = {
   'default-sidebar': 'sidebar',
   'active-rings': 'dash_courses',
   'due-date-headings': 'due_date_headings',
+  'show-locked-assignments': 'show_locked_assignments',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -262,6 +269,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setCheckbox('default-sidebar', !options.sidebar);
   setCheckbox('active-rings', !options.dash_courses);
   setCheckbox('due-date-headings', options.due_date_headings);
+  setCheckbox('show-locked-assignments', options.show_locked_assignments);
   setSelectedDropdownOption(
     Object.keys(weekdays)[options.startDate - 1],
     'weekdays-options',
