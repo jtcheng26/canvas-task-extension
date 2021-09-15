@@ -7,6 +7,7 @@ interface Options {
   period: Period;
   sidebar: boolean;
   dash_courses: boolean;
+  due_date_headings: boolean;
 }
 
 export default Options;

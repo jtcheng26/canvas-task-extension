@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import Task from './Task';
 import Subtitle from './Subtitle';
-import { Assignment } from '../types';
+import { Assignment, Options } from '../types';
 import getDaysLeft from '../utils/getDaysLeft';
 import getDueDateHeadingLabel from '../utils/getDueDateHeadingLabel';
 
@@ -39,12 +39,16 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 interface TaskListProps {
   assignments: Assignment[];
+  options: Options;
 }
 
 /*
   Renders all unfinished assignments
 */
-export default function TaskList({ assignments }: TaskListProps): JSX.Element {
+export default function TaskList({
+  assignments,
+  options,
+}: TaskListProps): JSX.Element {
   const [viewingMore, setViewingMore] = useState(false);
   let viewMoreText = 'View less';
   let renderedAssignments = assignments;
@@ -67,24 +71,33 @@ export default function TaskList({ assignments }: TaskListProps): JSX.Element {
     <ListWrapper>
       <Subtitle text="Unfinished" />
       <ListContainer>
-        {Object.keys(headings).length > 0
-          ? Object.keys(headings).map((heading) => (
-              <HeadingContainer key={heading}>
-                <span>
-                  {heading !== 'Overdue' ? dueText : ''}{' '}
-                  <strong>{heading}</strong>
-                </span>
-                {headings[heading].map((assignment) => (
-                  <Task
-                    assignment={assignment}
-                    color={assignment.color || '#000000'}
-                    key={assignment.id}
-                    name={assignment.course_name || 'Course'}
-                  />
-                ))}
-              </HeadingContainer>
-            ))
-          : 'None'}
+        {options.due_date_headings
+          ? Object.keys(headings).length > 0
+            ? Object.keys(headings).map((heading) => (
+                <HeadingContainer key={heading}>
+                  <span>
+                    {heading !== 'Overdue' ? dueText : ''}{' '}
+                    <strong>{heading}</strong>
+                  </span>
+                  {headings[heading].map((assignment) => (
+                    <Task
+                      assignment={assignment}
+                      color={assignment.color || '#000000'}
+                      key={assignment.id}
+                      name={assignment.course_name || 'Course'}
+                    />
+                  ))}
+                </HeadingContainer>
+              ))
+            : 'None'
+          : renderedAssignments.map((assignment) => (
+              <Task
+                assignment={assignment}
+                color={assignment.color || '#000000'}
+                key={assignment.id}
+                name={assignment.course_name || 'Course'}
+              />
+            ))}
       </ListContainer>
       {assignments.length > 4 && (
         <ViewMore href="#" onClick={handleClick}>
