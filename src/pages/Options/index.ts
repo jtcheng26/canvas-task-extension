@@ -32,7 +32,7 @@ function optionsOrDefaults(result: Options): Options {
         ? false
         : result.dash_courses,
     due_date_headings:
-      result.dash_courses !== false && result.dash_courses !== true
+      result.due_date_headings !== false && result.due_date_headings !== true
         ? true
         : result.due_date_headings,
   };
