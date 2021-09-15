@@ -11,6 +11,7 @@ const storedUserOptions = [
   'startMinutes',
   'sidebar',
   'dash_courses',
+  'due_date_headings',
 ];
 
 function optionsOrDefaults(result: Options): Options {
@@ -33,6 +34,10 @@ function optionsOrDefaults(result: Options): Options {
       result.dash_courses !== false && result.dash_courses !== true
         ? false
         : result.dash_courses,
+    due_date_headings:
+      result.due_date_headings !== false && result.due_date_headings !== true
+        ? true
+        : result.due_date_headings,
   };
 }
 

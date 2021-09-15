@@ -7,10 +7,12 @@ import sortByDate from '../utils/sortByDate';
 import AssignmentMap from '../types/assignmentMap';
 import assignmentsAsList from '../utils/assignmentsAsList';
 import unfinished from '../utils/unfinished';
+import { Options } from '../types';
 
 interface TaskContainerProps {
   data: AssignmentMap;
   loading?: boolean;
+  options: Options;
 }
 
 /*
@@ -20,6 +22,7 @@ interface TaskContainerProps {
 export default function TaskContainer({
   data,
   loading,
+  options,
 }: TaskContainerProps): JSX.Element {
   const onCourse = onCoursePage() ? true : false;
   const courses = Object.keys(data).map((c) => parseInt(c));
@@ -58,6 +61,7 @@ export default function TaskContainer({
               )
             : unfinishedAssignments
         }
+        options={options}
       />
     </>
   );

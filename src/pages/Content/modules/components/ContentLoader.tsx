@@ -64,6 +64,7 @@ function ContentLoader({
         <TaskContainer
           data={assignmentData as AssignmentMap}
           loading={!isSuccess}
+          options={options}
         />
       ) : (
         ''

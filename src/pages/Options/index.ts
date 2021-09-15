@@ -1,16 +1,17 @@
 import Options from '../Content/modules/types/options';
 import './index.css';
 
-export const storedUserOptions = [
+const storedUserOptions = [
   'startDate',
   'period',
   'startHour',
   'startMinutes',
   'sidebar',
   'dash_courses',
+  'due_date_headings',
 ];
 
-export function optionsOrDefaults(result: Options): Options {
+function optionsOrDefaults(result: Options): Options {
   return {
     startDate: !result.startDate ? 1 : result.startDate,
     startHour: !result.startHour ? 15 : result.startHour,
@@ -30,6 +31,10 @@ export function optionsOrDefaults(result: Options): Options {
       result.dash_courses !== false && result.dash_courses !== true
         ? false
         : result.dash_courses,
+    due_date_headings:
+      result.due_date_headings !== false && result.due_date_headings !== true
+        ? true
+        : result.due_date_headings,
   };
 }
 
@@ -208,6 +213,7 @@ function setPeriods() {
 const booleanOptions: { [key: string]: string } = {
   'default-sidebar': 'sidebar',
   'active-rings': 'dash_courses',
+  'due-date-headings': 'due_date_headings',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -255,6 +261,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setSelectedPeriod(options.period.toLowerCase());
   setCheckbox('default-sidebar', !options.sidebar);
   setCheckbox('active-rings', !options.dash_courses);
+  setCheckbox('due-date-headings', options.due_date_headings);
   setSelectedDropdownOption(
     Object.keys(weekdays)[options.startDate - 1],
     'weekdays-options',
