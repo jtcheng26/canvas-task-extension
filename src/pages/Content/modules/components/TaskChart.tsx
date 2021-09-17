@@ -8,7 +8,7 @@ import AssignmentMap from '../types/assignmentMap';
 import RadialBarChart from './radial-bar-chart';
 import { useEffect } from 'react';
 import { useMemo } from 'react';
-import { BeatLoader } from 'react-spinners';
+import BeatLoader from './spinners/BeatLoader';
 import numDone from '../utils/numDone';
 import numTotal from '../utils/numTotal';
 

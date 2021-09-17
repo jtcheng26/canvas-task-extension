@@ -1,18 +1,37 @@
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import TaskContainer from './TaskContainer';
-import MoonLoader from 'react-spinners/MoonLoader';
+import BeatLoader from './spinners/BeatLoader';
 import { Options } from '../types';
 import CompareMonthDate from '../utils/compareMonthDate';
 import useAssignments from '../hooks/useAssignments';
 import AssignmentMap from '../types/assignmentMap';
 import { useState } from 'react';
+import TaskList from './TaskList';
 
 const LoadingDiv = styled.div`
   padding-top: 20px;
   display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
+
+const SkeletonChart = styled.div`
+  width: 110px;
+  height: 110px;
+  border: 40px solid #e8e8e8;
+  border-radius: 100%;
+  display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const ClipLoadingDiv = styled.div`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 220px;
 `;
 
 interface ContentLoaderProps {
@@ -48,16 +67,18 @@ function ContentLoader({
   }, [isSuccess]);
 
   const failed = 'Failed to load';
+  const chartSkeleton = (
+    <SkeletonChart>
+      <BeatLoader color="#e8e8e8" />
+    </SkeletonChart>
+  );
+  const skeleton = <ClipLoadingDiv>{chartSkeleton}</ClipLoadingDiv>;
   return (
     <>
       {!isSuccess && !isError && !assignmentData && (
         <LoadingDiv>
-          <MoonLoader
-            color="var(--ic-link-color)"
-            css="align-self: center;"
-            loading
-            size={50}
-          />
+          {skeleton}
+          <TaskList assignments={[]} options={options} skeleton />
         </LoadingDiv>
       )}
       {assignmentData ? (
