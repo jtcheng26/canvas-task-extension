@@ -17,6 +17,14 @@ const TaskContainer = styled.div`
     &:hover {
       box-shadow: 0 4px 7px rgba(0, 0, 0, 0.3);
     }
+    @keyframes canvas-tasks-skeleton-pulse {
+      50% {
+        opacity: 0.5;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
   `,
   TaskInfo = styled.div`
     display: flex;
@@ -72,12 +80,33 @@ const TaskContainer = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  `,
+  SkeletonTitle = styled.div`
+    width: 90%;
+    height: 12px;
+    background-color: #e8e8e8;
+    margin: 3px 0px;
+    animation: canvas-tasks-skeleton-pulse 1s infinite;
+  `,
+  SkeletonInfo = styled.div`
+    width: 75%;
+    height: 12px;
+    background-color: #e8e8e8;
+    margin: 2px 0px;
+    animation: canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both;
+  `,
+  SkeletonCourseCode = styled.div`
+    width: 50%;
+    height: 12px;
+    background-color: #e8e8e8;
+    margin: 2px 0px;
+    animation: canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both;
   `;
-
 interface TaskProps {
   assignment: Assignment;
   name: string;
   color: string;
+  skeleton?: boolean;
 }
 /*
     Renders an individual task item
@@ -87,6 +116,7 @@ export default function Task({
   assignment,
   name,
   color,
+  skeleton,
 }: TaskProps): JSX.Element {
   const due_at = new Date(assignment.due_at),
     due_date = due_at.toLocaleString('en-US', {
@@ -124,18 +154,31 @@ export default function Task({
   const points = pointsPossible(assignment);
   return (
     <TaskContainer>
-      <TaskLeft color={color || '000000'} onClick={onClick}>
-        {assignmentIcon}
+      <TaskLeft
+        color={(!skeleton ? color : '#e8e8e8') || '000000'}
+        onClick={onClick}
+      >
+        {!skeleton ? assignmentIcon : ''}
       </TaskLeft>
       <TaskInfo>
-        <CourseCodeText color={assignment.color}>{name}</CourseCodeText>
-        <TaskLink href={assignment.html_url}>{assignment.name}</TaskLink>
+        <CourseCodeText color={assignment.color}>
+          {!skeleton ? name : <SkeletonCourseCode />}
+        </CourseCodeText>
+        <TaskLink href={assignment.html_url}>
+          {!skeleton ? assignment.name : <SkeletonTitle />}
+        </TaskLink>
         <TaskDetailsText>
-          {DueLabel}
-          {` ${due_date} at ${due_time}` +
-            (points !== null
-              ? ` \xa0|\xa0 ${points} point${points != 1 ? 's' : ''}`
-              : '')}
+          {!skeleton ? (
+            <>
+              {DueLabel}
+              {` ${due_date} at ${due_time}` +
+                (points !== null
+                  ? ` \xa0|\xa0 ${points} point${points != 1 ? 's' : ''}`
+                  : '')}
+            </>
+          ) : (
+            <SkeletonInfo />
+          )}
         </TaskDetailsText>
       </TaskInfo>
     </TaskContainer>

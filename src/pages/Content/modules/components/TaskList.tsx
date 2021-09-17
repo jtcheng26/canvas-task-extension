@@ -40,6 +40,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 interface TaskListProps {
   assignments: Assignment[];
   options: Options;
+  skeleton?: boolean;
 }
 
 /*
@@ -48,6 +49,7 @@ interface TaskListProps {
 export default function TaskList({
   assignments,
   options,
+  skeleton,
 }: TaskListProps): JSX.Element {
   const [viewingMore, setViewingMore] = useState(false);
   let viewMoreText = 'View less';
@@ -67,37 +69,59 @@ export default function TaskList({
     setViewingMore(!viewingMore);
   }
   const dueText = 'Due';
+  const blankAssignment: Assignment = {
+    color: '',
+    html_url: '/',
+    name: '',
+    points_possible: 0,
+    due_at: '',
+    course_id: 0,
+    id: 0,
+    user_submitted: false,
+    is_quiz_assignment: false,
+  };
   return (
     <ListWrapper>
       <Subtitle text="Unfinished" />
       <ListContainer>
-        {options.due_date_headings
-          ? Object.keys(headings).length > 0
-            ? Object.keys(headings).map((heading) => (
-                <HeadingContainer key={heading}>
-                  <span>
-                    {heading !== 'Overdue' ? dueText : ''}{' '}
-                    <strong>{heading}</strong>
-                  </span>
-                  {headings[heading].map((assignment) => (
-                    <Task
-                      assignment={assignment}
-                      color={assignment.color || '#000000'}
-                      key={assignment.id}
-                      name={assignment.course_name || 'Course'}
-                    />
-                  ))}
-                </HeadingContainer>
-              ))
-            : 'None'
-          : renderedAssignments.map((assignment) => (
-              <Task
-                assignment={assignment}
-                color={assignment.color || '#000000'}
-                key={assignment.id}
-                name={assignment.course_name || 'Course'}
-              />
-            ))}
+        {skeleton ? (
+          <>
+            <Task assignment={blankAssignment} color="" name="" skeleton />
+            <Task assignment={blankAssignment} color="" name="" skeleton />
+            <Task assignment={blankAssignment} color="" name="" skeleton />
+            <Task assignment={blankAssignment} color="" name="" skeleton />
+          </>
+        ) : options.due_date_headings ? (
+          Object.keys(headings).length > 0 ? (
+            Object.keys(headings).map((heading) => (
+              <HeadingContainer key={heading}>
+                <span>
+                  {heading !== 'Overdue' ? dueText : ''}{' '}
+                  <strong>{heading}</strong>
+                </span>
+                {headings[heading].map((assignment) => (
+                  <Task
+                    assignment={assignment}
+                    color={assignment.color || '#000000'}
+                    key={assignment.id}
+                    name={assignment.course_name || 'Course'}
+                  />
+                ))}
+              </HeadingContainer>
+            ))
+          ) : (
+            'None'
+          )
+        ) : (
+          renderedAssignments.map((assignment) => (
+            <Task
+              assignment={assignment}
+              color={assignment.color || '#000000'}
+              key={assignment.id}
+              name={assignment.course_name || 'Course'}
+            />
+          ))
+        )}
       </ListContainer>
       {assignments.length > 4 && (
         <ViewMore href="#" onClick={handleClick}>
