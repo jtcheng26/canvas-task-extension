@@ -19,7 +19,7 @@ const queryClient = new QueryClient();
 
 export default function App({ options }: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
-  const [clickable, setClickable] = useState(true);
+  const [clickable, setClickable] = useState(false);
   const { start, end } = getPeriod(
     options.period,
     options.startDate,
