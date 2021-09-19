@@ -3,6 +3,6 @@ import { ringProgress } from './numDone';
 
 export default function unfinished(assignments: Assignment[]): Assignment[] {
   return assignments.filter((assignment: Assignment) => {
-    return ringProgress(assignment) == 0;
+    return !assignment.user_submitted && ringProgress(assignment) == 0;
   });
 }

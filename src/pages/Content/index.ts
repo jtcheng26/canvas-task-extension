@@ -5,6 +5,7 @@ import { Options } from './modules/types';
 const rightSide = document.getElementById('right-side');
 
 const storedUserOptions = [
+  'complete_assignments',
   'startDate',
   'period',
   'startHour',
@@ -17,6 +18,9 @@ const storedUserOptions = [
 
 function optionsOrDefaults(result: Options): Options {
   return {
+    complete_assignments: !result.complete_assignments
+      ? []
+      : result.complete_assignments,
     startDate: !result.startDate ? 1 : result.startDate,
     startHour: !result.startHour ? 15 : result.startHour,
     startMinutes: !result.startMinutes ? 0 : result.startMinutes,
