@@ -5,6 +5,7 @@ import Subtitle from './Subtitle';
 import { Assignment, Options } from '../types';
 import getDaysLeft from '../utils/getDaysLeft';
 import getDueDateHeadingLabel from '../utils/getDueDateHeadingLabel';
+import { TaskListState } from '../types/taskListState';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -39,8 +40,11 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 interface TaskListProps {
   assignments: Assignment[];
+  markAssignmentAsComplete?: (a: Assignment) => void;
   options: Options;
+  setTaskListState?: (state: TaskListState) => void;
   skeleton?: boolean;
+  taskListState?: TaskListState;
 }
 
 /*
@@ -48,21 +52,41 @@ interface TaskListProps {
 */
 export default function TaskList({
   assignments,
+  markAssignmentAsComplete,
   options,
+  setTaskListState,
   skeleton,
+  taskListState,
 }: TaskListProps): JSX.Element {
   const [viewingMore, setViewingMore] = useState(false);
   let viewMoreText = 'View less';
-  let renderedAssignments = assignments;
+  let renderedAssignments =
+    taskListState === 'Unfinished'
+      ? assignments
+      : assignments.sort(
+          (a, b) =>
+            (a.submission?.grader_id ? 1 : -1) -
+            (b.submission?.grader_id ? 1 : -1)
+        );
   if (!viewingMore) {
     renderedAssignments = assignments.slice(0, Math.min(4, assignments.length));
     viewMoreText = `View ${assignments.length - 4} more`;
   }
   const headings: { [key: string]: Assignment[] } = {};
   renderedAssignments.forEach((a) => {
-    const daysLeft = getDueDateHeadingLabel(getDaysLeft(a));
-    if (!(daysLeft in headings)) headings[daysLeft] = [];
-    headings[daysLeft].push(a);
+    if (taskListState === 'Unfinished') {
+      const daysLeft = getDueDateHeadingLabel(getDaysLeft(a));
+      if (!(daysLeft in headings)) headings[daysLeft] = [];
+      headings[daysLeft].push(a);
+    } else {
+      if (a.submission?.grader_id) {
+        if (!('Graded' in headings)) headings['Graded'] = [];
+        headings['Graded'].push(a);
+      } else {
+        if (!('Ungraded' in headings)) headings['Ungraded'] = [];
+        headings['Ungraded'].push(a);
+      }
+    }
   });
   function handleClick(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
@@ -82,7 +106,11 @@ export default function TaskList({
   };
   return (
     <ListWrapper>
-      <Subtitle text="Unfinished" />
+      <Subtitle
+        setTaskListState={setTaskListState}
+        taskListState={taskListState}
+        text={taskListState || 'Unfinished'}
+      />
       <ListContainer>
         {skeleton ? (
           <>
@@ -91,12 +119,14 @@ export default function TaskList({
             <Task assignment={blankAssignment} color="" name="" skeleton />
             <Task assignment={blankAssignment} color="" name="" skeleton />
           </>
-        ) : options.due_date_headings ? (
+        ) : options.due_date_headings || taskListState == 'Completed' ? (
           Object.keys(headings).length > 0 ? (
             Object.keys(headings).map((heading) => (
               <HeadingContainer key={heading}>
                 <span>
-                  {heading !== 'Overdue' ? dueText : ''}{' '}
+                  {heading !== 'Overdue' && taskListState == 'Unfinished'
+                    ? dueText
+                    : ''}{' '}
                   <strong>{heading}</strong>
                 </span>
                 {headings[heading].map((assignment) => (
@@ -104,6 +134,7 @@ export default function TaskList({
                     assignment={assignment}
                     color={assignment.color || '#000000'}
                     key={assignment.id}
+                    markComplete={markAssignmentAsComplete}
                     name={assignment.course_name || 'Course'}
                   />
                 ))}

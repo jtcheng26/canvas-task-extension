@@ -18,6 +18,7 @@ interface Assignment {
     attempt: number;
     score: number | null;
     grade: string | number | null;
+    grader_id?: number | null; // check if assignment is graded or not
   };
 }
 
