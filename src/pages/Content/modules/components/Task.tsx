@@ -209,12 +209,10 @@ export default function Task({
             <>
               {!isComplete || !assignment.user_submitted ? DueLabel : ''}
               {!isComplete ? (
-                points !== null ? (
-                  ` ${due_date} at ${due_time}` +
-                  ` \xa0|\xa0 ${points} point${points != 1 ? 's' : ''}`
-                ) : (
-                  ''
-                )
+                ` ${due_date} at ${due_time}` +
+                (points !== null
+                  ? ` \xa0|\xa0 ${points} point${points != 1 ? 's' : ''}`
+                  : '')
               ) : (
                 <>
                   <strong>{` ${
