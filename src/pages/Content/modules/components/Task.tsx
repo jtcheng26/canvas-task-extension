@@ -1,7 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Assignment } from '../types';
-import { AssignmentIcon, DiscussionIcon, LockedIcon, QuizIcon } from '../icons';
+import {
+  AssignmentIcon,
+  CheckIcon,
+  DiscussionIcon,
+  LockedIcon,
+  QuizIcon,
+} from '../icons';
 import pointsPossible from '../utils/pointsPossible';
 import taskComplete from '../utils/taskComplete';
 
@@ -75,6 +81,11 @@ const TaskContainer = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  `,
+  TaskTop = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   `,
   TaskDetailsText = styled.div`
     overflow-x: auto;
@@ -156,8 +167,7 @@ export default function Task({
 
   let due = 'Due';
   if (isComplete) {
-    if (assignment.submission?.grader_id !== null) due = 'Graded';
-    else due = 'Ungraded';
+    if (!assignment.user_submitted) due = 'Unsubmitted';
   }
   const DueLabel = <strong>{due}</strong>;
   const points = pointsPossible(assignment);
@@ -169,21 +179,35 @@ export default function Task({
     <TaskContainer>
       <TaskLeft
         color={(!skeleton ? color : '#e8e8e8') || '000000'}
-        onClick={markAssignmentAsComplete}
+        onClick={onClick}
       >
         {!skeleton ? assignmentIcon : ''}
       </TaskLeft>
       <TaskInfo>
-        <CourseCodeText color={assignment.color}>
-          {!skeleton ? name : <SkeletonCourseCode />}
-        </CourseCodeText>
+        <TaskTop>
+          <CourseCodeText color={assignment.color}>
+            {!skeleton ? name : <SkeletonCourseCode />}
+          </CourseCodeText>
+          {!skeleton ? (
+            !isComplete ? (
+              <CheckIcon
+                checkStyle={isComplete ? 'Revert' : 'Check'}
+                onClick={markAssignmentAsComplete}
+              />
+            ) : (
+              ''
+            )
+          ) : (
+            ''
+          )}
+        </TaskTop>
         <TaskLink href={assignment.html_url}>
           {!skeleton ? assignment.name : <SkeletonTitle />}
         </TaskLink>
         <TaskDetailsText>
           {!skeleton ? (
             <>
-              {!isComplete ? DueLabel : ''}
+              {!isComplete || !assignment.user_submitted ? DueLabel : ''}
               {!isComplete ? (
                 points !== null ? (
                   ` ${due_date} at ${due_time}` +
@@ -193,8 +217,10 @@ export default function Task({
                 )
               ) : (
                 <>
-                  <strong>{`${
-                    due === 'Ungraded' ? '–' : assignment.submission?.grade
+                  <strong>{` ${
+                    !assignment.submission?.grader_id
+                      ? '–'
+                      : assignment.submission?.grade
                   }/${points}`}</strong>{' '}
                   {pointsLabel}
                 </>
