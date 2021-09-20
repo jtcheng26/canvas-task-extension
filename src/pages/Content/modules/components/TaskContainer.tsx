@@ -44,7 +44,7 @@ export default function TaskContainer({
       Object.keys(filteredData).forEach((k) => {
         filteredData[k].forEach((assignment) => {
           if (markedAsComplete.has(assignment.id))
-            assignment.user_submitted = true;
+            assignment.canvas_tasks_marked_as_complete = true;
         });
       });
       filteredData = !options.show_locked_assignments
