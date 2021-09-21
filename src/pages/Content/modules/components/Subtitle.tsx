@@ -88,7 +88,7 @@ export default function Subtitle({
   return (
     <SubtitleDiv onClick={toggleDropdown}>
       <div style={{ flexGrow: 1 }}>{text}</div>
-      <SelectArrow menuVisible={false} />
+      <SelectArrow menuVisible={dropdown} />
       <DropdownMenu open={dropdown}>
         <DropDownButton onClick={toggleTaskListState}>
           {taskListState == 'Unfinished' ? 'Completed' : 'Unfinished'}
