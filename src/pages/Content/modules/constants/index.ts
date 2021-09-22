@@ -1,0 +1,1 @@
+export const MAX_MARKED_ASSIGNMENTS = 1000;

@@ -14,7 +14,8 @@
       2,
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
-    "react/require-default-props": 0
+    "react/require-default-props": 0,
+    "react/jsx-max-depth": 0
   },
   "globals": {
     "chrome": "readonly"

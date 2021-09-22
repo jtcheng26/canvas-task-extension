@@ -1,6 +1,7 @@
 export type Period = 'Day' | 'Week' | 'Month';
 
 interface Options {
+  complete_assignments?: number[];
   startDate: number;
   startHour: number;
   startMinutes: number;
