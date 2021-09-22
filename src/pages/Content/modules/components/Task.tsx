@@ -213,7 +213,7 @@ export default function Task({
                 (points !== null
                   ? ` \xa0|\xa0 ${points} point${points != 1 ? 's' : ''}`
                   : '')
-              ) : (
+              ) : points !== null ? (
                 <>
                   <strong>{` ${
                     !assignment.submission?.grader_id
@@ -222,6 +222,8 @@ export default function Task({
                   }/${points}`}</strong>{' '}
                   {pointsLabel}
                 </>
+              ) : (
+                ''
               )}
             </>
           ) : (
