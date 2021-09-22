@@ -109,7 +109,6 @@ export default function TaskList({
       <Subtitle
         setTaskListState={setTaskListState}
         taskListState={taskListState}
-        text={taskListState || 'Unfinished'}
       />
       <ListContainer>
         {skeleton ? (

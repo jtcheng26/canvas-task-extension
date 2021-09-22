@@ -7,64 +7,28 @@ const SubtitleDiv = styled.div`
   height: 25px;
   display: flex;
   align-items: center;
-  padding-right: 10px;
+  justify-content: space-between;
   padding-bottom: 5px;
-  position: relative;
+`;
+
+interface SubtitleTabProps {
+  active?: boolean;
+}
+const SubtitleTab = styled.div<SubtitleTabProps>`
+  color: ${(p) =>
+    p.active
+      ? 'var(--ic-brand-font-color-dark)'
+      : 'var(--ic-brand-font-color-dark-lightened-30)'};
   &:hover {
     cursor: pointer;
-    &:nth-child(1) {
-      color: black;
-    }
-    div:nth-of-type(2) {
-      border-top: 7px solid var(--ic-brand-font-color-dark) !important;
-    }
+    text-decoration: underline;
   }
-`;
-
-interface SelectArrowProps {
-  menuVisible: boolean;
-}
-const SelectArrow = styled.div<SelectArrowProps>`
-  margin: 0px 0px 0px 4px;
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-top: 7px solid var(--ic-brand-font-color-dark-lightened-30);
-  border-right: 4px solid transparent;
-  background: transparent;
-  transform: rotate(${(p) => (p.menuVisible ? '180deg' : '0deg')});
-`;
-
-interface DropdownMenuProps {
-  open: boolean;
-}
-
-const DropdownMenu = styled.div<DropdownMenuProps>`
-  position: absolute;
-  top: 100%;
-  z-index: 20;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  background-color: white;
-  border-radius: 0px 0px 4px 4px;
-  width: 100%;
-  display: ${(props) => (props.open ? 'block' : 'none')};
-`;
-
-const DropDownButton = styled.div`
-  font-family: Lato Extended;
-  padding: 8px;
-  background-color: inherit;
-  &:hover {
-    cursor: pointer;
-    background: rgba(199, 205, 209, 0.5);
-  }
+  font-weight: ${(p) => (p.active ? 'bold' : 'normal')};
 `;
 
 interface SubtitleProps {
   setTaskListState?: (state: TaskListState) => void;
   taskListState?: TaskListState;
-  text: string;
 }
 
 /*
@@ -73,27 +37,33 @@ interface SubtitleProps {
 export default function Subtitle({
   setTaskListState,
   taskListState,
-  text,
 }: SubtitleProps): JSX.Element {
   const [dropdown, setDropdown] = useState(false);
   function toggleDropdown() {
     setDropdown(!dropdown);
   }
-  function toggleTaskListState() {
-    if (setTaskListState) {
-      if (taskListState === 'Unfinished') setTaskListState('Completed');
-      else setTaskListState('Unfinished');
-    }
+  function setTaskListUnfinished() {
+    if (setTaskListState) setTaskListState('Unfinished');
   }
+  function setTaskListCompleted() {
+    if (setTaskListState) setTaskListState('Completed');
+  }
+  const unfinishedString = 'Unfinished';
+  const finishedString = 'Completed';
   return (
     <SubtitleDiv onClick={toggleDropdown}>
-      <div style={{ flexGrow: 1 }}>{text}</div>
-      <SelectArrow menuVisible={dropdown} />
-      <DropdownMenu open={dropdown}>
-        <DropDownButton onClick={toggleTaskListState}>
-          {taskListState == 'Unfinished' ? 'Completed' : 'Unfinished'}
-        </DropDownButton>
-      </DropdownMenu>
+      <SubtitleTab
+        active={taskListState === 'Unfinished'}
+        onClick={setTaskListUnfinished}
+      >
+        {unfinishedString}
+      </SubtitleTab>
+      <SubtitleTab
+        active={taskListState === 'Completed'}
+        onClick={setTaskListCompleted}
+      >
+        {finishedString}
+      </SubtitleTab>
     </SubtitleDiv>
   );
 }
