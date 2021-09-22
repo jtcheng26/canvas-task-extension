@@ -24,23 +24,23 @@ export default function markAsComplete(assignment: Assignment): void {
         // }
       );
     });
-    chrome.storage.sync.get('incomplete_assignments', (result) => {
-      const alreadyInStorage = result
-        ? (result.incomplete_assignments as number[])
-        : [];
-      if (alreadyInStorage.includes(assignment.id)) {
-        alreadyInStorage.splice(alreadyInStorage.indexOf(assignment.id));
-      }
-      chrome.storage.sync.set(
-        {
-          incomplete_assignments: alreadyInStorage,
-        }
-        // () => {
-        //   chrome.storage.sync.get('complete_assignments', (res2) => {
-        //     console.log(res2);
-        //   });
-        // }
-      );
-    });
+    // chrome.storage.sync.get('incomplete_assignments', (result) => {
+    //   const alreadyInStorage = result
+    //     ? (result.incomplete_assignments as number[])
+    //     : [];
+    //   if (alreadyInStorage.includes(assignment.id)) {
+    //     alreadyInStorage.splice(alreadyInStorage.indexOf(assignment.id));
+    //   }
+    //   chrome.storage.sync.set(
+    //     {
+    //       incomplete_assignments: alreadyInStorage,
+    //     }
+    //     // () => {
+    //     //   chrome.storage.sync.get('complete_assignments', (res2) => {
+    //     //     console.log(res2);
+    //     //   });
+    //     // }
+    //   );
+    // });
   }
 }
