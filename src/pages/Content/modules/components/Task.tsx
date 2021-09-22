@@ -81,6 +81,7 @@ const TaskContainer = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    width: 100%;
   `,
   TaskTop = styled.div`
     display: flex;
@@ -188,15 +189,11 @@ export default function Task({
           <CourseCodeText color={assignment.color}>
             {!skeleton ? name : <SkeletonCourseCode />}
           </CourseCodeText>
-          {!skeleton ? (
-            !isComplete ? (
-              <CheckIcon
-                checkStyle={isComplete ? 'Revert' : 'Check'}
-                onClick={markAssignmentAsComplete}
-              />
-            ) : (
-              ''
-            )
+          {!skeleton && !isComplete ? (
+            <CheckIcon
+              checkStyle={isComplete ? 'Revert' : 'Check'}
+              onClick={markAssignmentAsComplete}
+            />
           ) : (
             ''
           )}
