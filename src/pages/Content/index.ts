@@ -2,7 +2,10 @@ import runApp from './modules';
 import './content.styles.css';
 import { Options } from './modules/types';
 
+/* Actual app container */
 const rightSide = document.getElementById('right-side');
+
+let sidebarLoaded = false;
 
 const storedUserOptions = [
   'complete_assignments',
@@ -96,12 +99,15 @@ function createSidebar(
   observer?: MutationObserver
 ): void {
   observer?.disconnect();
+  /* IMPORTANT: Only load sidebar once when switching between list view and other views */
+  if (!sidebarLoaded) {
+    sidebarLoaded = true;
+    // // @ts-expect-error: InstallTrigger is only in Firefox
+    const isFirefox = false; // typeof InstallTrigger !== 'undefined'
 
-  // // @ts-expect-error: InstallTrigger is only in Firefox
-  const isFirefox = false; // typeof InstallTrigger !== 'undefined'
-
-  if (isFirefox) runAppInFirefox(container);
-  else runAppInChrome(container);
+    if (isFirefox) runAppInFirefox(container);
+    else runAppInChrome(container);
+  }
 }
 
 if (rightSide) {
@@ -137,4 +143,41 @@ if (rightSide) {
     observer.observe(rightSide as Node, {
       childList: true,
     });
+}
+/* Make sidebar visible in list view */
+const rightSideWrapper = document.getElementById('right-side-wrapper');
+/* Ensure this is list view and not another page or view */
+const planner = document.getElementById('dashboard-planner-header');
+
+/* Page loads list view before extension */
+function checkForListView() {
+  if (
+    rightSide &&
+    planner?.style.display !== 'none' &&
+    rightSideWrapper?.style.display === 'none'
+  ) {
+    /* Make sidebar visible */
+    rightSideWrapper.style.display = 'block';
+    /* Fix sidebar while scrolling vertically */
+    rightSideWrapper.style.position = 'sticky';
+    rightSideWrapper.style.top = '0px';
+    rightSideWrapper.style.overflowY = 'scroll';
+    rightSideWrapper.style.height = '100vh';
+    createSidebar(rightSide);
+    return true;
+  }
+  return false;
+}
+
+checkForListView();
+
+/* Observe changes to sidebar in case user switches to list view or extension loads before list view does */
+const listViewObserver = new MutationObserver(() => {
+  checkForListView();
+});
+if (rightSideWrapper) {
+  listViewObserver.observe(rightSideWrapper as Node, {
+    attributes: true,
+    attributeFilter: ['style'],
+  });
 }
