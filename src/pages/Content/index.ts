@@ -99,7 +99,7 @@ function createSidebar(
   observer?: MutationObserver
 ): void {
   observer?.disconnect();
-  /* Only load sidebar once when switching between list view and other views */
+  /* IMPORTANT: Only load sidebar once when switching between list view and other views */
   if (!sidebarLoaded) {
     sidebarLoaded = true;
     // // @ts-expect-error: InstallTrigger is only in Firefox
@@ -156,8 +156,13 @@ function checkForListView() {
     planner?.style.display !== 'none' &&
     rightSideWrapper?.style.display === 'none'
   ) {
+    /* Make sidebar visible */
     rightSideWrapper.style.display = 'block';
-    console.log('bruh');
+    /* Fix sidebar while scrolling vertically */
+    rightSideWrapper.style.position = 'sticky';
+    rightSideWrapper.style.top = '0px';
+    rightSideWrapper.style.overflowY = 'scroll';
+    rightSideWrapper.style.height = '100vh';
     createSidebar(rightSide);
     return true;
   }
