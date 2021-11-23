@@ -175,7 +175,9 @@ checkForListView();
 const listViewObserver = new MutationObserver(() => {
   checkForListView();
 });
-listViewObserver.observe(rightSideWrapper as Node, {
-  attributes: true,
-  attributeFilter: ['style'],
-});
+if (rightSideWrapper) {
+  listViewObserver.observe(rightSideWrapper as Node, {
+    attributes: true,
+    attributeFilter: ['style'],
+  });
+}
