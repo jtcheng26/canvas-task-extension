@@ -1,4 +1,4 @@
-import Assignment from './assignment';
+import { Assignment } from './assignment';
 
 export default interface AssignmentMap {
   [key: string]: Assignment[];
