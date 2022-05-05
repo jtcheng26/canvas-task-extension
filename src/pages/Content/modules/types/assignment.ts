@@ -1,3 +1,4 @@
+// JSON response from /api/v1/calender_events
 interface Assignment {
   color?: string; // via course_id -> colors[course_id]
   html_url: string;
@@ -23,4 +24,59 @@ interface Assignment {
   canvas_tasks_marked_as_complete?: boolean;
 }
 
-export default Assignment;
+// JSON response from /api/v1/planner/items
+interface PlannerAssignment {
+  color?: string;
+  course_id: number;
+  id: number;
+  plannable_type: 'assignment' | 'quiz' | 'discussion_topic' | 'planner_note';
+  planner_override?: {
+    marked_complete: boolean;
+    dismissed: boolean;
+  };
+  submissions:
+    | {
+        submitted: boolean;
+        excused: boolean;
+        graded: boolean;
+        missing: boolean;
+        late: boolean;
+        needs_grading: boolean;
+        redo_request: boolean;
+      }
+    | boolean;
+  plannable?: {
+    id: number;
+    title: string;
+    due_at: string;
+    points_possible: number;
+  };
+}
+
+// Immutable object representation used in our code
+interface FinalAssignment {
+  color?: string; // color assigned to course
+  html_url: string; // link to assignment page
+  name: string; // title of assignment
+  points_possible: number;
+  due_at: string;
+  course_id?: number; // course the assignment belongs to
+  id: number; // id of the assignment
+  submitted: boolean; // has the user submitted it?
+  graded: boolean; // has the teacher graded it?
+  score: number; // grade assigned, 0 if ungraded or unsubmitted
+  type: AssignmentType;
+  course_name?: string; // via useCourseName
+  marked_complete: boolean; // marked complete in the sidebar or through the planner
+  position?: number;
+}
+
+// possible values from plannable_type field
+enum AssignmentType {
+  ASSIGNMENT = 'assignment',
+  QUIZ = 'quiz',
+  DISCUSSION = 'discussion_topic',
+  NOTE = 'planner_note',
+}
+
+export { Assignment, PlannerAssignment, FinalAssignment, AssignmentType };

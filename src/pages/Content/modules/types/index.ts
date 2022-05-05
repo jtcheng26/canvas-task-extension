@@ -1,5 +1,10 @@
 import Course from './course';
-import Assignment from './assignment';
+import {
+  Assignment,
+  FinalAssignment,
+  PlannerAssignment,
+  AssignmentType,
+} from './assignment';
 import Data from './data';
 import UserData from './userData';
 import Options, { Period } from './options';
@@ -10,6 +15,9 @@ export {
   Data,
   Course,
   Assignment,
+  FinalAssignment,
+  PlannerAssignment,
+  AssignmentType,
   UserData,
   Options,
   Period,
