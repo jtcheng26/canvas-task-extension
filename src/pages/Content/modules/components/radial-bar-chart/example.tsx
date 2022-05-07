@@ -3,16 +3,16 @@ import styled from 'styled-components';
 import RadialBarChart from '.';
 import { ChartData } from './types';
 
-const SubtitleText = styled.div`
+export const SubtitleText = styled.div`
   font-size: 13px;
-  font-family: Lato Extended;
+  font-family: Lato;
   font-weight: bold;
   line-height: 1.25em;
 `;
 
-const TitleText = styled.div`
+export const TitleText = styled.div`
   font-size: 25px;
-  font-family: Lato Extended;
+  font-family: Lato;
   font-weight: bold;
 `;
 
