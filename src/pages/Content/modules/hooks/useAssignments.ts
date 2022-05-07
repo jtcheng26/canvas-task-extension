@@ -119,7 +119,7 @@ export function applyDefaults(
   });
 }
 
-async function getAllAssignments(
+export async function getAllAssignments(
   startDate: Date,
   endDate: Date
 ): Promise<FinalAssignment[]> {

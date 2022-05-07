@@ -1,6 +1,13 @@
 import axios from 'axios';
-import { filterTimeBounds, applyDefaults } from './useAssignments';
-import { FinalAssignment } from '../types';
+import {
+  filterTimeBounds,
+  applyDefaults,
+  getAllAssignments,
+  filterAssignmentTypes,
+} from './useAssignments';
+import { AssignmentType, FinalAssignment } from '../types';
+
+import plannerRes from '../tests/data/api/planner.json';
 
 import beforeStartHour from '../tests/data/assignment-list/due_at/beforeStartHour.json';
 import afterStartHour from '../tests/data/assignment-list/due_at/afterStartHour.json';
@@ -19,6 +26,30 @@ import { AssignmentDefaults } from '../constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
+
+describe('getAllAssignment', () => {
+  it('fetches assignments from the planner/items endpoint', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
+
+    const assignments = await getAllAssignments(
+      new Date('2022-01-01'),
+      new Date('2022-01-01')
+    );
+    expect(assignments.length).toBe(plannerRes.length);
+    expect(assignments[0].course_id).toBe(plannerRes[0].course_id);
+  });
+  it('filters to assignment types', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
+
+    let assignments = await getAllAssignments(
+      new Date('2022-01-01'),
+      new Date('2022-01-01')
+    );
+    assignments = filterAssignmentTypes(assignments);
+    expect(assignments.length).toBe(10);
+    expect(assignments[0].type).toBe(AssignmentType.ASSIGNMENT);
+  });
+});
 
 describe('applyDefaults', () => {
   it('sets the default values', () => {
