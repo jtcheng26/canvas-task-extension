@@ -15,7 +15,6 @@ export default {
   },
 } as ComponentMeta<typeof Task>;
 
-// No Canvas fonts/styling, will look a bit different
 const Template: ComponentStory<typeof Task> = (args) => <Task {...args} />;
 
 const storyDefaults = {

@@ -13,7 +13,6 @@ export default {
   },
 } as ComponentMeta<typeof BeatLoader>;
 
-// No Canvas fonts/styling, will look a bit different
 const Template: ComponentStory<typeof BeatLoader> = (args) => (
   <BeatLoader {...args} />
 );
