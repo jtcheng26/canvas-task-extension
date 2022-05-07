@@ -117,9 +117,8 @@ if (rightSide) {
   const containerList = document.getElementsByClassName(
     'Sidebar__TodoListContainer'
   );
-  const teacherContainerList = document.getElementsByClassName(
-    'todo-list-header'
-  );
+  const teacherContainerList =
+    document.getElementsByClassName('todo-list-header');
   /*
   mutation observer waits for sidebar to load then injects content
   */
@@ -127,9 +126,8 @@ if (rightSide) {
     const todoListContainers = rightSide?.getElementsByClassName(
       'Sidebar__TodoListContainer'
     );
-    const teacherTodoListContainers = rightSide?.getElementsByClassName(
-      'todo-list-header'
-    );
+    const teacherTodoListContainers =
+      rightSide?.getElementsByClassName('todo-list-header');
     if (todoListContainers?.length)
       createSidebar(todoListContainers[0] as HTMLElement, observer);
     else if (teacherTodoListContainers?.length)

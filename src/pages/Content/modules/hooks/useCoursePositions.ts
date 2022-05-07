@@ -21,8 +21,6 @@ async function getCoursePositions(): Promise<StringNumberLookup> {
 }
 
 /* Use cached course positions, lookup using course id */
-export default function useCoursePositions(): UseQueryResult<
-  StringNumberLookup
-> {
+export default function useCoursePositions(): UseQueryResult<StringNumberLookup> {
   return useQuery('positions', getCoursePositions, { staleTime: Infinity });
 }

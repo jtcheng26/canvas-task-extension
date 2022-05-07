@@ -33,9 +33,8 @@ export default function TaskContainer({
   const courses = Object.keys(data).map((c) => parseInt(c));
   const [course, setCourse] = useState(onCourse ? courses[0] : -1);
   const [assignmentData, setAssignmentData] = useState(data);
-  const [assignmentsListState, setAssignmentsListState] = useState<
-    TaskListState
-  >('Unfinished');
+  const [assignmentsListState, setAssignmentsListState] =
+    useState<TaskListState>('Unfinished');
 
   useEffect(() => {
     (async () => {
