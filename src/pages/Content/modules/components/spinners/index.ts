@@ -1,1 +1,1 @@
-export { default as BeatLoader } from './BeatLoader';
+export { default } from './BeatLoader';

@@ -1,1 +1,1 @@
-export { default as RadialBarChart } from './RadialBarChart';
+export { default } from './RadialBarChart';
