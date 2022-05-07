@@ -22,6 +22,7 @@ const storyDefaults = {
   type: AssignmentType.ASSIGNMENT,
   html_url: '/',
   due_at: '2022-01-01Z00:00:00',
+  course_name: 'Course name',
   points_possible: 10,
   complete: true,
   graded: false,

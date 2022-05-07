@@ -119,6 +119,7 @@ interface TaskProps {
   score?: number;
   color: string;
   graded?: boolean;
+  course_name: string;
   markComplete?: () => void;
   skeleton?: boolean;
 }
@@ -132,6 +133,7 @@ export default function Task({
   html_url,
   due_at,
   points_possible,
+  course_name,
   complete,
   graded,
   score,
@@ -184,7 +186,7 @@ export default function Task({
       <TaskInfo>
         <TaskTop>
           <CourseCodeText color={color}>
-            {!skeleton ? name : <SkeletonCourseCode />}
+            {!skeleton ? course_name : <SkeletonCourseCode />}
           </CourseCodeText>
           {!skeleton && !complete ? (
             <CheckIcon
