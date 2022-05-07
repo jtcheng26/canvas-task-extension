@@ -8,9 +8,6 @@ import Header, { HeaderProps } from '../Header';
 export default {
   title: 'Components/Header',
   component: Header,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof Header>;
 
 const Template: ComponentStory<typeof Header> = ({

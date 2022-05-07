@@ -8,9 +8,6 @@ import BeatLoader from '../BeatLoader';
 export default {
   title: 'Components/BeatLoader',
   component: BeatLoader,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof BeatLoader>;
 
 const Template: ComponentStory<typeof BeatLoader> = (args) => (

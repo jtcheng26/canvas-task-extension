@@ -10,9 +10,6 @@ import { AssignmentDefaults } from '../../../constants';
 export default {
   title: 'Components/Task/Unfinished',
   component: Task,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof Task>;
 
 const Template: ComponentStory<typeof Task> = (args) => <Task {...args} />;

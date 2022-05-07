@@ -9,9 +9,6 @@ import { AssignmentType } from '../../../types';
 export default {
   title: 'Components/Task/Completed',
   component: Task,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof Task>;
 
 const Template: ComponentStory<typeof Task> = (args) => <Task {...args} />;

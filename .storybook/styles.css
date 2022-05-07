@@ -3,6 +3,8 @@ body {
   font-family: 'Lato', sans-serif;
   line-height: 16.5px;
 
+  --storybook-theme: #ec412d;
+
   --ic-brand-primary-darkened-5: #036fac;
   --ic-brand-primary-darkened-10: #0369a3;
   --ic-brand-primary-darkened-15: #03639a;

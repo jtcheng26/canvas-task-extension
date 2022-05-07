@@ -3,16 +3,13 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import RadialBarChart from '..';
+import RadialBarChart from '../RadialBarChart';
 import { TitleText } from '../example';
 import type { ChartData } from '../types';
 
 export default {
   title: 'Components/RadialBarChart',
   component: RadialBarChart,
-  argTypes: {
-    backgroundColor: { control: 'color' },
-  },
 } as ComponentMeta<typeof RadialBarChart>;
 
 interface storyProps {
