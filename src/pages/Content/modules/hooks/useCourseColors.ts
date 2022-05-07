@@ -9,6 +9,7 @@ async function getCourseColors(): Promise<StringStringLookup> {
 
   const { data } = await axios.get(`${baseURL()}/api/v1/users/self/colors`);
 
+  /* course_xxxxxx from api, we only want xxxxxx */
   Object.keys(data.custom_colors).forEach((course_id) => {
     data.custom_colors[course_id.substring(7)] = data.custom_colors[course_id];
   });

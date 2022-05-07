@@ -3,6 +3,7 @@ import { DemoNames } from '../tests/demo';
 import { Course, StringStringLookup } from '../types';
 import useCourses from './useCourses';
 
+/* In case we want to use user-chosen names in the future, which would require another api request. */
 async function getCourseNames(courses: Course[]): Promise<StringStringLookup> {
   if (process.env.DEMO) return DemoNames;
 

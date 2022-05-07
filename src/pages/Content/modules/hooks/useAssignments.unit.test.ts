@@ -1,136 +1,110 @@
 import axios from 'axios';
-import LongCourseList from '../tests/data/api/courses/longCourseList.json';
-import {
-  getAllAssignmentRequests,
-  onlyUnlockedAssignments,
-  onlyTheseCourses,
-  onlyActiveAssignments,
-  withinTimeBounds,
-} from './useAssignments';
-import AssignmentMap from '../types/assignmentMap';
+import { filterTimeBounds, applyDefaults } from './useAssignments';
+import { FinalAssignment } from '../types';
 
-import someLocked from '../tests/data/assignmentMap/someLocked.json';
-import lockedButSubmitted from '../tests/data/assignmentMap/lockedButSubmitted.json';
-import lockedButGraded from '../tests/data/assignmentMap/lockedButGraded.json';
-import allCourses from '../tests/data/assignmentMap/allCourses.json';
-import someActive from '../tests/data/assignmentMap/someActive.json';
+import beforeStartHour from '../tests/data/assignment-list/due_at/beforeStartHour.json';
+import afterStartHour from '../tests/data/assignment-list/due_at/afterStartHour.json';
+import beforeStartMinute from '../tests/data/assignment-list/due_at/beforeStartMinute.json';
+import afterStartMinute from '../tests/data/assignment-list/due_at/afterStartMinute.json';
 
-import beforeStartHour from '../tests/data/assignmentMap/due_at/beforeStartHour.json';
-import afterStartHour from '../tests/data/assignmentMap/due_at/afterStartHour.json';
-import beforeStartMinute from '../tests/data/assignmentMap/due_at/beforeStartMinute.json';
-import afterStartMinute from '../tests/data/assignmentMap/due_at/afterStartMinute.json';
+import afterEndHour from '../tests/data/assignment-list/due_at/afterEndHour.json';
+import beforeEndHour from '../tests/data/assignment-list/due_at/beforeEndHour.json';
+import afterEndMinute from '../tests/data/assignment-list/due_at/afterEndMinute.json';
+import beforeEndMinute from '../tests/data/assignment-list/due_at/beforeEndMinute.json';
 
-import afterEndHour from '../tests/data/assignmentMap/due_at/afterEndHour.json';
-import beforeEndHour from '../tests/data/assignmentMap/due_at/beforeEndHour.json';
-import afterEndMinute from '../tests/data/assignmentMap/due_at/afterEndMinute.json';
-import beforeEndMinute from '../tests/data/assignmentMap/due_at/beforeEndMinute.json';
-
-import beforeStartDay from '../tests/data/assignmentMap/due_at/beforeStartDay.json';
-import afterEndDay from '../tests/data/assignmentMap/due_at/afterEndDay.json';
+import beforeStartDay from '../tests/data/assignment-list/due_at/beforeStartDay.json';
+import afterEndDay from '../tests/data/assignment-list/due_at/afterEndDay.json';
 import forEachTZ from '../tests/utils/forEachTZ';
+import { AssignmentDefaults } from '../constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-describe('getAllAssignmentRequests', () => {
-  it('fetches assignments from 10 courses at a time', () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: 'test' });
+describe('applyDefaults', () => {
+  it('sets the default values', () => {
+    const defaults = AssignmentDefaults;
+    let assignments = [{}] as FinalAssignment[];
+    assignments = applyDefaults(defaults, assignments);
+    expect(assignments[0].course_id).toBe(defaults.course_id);
+    expect(assignments[0].due_at).toBe(defaults.due_at);
+    expect(assignments[0].graded).toBe(defaults.graded);
+    expect(assignments[0].html_url).toBe(defaults.html_url);
+    expect(assignments[0].id).toBe(defaults.id);
+    expect(assignments[0].marked_complete).toBe(defaults.marked_complete);
+    expect(assignments[0].name).toBe(defaults.name);
+    expect(assignments[0].points_possible).toBe(defaults.points_possible);
+    // unrequired properties
+    expect(assignments[0].color).toBe(defaults.color);
+    expect(assignments[0].course_name).toBe(defaults.course_name);
+    expect(assignments[0].position).toBe(defaults.position);
+    expect(assignments[0].score).toBe(defaults.score);
+  });
+  it('prioritizes existing values', () => {
+    const defaults = AssignmentDefaults;
+    const htmlValue = 'This is my url';
+    const courseNameValue = 'This is my course name';
+    const nameValue = 'This is my name';
+    let assignments = [
+      { html_url: htmlValue, course_name: courseNameValue, name: nameValue },
+    ] as FinalAssignment[];
+    assignments = applyDefaults(defaults, assignments);
 
-    const start = 'startDate';
-    const end = 'endDate';
-    const courses = LongCourseList;
+    expect(assignments[0].html_url).toBe(htmlValue);
+    expect(assignments[0].html_url).not.toBe(defaults.html_url);
+    expect(assignments[0].course_name).toBe(courseNameValue);
+    expect(assignments[0].course_name).not.toBe(defaults.course_name);
+    expect(assignments[0].name).toBe(nameValue);
+    expect(assignments[0].name).not.toBe(defaults.name);
 
-    const res = getAllAssignmentRequests(start, end, courses);
-    expect(res.length).toBe(3);
+    expect(assignments[0].course_id).toBe(defaults.course_id);
+    expect(assignments[0].due_at).toBe(defaults.due_at);
+    expect(assignments[0].graded).toBe(defaults.graded);
+    expect(assignments[0].id).toBe(defaults.id);
+    expect(assignments[0].marked_complete).toBe(defaults.marked_complete);
+    expect(assignments[0].points_possible).toBe(defaults.points_possible);
+    // unrequired properties
+    expect(assignments[0].color).toBe(defaults.color);
+    expect(assignments[0].position).toBe(defaults.position);
+    expect(assignments[0].score).toBe(defaults.score);
   });
 });
 
-describe('onlyUnlockedAssignments', () => {
-  it('excludes locked assignments if not submitted/graded', () => {
-    const data = someLocked as AssignmentMap;
-    const res = onlyUnlockedAssignments(data);
-    Object.keys(res).forEach((course) => {
-      expect(res[course].length).toBe(
-        data[course].reduce((a, b) => a + (b.locked_for_user ? 0 : 1), 0)
-      );
-    });
-  });
-
-  it('includes locked assignments that have been submitted', () => {
-    const data = lockedButSubmitted as AssignmentMap;
-    const res = onlyUnlockedAssignments(data);
-    Object.keys(res).forEach((course) => {
-      expect(res[course].length).toBe(data[course].length);
-    });
-  });
-
-  it('includes locked assignments that have been graded', () => {
-    const data = lockedButGraded as AssignmentMap;
-    const res = onlyUnlockedAssignments(data);
-    Object.keys(res).forEach((course) => {
-      expect(res[course].length).toBe(data[course].length);
-    });
-  });
-});
-
-describe('onlyTheseCourses', () => {
-  it('filters by the given courses', () => {
-    const data = allCourses as AssignmentMap;
-    const required = Object.keys(data)
-      .slice(0, Object.keys(data).length / 2)
-      .map((c) => parseInt(c));
-
-    const res = onlyTheseCourses(required, data);
-    expect(Object.keys(res).length).toBe(required.length);
-    Object.keys(res).forEach((course, i) => {
-      expect(parseInt(course)).toBe(required[i]);
-    });
-  });
-});
-
-describe('onlyActiveAssignments', () => {
-  it('excludes courses with no active assignments', () => {
-    const data = someActive as AssignmentMap;
-
-    const res = onlyActiveAssignments(data);
-    expect(Object.keys(res).length).toBe(
-      Object.keys(data).reduce((a, b) => a + (data[b].length > 0 ? 1 : 0), 0)
-    );
-  });
-});
-
-describe('withinTimeBounds', () => {
+describe('filterTimeBounds', () => {
   function testBounds(
     start: string,
     end: string,
-    data: AssignmentMap,
-    assertion: (res: AssignmentMap) => void
+    data: FinalAssignment[],
+    assertion: (res: FinalAssignment[]) => void
   ) {
     forEachTZ(() => {
       const startDate = new Date(start);
       const endDate = new Date(end);
 
       /* Modify due date to timezone so tests can remain the same */
-      const newAssignments: AssignmentMap = {};
-      Object.keys(data).forEach((course) => {
-        newAssignments[course] = data[course].map((d) => {
+      const newAssignments = applyDefaults(
+        AssignmentDefaults,
+        data.map((d) => {
           const due_at = new Date(d.due_at);
           due_at.setMinutes(due_at.getMinutes() + due_at.getTimezoneOffset());
-          return { ...d, due_at: due_at.toISOString() };
-        });
-      });
+          return { due_at: due_at.toISOString() } as FinalAssignment;
+        })
+      );
 
-      assertion(withinTimeBounds(startDate, endDate, newAssignments));
+      assertion(filterTimeBounds(startDate, endDate, newAssignments));
     });
+  }
+
+  function mergeTestData(sample: Record<string, unknown>[]): FinalAssignment[] {
+    return sample.map((s) => ({ ...AssignmentDefaults, ...s }));
   }
 
   it('excludes assignments due before start hour', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      beforeStartHour,
+      mergeTestData(beforeStartHour),
       (res) => {
-        expect(res['1'].length).toBe(0);
+        expect(res.length).toBe(0);
       }
     );
   });
@@ -139,9 +113,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      afterStartHour,
+      mergeTestData(afterStartHour),
       (res) => {
-        expect(res['1'].length).toBe(1);
+        expect(res.length).toBe(1);
       }
     );
   });
@@ -150,9 +124,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      beforeStartMinute,
+      mergeTestData(beforeStartMinute),
       (res) => {
-        expect(res['1'].length).toBe(0);
+        expect(res.length).toBe(0);
       }
     );
   });
@@ -161,9 +135,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      afterStartMinute,
+      mergeTestData(afterStartMinute),
       (res) => {
-        expect(res['1'].length).toBe(1);
+        expect(res.length).toBe(1);
       }
     );
   });
@@ -172,9 +146,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      afterEndHour,
+      mergeTestData(afterEndHour),
       (res) => {
-        expect(res['1'].length).toBe(0);
+        expect(res.length).toBe(0);
       }
     );
   });
@@ -183,9 +157,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      beforeEndHour,
+      mergeTestData(beforeEndHour),
       (res) => {
-        expect(res['1'].length).toBe(1);
+        expect(res.length).toBe(1);
       }
     );
   });
@@ -194,9 +168,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      afterEndMinute,
+      mergeTestData(afterEndMinute),
       (res) => {
-        expect(res['1'].length).toBe(0);
+        expect(res.length).toBe(0);
       }
     );
   });
@@ -205,9 +179,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      beforeEndMinute,
+      mergeTestData(beforeEndMinute),
       (res) => {
-        expect(res['1'].length).toBe(1);
+        expect(res.length).toBe(1);
       }
     );
   });
@@ -216,9 +190,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      beforeStartDay,
+      mergeTestData(beforeStartDay),
       (res) => {
-        expect(res['1'].length).toBe(0);
+        expect(res.length).toBe(0);
       }
     );
   });
@@ -227,9 +201,9 @@ describe('withinTimeBounds', () => {
     testBounds(
       '2018-02-26 10:15:00',
       '2018-03-05 10:15:00',
-      afterEndDay,
+      mergeTestData(afterEndDay),
       (res) => {
-        expect(res['1'].length).toBe(0);
+        expect(res.length).toBe(0);
       }
     );
   });

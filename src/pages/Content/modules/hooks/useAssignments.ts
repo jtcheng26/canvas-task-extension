@@ -1,120 +1,129 @@
 import axios, { AxiosResponse } from 'axios';
-import { Assignment, Options, StringStringLookup } from '../types';
-import useCourses from './useCourses';
+import { AssignmentType, FinalAssignment, Options } from '../types';
 import { useQuery, UseQueryResult } from 'react-query';
-import { Course } from '../types';
 import dashCourses from '../utils/dashCourses';
 import onCoursePage from '../utils/onCoursePage';
-import AssignmentMap from '../types/assignmentMap';
-import useGrade from './useGrade';
 import useCourseNames from './useCourseNames';
 import useCourseColors from './useCourseColors';
 import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
+import { AssignmentDefaults } from '../constants';
+import useCoursePositions from './useCoursePositions';
 
-/* Get assignments for a stringified list of up to 10 courses */
-function getAssignmentsRequest(
+/* Get assignments from api */
+function getAllAssignmentsRequest(
   start: string,
-  end: string,
-  courseList: string
+  end: string
 ): Promise<AxiosResponse> {
   return axios.get(
-    `${baseURL()}/api/v1/calendar_events?type=assignment&start_date=${start}&end_date=${end}${courseList}&per_page=100&include=submission`
+    `${baseURL()}/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=1000`
   );
 }
 
-export function getAllAssignmentRequests(
-  start: string,
-  end: string,
-  courses: Course[]
-): Promise<AxiosResponse>[] {
-  let page = 0;
-  const requests = [];
-  while (page * 10 < courses.length) {
-    let courseList = '';
-    for (let i = 10 * page; i < 10 * page + 10 && i < courses.length; i++) {
-      courseList += `&context_codes[]=course_${courses[i].id}`;
-    }
-    requests.push(getAssignmentsRequest(start, end, courseList));
-    page++;
-  }
-  return requests;
-}
-
-export function onlyUnlockedAssignments(
-  assignments: AssignmentMap
-): AssignmentMap {
-  const newAssignments: AssignmentMap = {};
-  Object.keys(assignments).forEach((course) => {
-    newAssignments[course] = assignments[course].filter((assignment) => {
-      if (assignment.locked_for_user) {
-        // if locked but submitted/graded already, include in chart
-        if (assignment.submission)
-          return (
-            assignment.submission.attempt ||
-            assignment.submission.score ||
-            assignment.submission.grade
-          );
-        return false;
-      }
-      return true;
-    });
-  });
-
-  return newAssignments;
-}
-
-export function withinTimeBounds(
+/* Only assignments between the exact datetimes */
+export function filterTimeBounds(
   startDate: Date,
   endDate: Date,
-  assignments: AssignmentMap
-): AssignmentMap {
-  const newAssignments: AssignmentMap = {};
-  Object.keys(assignments).forEach((course) => {
-    newAssignments[course] = assignments[course].filter((assignment) => {
-      const due_date = new Date(assignment.due_at);
-      return (
-        due_date.valueOf() >= startDate.valueOf() &&
-        due_date.valueOf() < endDate.valueOf()
-      );
-    });
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return assignments.filter((assignment) => {
+    const due_date = new Date(assignment.due_at);
+    return (
+      due_date.valueOf() >= startDate.valueOf() &&
+      due_date.valueOf() < endDate.valueOf()
+    );
   });
-  return newAssignments;
 }
 
-export function onlyTheseCourses(
+/* Only assignments from the specified courses */
+export function filterCourses(
   courses: number[],
-  assignments: AssignmentMap
-): AssignmentMap {
-  const newAssignments: AssignmentMap = {};
-  courses.forEach((course) => {
-    newAssignments[course] = assignments[course];
-  });
-  return newAssignments;
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  const courseSet = new Set(courses);
+  return assignments.filter((assignment) =>
+    courseSet.has(assignment.course_id)
+  );
 }
 
-export function onlyActiveAssignments(
-  assignments: AssignmentMap
-): AssignmentMap {
-  const newAssignments: AssignmentMap = {};
-  Object.keys(assignments).forEach((course) => {
-    if (assignments[course].length) {
-      newAssignments[course] = assignments[course];
-    }
-  });
-
-  return newAssignments;
+/* Only where type is assignment, discussion, quiz, or planner note */
+export function filterAssignmentTypes(
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  const validAssignments = [
+    AssignmentType.ASSIGNMENT,
+    AssignmentType.DISCUSSION,
+    AssignmentType.QUIZ,
+    AssignmentType.NOTE,
+  ];
+  return assignments.filter((assignment) =>
+    validAssignments.includes(assignment.type)
+  );
 }
 
-async function getAssignments(
+/* Fill out the `color` attribute in the assignment object. */
+export function applyCourseColor(
+  colors: Record<string, string>,
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return applyCourseValue('color', colors, assignments);
+}
+
+/* Fill out the `course_name` attribute in the assignment object. */
+export function applyCourseName(
+  names: Record<string, string>,
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return applyCourseValue('course_name', names, assignments);
+}
+
+/* Fill out the `position` attribute in the assignment object. */
+export function applyCoursePositions(
+  positions: Record<string, number>,
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return applyCourseValue('position', positions, assignments);
+}
+
+/* 
+  Fill the `value` property of Assignment using the corresponding value to its course_id in `courseMap`.
+  For DRY-ness.
+ */
+export function applyCourseValue(
+  value: keyof FinalAssignment,
+  courseMap: Record<string, string> | Record<string, number>,
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return assignments.map((assignment) => {
+    if (assignment.course_id in courseMap)
+      assignment[value] = courseMap[assignment.course_id] as never;
+    return assignment;
+  });
+}
+
+/* Fetch assignment scores and assign to `score` prop. */
+export function applyScore(assignments: FinalAssignment[]): FinalAssignment[] {
+  return assignments.map((assignment) => {
+    assignment.score = 10; // TODO: actually fetch scores from graphql
+    return assignment;
+  });
+}
+
+/* Fill assignment with default values, override defaults with existing properties. */
+export function applyDefaults(
+  defaults: FinalAssignment,
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return assignments.map((assignment) => {
+    return { ...defaults, ...assignment };
+  });
+}
+
+async function getAllAssignments(
   startDate: Date,
-  endDate: Date,
-  options: Options,
-  colors: StringStringLookup,
-  names: StringStringLookup,
-  courses: Course[]
-): Promise<AssignmentMap> {
-  /* Expand bounds by 1 day to account for possible time zone differences with api */
+  endDate: Date
+): Promise<FinalAssignment[]> {
+  /* Expand bounds by 1 day to account for possible time zone differences with api. */
   const st = new Date(startDate);
   st.setDate(startDate.getDate() - 1);
   const en = new Date(endDate);
@@ -123,43 +132,42 @@ async function getAssignments(
   const startStr = st.toISOString().split('T')[0];
   const endStr = en.toISOString().split('T')[0];
   const requests = process.env.DEMO
-    ? [
-        {
-          data: DemoAssignments.map((d) => {
-            return {
-              assignment: d,
-            };
-          }),
-        },
-      ]
-    : await axios.all(getAllAssignmentRequests(startStr, endStr, courses));
+    ? {
+        data: DemoAssignments.map((d) => {
+          return {
+            assignment: d,
+          };
+        }),
+      }
+    : await getAllAssignmentsRequest(startStr, endStr);
 
-  let assignments: AssignmentMap = {};
-  courses.forEach((course) => {
-    assignments[course.id] = [];
-  });
+  return applyDefaults(AssignmentDefaults, requests.data as FinalAssignment[]);
+}
 
-  requests.forEach((request) => {
-    request.data.forEach((data: { assignment: Assignment }) => {
-      data.assignment.color = colors[data.assignment.course_id];
-      data.assignment.course_name = names[data.assignment.course_id];
-      data.assignment.grade = useGrade(data.assignment);
-      assignments[data.assignment.course_id].push(data.assignment);
-    });
-  });
-
-  assignments = withinTimeBounds(startDate, endDate, assignments);
+async function processAssignments(
+  startDate: Date,
+  endDate: Date,
+  options: Options,
+  colors?: Record<string, string>,
+  names?: Record<string, string>,
+  positions?: Record<string, number>
+): Promise<FinalAssignment[]> {
+  /* modify this filter if announcements are used in the future */
+  let assignments = await getAllAssignments(startDate, endDate);
+  assignments = filterAssignmentTypes(assignments);
+  assignments = filterTimeBounds(startDate, endDate, assignments);
+  if (colors) assignments = applyCourseColor(colors, assignments);
+  if (names) assignments = applyCourseName(names, assignments);
+  if (positions) assignments = applyCoursePositions(positions, assignments);
 
   const coursePageId = onCoursePage();
   if (coursePageId !== false) {
-    assignments = onlyTheseCourses([coursePageId], assignments);
+    assignments = filterCourses([coursePageId], assignments);
   } else {
     const dash = dashCourses();
     if (options.dash_courses && dash)
-      assignments = onlyTheseCourses(Array.from(dash), assignments);
-    else assignments = onlyActiveAssignments(assignments);
+      assignments = filterCourses(Array.from(dash), assignments);
   }
-
   return assignments;
 }
 
@@ -168,23 +176,23 @@ export default function useAssignments(
   endDate: Date,
   options: Options
 ): UseQueryResult {
-  const { data: courses } = useCourses();
   const { data: colors } = useCourseColors();
   const { data: names } = useCourseNames();
+  const { data: positions } = useCoursePositions();
   return useQuery(
     ['names', startDate, endDate],
     () =>
-      getAssignments(
+      processAssignments(
         startDate,
         endDate,
         options,
-        colors as StringStringLookup,
-        names as StringStringLookup,
-        courses as Course[]
+        colors as Record<string, string>,
+        names as Record<string, string>,
+        positions as Record<string, number>
       ),
     {
       staleTime: Infinity,
-      enabled: !!courses && !!colors && !!names,
+      enabled: !!colors && !!names,
     }
   );
 }

@@ -60,11 +60,11 @@ interface FinalAssignment {
   name: string; // title of assignment
   points_possible: number;
   due_at: string;
-  course_id?: number; // course the assignment belongs to
+  course_id: number; // course the assignment belongs to
   id: number; // id of the assignment
   submitted: boolean; // has the user submitted it?
   graded: boolean; // has the teacher graded it?
-  score: number; // grade assigned, 0 if ungraded or unsubmitted
+  score?: number; // grade assigned, 0 if ungraded or unsubmitted
   type: AssignmentType;
   course_name?: string; // via useCourseName
   marked_complete: boolean; // marked complete in the sidebar or through the planner
@@ -77,6 +77,8 @@ enum AssignmentType {
   QUIZ = 'quiz',
   DISCUSSION = 'discussion_topic',
   NOTE = 'planner_note',
+  ANNOUNCEMENT = 'announcement',
+  EVENT = 'calender_event',
 }
 
 export { Assignment, PlannerAssignment, FinalAssignment, AssignmentType };
