@@ -1,3 +1,3 @@
-import ChartData from './data';
+import ChartData, { Bar } from './data';
 
-export { ChartData };
+export { ChartData, Bar };

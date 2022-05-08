@@ -1,4 +1,4 @@
-interface Bar {
+export interface Bar {
   id: number;
   value: number;
   max: number;

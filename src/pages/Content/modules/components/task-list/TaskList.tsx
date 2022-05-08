@@ -79,7 +79,9 @@ export default function TaskList({
   const assignmentToTaskCard = (assignment: FinalAssignment) => (
     <TaskCard
       color={assignment.color}
-      complete={assignment.submitted || assignment.graded}
+      complete={
+        assignment.submitted || assignment.graded || assignment.marked_complete
+      }
       course_name={assignment.course_name}
       due_at={assignment.due_at}
       graded={assignment.graded}

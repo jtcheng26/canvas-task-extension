@@ -16,12 +16,12 @@
     "position": 0
   },
   {
-    "color": "#ec412d",
+    "color": "#13f",
     "html_url": "/",
     "name": "Untitled Assignment",
     "points_possible": 10,
     "due_at": "2022-01-01T00:00:00Z",
-    "course_id": 0,
+    "course_id": 1,
     "id": 1,
     "submitted": false,
     "graded": false,
@@ -48,12 +48,12 @@
     "position": 0
   },
   {
-    "color": "#ec412d",
+    "color": "#13f",
     "html_url": "/",
     "name": "Untitled Assignment",
     "points_possible": 10,
     "due_at": "2022-01-01T00:00:00Z",
-    "course_id": 0,
+    "course_id": 1,
     "id": 3,
     "submitted": false,
     "graded": true,
@@ -80,12 +80,12 @@
     "position": 0
   },
   {
-    "color": "#ec412d",
+    "color": "#13f",
     "html_url": "/",
     "name": "Untitled Assignment",
     "points_possible": 10,
     "due_at": "2022-01-01T00:00:00Z",
-    "course_id": 0,
+    "course_id": 1,
     "id": 5,
     "submitted": false,
     "graded": false,
