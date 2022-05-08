@@ -48,13 +48,13 @@ export default function TaskContainer({
         setCourse={setSelectedCourseId}
       />
       <TaskChart
-        assignments={assignments}
+        assignments={updatedAssignments}
         loading={loading}
         selectedCourseId={selectedCourseId}
         setCourse={setSelectedCourseId}
       />
       <TaskList
-        assignments={assignments}
+        assignments={updatedAssignments}
         markAssignmentAsComplete={markAssignmentAsComplete}
         selectedCourseId={selectedCourseId}
         showDateHeadings={options.due_date_headings}
