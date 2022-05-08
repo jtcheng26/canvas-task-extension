@@ -175,7 +175,7 @@ export default function useAssignments(
   startDate: Date,
   endDate: Date,
   options: Options
-): UseQueryResult {
+): UseQueryResult<FinalAssignment[]> {
   const { data: colors } = useCourseColors();
   const { data: names } = useCourseNames();
   const { data: positions } = useCoursePositions();

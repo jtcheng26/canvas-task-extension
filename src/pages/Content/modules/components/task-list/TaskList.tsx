@@ -33,7 +33,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 export interface TaskListProps {
   assignments: FinalAssignment[];
-  markAssignmentAsComplete: (id: number) => void;
+  markAssignmentAsComplete?: (id: number) => void;
   selectedCourseId: number;
   showDateHeadings: boolean;
   skeleton?: boolean;
@@ -73,6 +73,10 @@ export default function TaskList({
   const noneText = 'None';
 
   function markAssignmentFunc(id: number) {
+    if (!markAssignmentAsComplete)
+      return () => {
+        console.log('Failed to mark as complete');
+      };
     return () => markAssignmentAsComplete(id);
   }
 
