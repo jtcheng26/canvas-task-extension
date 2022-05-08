@@ -11,6 +11,16 @@ export function sortByGraded(
   });
 }
 
+export function filterByTab(
+  currentTab: 'Unfinished' | 'Completed',
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return assignments.filter((a) => {
+    const done = a.marked_complete || a.graded || a.submitted;
+    return currentTab === 'Completed' ? done : !done;
+  });
+}
+
 /* 
 Assumes assignments are sorted by due date (old => new) by default.
 If on the completed tab, assignments are shown (new => old) (most recent submissions on top).

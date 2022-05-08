@@ -5,7 +5,7 @@ import SubTabs from '../sub-tabs/SubTabs';
 import { FinalAssignment } from '../../types';
 import useHeadings from './utils/useHeadings';
 import useSelectedCourse from './utils/useSelectedCourse';
-import { sortByTab } from './utils/sortBy';
+import { filterByTab, sortByTab } from './utils/sortBy';
 import cutAssignmentList from './utils/cutList';
 import HeadingGroup from './components/HeadingGroup';
 
@@ -53,8 +53,8 @@ export default function TaskList({
     useState<'Unfinished' | 'Completed'>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
   const selectedAssignments = useSelectedCourse(selectedCourseId, assignments);
-  const sortedAssignments = sortByTab(currentTab, selectedAssignments);
-
+  const filteredAssignments = filterByTab(currentTab, selectedAssignments);
+  const sortedAssignments = sortByTab(currentTab, filteredAssignments);
   const renderedAssignments = cutAssignmentList(
     !viewingMore,
     4,
@@ -68,7 +68,7 @@ export default function TaskList({
   }
 
   const viewMoreText = !viewingMore
-    ? `View ${assignments.length - 4} more`
+    ? `View ${renderedAssignments.length - 4} more`
     : 'View less';
   const noneText = 'None';
 
@@ -123,7 +123,7 @@ export default function TaskList({
           : renderedAssignments.map(assignmentToTaskCard)}
         {renderedAssignments.length == 0 && <span>{noneText}</span>}
       </ListContainer>
-      {assignments.length > 4 && (
+      {renderedAssignments.length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>
