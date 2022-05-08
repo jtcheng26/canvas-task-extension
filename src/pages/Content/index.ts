@@ -1,56 +1,12 @@
 import runApp from './modules';
 import './content.styles.css';
 import { Options } from './modules/types';
+import { OptionsDefaults } from './modules/constants';
 
-/* Actual app container */
-const rightSide = document.getElementById('right-side');
-
-let sidebarLoaded = false;
-
-const storedUserOptions = [
-  'complete_assignments',
-  'startDate',
-  'period',
-  'startHour',
-  'startMinutes',
-  'sidebar',
-  'dash_courses',
-  'due_date_headings',
-  'show_locked_assignments',
-];
-
-function optionsOrDefaults(result: Options): Options {
+function applyDefaults(options: Options): Options {
   return {
-    complete_assignments: !result.complete_assignments
-      ? []
-      : result.complete_assignments,
-    startDate: !result.startDate ? 1 : result.startDate,
-    startHour: !result.startHour ? 15 : result.startHour,
-    startMinutes: !result.startMinutes ? 0 : result.startMinutes,
-    period: !(
-      result.period === 'Day' ||
-      result.period === 'Week' ||
-      result.period === 'Month'
-    )
-      ? 'Week'
-      : result.period,
-    sidebar:
-      result.sidebar !== false && result.sidebar !== true
-        ? false
-        : result.sidebar,
-    dash_courses:
-      result.dash_courses !== false && result.dash_courses !== true
-        ? false
-        : result.dash_courses,
-    due_date_headings:
-      result.due_date_headings !== false && result.due_date_headings !== true
-        ? true
-        : result.due_date_headings,
-    show_locked_assignments:
-      result.show_locked_assignments !== false &&
-      result.show_locked_assignments !== true
-        ? true
-        : result.show_locked_assignments,
+    ...OptionsDefaults,
+    ...options,
   };
 }
 
@@ -71,8 +27,10 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
 }
 
 function runAppInChrome(container: HTMLElement) {
+  const storedUserOptions = Object.keys(OptionsDefaults);
+
   chrome.storage.sync.get(storedUserOptions, function (result) {
-    chrome.storage.sync.set(optionsOrDefaults(result as Options), function () {
+    chrome.storage.sync.set(applyDefaults(result as Options), function () {
       chrome.storage.sync.get(null, function (result2) {
         runAppUsingOptions(container, result2 as Options);
       });
@@ -80,7 +38,7 @@ function runAppInChrome(container: HTMLElement) {
   });
 }
 
-/* Chrome APIs work fine in firefox currently, but firefox-native implementation is commented here for the future. */
+/* Chrome APIs work fine in firefox currently, but firefox-native implementation is saved here for the future. */
 function runAppInFirefox(container: HTMLElement) {
   // (async () => {
   //   // @ts-expect-error: InstallTrigger is only in Firefox
@@ -94,6 +52,11 @@ function runAppInFirefox(container: HTMLElement) {
   runAppInChrome(container);
 }
 
+/* This is the <aside> element contains the existing canvas sidebar. */
+const rightSide = document.getElementById('right-side');
+
+let sidebarLoaded = false;
+
 function createSidebar(
   container: HTMLElement,
   observer?: MutationObserver
@@ -102,7 +65,7 @@ function createSidebar(
   /* IMPORTANT: Only load sidebar once when switching between list view and other views */
   if (!sidebarLoaded) {
     sidebarLoaded = true;
-    // // @ts-expect-error: InstallTrigger is only in Firefox
+    // // @ts-expect-error: InstallTrigger is a firefox global
     const isFirefox = false; // typeof InstallTrigger !== 'undefined'
 
     if (isFirefox) runAppInFirefox(container);
@@ -112,14 +75,6 @@ function createSidebar(
 
 if (rightSide) {
   /*
-  in case the element is already there and not caught by mutation observer
-*/
-  const containerList = document.getElementsByClassName(
-    'Sidebar__TodoListContainer'
-  );
-  const teacherContainerList =
-    document.getElementsByClassName('todo-list-header');
-  /*
   mutation observer waits for sidebar to load then injects content
   */
   const observer = new MutationObserver(() => {
@@ -128,11 +83,20 @@ if (rightSide) {
     );
     const teacherTodoListContainers =
       rightSide?.getElementsByClassName('todo-list-header');
-    if (todoListContainers?.length)
+    if (todoListContainers?.length > 0)
       createSidebar(todoListContainers[0] as HTMLElement, observer);
-    else if (teacherTodoListContainers?.length)
+    else if (teacherTodoListContainers?.length > 0)
       createSidebar(teacherTodoListContainers[0] as HTMLElement, observer);
   });
+
+  /*
+  in case the element is already loaded and not caught by mutation observer
+*/
+  const containerList = document.getElementsByClassName(
+    'Sidebar__TodoListContainer'
+  );
+  const teacherContainerList =
+    document.getElementsByClassName('todo-list-header');
 
   if (containerList.length > 0) createSidebar(containerList[0] as HTMLElement);
   else if (teacherContainerList.length > 0)
@@ -142,13 +106,13 @@ if (rightSide) {
       childList: true,
     });
 }
-/* Make sidebar visible in list view */
+/* This element is hidden in list view. */
 const rightSideWrapper = document.getElementById('right-side-wrapper');
-/* Ensure this is list view and not another page or view */
-const planner = document.getElementById('dashboard-planner-header');
 
-/* Page loads list view before extension */
+/* If the page loads list view before extension. */
 function checkForListView() {
+  /* Use this element to ensure this is list view and not another page or view. */
+  const planner = document.getElementById('dashboard-planner-header');
   if (
     rightSide &&
     planner?.style.display !== 'none' &&
@@ -167,13 +131,13 @@ function checkForListView() {
   return false;
 }
 
-checkForListView();
-
-/* Observe changes to sidebar in case user switches to list view or extension loads before list view does */
+/* Observe changes to sidebar in case user switches to list view or extension loads before list view does. */
 const listViewObserver = new MutationObserver(() => {
   checkForListView();
 });
+
 if (rightSideWrapper) {
+  checkForListView();
   listViewObserver.observe(rightSideWrapper as Node, {
     attributes: true,
     attributeFilter: ['style'],
