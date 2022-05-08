@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import CourseDropdown from '../course-dropdown';
 import TaskChart from '../task-chart';
 import TaskList from '../task-list';
@@ -22,10 +22,10 @@ export default function TaskContainer({
   loading,
   options,
 }: TaskContainerProps): JSX.Element {
-  const onCourse = onCoursePage() ? true : false;
+  const onCourse = onCoursePage();
   const courses = useMemo(() => extractCourses(assignments), [assignments]);
   const [selectedCourseId, setSelectedCourseId] = useState<number>(
-    onCourse ? courses[0].id : -1
+    onCourse !== false ? onCourse : -1
   );
   // update assignments in state when marked as complete, then push updates asynchronously to local storage
   const [updatedAssignments, setUpdatedAssignments] =
@@ -39,11 +39,15 @@ export default function TaskContainer({
     setUpdatedAssignments(newAssignments);
   }
 
+  useEffect(() => {
+    setUpdatedAssignments(assignments);
+  }, [assignments]);
+
   return (
     <>
       <CourseDropdown
         courses={courses}
-        onCoursePage={onCourse}
+        onCoursePage={onCourse !== false}
         selectedCourseId={selectedCourseId}
         setCourse={setSelectedCourseId}
       />

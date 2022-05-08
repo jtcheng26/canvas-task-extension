@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import TaskContainer from '../task-container';
-import { Options } from '../../types';
+import { FinalAssignment, Options } from '../../types';
 import CompareMonthDate from './utils/compareMonthDate';
 import useAssignments from '../../hooks/useAssignments';
 import Skeleton from '../skeleton';
@@ -22,6 +22,8 @@ function ContentLoader({
   endDate,
   loadedCallback,
 }: ContentLoaderProps): JSX.Element {
+  const [assignmentData, setAssignmentData] =
+    useState<FinalAssignment[] | null>();
   const { data, isError, isSuccess } = useAssignments(
     startDate,
     endDate,
@@ -30,6 +32,7 @@ function ContentLoader({
 
   useEffect(() => {
     if (isSuccess) {
+      setAssignmentData(data as FinalAssignment[]);
       loadedCallback();
     }
   }, [isSuccess]);
@@ -37,10 +40,10 @@ function ContentLoader({
   const failed = 'Failed to load';
   return (
     <>
-      {!isSuccess && !isError && !data && <Skeleton />}
-      {data ? (
+      {!isSuccess && !isError && !assignmentData && <Skeleton />}
+      {assignmentData ? (
         <TaskContainer
-          assignments={data}
+          assignments={assignmentData}
           loading={!isSuccess}
           options={options}
         />
