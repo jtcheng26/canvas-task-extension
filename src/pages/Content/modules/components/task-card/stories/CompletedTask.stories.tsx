@@ -3,15 +3,17 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import Task from '../Task';
+import TaskCard from '../TaskCard';
 import { AssignmentType } from '../../../types';
 
 export default {
   title: 'Components/Task/Completed',
-  component: Task,
-} as ComponentMeta<typeof Task>;
+  component: TaskCard,
+} as ComponentMeta<typeof TaskCard>;
 
-const Template: ComponentStory<typeof Task> = (args) => <Task {...args} />;
+const Template: ComponentStory<typeof TaskCard> = (args) => (
+  <TaskCard {...args} />
+);
 
 const storyDefaults = {
   name: 'Assignment name',

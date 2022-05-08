@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Task from './Task';
+import Task from './task-card';
 import Subtitle from './Subtitle';
 import { Assignment, Options } from '../types';
 import getDaysLeft from '../utils/getDaysLeft';

@@ -1,6 +1,6 @@
-import { Assignment } from '../types';
+import { FinalAssignment } from '../../../types';
 
-export default function getDaysLeft(assignment: Assignment): number {
+export default function getDaysLeft(assignment: FinalAssignment): number {
   const due = new Date(assignment.due_at);
   due.setHours(0, 0, 0);
   const now = new Date(Date.now());

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { AssignmentType } from '../../types';
-import { ASSIGNMENT_ICON } from '../../constants';
+import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
 
 const TaskContainer = styled.div`
@@ -109,17 +109,17 @@ const TaskContainer = styled.div`
     animation: canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both;
   `;
 interface TaskProps {
-  name: string;
-  type: AssignmentType;
-  html_url: string;
-  due_at: string;
+  name?: string;
+  type?: AssignmentType;
+  html_url?: string;
+  due_at?: string;
   points_possible?: number;
-  complete: boolean;
+  complete?: boolean;
   submitted?: boolean;
   score?: number;
-  color: string;
+  color?: string;
   graded?: boolean;
-  course_name: string;
+  course_name?: string;
   markComplete?: () => void;
   skeleton?: boolean;
 }
@@ -127,14 +127,14 @@ interface TaskProps {
     Renders an individual task item
 */
 
-export default function Task({
-  name,
-  type,
-  html_url,
-  due_at,
+export default function TaskCard({
+  name = AssignmentDefaults.name,
+  type = AssignmentDefaults.type,
+  html_url = AssignmentDefaults.html_url,
+  due_at = AssignmentDefaults.due_at,
   points_possible,
   course_name,
-  complete,
+  complete = AssignmentDefaults.marked_complete,
   graded,
   score,
   color,

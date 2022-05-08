@@ -1,6 +1,7 @@
-import { Assignment } from '../types';
+import { FinalAssignment } from '../../../types';
 import getDaysLeft from './getDaysLeft';
-import forEachTZ from '../tests/utils/forEachTZ';
+import forEachTZ from '../../../tests/utils/forEachTZ';
+import { AssignmentDefaults } from '../../../constants';
 
 let dateNowSpy: jest.SpyInstance;
 
@@ -14,15 +15,9 @@ test('Returns 0 on the same day', () => {
     dateNowSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => new Date(2021, 1, 26, 0, 0, 0).valueOf());
-    const a: Assignment = {
+    const a: FinalAssignment = {
+      ...AssignmentDefaults,
       due_at: new Date(2021, 1, 26, 0, 0, 0).toISOString(),
-      html_url: '',
-      name: '',
-      points_possible: 0,
-      course_id: 1,
-      id: 1,
-      user_submitted: false,
-      is_quiz_assignment: false,
     };
     expect(getDaysLeft(a)).toBe(0);
     a.due_at = new Date(2021, 1, 26, 23, 59, 59).toISOString();
@@ -35,15 +30,9 @@ test('Returns 1 for next day', () => {
     dateNowSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => new Date(2021, 1, 26, 0, 0, 0).valueOf());
-    const a: Assignment = {
+    const a: FinalAssignment = {
+      ...AssignmentDefaults,
       due_at: new Date(2021, 1, 27, 0, 0, 0).toISOString(),
-      html_url: '',
-      name: '',
-      points_possible: 0,
-      course_id: 1,
-      id: 1,
-      user_submitted: false,
-      is_quiz_assignment: false,
     };
     expect(getDaysLeft(a)).toBe(1);
     a.due_at = new Date(2021, 1, 27, 23, 59, 59).toISOString();
@@ -56,15 +45,9 @@ test('Returns 2 for day after tomorrow', () => {
     dateNowSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => new Date(2021, 1, 26, 0, 0, 0).valueOf());
-    const a: Assignment = {
+    const a: FinalAssignment = {
+      ...AssignmentDefaults,
       due_at: new Date(2021, 1, 28, 0, 0, 0).toISOString(),
-      html_url: '',
-      name: '',
-      points_possible: 0,
-      course_id: 1,
-      id: 1,
-      user_submitted: false,
-      is_quiz_assignment: false,
     };
     expect(getDaysLeft(a)).toBe(2);
     a.due_at = new Date(2021, 1, 28, 23, 59, 59).toISOString();
@@ -77,15 +60,9 @@ test('Returns correct days in different month', () => {
     dateNowSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => new Date(2021, 1, 26, 0, 0, 0).valueOf());
-    const a: Assignment = {
+    const a: FinalAssignment = {
+      ...AssignmentDefaults,
       due_at: new Date(2021, 2, 1, 0, 0, 0).toISOString(),
-      html_url: '',
-      name: '',
-      points_possible: 0,
-      course_id: 1,
-      id: 1,
-      user_submitted: false,
-      is_quiz_assignment: false,
     };
     expect(getDaysLeft(a)).toBe(3);
     a.due_at = new Date(2021, 2, 31, 23, 59, 59).toISOString();
@@ -100,15 +77,9 @@ test('Returns correct days in different year', () => {
     dateNowSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => new Date(2021, 1, 26, 0, 0, 0).valueOf());
-    const a: Assignment = {
+    const a: FinalAssignment = {
+      ...AssignmentDefaults,
       due_at: new Date(2022, 0, 1, 0, 0, 0).toISOString(),
-      html_url: '',
-      name: '',
-      points_possible: 0,
-      course_id: 1,
-      id: 1,
-      user_submitted: false,
-      is_quiz_assignment: false,
     };
     expect(getDaysLeft(a)).toBe(309);
     a.due_at = new Date(2022, 11, 31, 23, 59, 59).toISOString();
@@ -123,15 +94,9 @@ test('Returns negative days', () => {
     dateNowSpy = jest
       .spyOn(Date, 'now')
       .mockImplementation(() => new Date(2021, 1, 26, 0, 0, 0).valueOf());
-    const a: Assignment = {
+    const a: FinalAssignment = {
+      ...AssignmentDefaults,
       due_at: new Date(2021, 1, 25, 0, 0, 0).toISOString(),
-      html_url: '',
-      name: '',
-      points_possible: 0,
-      course_id: 1,
-      id: 1,
-      user_submitted: false,
-      is_quiz_assignment: false,
     };
     expect(getDaysLeft(a)).toBe(-1);
     a.due_at = new Date(2021, 1, 25, 23, 59, 59).toISOString();
