@@ -126,7 +126,7 @@ export default function CourseDropdown({
             <CourseButton
               color={course.color}
               id={course.id}
-              key={`course-btn-${course}`}
+              key={`course-btn-${course.id}`}
               last={i === courses.length - 1}
               menuVisible={menuVisible}
               name={course.name}
