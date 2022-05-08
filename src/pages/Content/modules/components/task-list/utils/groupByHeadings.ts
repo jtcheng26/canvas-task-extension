@@ -29,8 +29,8 @@ export function groupByStatusHeadings(
   assignments: FinalAssignment[]
 ): Record<string, FinalAssignment[]> {
   const headings: Record<string, FinalAssignment[]> = {
-    Graded: [],
     Ungraded: [],
+    Graded: [],
   };
   assignments.forEach((a) => {
     if (a.graded) headings['Graded'].push(a);
