@@ -8,7 +8,7 @@ export default { title: 'Components/Skeleton' } as ComponentMeta<
 >;
 
 export const SkeletonLoader: ComponentStory<typeof Skeleton> = () => (
-  <div style={{ width: '288px', padding: '24px' }}>
+  <div style={{ width: '288px', padding: '24px', boxSizing: 'border-box' }}>
     <Skeleton />
   </div>
 );

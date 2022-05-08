@@ -28,29 +28,30 @@ interface Assignment {
 interface PlannerAssignment {
   color?: string;
   course_id: number;
-  id: number;
-  plannable_type: 'assignment' | 'quiz' | 'discussion_topic' | 'planner_note';
-  planner_override?: {
+  plannable_id: number;
+  plannable_type: AssignmentType;
+  planner_override: {
     marked_complete: boolean;
     dismissed: boolean;
-  };
+  } | null;
   submissions:
     | {
         submitted: boolean;
-        excused: boolean;
+        excused?: boolean;
         graded: boolean;
-        missing: boolean;
-        late: boolean;
+        missing?: boolean;
+        late?: boolean;
         needs_grading: boolean;
-        redo_request: boolean;
+        redo_request?: boolean;
       }
-    | boolean;
-  plannable?: {
+    | false;
+  plannable: {
     id: number;
     title: string;
-    due_at: string;
-    points_possible: number;
+    due_at?: string;
+    points_possible?: number;
   };
+  html_url: string;
 }
 
 // Immutable object representation used in our code

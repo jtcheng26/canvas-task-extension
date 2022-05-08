@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import { DemoPositions } from '../tests/demo';
-import { StringNumberLookup } from '../types/lookup';
 import baseURL from '../utils/baseURL';
 
 /* Get user dashboard course positions */
-async function getCoursePositions(): Promise<StringNumberLookup> {
+async function getCoursePositions(): Promise<Record<string, number>> {
   if (process.env.DEMO) return DemoPositions;
 
   const { data } = await axios.get(
@@ -21,6 +20,8 @@ async function getCoursePositions(): Promise<StringNumberLookup> {
 }
 
 /* Use cached course positions, lookup using course id */
-export default function useCoursePositions(): UseQueryResult<StringNumberLookup> {
+export default function useCoursePositions(): UseQueryResult<
+  Record<string, number>
+> {
   return useQuery('positions', getCoursePositions, { staleTime: Infinity });
 }

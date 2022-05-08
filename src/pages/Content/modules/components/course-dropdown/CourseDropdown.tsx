@@ -29,7 +29,6 @@ const CourseTitle = styled.div<CourseTitleProps>`
   padding: 8px 10px;
   height: 15px;
   color: ${(p) => (!p.color ? 'inherit' : p.color)};
-  font-family: Lato;
   font-weight: bold;
   font-size: 14px;
   line-height: 1.2;

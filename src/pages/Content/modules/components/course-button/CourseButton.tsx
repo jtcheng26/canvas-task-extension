@@ -9,7 +9,6 @@ interface StyledButtonProps {
 
 const StyledButton = styled.div<StyledButtonProps>`
   border-bottom: 1px solid rgba(199, 205, 209, 0.5);
-  font-family: Lato;
   font-weight: bold;
   font-size: 14px;
   line-height: 1.4;

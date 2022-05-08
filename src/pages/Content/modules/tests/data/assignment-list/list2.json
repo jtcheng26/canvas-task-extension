@@ -126,5 +126,37 @@
     "course_name": "Unknown Course",
     "marked_complete": false,
     "position": 0
+  },
+  {
+    "color": "#ec412d",
+    "html_url": "/",
+    "name": "Untitled Assignment",
+    "points_possible": 10,
+    "due_at": "2022-01-01T00:00:00Z",
+    "course_id": 0,
+    "id": 9,
+    "submitted": false,
+    "graded": false,
+    "score": 0,
+    "type": "assignment",
+    "course_name": "Unknown Course",
+    "marked_complete": false,
+    "position": 0
+  },
+  {
+    "color": "#ec412d",
+    "html_url": "/",
+    "name": "Untitled Assignment",
+    "points_possible": 10,
+    "due_at": "2022-01-01T00:00:00Z",
+    "course_id": 0,
+    "id": 10,
+    "submitted": false,
+    "graded": false,
+    "score": 0,
+    "type": "assignment",
+    "course_name": "Unknown Course",
+    "marked_complete": false,
+    "position": 0
   }
 ]

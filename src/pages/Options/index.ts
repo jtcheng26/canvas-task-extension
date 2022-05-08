@@ -1,46 +1,13 @@
+import { OptionsDefaults } from '../Content/modules/constants';
 import Options from '../Content/modules/types/options';
 import './index.css';
 
-const storedUserOptions = [
-  'startDate',
-  'period',
-  'startHour',
-  'startMinutes',
-  'sidebar',
-  'dash_courses',
-  'due_date_headings',
-  'show_locked_assignments',
-];
+const storedUserOptions = Object.keys(OptionsDefaults);
 
-function optionsOrDefaults(result: Options): Options {
+function applyDefaults(options: Options): Options {
   return {
-    startDate: !result.startDate ? 1 : result.startDate,
-    startHour: !result.startHour ? 15 : result.startHour,
-    startMinutes: !result.startMinutes ? 0 : result.startMinutes,
-    period: !(
-      result.period === 'Day' ||
-      result.period === 'Week' ||
-      result.period === 'Month'
-    )
-      ? 'Week'
-      : result.period,
-    sidebar:
-      result.sidebar !== false && result.sidebar !== true
-        ? false
-        : result.sidebar,
-    dash_courses:
-      result.dash_courses !== false && result.dash_courses !== true
-        ? false
-        : result.dash_courses,
-    due_date_headings:
-      result.due_date_headings !== false && result.due_date_headings !== true
-        ? true
-        : result.due_date_headings,
-    show_locked_assignments:
-      result.show_locked_assignments !== false &&
-      result.show_locked_assignments !== true
-        ? true
-        : result.show_locked_assignments,
+    ...OptionsDefaults,
+    ...options,
   };
 }
 
@@ -79,7 +46,7 @@ function setSelectedDropdownOption(
 }
 
 function setDropdown(
-  keys: { [key: string]: number } | { [key: string]: string },
+  keys: Record<string, number> | Record<string, string>,
   dropdownId: string,
   selectedId: string,
   cb?: (key: string) => void,
@@ -105,7 +72,7 @@ function setDropdown(
   });
 }
 
-const weekdays: { [key: string]: number } = {
+const weekdays: Record<string, number> = {
   Monday: 0,
   Tuesday: 1,
   Wednesday: 2,
@@ -115,17 +82,17 @@ const weekdays: { [key: string]: number } = {
   Sunday: 6,
 };
 
-const ampm: { [key: string]: number } = {
+const ampm: Record<string, number> = {
   am: 0,
   pm: 12,
 };
 
-const hours: { [key: string]: number } = {};
+const hours: Record<string, number> = {};
 for (let h = 1; h <= 12; h++) {
   hours[h] = h % 12;
 }
 
-const minutes: { [key: string]: number } = {};
+const minutes: Record<string, number> = {};
 for (let m = 0; m < 60; m++) {
   minutes[(m < 10 ? '0' : '') + m] = m;
 }
@@ -182,7 +149,7 @@ function getSelectedAmPm() {
   return document.getElementById('ampm-selected')?.textContent?.trim() || 'am';
 }
 
-const periods: { [key: string]: string } = {
+const periods: Record<string, string> = {
   day: 'Day',
   week: 'Week',
   month: 'Month',
@@ -216,7 +183,7 @@ function setPeriods() {
   });
 }
 
-const booleanOptions: { [key: string]: string } = {
+const booleanOptions: Record<string, string> = {
   'default-sidebar': 'sidebar',
   'active-rings': 'dash_courses',
   'due-date-headings': 'due_date_headings',
@@ -224,7 +191,7 @@ const booleanOptions: { [key: string]: string } = {
 };
 
 function setBooleanOption(key: string, checked: boolean) {
-  const updatedKey: { [key: string]: boolean } = {};
+  const updatedKey: Record<string, boolean> = {};
   updatedKey[key] =
     key === 'dash_courses' || key === 'sidebar' ? !checked : checked;
   chrome.storage.sync.set(updatedKey);
@@ -264,34 +231,34 @@ setPeriods();
 setBooleanOptions();
 
 chrome.storage.sync.get(storedUserOptions, (items) => {
-  const options = optionsOrDefaults(items as Options);
+  const options = applyDefaults(items as Options);
   setSelectedPeriod(options.period.toLowerCase());
   setCheckbox('default-sidebar', !options.sidebar);
   setCheckbox('active-rings', !options.dash_courses);
   setCheckbox('due-date-headings', options.due_date_headings);
   setCheckbox('show-locked-assignments', options.show_locked_assignments);
   setSelectedDropdownOption(
-    Object.keys(weekdays)[options.startDate - 1],
+    Object.keys(weekdays)[options.start_date - 1],
     'weekdays-options',
     'weekday-selected'
   );
-  if (options.startHour >= 12) {
+  if (options.start_hour >= 12) {
     setSelectedDropdownOption(
-      '' + (((options.startHour - 1) % 12) + 1),
+      '' + (((options.start_hour - 1) % 12) + 1),
       'hours-options',
       'hours-selected'
     );
     setSelectedDropdownOption('pm', 'ampm-options', 'ampm-selected');
   } else {
     setSelectedDropdownOption(
-      '' + options.startHour,
+      '' + options.start_hour,
       'hours-options',
       'hours-selected'
     );
     setSelectedDropdownOption('am', 'ampm-options', 'ampm-selected');
   }
   setSelectedDropdownOption(
-    (options.startMinutes < 10 ? '0' : '') + options.startMinutes,
+    (options.start_minutes < 10 ? '0' : '') + options.start_minutes,
     'minutes-options',
     'minutes-selected'
   );

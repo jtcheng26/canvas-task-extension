@@ -68,7 +68,7 @@ export default function TaskList({
   }
 
   const viewMoreText = !viewingMore
-    ? `View ${renderedAssignments.length - 4} more`
+    ? `View ${sortedAssignments.length - 4} more`
     : 'View less';
   const noneText = 'None';
 
@@ -127,7 +127,7 @@ export default function TaskList({
           : renderedAssignments.map(assignmentToTaskCard)}
         {renderedAssignments.length == 0 && <span>{noneText}</span>}
       </ListContainer>
-      {renderedAssignments.length > 4 && (
+      {sortedAssignments.length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>

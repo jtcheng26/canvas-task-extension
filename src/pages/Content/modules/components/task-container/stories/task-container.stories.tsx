@@ -5,6 +5,7 @@ import React from 'react';
 import { OptionsDefaults } from '../../../constants';
 import { AssignmentListSample2 } from '../../../tests/data/assignment-list';
 import { FinalAssignment } from '../../../types';
+import Header from '../../header';
 import TaskContainer, { TaskContainerProps } from '../TaskContainer';
 
 export default { title: 'Components/TaskContainer' } as ComponentMeta<
@@ -22,8 +23,29 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
   loading,
   options,
 }: TaskContainerProps) {
+  function func() {
+    console.log('click');
+  }
+  const now = new Date();
+  const tmr = new Date();
+  tmr.setDate(tmr.getDate() + 1);
   return (
-    <div style={{ width: '288px', padding: '24px' }}>
+    <div
+      style={{
+        width: '288px',
+        padding: '24px',
+        boxSizing: 'border-box',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
+      <Header
+        clickable
+        onNextClick={func}
+        onPrevClick={func}
+        weekEnd={tmr}
+        weekStart={now}
+      />
       <TaskContainer
         assignments={assignments}
         loading={loading}

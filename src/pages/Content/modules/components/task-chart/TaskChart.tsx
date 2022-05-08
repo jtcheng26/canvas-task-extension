@@ -21,7 +21,6 @@ const ChartContainer = styled.div`
 
 const SubtitleText = styled.div`
   font-size: 13px;
-  font-family: Lato;
   font-weight: bold;
   line-height: 1.25em;
   color: ${(p) => p.color};
@@ -29,7 +28,6 @@ const SubtitleText = styled.div`
 
 const TitleText = styled.div`
   font-size: 25px;
-  font-family: Lato;
   font-weight: bold;
   line-height: 1.25em;
   color: ${(p) => p.color};

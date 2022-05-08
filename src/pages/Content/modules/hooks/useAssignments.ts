@@ -1,5 +1,10 @@
 import axios, { AxiosResponse } from 'axios';
-import { AssignmentType, FinalAssignment, Options } from '../types';
+import {
+  AssignmentType,
+  FinalAssignment,
+  Options,
+  PlannerAssignment,
+} from '../types';
 import { useQuery, UseQueryResult } from 'react-query';
 import dashCourses from '../utils/dashCourses';
 import onCoursePage from '../utils/onCoursePage';
@@ -9,15 +14,58 @@ import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
 import { AssignmentDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
+import assignmentsMarkedAsComplete from '../utils/assignmentsMarkedAsComplete';
 
 /* Get assignments from api */
 function getAllAssignmentsRequest(
   start: string,
   end: string
-): Promise<AxiosResponse> {
+): Promise<AxiosResponse<PlannerAssignment[]>> {
   return axios.get(
     `${baseURL()}/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=1000`
   );
+}
+
+/* Merge api objects into Assignment objects. */
+export function convertPlannerAssignments(
+  assignments: PlannerAssignment[]
+): FinalAssignment[] {
+  return assignments.map((assignment) => {
+    const converted: Partial<FinalAssignment> = {
+      html_url: assignment.html_url,
+      type: assignment.plannable_type,
+      id: assignment.plannable_id,
+      course_id: assignment.course_id,
+      name: assignment.plannable.title,
+      due_at: assignment.plannable.due_at,
+      points_possible: assignment.plannable.points_possible,
+      submitted:
+        assignment.submissions !== false
+          ? assignment.submissions.submitted
+          : undefined,
+      graded:
+        assignment.submissions !== false
+          ? assignment.submissions.needs_grading ||
+            assignment.submissions.excused ||
+            assignment.submissions.graded
+          : undefined,
+      marked_complete:
+        assignment.planner_override?.marked_complete ||
+        assignment.planner_override?.dismissed,
+    };
+
+    const full: FinalAssignment = {
+      ...AssignmentDefaults,
+    };
+
+    Object.keys(converted).forEach((k) => {
+      const prop = k as keyof FinalAssignment;
+      if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
+        full[prop] = converted[prop] as never;
+    });
+
+    return full;
+  });
 }
 
 /* Only assignments between the exact datetimes */
@@ -109,13 +157,13 @@ export function applyScore(assignments: FinalAssignment[]): FinalAssignment[] {
   });
 }
 
-/* Fill assignment with default values, override defaults with existing properties. */
-export function applyDefaults(
-  defaults: FinalAssignment,
+export function applyCompleted(
+  completed: Set<number>,
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.map((assignment) => {
-    return { ...defaults, ...assignment };
+    if (completed.has(assignment.id)) assignment.marked_complete = true;
+    return assignment;
   });
 }
 
@@ -133,15 +181,11 @@ export async function getAllAssignments(
   const endStr = en.toISOString().split('T')[0];
   const requests = process.env.DEMO
     ? {
-        data: DemoAssignments.map((d) => {
-          return {
-            assignment: d,
-          };
-        }),
+        data: DemoAssignments,
       }
     : await getAllAssignmentsRequest(startStr, endStr);
 
-  return applyDefaults(AssignmentDefaults, requests.data as FinalAssignment[]);
+  return convertPlannerAssignments(requests.data as PlannerAssignment[]);
 }
 
 async function processAssignments(
@@ -159,6 +203,10 @@ async function processAssignments(
   if (colors) assignments = applyCourseColor(colors, assignments);
   if (names) assignments = applyCourseName(names, assignments);
   if (positions) assignments = applyCoursePositions(positions, assignments);
+  assignments = applyCompleted(
+    await assignmentsMarkedAsComplete(),
+    assignments
+  );
 
   const coursePageId = onCoursePage();
   if (coursePageId !== false) {

@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {
   filterTimeBounds,
-  applyDefaults,
   getAllAssignments,
   filterAssignmentTypes,
 } from './useAssignments';
@@ -28,7 +27,7 @@ jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('getAllAssignment', () => {
-  it('fetches assignments from the planner/items endpoint', async () => {
+  it('fetches assignments from the planner/items endpoint and fills in values', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
 
     const assignments = await getAllAssignments(
@@ -37,6 +36,27 @@ describe('getAllAssignment', () => {
     );
     expect(assignments.length).toBe(plannerRes.length);
     expect(assignments[0].course_id).toBe(plannerRes[0].course_id);
+    expect(assignments[0].id).toBe(plannerRes[0].plannable.id);
+    expect(assignments[0].marked_complete).toBe(false);
+  });
+  it('substitutes null/empty values with defaults', async () => {
+    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
+
+    const assignments = await getAllAssignments(
+      new Date('2022-01-01'),
+      new Date('2022-01-01')
+    );
+    // good values
+    expect(assignments[0].name).toBe(plannerRes[0].plannable.title);
+    // null values
+    expect(assignments[0].marked_complete).toBe(false);
+    expect(assignments[0].due_at).toBe(AssignmentDefaults.due_at);
+    expect(assignments[0].points_possible).toBe(
+      AssignmentDefaults.points_possible
+    );
+    expect(assignments[0].submitted).toBe(AssignmentDefaults.submitted);
+    expect(assignments[0].graded).toBe(AssignmentDefaults.graded);
+    expect(assignments[0].color).toBe(AssignmentDefaults.color);
   });
   it('filters to assignment types', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
@@ -46,57 +66,8 @@ describe('getAllAssignment', () => {
       new Date('2022-01-01')
     );
     assignments = filterAssignmentTypes(assignments);
-    expect(assignments.length).toBe(10);
+    expect(assignments.length).toBe(5);
     expect(assignments[0].type).toBe(AssignmentType.ASSIGNMENT);
-  });
-});
-
-describe('applyDefaults', () => {
-  it('sets the default values', () => {
-    const defaults = AssignmentDefaults;
-    let assignments = [{}] as FinalAssignment[];
-    assignments = applyDefaults(defaults, assignments);
-    expect(assignments[0].course_id).toBe(defaults.course_id);
-    expect(assignments[0].due_at).toBe(defaults.due_at);
-    expect(assignments[0].graded).toBe(defaults.graded);
-    expect(assignments[0].html_url).toBe(defaults.html_url);
-    expect(assignments[0].id).toBe(defaults.id);
-    expect(assignments[0].marked_complete).toBe(defaults.marked_complete);
-    expect(assignments[0].name).toBe(defaults.name);
-    expect(assignments[0].points_possible).toBe(defaults.points_possible);
-    // unrequired properties
-    expect(assignments[0].color).toBe(defaults.color);
-    expect(assignments[0].course_name).toBe(defaults.course_name);
-    expect(assignments[0].position).toBe(defaults.position);
-    expect(assignments[0].score).toBe(defaults.score);
-  });
-  it('prioritizes existing values', () => {
-    const defaults = AssignmentDefaults;
-    const htmlValue = 'This is my url';
-    const courseNameValue = 'This is my course name';
-    const nameValue = 'This is my name';
-    let assignments = [
-      { html_url: htmlValue, course_name: courseNameValue, name: nameValue },
-    ] as FinalAssignment[];
-    assignments = applyDefaults(defaults, assignments);
-
-    expect(assignments[0].html_url).toBe(htmlValue);
-    expect(assignments[0].html_url).not.toBe(defaults.html_url);
-    expect(assignments[0].course_name).toBe(courseNameValue);
-    expect(assignments[0].course_name).not.toBe(defaults.course_name);
-    expect(assignments[0].name).toBe(nameValue);
-    expect(assignments[0].name).not.toBe(defaults.name);
-
-    expect(assignments[0].course_id).toBe(defaults.course_id);
-    expect(assignments[0].due_at).toBe(defaults.due_at);
-    expect(assignments[0].graded).toBe(defaults.graded);
-    expect(assignments[0].id).toBe(defaults.id);
-    expect(assignments[0].marked_complete).toBe(defaults.marked_complete);
-    expect(assignments[0].points_possible).toBe(defaults.points_possible);
-    // unrequired properties
-    expect(assignments[0].color).toBe(defaults.color);
-    expect(assignments[0].position).toBe(defaults.position);
-    expect(assignments[0].score).toBe(defaults.score);
   });
 });
 
@@ -112,14 +83,14 @@ describe('filterTimeBounds', () => {
       const endDate = new Date(end);
 
       /* Modify due date to timezone so tests can remain the same */
-      const newAssignments = applyDefaults(
-        AssignmentDefaults,
-        data.map((d) => {
-          const due_at = new Date(d.due_at);
-          due_at.setMinutes(due_at.getMinutes() + due_at.getTimezoneOffset());
-          return { due_at: due_at.toISOString() } as FinalAssignment;
-        })
-      );
+      const newAssignments = data.map((d) => {
+        const due_at = new Date(d.due_at);
+        due_at.setMinutes(due_at.getMinutes() + due_at.getTimezoneOffset());
+        return {
+          ...AssignmentDefaults,
+          due_at: due_at.toISOString(),
+        } as FinalAssignment;
+      });
 
       assertion(filterTimeBounds(startDate, endDate, newAssignments));
     });

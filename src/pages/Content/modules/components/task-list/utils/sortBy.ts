@@ -1,14 +1,21 @@
 import { FinalAssignment } from '../../../types';
 
+function compareISODates(a: string, b: string): number {
+  return new Date(a).valueOf() - new Date(b).valueOf();
+}
+
 /* Distinguish graded and ungraded assignments, then sort each group in reverse chronological order. */
 export function sortByGraded(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.sort((a, b) => {
-    if (a.graded == b.graded)
-      return new Date(b.due_at).valueOf() - new Date(a.due_at).valueOf();
+    if (a.graded == b.graded) return compareISODates(b.due_at, a.due_at);
     return (a.graded ? 1 : -1) - (b.graded ? 1 : -1);
   });
+}
+
+export function sortByDate(assignments: FinalAssignment[]): FinalAssignment[] {
+  return assignments.sort((a, b) => compareISODates(a.due_at, b.due_at));
 }
 
 export function filterByTab(
@@ -22,12 +29,14 @@ export function filterByTab(
 }
 
 /* 
-Assumes assignments are sorted by due date (old => new) by default.
 If on the completed tab, assignments are shown (new => old) (most recent submissions on top).
+If on the unfinished tab, assignments are shown (old => new) (closest due date on top).
  */
 export function sortByTab(
   currentTab: 'Unfinished' | 'Completed',
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
-  return currentTab === 'Completed' ? sortByGraded(assignments) : assignments;
+  return currentTab === 'Completed'
+    ? sortByGraded(assignments)
+    : sortByDate(assignments);
 }
