@@ -1,0 +1,11 @@
+{
+  "start_date": 1,
+  "start_hour": 15,
+  "start_minutes": 0,
+  "period": "Week",
+  "sidebar": false,
+  "dash_courses": false,
+  "due_date_headings": true,
+  "complete_assignments": [],
+  "show_locked_assignments": false
+}

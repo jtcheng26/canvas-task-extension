@@ -1,6 +1,7 @@
 import { AssignmentIcon, DiscussionIcon, QuizIcon } from '../icons';
-import { AssignmentType, FinalAssignment } from '../types';
+import { AssignmentType, FinalAssignment, Options } from '../types';
 import JSONAssignmentDefaults from './defaults/assignmentDefaults.json';
+import JSONOptionsDefaults from './defaults/optionsDefaults.json';
 
 export const MAX_MARKED_ASSIGNMENTS = 1000;
 
@@ -14,3 +15,4 @@ export const ASSIGNMENT_ICON: Record<AssignmentType, JSX.Element> = {
 };
 
 export const AssignmentDefaults = JSONAssignmentDefaults as FinalAssignment;
+export const OptionsDefaults = JSONOptionsDefaults as Options;

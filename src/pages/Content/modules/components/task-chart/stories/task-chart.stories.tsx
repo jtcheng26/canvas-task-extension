@@ -8,13 +8,12 @@ import { AssignmentListSample2 } from '../../../tests/data/assignment-list';
 import { FinalAssignment } from '../../../types';
 
 export default {
-  title: 'Components/TaskChart/Unfinished',
-  component: TaskChart,
+  title: 'Components/TaskChart',
 } as ComponentMeta<typeof TaskChart>;
 
 const Template: ComponentStory<typeof TaskChart> = ({
   assignments,
-  skeleton,
+  loading,
   selectedCourseId,
 }) => {
   const [selected, setSelected] = useState(selectedCourseId);
@@ -25,9 +24,9 @@ const Template: ComponentStory<typeof TaskChart> = ({
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       <TaskChart
         assignments={assignments}
+        loading={loading}
         selectedCourseId={selected}
         setCourse={func}
-        skeleton={skeleton}
       />
     </div>
   );
@@ -35,14 +34,8 @@ const Template: ComponentStory<typeof TaskChart> = ({
 
 const storyDefaults: Partial<TaskChartProps> = {
   assignments: AssignmentListSample2 as FinalAssignment[],
-  skeleton: false,
+  loading: false,
   selectedCourseId: -1,
-};
-
-export const Skeleton = Template.bind({});
-Skeleton.args = {
-  ...storyDefaults,
-  skeleton: true,
 };
 
 export const NoAssignments = Template.bind({});
@@ -54,4 +47,10 @@ NoAssignments.args = {
 export const HasAssignments = Template.bind({});
 HasAssignments.args = {
   ...storyDefaults,
+};
+
+export const Loading = Template.bind({});
+Loading.args = {
+  ...storyDefaults,
+  loading: true,
 };

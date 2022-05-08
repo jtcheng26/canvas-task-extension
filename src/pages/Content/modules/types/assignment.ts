@@ -55,7 +55,7 @@ interface PlannerAssignment {
 
 // Immutable object representation used in our code
 interface FinalAssignment {
-  color?: string; // color assigned to course
+  color: string; // color assigned to course
   html_url: string; // link to assignment page
   name: string; // title of assignment
   points_possible: number;
@@ -64,11 +64,11 @@ interface FinalAssignment {
   id: number; // id of the assignment
   submitted: boolean; // has the user submitted it?
   graded: boolean; // has the teacher graded it?
-  score?: number; // grade assigned, 0 if ungraded or unsubmitted
+  score: number; // grade assigned, 0 if ungraded or unsubmitted
   type: AssignmentType;
-  course_name?: string; // via useCourseName
+  course_name: string; // via useCourseName
   marked_complete: boolean; // marked complete in the sidebar or through the planner
-  position?: number;
+  position: number;
 }
 
 // possible values from plannable_type field

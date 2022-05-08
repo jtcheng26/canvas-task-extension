@@ -67,17 +67,15 @@ function ContentLoader({
   }, [isSuccess]);
 
   const failed = 'Failed to load';
-  const chartSkeleton = (
-    <SkeletonChart>
-      <BeatLoader color="#e8e8e8" />
-    </SkeletonChart>
-  );
-  const skeleton = <ClipLoadingDiv>{chartSkeleton}</ClipLoadingDiv>;
   return (
     <>
       {!isSuccess && !isError && !assignmentData && (
         <LoadingDiv>
-          {skeleton}
+          <ClipLoadingDiv>
+            <SkeletonChart>
+              <BeatLoader color="#e8e8e8" />
+            </SkeletonChart>
+          </ClipLoadingDiv>
           <TaskList assignments={[]} options={options} skeleton />
         </LoadingDiv>
       )}

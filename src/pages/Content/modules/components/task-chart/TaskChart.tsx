@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import styled from 'styled-components';
-import RadialBarChart, { ChartData } from '../radial-bar-chart';
+import RadialBarChart from '../radial-bar-chart';
 import BeatLoader from '../spinners';
 import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
@@ -37,31 +37,20 @@ const TitleText = styled.div`
 
 export interface TaskChartProps {
   assignments: FinalAssignment[];
-  skeleton?: boolean;
+  loading?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
 }
 
 export default function TaskChart({
   assignments,
-  skeleton,
+  loading,
   selectedCourseId = -1,
   setCourse,
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
   const chartData = useMemo(() => useChartData(assignments), [assignments]);
   const [done, total, color] = useSelectChartData(selectedCourseId, chartData);
-
-  const skeletonData: ChartData = {
-    bars: [
-      {
-        id: 1,
-        value: 0,
-        max: 1,
-        color: '#000000',
-      },
-    ],
-  };
 
   function handleClick(id: number) {
     if (selectedCourseId === id) setCourse(-1);
@@ -76,12 +65,12 @@ export default function TaskChart({
     <ChartContainer>
       <RadialBarChart
         bgColor="rgba(127, 127, 127, 10%)"
-        data={skeleton ? skeletonData : chartData}
+        data={chartData}
         onSelect={handleClick}
         selectedBar={selectedCourseId}
         size={chartData.bars.length < 7 ? 210 : 280}
       >
-        {skeleton ? (
+        {loading ? (
           <BeatLoader
             color="var(--ic-brand-font-color-dark-lightened-30)"
             loading
