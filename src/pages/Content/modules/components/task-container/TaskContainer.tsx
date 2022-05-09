@@ -2,14 +2,17 @@ import React, { useEffect, useMemo, useState } from 'react';
 import CourseDropdown from '../course-dropdown';
 import TaskChart from '../task-chart';
 import TaskList from '../task-list';
-import onCoursePage from '../../utils/onCoursePage';
 import markAsComplete from './utils/markAsComplete';
-import { FinalAssignment, Options } from '../../types';
+import { Course, FinalAssignment, Options } from '../../types';
 import extractCourses from './utils/extractCourses';
+import { filterCourses } from '../../hooks/useAssignments';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
   loading?: boolean;
+  onCoursePage?: boolean;
+  courseId?: number;
+  courseList?: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
 }
 
@@ -19,13 +22,18 @@ export interface TaskContainerProps {
 
 export default function TaskContainer({
   assignments,
+  courseId,
+  courseList,
   loading,
   options,
 }: TaskContainerProps): JSX.Element {
-  const onCourse = onCoursePage();
-  const courses = useMemo(() => extractCourses(assignments), [assignments]);
+  const courses = useMemo(() => {
+    if (courseList && courseId !== -1)
+      return courseList.filter((c) => c.id === courseId);
+    return extractCourses(assignments);
+  }, [assignments, courseId]);
   const [selectedCourseId, setSelectedCourseId] = useState<number>(
-    onCourse !== false ? onCourse : -1
+    courseList && courseId ? courseId : -1
   );
   // update assignments in state when marked as complete, then push updates asynchronously to local storage
   const [updatedAssignments, setUpdatedAssignments] =
@@ -39,28 +47,37 @@ export default function TaskContainer({
     setUpdatedAssignments(newAssignments);
   }
 
+  // Don't let user switch courses when on a course page
+  const chosenCourseId =
+    courseId && courseId !== -1 ? courseId : selectedCourseId;
+
   useEffect(() => {
-    setUpdatedAssignments(assignments);
-  }, [assignments]);
+    if (courseId && courseId !== -1)
+      setUpdatedAssignments(filterCourses([courseId], assignments));
+    else setUpdatedAssignments(assignments);
+  }, [assignments, courseId]);
 
   return (
     <>
       <CourseDropdown
         courses={courses}
-        onCoursePage={onCourse !== false}
-        selectedCourseId={selectedCourseId}
+        onCoursePage={courseId ? courseId !== -1 : false}
+        selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />
       <TaskChart
         assignments={updatedAssignments}
+        colorOverride={
+          courseId && courseId !== -1 ? courses[0].color : undefined
+        }
         loading={loading}
-        selectedCourseId={selectedCourseId}
+        selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />
       <TaskList
         assignments={updatedAssignments}
         markAssignmentAsComplete={markAssignmentAsComplete}
-        selectedCourseId={selectedCourseId}
+        selectedCourseId={chosenCourseId}
         showDateHeadings={options.due_date_headings}
       />
     </>

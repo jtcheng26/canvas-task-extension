@@ -4,7 +4,8 @@ import { ringProgress } from '../utils/ringProgress';
 import sortByPosition from '../utils/sortByPosition';
 
 export default function useChartData(
-  assignments: FinalAssignment[]
+  assignments: FinalAssignment[],
+  defaultColor?: string
 ): ChartData {
   const sortedAssignments = sortByPosition(assignments);
   const data: ChartData = {
@@ -29,7 +30,7 @@ export default function useChartData(
       id: -1,
       value: 0,
       max: 0,
-      color: 'var(--ic-brand-global-nav-bgd)',
+      color: defaultColor || 'var(--ic-brand-global-nav-bgd)',
     });
   return data;
 }

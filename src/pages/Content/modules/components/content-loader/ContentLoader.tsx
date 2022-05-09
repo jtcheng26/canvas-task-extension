@@ -4,6 +4,8 @@ import { FinalAssignment, Options } from '../../types';
 import CompareMonthDate from './utils/compareMonthDate';
 import useAssignments from '../../hooks/useAssignments';
 import Skeleton from '../skeleton';
+import onCoursePage from '../../utils/onCoursePage';
+import useCourses from '../../hooks/useCourses';
 
 interface ContentLoaderProps {
   options: Options;
@@ -30,6 +32,8 @@ function ContentLoader({
     options
   );
 
+  const { data: courseData } = useCourses();
+
   useEffect(() => {
     if (isSuccess) {
       setAssignmentData(data as FinalAssignment[]);
@@ -38,12 +42,15 @@ function ContentLoader({
   }, [isSuccess]);
 
   const failed = 'Failed to load';
+  const onCourse = onCoursePage();
   return (
     <>
       {!isSuccess && !isError && !assignmentData && <Skeleton />}
       {assignmentData ? (
         <TaskContainer
           assignments={assignmentData}
+          courseId={typeof onCourse === 'number' ? onCourse : -1}
+          courseList={courseData}
           loading={!isSuccess}
           options={options}
         />

@@ -20,6 +20,8 @@ const storyDefaults: TaskContainerProps = {
 
 const Template: ComponentStory<typeof TaskContainer> = function ({
   assignments,
+  courseId = -1,
+  courseList = [],
   loading,
   options,
 }: TaskContainerProps) {
@@ -48,6 +50,8 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
       />
       <TaskContainer
         assignments={assignments}
+        courseId={courseId}
+        courseList={courseList}
         loading={loading}
         options={options}
       />
@@ -76,4 +80,34 @@ HasAssignments.args = {
     assignment.due_at = dueDate.toISOString();
     return assignment;
   }),
+};
+
+export const OnCoursePage = Template.bind({});
+OnCoursePage.args = {
+  ...storyDefaults,
+  courseList: [
+    {
+      id: 1,
+      name: 'Unknown Course',
+      color: '#26f',
+      position: 0,
+    },
+  ],
+  courseId: 1,
+};
+
+export const OnCoursePageNoAssignments = Template.bind({});
+OnCoursePageNoAssignments.args = {
+  ...storyDefaults,
+  assignments: [],
+  onCoursePage: true,
+  courseId: 1,
+  courseList: [
+    {
+      id: 1,
+      name: 'The only course',
+      color: '#62f',
+      position: 0,
+    },
+  ],
 };

@@ -35,6 +35,7 @@ const TitleText = styled.div`
 
 export interface TaskChartProps {
   assignments: FinalAssignment[];
+  colorOverride?: string;
   loading?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
@@ -42,12 +43,16 @@ export interface TaskChartProps {
 
 export default function TaskChart({
   assignments,
+  colorOverride,
   loading,
   selectedCourseId = -1,
   setCourse,
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
-  const chartData = useMemo(() => useChartData(assignments), [assignments]);
+  const chartData = useMemo(
+    () => useChartData(assignments, colorOverride),
+    [assignments]
+  );
   const [done, total, color] = useSelectChartData(selectedCourseId, chartData);
 
   function handleClick(id: number) {
@@ -65,7 +70,7 @@ export default function TaskChart({
         bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
         onSelect={handleClick}
-        selectedBar={selectedCourseId}
+        selectedBar={colorOverride ? -1 : selectedCourseId}
         size={chartData.bars.length < 7 ? 210 : 280}
       >
         {loading ? (
@@ -76,9 +81,13 @@ export default function TaskChart({
           />
         ) : (
           <>
-            <TitleText color={color}>{percent}</TitleText>
-            <SubtitleText color={color}>{progress}</SubtitleText>
-            <SubtitleText color={color}>{complete}</SubtitleText>
+            <TitleText color={colorOverride || color}>{percent}</TitleText>
+            <SubtitleText color={colorOverride || color}>
+              {progress}
+            </SubtitleText>
+            <SubtitleText color={colorOverride || color}>
+              {complete}
+            </SubtitleText>
           </>
         )}
       </RadialBarChart>
