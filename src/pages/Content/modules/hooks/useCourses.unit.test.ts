@@ -18,14 +18,18 @@ beforeAll(() => {
 });
 
 test('useCourses hook gets all the courses', async () => {
-  mockedAxios.get.mockResolvedValueOnce({ data: active });
+  mockedAxios.get
+    .mockResolvedValueOnce({ data: { custom_colors: {} } })
+    .mockResolvedValueOnce({ data: active });
 
   const res = (await testHookData(useCourses)).data;
   expect(res).toStrictEqual(active);
 });
 
 test('useCourses hook filters date-restricted courses', async () => {
-  mockedAxios.get.mockResolvedValueOnce({ data: activeAndRestricted });
+  mockedAxios.get
+    .mockResolvedValueOnce({ data: { custom_colors: {} } })
+    .mockResolvedValueOnce({ data: activeAndRestricted });
 
   const res = (await testHookData(useCourses)).data as Course[];
 
@@ -38,9 +42,37 @@ test('useCourses hook filters date-restricted courses', async () => {
 });
 
 test('useCourses hook works when all courses are restricted', async () => {
-  mockedAxios.get.mockResolvedValueOnce({ data: restricted });
+  mockedAxios.get
+    .mockResolvedValueOnce({ data: { custom_colors: {} } })
+    .mockResolvedValueOnce({ data: restricted });
 
   const res = (await testHookData(useCourses)).data as Course[];
   expect(res).toBeDefined();
   expect(res.length).toBe(0);
+});
+
+test('useCourses hook applies course colors', async () => {
+  const colors: { custom_colors: Record<number, string> } = {
+    custom_colors: {
+      1: '#26f',
+      2: '#2f6',
+      3: '#62f',
+      4: '#6f2',
+      5: '#f26',
+      6: '#f62',
+    },
+  };
+  mockedAxios.get
+    .mockResolvedValueOnce({
+      data: colors,
+    })
+    .mockResolvedValueOnce({ data: activeAndRestricted });
+
+  const res = (await testHookData(useCourses)).data as Course[];
+  expect(res).toBeDefined();
+  expect(res.length).toBeGreaterThan(0);
+  res.forEach((course) => {
+    expect(course.id).toBeTruthy();
+    expect(course.color).toBe(colors.custom_colors[course.id]);
+  });
 });
