@@ -89,12 +89,12 @@ export default function TaskList({
       course_name={assignment.course_name}
       due_at={assignment.due_at}
       graded={assignment.graded}
+      graded_at={assignment.graded_at}
       html_url={assignment.html_url}
       key={assignment.id}
       markComplete={markAssignmentFunc(assignment.id)}
       name={assignment.name}
       points_possible={assignment.points_possible}
-      score={assignment.score}
       submitted={assignment.submitted}
     />
   );

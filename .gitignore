@@ -23,4 +23,4 @@ temp
 
 # secrets
 secrets.*.js
-*.secret.json
+*.secret.*

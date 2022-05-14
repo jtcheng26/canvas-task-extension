@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { AssignmentType } from '../../types';
 import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
+import fmtDate from './utils/fmtDate';
 
 const TaskContainer = styled.div`
     width: 100%;
@@ -116,7 +117,7 @@ interface TaskProps {
   points_possible?: number;
   complete?: boolean;
   submitted?: boolean;
-  score?: number;
+  graded_at?: string;
   color?: string;
   graded?: boolean;
   course_name?: string;
@@ -136,22 +137,16 @@ export default function TaskCard({
   course_name,
   complete = AssignmentDefaults.marked_complete,
   graded,
-  score,
+  graded_at,
   color,
   submitted,
   markComplete,
   skeleton,
 }: TaskProps): JSX.Element {
-  const due_at_date = new Date(due_at);
-  const due_date = due_at_date.toLocaleString('en-US', {
-    month: 'short',
-    day: 'numeric',
-  });
-  const due_time = due_at_date.toLocaleString('en-US', {
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  });
+  const [due_date, due_time] = fmtDate(due_at);
+  const [graded_date, graded_time] = fmtDate(
+    graded_at ? graded_at : new Date().toISOString()
+  );
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
     window.location.href = html_url;
@@ -159,8 +154,11 @@ export default function TaskCard({
   const icon = ASSIGNMENT_ICON[type];
 
   const due = 'Due';
-  const unsubmittedText = !submitted && complete ? 'Unsubmitted' : '';
+  const submittedText =
+    !submitted && complete ? 'Unsubmitted' : points_possible ? 'Submitted' : '';
   const dueText = ` ${due_date} at ${due_time}`;
+  const gradedAtText =
+    !graded || !graded_at ? '' : ` ${graded_date} at ${graded_time}`;
   const pointsPlural = !points_possible
     ? ''
     : points_possible > 1
@@ -170,8 +168,8 @@ export default function TaskCard({
     ? ` \xa0|\xa0 ${points_possible} ${pointsPlural}`
     : '';
   const gradedText = points_possible
-    ? ` ${!graded ? '–' : score}/${points_possible}`
-    : 'Completed';
+    ? ` ${!graded ? ' Waiting for grade' : ' Graded'}`
+    : ' Completed';
   function markAssignmentAsComplete() {
     if (markComplete) markComplete();
   }
@@ -210,8 +208,16 @@ export default function TaskCard({
             </>
           ) : (
             <>
-              <strong>{unsubmittedText}</strong>
-              <strong>{gradedText}</strong> {pointsPlural}
+              {!graded && points_possible ? (
+                <>
+                  <strong>{submittedText}</strong>
+                  {' \xa0|\xa0 '}
+                </>
+              ) : (
+                ''
+              )}
+              <strong>{gradedText}</strong>
+              {gradedAtText}
             </>
           )}
         </TaskDetailsText>

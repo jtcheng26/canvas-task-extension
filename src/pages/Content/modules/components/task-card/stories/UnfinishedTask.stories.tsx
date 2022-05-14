@@ -25,7 +25,7 @@ const storyDefaults = {
   points_possible: 10,
   complete: false,
   graded: false,
-  score: 0,
+  graded_at: '',
   color: '#ab3c7d',
   submitted: false,
   skeleton: false,

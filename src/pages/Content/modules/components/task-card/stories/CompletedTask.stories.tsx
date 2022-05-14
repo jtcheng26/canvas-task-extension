@@ -24,7 +24,7 @@ const storyDefaults = {
   points_possible: 10,
   complete: true,
   graded: false,
-  score: 0,
+  graded_at: '',
   color: '#ab3c7d',
   submitted: true,
   skeleton: false,
@@ -48,14 +48,7 @@ GradedNoScore.args = {
   ...storyDefaults,
   points_possible: 10,
   graded: true,
-};
-
-export const GradedScore = Template.bind({});
-GradedScore.args = {
-  ...storyDefaults,
-  points_possible: 10,
-  score: 10,
-  graded: true,
+  graded_at: '2022-01-02Z00:00:00',
 };
 
 export const NoPoints = Template.bind({});
@@ -70,4 +63,5 @@ Unsubmitted.args = {
   points_possible: 10,
   graded: true,
   submitted: false,
+  graded_at: '2022-01-02Z00:00:00',
 };

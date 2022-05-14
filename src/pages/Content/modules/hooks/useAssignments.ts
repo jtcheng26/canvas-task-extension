@@ -49,6 +49,10 @@ export function convertPlannerAssignments(
             assignment.submissions.excused ||
             assignment.submissions.graded
           : undefined,
+      graded_at:
+        assignment.submissions !== false
+          ? assignment.submissions.posted_at
+          : undefined,
       marked_complete:
         assignment.planner_override?.marked_complete ||
         assignment.planner_override?.dismissed,
@@ -145,14 +149,6 @@ export function applyCourseValue(
   return assignments.map((assignment) => {
     if (assignment.course_id in courseMap)
       assignment[value] = courseMap[assignment.course_id] as never;
-    return assignment;
-  });
-}
-
-/* Fetch assignment scores and assign to `score` prop. */
-export function applyScore(assignments: FinalAssignment[]): FinalAssignment[] {
-  return assignments.map((assignment) => {
-    assignment.score = 10; // TODO: actually fetch scores from graphql
     return assignment;
   });
 }

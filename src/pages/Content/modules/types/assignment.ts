@@ -43,6 +43,7 @@ interface PlannerAssignment {
         late?: boolean;
         needs_grading: boolean;
         redo_request?: boolean;
+        posted_at?: string;
       }
     | false;
   plannable: {
@@ -65,6 +66,7 @@ interface FinalAssignment {
   id: number; // id of the assignment
   submitted: boolean; // has the user submitted it?
   graded: boolean; // has the teacher graded it?
+  graded_at: string; // date the teacher graded (if graded)
   score: number; // grade assigned, 0 if ungraded or unsubmitted
   type: AssignmentType;
   course_name: string; // via useCourseName
