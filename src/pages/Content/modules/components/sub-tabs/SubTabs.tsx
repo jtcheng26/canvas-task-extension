@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TaskListState } from '../../types';
 
 const SubtitleDiv = styled.div`
   border-bottom: 1px solid #c7cdd1;
@@ -27,8 +26,8 @@ const SubtitleTab = styled.div<SubtitleTabProps>`
 `;
 
 export interface SubTabsProps {
-  setTaskListState?: (state: TaskListState) => void;
-  taskListState?: TaskListState;
+  setTaskListState?: (state: 'Unfinished' | 'Completed') => void;
+  taskListState?: 'Unfinished' | 'Completed';
 }
 
 /*

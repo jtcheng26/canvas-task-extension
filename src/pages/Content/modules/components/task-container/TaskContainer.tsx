@@ -10,8 +10,7 @@ import { filterCourses } from '../../hooks/useAssignments';
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
   loading?: boolean;
-  onCoursePage?: boolean;
-  courseId?: number;
+  courseId?: number | false;
   courseList?: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
 }
@@ -28,7 +27,7 @@ export default function TaskContainer({
   options,
 }: TaskContainerProps): JSX.Element {
   const courses = useMemo(() => {
-    if (courseList && courseId !== -1)
+    if (courseList && courseId !== false)
       return courseList.filter((c) => c.id === courseId);
     return extractCourses(assignments);
   }, [assignments, courseId]);
@@ -48,8 +47,7 @@ export default function TaskContainer({
   }
 
   // Don't let user switch courses when on a course page
-  const chosenCourseId =
-    courseId && courseId !== -1 ? courseId : selectedCourseId;
+  const chosenCourseId = courseId ? courseId : selectedCourseId;
 
   useEffect(() => {
     if (courseId && courseId !== -1)
@@ -61,7 +59,7 @@ export default function TaskContainer({
     <>
       <CourseDropdown
         courses={courses}
-        onCoursePage={courseId ? courseId !== -1 : false}
+        onCoursePage={courseId ? true : false}
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />

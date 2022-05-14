@@ -100,7 +100,6 @@ export const OnCoursePageNoAssignments = Template.bind({});
 OnCoursePageNoAssignments.args = {
   ...storyDefaults,
   assignments: [],
-  onCoursePage: true,
   courseId: 1,
   courseList: [
     {

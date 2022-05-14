@@ -1,29 +1,3 @@
-// JSON response from /api/v1/calender_events
-interface Assignment {
-  color?: string; // via course_id -> colors[course_id]
-  html_url: string;
-  name: string;
-  points_possible: number;
-  due_at: string;
-  course_id: number;
-  id: number;
-  user_submitted: boolean;
-  is_quiz_assignment: boolean;
-  is_quiz_lti_assignment?: boolean;
-  course_name?: string; // via useCourseName
-  grade?: number; // via submission score/grade
-  discussion_topic?: string | 0;
-  locked_for_user?: boolean;
-  needs_grading_count?: number; // for teachers/graders
-  submission?: {
-    attempt: number;
-    score: number | null;
-    grade: string | number | null;
-    grader_id?: number | null; // check if assignment is graded or not
-  };
-  canvas_tasks_marked_as_complete?: boolean;
-}
-
 // JSON response from /api/v1/planner/items
 interface PlannerAssignment {
   color?: string;
@@ -84,4 +58,4 @@ enum AssignmentType {
   EVENT = 'calender_event',
 }
 
-export { Assignment, PlannerAssignment, FinalAssignment, AssignmentType };
+export { PlannerAssignment, FinalAssignment, AssignmentType };

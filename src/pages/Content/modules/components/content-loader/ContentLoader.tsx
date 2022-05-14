@@ -49,7 +49,7 @@ function ContentLoader({
       {assignmentData ? (
         <TaskContainer
           assignments={assignmentData}
-          courseId={typeof onCourse === 'number' ? onCourse : -1}
+          courseId={onCourse}
           courseList={courseData}
           loading={!isSuccess}
           options={options}

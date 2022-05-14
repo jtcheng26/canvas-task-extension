@@ -1,5 +1,5 @@
 import { Course, AssignmentType, PlannerAssignment } from '../types';
-import { getWeekStart } from '../utils/getWeek';
+import { getWeekStart } from '../utils/getPeriod';
 
 /*
   Pretty demo assignments
