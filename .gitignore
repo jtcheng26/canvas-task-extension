@@ -24,3 +24,4 @@ temp
 # secrets
 secrets.*.js
 *.secret.*
+*.secrets

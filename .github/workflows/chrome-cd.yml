@@ -1,0 +1,56 @@
+# CD pipeline to build, package, and publish a Chrome Extension
+
+name: Chrome Extension CD
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm ci
+      - run: npm run build
+      - run: npm run zip
+      - name: Chrome Extension upload
+        uses: Passiverecords/chrome-extension-upload-action@1.4.1
+        with:
+          refresh-token: ${{secrets.REFRESH_TOKEN}}
+          client-id: ${{secrets.CLIENT_ID}}
+          client-secret: ${{secrets.CLIENT_SECRET}}
+          file-name: './build.zip'
+          app-id: ${{secrets.APP_ID}}
+          publish: false
+      - name: Notify for publishing confirmation
+        uses: dawidd6/action-send-mail@v3
+        with:
+          # Required mail server address:
+          server_address: smtp.gmail.com
+          # Required mail server port:
+          server_port: 465
+          # Optional (recommended): mail server username:
+          username: ${{secrets.MAIL_USERNAME}}
+          # Optional (recommended) mail server password:
+          password: ${{secrets.MAIL_PASSWORD}}
+          # Required mail subject:
+          subject: New Tasks for Canvas Upload Success
+          body: CI/CD pipeline succeeded. Awaiting publishing.
+          # Required recipients' addresses:
+          to: jtchengdev@gmail.com
+          # Required sender full name (address can be skipped):
+          from: Tasks for Canvas CI/CD # <user@example.com>
+          # Optional whether this connection use TLS (default is true if server_port is 465)
+          secure: true
+          # Optional attachments:
+          attachments: ./build/manifest.json
