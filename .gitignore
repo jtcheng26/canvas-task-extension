@@ -5,6 +5,7 @@
 
 # testing
 /coverage
+temp
 
 # production
 /build
@@ -22,3 +23,4 @@
 
 # secrets
 secrets.*.js
+*.secret.*

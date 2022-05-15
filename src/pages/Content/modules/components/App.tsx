@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import Title from './Title';
-import ContentLoader from './ContentLoader';
+import Header from './header';
+import ContentLoader from './content-loader';
 import { Options } from '../types';
 import getPeriod from '../utils/getPeriod';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -22,9 +22,9 @@ export default function App({ options }: AppProps): JSX.Element {
   const [clickable, setClickable] = useState(false);
   const { start, end } = getPeriod(
     options.period,
-    options.startDate,
-    options.startHour,
-    options.startMinutes,
+    options.start_date,
+    options.start_hour,
+    options.start_minutes,
     delta
   );
 
@@ -51,7 +51,7 @@ export default function App({ options }: AppProps): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <AppContainer>
-        <Title
+        <Header
           clickable={clickable}
           onNextClick={onNextClick}
           onPrevClick={onPrevClick}

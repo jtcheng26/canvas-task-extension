@@ -1,6 +1,6 @@
 {
   "name": "canvas-task-extension",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "A chrome extension that improves the Canvas LMS To Do sidebar!",
   "homepage": "https://github.com/jtcheng26/canvas-task-extension",
   "license": "MIT",
@@ -14,7 +14,9 @@
     "start": "node utils/webserver.js",
     "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html}'",
     "lint": "eslint src/**/*.ts src/**/*.tsx",
-    "test": "jest"
+    "test": "jest",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@types/react": "^16.9.53",
@@ -26,7 +28,15 @@
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.10",
     "@hot-loader/react-dom": "^17.0.1",
+    "@storybook/addon-actions": "^6.4.22",
+    "@storybook/addon-console": "^1.2.3",
+    "@storybook/addon-essentials": "^6.4.22",
+    "@storybook/addon-interactions": "^6.4.22",
+    "@storybook/addon-links": "^6.4.22",
+    "@storybook/react": "^6.4.22",
+    "@storybook/testing-library": "^0.0.11",
     "@testing-library/react-hooks": "^7.0.1",
     "@types/chrome": "^0.0.154",
     "@types/enzyme": "^3.10.9",
@@ -35,6 +45,7 @@
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.3.1",
+    "babel-loader": "^8.2.5",
     "babel-preset-react-app": "^10.0.0",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.2.1",

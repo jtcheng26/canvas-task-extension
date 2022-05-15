@@ -15,6 +15,7 @@
       { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
     ],
     "react/require-default-props": 0,
+    "react/prop-types": 0,
     "react/jsx-max-depth": 0
   },
   "globals": {

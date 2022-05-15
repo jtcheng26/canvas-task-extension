@@ -1,7 +1,53 @@
 import { Period } from '../types';
-import { getMonthStart, getMonthEnd } from '../utils/getMonth';
-import { getWeekStart, getWeekEnd } from '../utils/getWeek';
-import { getDayStart, getDayEnd } from '../utils/getDay';
+
+/*
+  functions to get the start and end of the current day
+*/
+export function getDayStart(): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0);
+  return d;
+}
+export function getDayEnd(): Date {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  d.setHours(0, 0, 0);
+  return d;
+}
+
+/*
+  functions to get the previous and next occurence of a specific day of the week
+*/
+
+export function getWeekStart(startDate: number): Date {
+  const d = new Date();
+  d.setDate(d.getDate() - ((d.getDay() - startDate + 7) % 7));
+  d.setHours(0, 0, 0);
+  return d;
+}
+export function getWeekEnd(startDate: number): Date {
+  const d = getWeekStart(startDate);
+  d.setDate(d.getDate() + 7);
+  d.setHours(0, 0, 0);
+  return d;
+}
+
+/*
+  functions to get the start and end of the current month
+*/
+export function getMonthStart(): Date {
+  const d = new Date();
+  d.setDate(1);
+  d.setHours(0, 0, 0);
+  return d;
+}
+export function getMonthEnd(): Date {
+  const d = new Date();
+  d.setDate(1);
+  d.setMonth(d.getMonth() + 1);
+  d.setHours(0, 0, 0);
+  return d;
+}
 
 export default function getPeriod(
   period: Period,

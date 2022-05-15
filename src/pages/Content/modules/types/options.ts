@@ -2,9 +2,9 @@ export type Period = 'Day' | 'Week' | 'Month';
 
 interface Options {
   complete_assignments?: number[];
-  startDate: number;
-  startHour: number;
-  startMinutes: number;
+  start_date: number;
+  start_hour: number;
+  start_minutes: number;
   period: Period;
   sidebar: boolean;
   dash_courses: boolean;
