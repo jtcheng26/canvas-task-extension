@@ -188,6 +188,7 @@ const booleanOptions: Record<string, string> = {
   'active-rings': 'dash_courses',
   'due-date-headings': 'due_date_headings',
   'show-locked-assignments': 'show_locked_assignments',
+  'rolling-period': 'rolling_period',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -217,6 +218,16 @@ function setBooleanOptions() {
           booleanOptions[b],
           checkbox.classList.contains('checked')
         );
+        if (b === 'rolling-period') {
+          const startSelector = document.getElementById('start-selector');
+          if (checkbox.classList.contains('checked')) {
+            startSelector?.classList.remove('show');
+            startSelector?.classList.add('hide');
+          } else {
+            startSelector?.classList.remove('hide');
+            startSelector?.classList.add('show');
+          }
+        }
       };
     }
   });
@@ -233,6 +244,7 @@ setBooleanOptions();
 chrome.storage.sync.get(storedUserOptions, (items) => {
   const options = applyDefaults(items as Options);
   setSelectedPeriod(options.period.toLowerCase());
+  setCheckbox('rolling-period', options.rolling_period);
   setCheckbox('default-sidebar', !options.sidebar);
   setCheckbox('active-rings', !options.dash_courses);
   setCheckbox('due-date-headings', options.due_date_headings);
