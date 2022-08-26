@@ -3,7 +3,7 @@ import { AssignmentType, FinalAssignment, Options } from '../types';
 import JSONAssignmentDefaults from './defaults/assignmentDefaults.json';
 import JSONOptionsDefaults from './defaults/optionsDefaults.json';
 
-export const MAX_MARKED_ASSIGNMENTS = 1000;
+export const MAX_MARKED_ASSIGNMENTS = 400;
 
 export const ASSIGNMENT_ICON: Record<AssignmentType, JSX.Element> = {
   [AssignmentType.ASSIGNMENT]: AssignmentIcon,
