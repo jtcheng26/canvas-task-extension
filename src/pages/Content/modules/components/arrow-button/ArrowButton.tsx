@@ -34,7 +34,6 @@ export default function ArrowButton({
     [Direction.DOWN]: 180,
   };
 
-  console.log(rotation[direction]);
   return (
     <div
       onClick={handleClick}
