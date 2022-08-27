@@ -8,6 +8,7 @@ import useSelectedCourse from './utils/useSelectedCourse';
 import { filterByTab, sortByTab } from './utils/sortBy';
 import cutAssignmentList from './utils/cutList';
 import HeadingGroup from './components/HeadingGroup';
+import CreateTaskCard from '../task-card/CreateTaskCard';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -70,7 +71,6 @@ export default function TaskList({
   const viewMoreText = !viewingMore
     ? `View ${sortedAssignments.length - 4} more`
     : 'View less';
-  const noneText = 'None';
 
   function markAssignmentFunc(id: number) {
     if (!markAssignmentAsComplete)
@@ -116,7 +116,7 @@ export default function TaskList({
     <ListWrapper>
       <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
       <ListContainer>
-        {showDateHeadings || currentTab == 'Completed'
+        {showDateHeadings || currentTab === 'Completed'
           ? Object.keys(headings).map(
               (heading) =>
                 headings[heading].length > 0 && (
@@ -126,7 +126,17 @@ export default function TaskList({
                 )
             )
           : renderedAssignments.map(assignmentToTaskCard)}
-        {renderedAssignments.length == 0 && <span>{noneText}</span>}
+        {currentTab === 'Unfinished' ? (
+          <CreateTaskCard
+            onSubmit={() => {
+              console.log('submitted');
+            }}
+          />
+        ) : (
+          ''
+        )}
+
+        {/* {renderedAssignments.length == 0 && <span>{noneText}</span>} */}
       </ListContainer>
       {sortedAssignments.length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>

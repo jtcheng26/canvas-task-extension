@@ -5,7 +5,11 @@ import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
 import fmtDate from './utils/fmtDate';
 
-const TaskContainer = styled.div`
+interface AnimatedProps {
+  static?: boolean;
+}
+
+export const TaskContainer = styled.div`
     width: 100%;
     height: 65px;
     margin: 5px;
@@ -34,7 +38,7 @@ const TaskContainer = styled.div`
     box-sizing: border-box;
     width: 100%;
     font-size: 11px;
-    color: var(--ic-brand-font-color-dark-lightened-15);
+    color: #4c5860;
     overflow-x: auto;
     white-space: nowrap;
     overflow: hidden;
@@ -88,26 +92,33 @@ const TaskContainer = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
   `,
-  SkeletonTitle = styled.div`
+  SkeletonTitle = styled.div<AnimatedProps>`
     width: 90%;
     height: 12px;
     background-color: #e8e8e8;
     margin: 3px 0px;
-    animation: canvas-tasks-skeleton-pulse 1s infinite;
+    animation: ${(props) =>
+      props.static ? 'none' : 'canvas-tasks-skeleton-pulse 1s infinite'};
   `,
-  SkeletonInfo = styled.div`
+  SkeletonInfo = styled.div<AnimatedProps>`
     width: 75%;
     height: 12px;
     background-color: #e8e8e8;
     margin: 2px 0px;
-    animation: canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both;
+    animation: ${(props) =>
+      props.static
+        ? 'none'
+        : 'canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both'};
   `,
-  SkeletonCourseCode = styled.div`
+  SkeletonCourseCode = styled.div<AnimatedProps>`
     width: 50%;
     height: 12px;
     background-color: #e8e8e8;
     margin: 2px 0px;
-    animation: canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both;
+    animation: ${(props) =>
+      props.static
+        ? 'none'
+        : 'canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both'};
   `;
 interface TaskProps {
   name?: string;
