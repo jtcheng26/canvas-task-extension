@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { FinalAssignment } from '../types';
-import baseURL from './baseURL';
+import { FinalAssignment } from '../../../types';
+import baseURL from '../../../utils/baseURL';
 
 /* Mark an assignment either complete or incomplete via planner overrides.*/
 export default async function markAssignment(
