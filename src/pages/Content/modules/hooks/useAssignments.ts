@@ -32,12 +32,14 @@ export function convertPlannerAssignments(
 ): FinalAssignment[] {
   return assignments.map((assignment) => {
     const converted: Partial<FinalAssignment> = {
-      html_url: assignment.html_url,
+      html_url:
+        assignment.html_url || assignment.plannable.linked_object_html_url,
       type: assignment.plannable_type,
       id: assignment.plannable_id,
-      course_id: assignment.course_id,
+      plannable_id: assignment.plannable_id, // just in case it changes in the future
+      course_id: assignment.course_id || assignment.plannable.course_id,
       name: assignment.plannable.title,
-      due_at: assignment.plannable.due_at,
+      due_at: assignment.plannable.due_at || assignment.plannable.todo_date,
       points_possible: assignment.plannable.points_possible,
       submitted:
         assignment.submissions !== false

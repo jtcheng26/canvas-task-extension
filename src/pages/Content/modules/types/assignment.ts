@@ -24,7 +24,10 @@ interface PlannerAssignment {
     id: number;
     title: string;
     due_at?: string;
+    todo_date?: string; // for custom planner notes
     points_possible?: number;
+    course_id?: number; // for custom planner notes
+    linked_object_html_url?: string; // for custom planner notes
   };
   html_url: string;
 }
@@ -38,6 +41,7 @@ interface FinalAssignment {
   due_at: string;
   course_id: number; // course the assignment belongs to
   id: number; // id of the assignment
+  plannable_id: number; // id of planner item for marking complete
   submitted: boolean; // has the user submitted it?
   graded: boolean; // has the teacher graded it?
   graded_at: string; // date the teacher graded (if graded)
