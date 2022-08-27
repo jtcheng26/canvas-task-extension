@@ -1,22 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { Course } from '../../types';
+import { Course, Direction } from '../../types';
+import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
-
-interface SelectArrowProps {
-  menuVisible: boolean;
-}
-const SelectArrow = styled.div<SelectArrowProps>`
-  margin: 0px 0px 0px 4px;
-  display: inline-block;
-  width: 0;
-  height: 0;
-  border-left: 4px solid transparent;
-  border-top: 7px solid var(--ic-brand-font-color-dark-lightened-30);
-  border-right: 4px solid transparent;
-  background: transparent;
-  transform: rotate(${(p) => (p.menuVisible ? '180deg' : '0deg')});
-`;
 
 interface CourseTitleProps {
   color?: string;
@@ -36,9 +22,6 @@ const CourseTitle = styled.div<CourseTitleProps>`
   border-bottom: 1px solid rgba(199, 205, 209, 0.5);
   &:hover {
     cursor: pointer;
-    div {
-      border-top: 7px solid var(--ic-brand-font-color-dark);
-    }
   }
   z-index: 20;
   height: auto;
@@ -74,6 +57,13 @@ export default function CourseDropdown({
   onCoursePage = false,
 }: CourseDropdownProps): JSX.Element {
   const [menuVisible, setMenuVisible] = useState(false);
+  const [hovering, setHovering] = useState(false);
+  function onHover() {
+    setHovering(true);
+  }
+  function onLeave() {
+    setHovering(false);
+  }
 
   const courseMap = useMemo(() => {
     const map: Record<number, Course> = {};
@@ -93,11 +83,21 @@ export default function CourseDropdown({
   function toggleMenu() {
     setMenuVisible(!menuVisible);
   }
+
   return (
     <CourseDropdownContainer>
-      <CourseTitle color={color} onClick={toggleMenu}>
+      <CourseTitle
+        color={color}
+        onClick={toggleMenu}
+        onMouseEnter={onHover}
+        onMouseLeave={onLeave}
+      >
         {name}
-        <SelectArrow menuVisible={menuVisible} />
+        <ArrowButton
+          direction={menuVisible ? Direction.UP : Direction.DOWN}
+          hoverIndependent={false}
+          hovering={hovering}
+        />
       </CourseTitle>
       <Dropdown>
         {!onCoursePage && selectedCourseId != -1 && (
