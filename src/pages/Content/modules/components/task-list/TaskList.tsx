@@ -9,6 +9,7 @@ import { filterByTab, sortByTab } from './utils/sortBy';
 import cutAssignmentList from './utils/cutList';
 import HeadingGroup from './components/HeadingGroup';
 import CreateTaskCard from '../task-card/CreateTaskCard';
+import assignmentIsDone from '../../utils/assignmentIsDone';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -34,7 +35,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 export interface TaskListProps {
   assignments: FinalAssignment[];
-  markAssignmentAsComplete?: (id: number) => void;
+  markAssignment?: (id: number, status: boolean) => void;
   selectedCourseId: number;
   showDateHeadings: boolean;
   skeleton?: boolean;
@@ -45,7 +46,7 @@ export interface TaskListProps {
 */
 export default function TaskList({
   assignments,
-  markAssignmentAsComplete,
+  markAssignment,
   selectedCourseId = -1,
   showDateHeadings,
   skeleton,
@@ -72,20 +73,23 @@ export default function TaskList({
     ? `View ${sortedAssignments.length - 4} more`
     : 'View less';
 
+  const noneText = 'None';
+
   function markAssignmentFunc(id: number) {
-    if (!markAssignmentAsComplete)
+    if (!markAssignment)
       return () => {
         console.log('Failed to mark as complete');
       };
-    return () => markAssignmentAsComplete(id);
+    else if (currentTab === 'Completed') {
+      return () => markAssignment(id, false);
+    }
+    return () => markAssignment(id, true);
   }
 
   const assignmentToTaskCard = (assignment: FinalAssignment) => (
     <TaskCard
       color={assignment.color}
-      complete={
-        assignment.submitted || assignment.graded || assignment.marked_complete
-      }
+      complete={assignmentIsDone(assignment)}
       course_name={assignment.course_name}
       due_at={assignment.due_at}
       graded={assignment.graded}
@@ -126,7 +130,8 @@ export default function TaskList({
                 )
             )
           : renderedAssignments.map(assignmentToTaskCard)}
-        {currentTab === 'Unfinished' ? (
+        {(sortedAssignments.length <= 4 || viewingMore) &&
+        currentTab === 'Unfinished' ? (
           <CreateTaskCard
             onSubmit={() => {
               console.log('submitted');
@@ -136,7 +141,11 @@ export default function TaskList({
           ''
         )}
 
-        {/* {renderedAssignments.length == 0 && <span>{noneText}</span>} */}
+        {renderedAssignments.length == 0 && currentTab === 'Completed' ? (
+          <span>{noneText}</span>
+        ) : (
+          ''
+        )}
       </ListContainer>
       {sortedAssignments.length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>

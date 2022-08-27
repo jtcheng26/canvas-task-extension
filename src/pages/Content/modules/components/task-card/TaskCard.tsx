@@ -197,7 +197,7 @@ export default function TaskCard({
           <CourseCodeText color={color}>
             {!skeleton ? course_name : <SkeletonCourseCode />}
           </CourseCodeText>
-          {!skeleton && !complete ? (
+          {!skeleton ? (
             <CheckIcon
               checkStyle={complete ? 'Revert' : 'Check'}
               onClick={markAssignmentAsComplete}

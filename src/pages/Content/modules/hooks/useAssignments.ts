@@ -36,6 +36,7 @@ export function convertPlannerAssignments(
       type: assignment.plannable_type,
       id: assignment.plannable_id,
       plannable_id: assignment.plannable_id, // just in case it changes in the future
+      override_id: assignment.planner_override?.id,
       course_id: assignment.course_id || assignment.plannable.course_id,
       name: assignment.plannable.title,
       due_at: assignment.plannable.due_at || assignment.plannable.todo_date,

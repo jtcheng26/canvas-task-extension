@@ -1,4 +1,5 @@
 import { FinalAssignment } from '../../../types';
+import assignmentIsDone from '../../../utils/assignmentIsDone';
 
 function compareISODates(a: string, b: string): number {
   return new Date(a).valueOf() - new Date(b).valueOf();
@@ -23,7 +24,7 @@ export function filterByTab(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.filter((a) => {
-    const done = a.marked_complete || a.graded || a.submitted;
+    const done = assignmentIsDone(a);
     return currentTab === 'Completed' ? done : !done;
   });
 }

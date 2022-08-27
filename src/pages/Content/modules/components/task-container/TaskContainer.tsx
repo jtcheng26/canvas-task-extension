@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import CourseDropdown from '../course-dropdown';
 import TaskChart from '../task-chart';
 import TaskList from '../task-list';
-import markAsComplete from './utils/markAsComplete';
 import { Course, FinalAssignment, Options } from '../../types';
 import extractCourses from './utils/extractCourses';
 import { filterCourses } from '../../hooks/useAssignments';
+import markAssignment from './utils/markAssignment';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -38,9 +38,9 @@ export default function TaskContainer({
   const [updatedAssignments, setUpdatedAssignments] =
     useState<FinalAssignment[]>(assignments);
 
-  function markAssignmentAsComplete(id: number) {
+  async function markAssignmentAs(id: number, status: boolean) {
     const newAssignments = updatedAssignments.map((a) => {
-      if (a.id == id) return markAsComplete(a);
+      if (a.id == id) return markAssignment(status, a);
       return a;
     });
     setUpdatedAssignments(newAssignments);
@@ -74,7 +74,7 @@ export default function TaskContainer({
       />
       <TaskList
         assignments={updatedAssignments}
-        markAssignmentAsComplete={markAssignmentAsComplete}
+        markAssignment={markAssignmentAs}
         selectedCourseId={chosenCourseId}
         showDateHeadings={options.due_date_headings}
       />

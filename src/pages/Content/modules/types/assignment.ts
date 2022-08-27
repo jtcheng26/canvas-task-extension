@@ -5,6 +5,7 @@ interface PlannerAssignment {
   plannable_id: number;
   plannable_type: AssignmentType;
   planner_override: {
+    id: number;
     marked_complete: boolean;
     dismissed: boolean;
   } | null;
@@ -42,6 +43,7 @@ interface FinalAssignment {
   course_id: number; // course the assignment belongs to
   id: number; // id of the assignment
   plannable_id: number; // id of planner item for marking complete
+  override_id?: number; // id of existing planner override
   submitted: boolean; // has the user submitted it?
   graded: boolean; // has the teacher graded it?
   graded_at: string; // date the teacher graded (if graded)

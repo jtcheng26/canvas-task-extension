@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 interface CheckIconProps {
   onClick: () => void;
-  checkStyle: 'Check' | 'Revert';
+  checkStyle: 'Check' | 'Revert' | 'X';
 }
 
 const CheckIconWrapper = styled.div`
@@ -24,7 +24,24 @@ const CheckIconWrapper = styled.div`
 const Check = (
   <svg
     className="canvas-tasks-check-button"
-    fill="var(--ic-brand-font-color-dark-lightened-30)"
+    fill="#6c757c"
+    height={15}
+    version="1.1"
+    viewBox="0 0 1920 1920"
+    width={15}
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M459.897 902.842v689.845h1034.767v-574.87h230.064v804.819H229.948V902.842h229.949Zm1299.37-570.916L1920 496.455l-845.06 825.86-408.044-398.846 160.85-164.413 247.194 241.675 684.326-668.805ZM459.896 98v230.063H689.96v229.949H459.897v229.833H229.948V558.012H0V328.063h229.948V98h229.949Zm919.816 229.983V557.93h-574.87V327.983h574.87Z"
+      fillRule="evenodd"
+    />
+  </svg>
+);
+
+const X = (
+  <svg
+    className="canvas-tasks-check-button"
+    fill="#6c757c"
     height={13}
     version="1.1"
     viewBox="0 0 1920 1920"
@@ -43,7 +60,7 @@ const Check = (
 const Revert = (
   <svg
     className="canvas-tasks-check-button"
-    fill="var(--ic-brand-font-color-dark-lightened-30)"
+    fill="#6c757c"
     height={13}
     version="1.1"
     viewBox="0 0 1920 1920"
@@ -65,7 +82,7 @@ function CheckIcon({
 }: CheckIconProps): React.ReactElement {
   return (
     <CheckIconWrapper onClick={onClick}>
-      {checkStyle === 'Check' ? Check : Revert}
+      {checkStyle === 'Check' ? Check : checkStyle === 'Revert' ? Revert : X}
     </CheckIconWrapper>
   );
 }
