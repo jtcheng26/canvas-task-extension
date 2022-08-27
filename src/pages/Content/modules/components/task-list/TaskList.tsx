@@ -96,6 +96,7 @@ export default function TaskList({
       name={assignment.name}
       points_possible={assignment.points_possible}
       submitted={assignment.submitted}
+      type={assignment.type}
     />
   );
 
