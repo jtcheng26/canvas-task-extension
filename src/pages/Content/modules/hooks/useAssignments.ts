@@ -14,7 +14,6 @@ import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
 import { AssignmentDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
-import assignmentsMarkedAsComplete from '../utils/assignmentsMarkedAsComplete';
 
 /* Get assignments from api */
 function getAllAssignmentsRequest(
@@ -165,6 +164,21 @@ export function applyCompleted(
   });
 }
 
+/* Set the course name of custom tasks with no course name to "Custom Task" */
+export function applyCustomTaskLabels(
+  assignments: FinalAssignment[]
+): FinalAssignment[] {
+  return assignments.map((assignment) => {
+    if (
+      assignment.type === AssignmentType.NOTE &&
+      assignment.course_name === AssignmentDefaults.course_name
+    )
+      assignment.course_name = 'Custom Task';
+
+    return assignment;
+  });
+}
+
 export async function getAllAssignments(
   startDate: Date,
   endDate: Date
@@ -201,10 +215,7 @@ async function processAssignments(
   if (colors) assignments = applyCourseColor(colors, assignments);
   if (names) assignments = applyCourseName(names, assignments);
   if (positions) assignments = applyCoursePositions(positions, assignments);
-  assignments = applyCompleted(
-    await assignmentsMarkedAsComplete(),
-    assignments
-  );
+  assignments = applyCustomTaskLabels(assignments);
 
   const coursePageId = onCoursePage();
   if (coursePageId !== false) {
