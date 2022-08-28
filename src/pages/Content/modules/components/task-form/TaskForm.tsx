@@ -36,7 +36,7 @@ const Form = styled.div`
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   display: flex;
-  width: 80%;
+  width: 100%;
   padding: 10px;
   flex-direction: column;
 `;
