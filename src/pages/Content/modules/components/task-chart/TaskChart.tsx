@@ -74,11 +74,7 @@ export default function TaskChart({
         size={chartData.bars.length < 7 ? 210 : 280}
       >
         {loading ? (
-          <BeatLoader
-            color="var(--ic-brand-font-color-dark-lightened-30)"
-            loading
-            size={10}
-          />
+          <BeatLoader color="#4c5860dd" loading size={10} />
         ) : (
           <>
             <TitleText color={colorOverride || color}>{percent}</TitleText>

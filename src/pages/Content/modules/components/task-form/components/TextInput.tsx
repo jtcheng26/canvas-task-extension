@@ -1,5 +1,7 @@
 import React, { ChangeEvent, useState } from 'react';
 import styled from 'styled-components';
+import ArrowButton from '../../arrow-button/ArrowButton';
+import { Direction } from '../../../types';
 
 const Input = styled.input`
   border: 1px solid rgb(199, 205, 299);
@@ -34,20 +36,21 @@ type Props = {
   onClick?: () => void;
   select?: boolean;
   value: string;
+  menuVisible?: boolean;
 };
 
 export default function TextInput({
+  menuVisible,
   onChange,
   onClick,
   select,
   value,
 }: Props): JSX.Element {
-  const [viewing, setViewing] = useState(false);
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     if (onChange) onChange(e.target?.value);
   }
   function handleClick() {
-    setViewing(!viewing);
+    if (onClick) onClick();
   }
   return !select ? (
     <Input
@@ -57,6 +60,13 @@ export default function TextInput({
       value={value}
     />
   ) : (
-    <Select onClick={handleClick}>{value}</Select>
+    <Select onClick={handleClick}>
+      {value}{' '}
+      <ArrowButton
+        direction={menuVisible ? Direction.UP : Direction.DOWN}
+        hoverIndependent={false}
+        hovering={false}
+      />
+    </Select>
   );
 }
