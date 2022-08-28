@@ -1,4 +1,5 @@
 {
+  "rolling_period": false,
   "start_date": 1,
   "start_hour": 15,
   "start_minutes": 0,

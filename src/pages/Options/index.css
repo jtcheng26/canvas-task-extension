@@ -2,13 +2,13 @@
 
 body {
   margin: 0px;
-  padding: 0px;
+  padding: 50px 0px;
   font-family: Lato, sans-serif;
   background-color: rgba(0, 0, 0, 5%);
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
 
   --text-light: #878787;
@@ -125,6 +125,7 @@ body {
   display: flex;
   flex-direction: row;
   border-radius: 500px;
+  margin-bottom: 20px;
 }
 
 .period-option {
@@ -151,7 +152,6 @@ body {
 }
 
 #start-selector {
-  display: flex;
   margin: 20px 0px;
   margin-left: 20px;
   flex-direction: column;
@@ -168,6 +168,7 @@ body {
 }
 
 #boolean-options {
+  margin-top: 10px;
   margin-left: 20px;
   display: flex;
   flex-direction: column;
@@ -192,6 +193,7 @@ body {
   color: var(--text-default);
   display: flex;
   align-items: center;
+  margin-left: 20px;
 }
 
 .checkbox {
@@ -221,6 +223,14 @@ body {
 
 .checked .check {
   fill: var(--bg-default);
+}
+
+.show {
+  display: flex;
+}
+
+.hide {
+  display: none;
 }
 
 h5 {

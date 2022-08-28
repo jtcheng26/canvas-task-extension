@@ -8,8 +8,8 @@ export function getDayStart(): Date {
   d.setHours(0, 0, 0);
   return d;
 }
-export function getDayEnd(): Date {
-  const d = new Date();
+export function getDayEnd(startDate: Date): Date {
+  const d = new Date(startDate);
   d.setDate(d.getDate() + 1);
   d.setHours(0, 0, 0);
   return d;
@@ -25,8 +25,8 @@ export function getWeekStart(startDate: number): Date {
   d.setHours(0, 0, 0);
   return d;
 }
-export function getWeekEnd(startDate: number): Date {
-  const d = getWeekStart(startDate);
+export function getWeekEnd(startDate: Date): Date {
+  const d = new Date(startDate);
   d.setDate(d.getDate() + 7);
   d.setHours(0, 0, 0);
   return d;
@@ -41,7 +41,13 @@ export function getMonthStart(): Date {
   d.setHours(0, 0, 0);
   return d;
 }
-export function getMonthEnd(): Date {
+export function getMonthEnd(startDate?: Date): Date {
+  if (startDate) {
+    const d = new Date(startDate);
+    d.setDate(d.getDate() + 30);
+    d.setHours(0, 0, 0);
+    return d;
+  }
   const d = new Date();
   d.setDate(1);
   d.setMonth(d.getMonth() + 1);
@@ -54,10 +60,29 @@ export default function getPeriod(
   startDate: number,
   startHours: number,
   startMinutes: number,
-  delta: number
+  delta: number,
+  rollingPeriod?: boolean
 ): { start: Date; end: Date } {
   let prevPeriodStart = getMonthStart();
   let nextPeriodStart = getMonthEnd();
+
+  if (rollingPeriod) {
+    prevPeriodStart = new Date();
+    prevPeriodStart.setHours(0, 0, 0);
+    if (period == 'Month') nextPeriodStart = getMonthEnd(prevPeriodStart);
+  } else {
+    switch (period) {
+      case 'Month':
+        break;
+      case 'Day':
+        prevPeriodStart = getDayStart();
+        break;
+      default:
+        prevPeriodStart = getWeekStart(startDate);
+        break;
+    }
+  }
+
   /*
     set time period based on user-selected options and set delta based on current period
   */
@@ -67,14 +92,12 @@ export default function getPeriod(
       nextPeriodStart.setMonth(nextPeriodStart.getMonth() + delta);
       break;
     case 'Day':
-      prevPeriodStart = getDayStart();
-      nextPeriodStart = getDayEnd();
+      nextPeriodStart = getDayEnd(prevPeriodStart);
       prevPeriodStart.setDate(prevPeriodStart.getDate() + delta);
       nextPeriodStart.setDate(nextPeriodStart.getDate() + delta);
       break;
     default:
-      prevPeriodStart = getWeekStart(startDate);
-      nextPeriodStart = getWeekEnd(startDate);
+      nextPeriodStart = getWeekEnd(prevPeriodStart);
       prevPeriodStart.setDate(prevPeriodStart.getDate() + 7 * delta);
       nextPeriodStart.setDate(nextPeriodStart.getDate() + 7 * delta);
       break;
