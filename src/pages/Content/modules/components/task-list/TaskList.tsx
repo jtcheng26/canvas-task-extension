@@ -29,7 +29,10 @@ const ListWrapper = styled.div`
 const ConfettiWrapper = styled.div`
   position: absolute;
   top: 350px;
-  right: 100px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
   z-index: 10000;
 `;
 
