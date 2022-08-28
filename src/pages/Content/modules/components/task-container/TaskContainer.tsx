@@ -46,6 +46,11 @@ export default function TaskContainer({
     setUpdatedAssignments(newAssignments);
   }
 
+  async function createNewAssignment(assignment: FinalAssignment) {
+    const newAssignments = updatedAssignments.concat([assignment]);
+    setUpdatedAssignments(newAssignments);
+  }
+
   // Don't let user switch courses when on a course page
   const chosenCourseId = courseId ? courseId : selectedCourseId;
 
@@ -74,6 +79,7 @@ export default function TaskContainer({
       />
       <TaskList
         assignments={updatedAssignments}
+        createAssignment={createNewAssignment}
         markAssignment={markAssignmentAs}
         selectedCourseId={chosenCourseId}
         showDateHeadings={options.due_date_headings}

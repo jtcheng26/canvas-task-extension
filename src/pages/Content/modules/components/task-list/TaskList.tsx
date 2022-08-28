@@ -35,6 +35,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 export interface TaskListProps {
   assignments: FinalAssignment[];
+  createAssignment?: (assignment: FinalAssignment) => void;
   markAssignment?: (id: number, status: boolean) => void;
   selectedCourseId: number;
   showDateHeadings: boolean;
@@ -46,6 +47,7 @@ export interface TaskListProps {
 */
 export default function TaskList({
   assignments,
+  createAssignment,
   markAssignment,
   selectedCourseId = -1,
   showDateHeadings,
@@ -132,11 +134,7 @@ export default function TaskList({
           : renderedAssignments.map(assignmentToTaskCard)}
         {(sortedAssignments.length <= 4 || viewingMore) &&
         currentTab === 'Unfinished' ? (
-          <CreateTaskCard
-            onSubmit={() => {
-              console.log('submitted');
-            }}
-          />
+          <CreateTaskCard onSubmit={createAssignment} />
         ) : (
           ''
         )}

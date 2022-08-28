@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Course } from '../../types';
 import CourseButton from '../course-button';
+import TextInput from '../task-form/components/TextInput';
 
 interface SelectArrowProps {
   menuVisible: boolean;
@@ -62,6 +63,8 @@ export interface CourseDropdownProps {
   selectedCourseId?: number;
   setCourse: (id: number) => void;
   onCoursePage: boolean;
+  defaultOption?: string;
+  instructureStyle?: boolean;
 }
 
 /*
@@ -69,6 +72,8 @@ export interface CourseDropdownProps {
 */
 export default function CourseDropdown({
   courses,
+  defaultOption,
+  instructureStyle,
   selectedCourseId = -1,
   setCourse,
   onCoursePage = false,
@@ -84,7 +89,11 @@ export default function CourseDropdown({
   }, [courses]);
 
   const name =
-    selectedCourseId != -1 ? courseMap[selectedCourseId].name : 'All Courses';
+    selectedCourseId != -1
+      ? courseMap[selectedCourseId].name
+      : defaultOption
+      ? defaultOption
+      : 'All Courses';
   const color =
     selectedCourseId != -1
       ? courseMap[selectedCourseId].color
@@ -95,10 +104,15 @@ export default function CourseDropdown({
   }
   return (
     <CourseDropdownContainer>
-      <CourseTitle color={color} onClick={toggleMenu}>
-        {name}
-        <SelectArrow menuVisible={menuVisible} />
-      </CourseTitle>
+      {instructureStyle ? (
+        <TextInput onClick={toggleMenu} select value={name} />
+      ) : (
+        <CourseTitle color={color} onClick={toggleMenu}>
+          {name}
+          <SelectArrow menuVisible={menuVisible} />
+        </CourseTitle>
+      )}
+
       <Dropdown>
         {!onCoursePage && selectedCourseId != -1 && (
           <CourseButton
@@ -106,7 +120,7 @@ export default function CourseDropdown({
             id={-1}
             last={false}
             menuVisible={menuVisible}
-            name="All Courses"
+            name={defaultOption || 'All Courses'}
             setCourse={setCourse}
             setMenuVisible={setMenuVisible}
           />

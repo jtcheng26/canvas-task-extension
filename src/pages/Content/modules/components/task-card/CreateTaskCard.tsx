@@ -1,11 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { TaskLeft, TaskLink } from './TaskCard';
 import PlusIcon from '../../icons/plus';
-
-interface TaskProps {
-  onSubmit: (title: string, date: string, course_id: number) => void;
-}
+import { FinalAssignment } from '../../types';
+import TaskForm from '../task-form/TaskForm';
 
 export const TaskContainer = styled.div`
   width: 100%;
@@ -51,22 +49,36 @@ const TaskTitle = styled.div`
     Renders an individual task item
 */
 
+interface TaskProps {
+  onSubmit?: (assignment: FinalAssignment) => void;
+}
+
 export default function CreateTaskCard({ onSubmit }: TaskProps): JSX.Element {
+  const [formVisible, setFormVisible] = useState(true);
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
+    setFormVisible(true);
+  }
+  function closeForm() {
+    setFormVisible(false);
   }
 
   const text = 'New Task';
 
   return (
-    <TaskContainer onClick={onClick}>
-      <TaskLeft color="#d8d8d8" onClick={onClick}>
-        {PlusIcon}
-      </TaskLeft>
-      <TaskInfo>
-        <TaskTitle>{text}</TaskTitle>
-      </TaskInfo>
-    </TaskContainer>
+    <>
+      <TaskContainer onClick={onClick}>
+        <TaskLeft color="#d8d8d8" onClick={onClick}>
+          {PlusIcon}
+        </TaskLeft>
+        <TaskInfo>
+          <TaskTitle>{text}</TaskTitle>
+        </TaskInfo>
+      </TaskContainer>
+      {formVisible && (
+        <TaskForm close={closeForm} onSubmit={onSubmit} visible={formVisible} />
+      )}
+    </>
   );
 }
 
