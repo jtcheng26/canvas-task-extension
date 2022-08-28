@@ -75,7 +75,7 @@ export default function TaskContainer({
     <>
       <CourseDropdown
         courses={courses}
-        onCoursePage={courseId ? true : false}
+        onCoursePage={!!courseId}
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />
@@ -85,6 +85,7 @@ export default function TaskContainer({
           courseId && courseId !== -1 ? courses[0].color : undefined
         }
         loading={loading}
+        onCoursePage={!!courseId}
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />

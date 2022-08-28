@@ -126,8 +126,8 @@ export default function TaskForm({
       assignment.due_at,
       assignment.course_id
     );
-    assignment.id = res.id;
-    assignment.plannable_id = res.id; // for marking completing right after creating
+    assignment.id = res.id || assignment.id;
+    assignment.plannable_id = assignment.id; // for marking completing right after creating
     if (onSubmit) onSubmit(assignment);
     close();
   }

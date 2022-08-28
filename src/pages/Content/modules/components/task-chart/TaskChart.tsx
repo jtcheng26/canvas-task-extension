@@ -43,6 +43,7 @@ export interface TaskChartProps {
   assignments: FinalAssignment[];
   colorOverride?: string;
   loading?: boolean;
+  onCoursePage?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
 }
@@ -51,6 +52,7 @@ export default function TaskChart({
   assignments,
   colorOverride,
   loading,
+  onCoursePage,
   selectedCourseId = -1,
   setCourse,
 }: TaskChartProps): JSX.Element {
@@ -72,11 +74,13 @@ export default function TaskChart({
 
   const [confetti, setConfetti] = useState(false);
   useEffect(() => {
-    if (total > 0 && done === total) {
-      setTimeout(() => {
-        setConfetti(true);
-      }, 1000); // confetti once rings finish animating
-    } else setConfetti(false);
+    if (selectedCourseId === -1 || onCoursePage) {
+      if (total > 0 && done === total) {
+        setTimeout(() => {
+          setConfetti(true);
+        }, 1000); // confetti once rings finish animating
+      } else setConfetti(false);
+    }
   }, [done, total]);
 
   return (
