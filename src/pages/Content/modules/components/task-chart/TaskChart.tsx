@@ -6,6 +6,7 @@ import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
+import useOptions from '../../hooks/useOptions';
 
 /*
   Renders progress chart
@@ -68,6 +69,8 @@ export default function TaskChart({
     else setCourse(id);
   }
 
+  const { data: options } = useOptions();
+
   const complete = 'Complete';
   const percent = total === 0 ? '100%' : `${Math.floor((100 * done) / total)}%`;
   const progress = `${done}/${total}`;
@@ -85,16 +88,19 @@ export default function TaskChart({
 
   return (
     <ChartContainer>
-      <ConfettiWrapper>
-        <Confetti
-          active={confetti}
-          config={{
-            elementCount: Math.min(200, 10 * done),
-            startVelocity: 30,
-          }}
-        />
-      </ConfettiWrapper>
-
+      {options && options.show_confetti ? (
+        <ConfettiWrapper>
+          <Confetti
+            active={confetti}
+            config={{
+              elementCount: Math.min(200, 10 * done),
+              startVelocity: 30,
+            }}
+          />
+        </ConfettiWrapper>
+      ) : (
+        ''
+      )}
       <RadialBarChart
         bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}

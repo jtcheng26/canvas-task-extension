@@ -1,14 +1,7 @@
 import runApp from './modules';
 import './content.styles.css';
 import { Options } from './modules/types';
-import { OptionsDefaults } from './modules/constants';
-
-function applyDefaults(options: Options): Options {
-  return {
-    ...OptionsDefaults,
-    ...options,
-  };
-}
+import { getOptions } from './modules/hooks/useOptions';
 
 function runAppUsingOptions(container: HTMLElement, data: Options) {
   /*
@@ -23,19 +16,11 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
     (document.getElementById('right-side') as HTMLElement).className +=
       'hidden-sidebar';
   }
-  runApp(newContainer, data);
+  runApp(newContainer);
 }
 
-function runAppInChrome(container: HTMLElement) {
-  const storedUserOptions = Object.keys(OptionsDefaults);
-
-  chrome.storage.sync.get(storedUserOptions, function (result) {
-    chrome.storage.sync.set(applyDefaults(result as Options), function () {
-      chrome.storage.sync.get(null, function (result2) {
-        runAppUsingOptions(container, result2 as Options);
-      });
-    });
-  });
+async function runAppInChrome(container: HTMLElement) {
+  runAppUsingOptions(container, await getOptions());
 }
 
 /* Chrome APIs work fine in firefox currently, but firefox-native implementation is saved here for the future. */

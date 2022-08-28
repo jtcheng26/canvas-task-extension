@@ -10,6 +10,7 @@ interface Options {
   dash_courses: boolean;
   due_date_headings: boolean;
   show_locked_assignments: boolean;
+  show_confetti: boolean;
 }
 
 export default Options;

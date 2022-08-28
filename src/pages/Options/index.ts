@@ -188,6 +188,7 @@ const booleanOptions: Record<string, string> = {
   'active-rings': 'dash_courses',
   'due-date-headings': 'due_date_headings',
   'show-locked-assignments': 'show_locked_assignments',
+  'show-confetti': 'show_confetti',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -237,6 +238,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setCheckbox('active-rings', !options.dash_courses);
   setCheckbox('due-date-headings', options.due_date_headings);
   setCheckbox('show-locked-assignments', options.show_locked_assignments);
+  setCheckbox('show-confetti', options.show_confetti);
   setSelectedDropdownOption(
     Object.keys(weekdays)[options.start_date - 1],
     'weekdays-options',

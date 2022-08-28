@@ -11,6 +11,7 @@ import HeadingGroup from './components/HeadingGroup';
 import CreateTaskCard from '../task-card/CreateTaskCard';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 import Confetti from 'react-dom-confetti';
+import useOptions from '../../hooks/useOptions';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -111,6 +112,8 @@ export default function TaskList({
     setConfetti(false);
   }
 
+  const { data: options } = useOptions();
+
   const assignmentToTaskCard = (assignment: FinalAssignment) => (
     <TaskCard
       color={assignment.color}
@@ -144,16 +147,20 @@ export default function TaskList({
   return (
     <ListWrapper>
       <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
-      <ConfettiWrapper>
-        <Confetti
-          active={confetti}
-          config={{
-            elementCount: 15,
-            stagger: 10,
-            startVelocity: 20,
-          }}
-        />
-      </ConfettiWrapper>
+      {options && options.show_confetti ? (
+        <ConfettiWrapper>
+          <Confetti
+            active={confetti}
+            config={{
+              elementCount: 15,
+              stagger: 10,
+              startVelocity: 20,
+            }}
+          />
+        </ConfettiWrapper>
+      ) : (
+        ''
+      )}
       <ListContainer>
         {showDateHeadings || currentTab === 'Completed'
           ? Object.keys(headings).map(
