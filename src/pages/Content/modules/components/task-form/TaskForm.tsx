@@ -95,7 +95,7 @@ export default function TaskForm({
     coursePage === false ? -1 : coursePage
   );
 
-  function submit() {
+  async function submit() {
     const assignment: FinalAssignment = {
       ...AssignmentDefaults,
     } as FinalAssignment;
@@ -120,8 +120,15 @@ export default function TaskForm({
         : AssignmentDefaults.position;
     assignment.type = AssignmentType.NOTE;
     assignment.id = Math.floor(1000000 * Math.random());
+
+    const res = await createCustomTask(
+      title,
+      assignment.due_at,
+      assignment.course_id
+    );
+    assignment.id = res.id;
+    assignment.plannable_id = res.id; // for marking completing right after creating
     if (onSubmit) onSubmit(assignment);
-    createCustomTask(title, assignment.due_at, assignment.course_id);
     close();
   }
   return (

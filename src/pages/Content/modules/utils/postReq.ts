@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import baseURL from './baseURL';
 
 /* Send a post request w/ CSRF Token. */
@@ -7,7 +7,7 @@ export default async function postReq(
   body: string,
   put = false,
   id?: string
-): Promise<void> {
+): Promise<AxiosResponse> {
   const CSRFtoken = function () {
     return decodeURIComponent(
       (document.cookie.match('(^|;) *_csrf_token=([^;]*)') || '')[2]
@@ -22,8 +22,8 @@ export default async function postReq(
   };
   // Try the specified method first, flip to the other if error occurs.
   if (put) {
-    await axios.put(url + '/' + id, body, headers);
+    return await axios.put(url + '/' + id, body, headers);
   } else {
-    axios.post(url, body, headers);
+    return await axios.post(url, body, headers);
   }
 }

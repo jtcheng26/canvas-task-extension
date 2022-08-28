@@ -1,5 +1,6 @@
 // JSON response from /api/v1/planner/items
 interface PlannerAssignment {
+  id?: number; // returned by POST /api/v1/planner_notes
   color?: string;
   course_id: number;
   plannable_id: number;
