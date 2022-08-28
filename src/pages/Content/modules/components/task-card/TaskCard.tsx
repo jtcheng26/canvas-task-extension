@@ -182,7 +182,9 @@ export default function TaskCard({
     ? ` ${!graded ? ' Waiting for grade' : ' Graded'}`
     : ' Completed';
   function markAssignmentAsComplete() {
-    if (markComplete) markComplete();
+    if (markComplete) {
+      markComplete();
+    }
   }
   return (
     <TaskContainer>

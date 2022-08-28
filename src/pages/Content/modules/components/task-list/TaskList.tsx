@@ -10,6 +10,7 @@ import cutAssignmentList from './utils/cutList';
 import HeadingGroup from './components/HeadingGroup';
 import CreateTaskCard from '../task-card/CreateTaskCard';
 import assignmentIsDone from '../../utils/assignmentIsDone';
+import Confetti from 'react-dom-confetti';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -23,6 +24,13 @@ const ListContainer = styled.div`
 
 const ListWrapper = styled.div`
   margin: 10px 0px 25px 0px;
+`;
+
+const ConfettiWrapper = styled.div`
+  position: absolute;
+  top: 350px;
+  right: 100px;
+  z-index: 10000;
 `;
 
 interface ViewMoreProps {
@@ -53,6 +61,7 @@ export default function TaskList({
   showDateHeadings,
   skeleton,
 }: TaskListProps): JSX.Element {
+  const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] =
     useState<'Unfinished' | 'Completed'>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
@@ -85,7 +94,18 @@ export default function TaskList({
     else if (currentTab === 'Completed') {
       return () => markAssignment(id, false);
     }
-    return () => markAssignment(id, true);
+    return () => {
+      setConfetti(true);
+      setTimeout(() => {
+        stopConfetti();
+      }, 100);
+
+      markAssignment(id, true);
+    };
+  }
+
+  function stopConfetti() {
+    setConfetti(false);
   }
 
   const assignmentToTaskCard = (assignment: FinalAssignment) => (
@@ -121,6 +141,16 @@ export default function TaskList({
   return (
     <ListWrapper>
       <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
+      <ConfettiWrapper>
+        <Confetti
+          active={confetti}
+          config={{
+            elementCount: 15,
+            stagger: 10,
+            startVelocity: 20,
+          }}
+        />
+      </ConfettiWrapper>
       <ListContainer>
         {showDateHeadings || currentTab === 'Completed'
           ? Object.keys(headings).map(

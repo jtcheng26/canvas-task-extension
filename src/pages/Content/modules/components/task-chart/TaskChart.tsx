@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart from '../radial-bar-chart';
 import BeatLoader from '../spinners';
 import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
+import Confetti from 'react-dom-confetti';
 
 /*
   Renders progress chart
@@ -31,6 +32,11 @@ const TitleText = styled.div`
   font-weight: bold;
   line-height: 1.25em;
   color: ${(p) => p.color};
+`;
+
+const ConfettiWrapper = styled.div`
+  position: absolute;
+  top: 250px;
 `;
 
 export interface TaskChartProps {
@@ -64,8 +70,27 @@ export default function TaskChart({
   const percent = total === 0 ? '100%' : `${Math.floor((100 * done) / total)}%`;
   const progress = `${done}/${total}`;
 
+  const [confetti, setConfetti] = useState(false);
+  useEffect(() => {
+    if (total > 0 && done === total) {
+      setTimeout(() => {
+        setConfetti(true);
+      }, 1000); // confetti once rings finish animating
+    } else setConfetti(false);
+  }, [done, total]);
+
   return (
     <ChartContainer>
+      <ConfettiWrapper>
+        <Confetti
+          active={confetti}
+          config={{
+            elementCount: 50,
+            startVelocity: 30,
+          }}
+        />
+      </ConfettiWrapper>
+
       <RadialBarChart
         bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
