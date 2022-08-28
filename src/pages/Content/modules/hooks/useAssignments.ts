@@ -47,9 +47,7 @@ export function convertPlannerAssignments(
           : undefined,
       graded:
         assignment.submissions !== false
-          ? assignment.submissions.needs_grading ||
-            assignment.submissions.excused ||
-            assignment.submissions.graded
+          ? assignment.submissions.excused || assignment.submissions.graded
           : undefined,
       graded_at:
         assignment.submissions !== false
