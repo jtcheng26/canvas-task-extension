@@ -42,10 +42,10 @@ const X = (
   <svg
     className="canvas-tasks-check-button"
     fill="#6c757c"
-    height={13}
+    height={20}
     version="1.1"
     viewBox="0 0 1920 1920"
-    width={13}
+    width={20}
     xmlns="http://www.w3.org/2000/svg"
   >
     <path

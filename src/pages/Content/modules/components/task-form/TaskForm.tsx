@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { DateRange } from 'react-day-picker';
 import styled from 'styled-components';
+import { AssignmentDefaults } from '../../constants';
+import useCourseColors from '../../hooks/useCourseColors';
+import useCourseNames from '../../hooks/useCourseNames';
+import useCoursePositions from '../../hooks/useCoursePositions';
 import useCourses from '../../hooks/useCourses';
-import { FinalAssignment } from '../../types';
+import { CheckIcon } from '../../icons';
+import { AssignmentType, FinalAssignment } from '../../types';
+import createCustomTask from '../../utils/createCustomTask';
 import CourseDropdown from '../course-dropdown';
+import Button from './components/Button';
 import DatePick from './components/DatePick';
 import TextInput from './components/TextInput';
 
@@ -18,7 +24,7 @@ const FormContainer = styled.div<FormContainerProps>`
   width: 100%;
   right: 0;
   left: 0;
-  top: 200px;
+  top: 100px;
   justify-content: center;
   align-items: center;
 `;
@@ -36,6 +42,8 @@ const Form = styled.div`
 const FormTitle = styled.div`
   font-weight: 700;
   margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const FormItem = styled.div`
@@ -60,6 +68,9 @@ export default function TaskForm({
     new Date()
   );
   const { data: courses } = useCourses();
+  const { data: courseMap } = useCourseNames();
+  const { data: colors } = useCourseColors();
+  const { data: positions } = useCoursePositions();
   const [selectedCourseId, setSelectedCourseId] = useState(-1);
 
   const titleLabel = 'Title';
@@ -69,11 +80,43 @@ export default function TaskForm({
   function setSelected(date?: Date) {
     setSelectedDate(date);
   }
+
+  function submit() {
+    const assignment: FinalAssignment = AssignmentDefaults as FinalAssignment;
+    assignment.name = title;
+    selectedDate?.setHours(23, 59, 59);
+    assignment.due_at = selectedDate?.toISOString() || new Date().toISOString();
+    assignment.course_id =
+      selectedCourseId === -1 ? AssignmentDefaults.course_id : selectedCourseId;
+    assignment.course_name =
+      courseMap && selectedCourseId >= 0
+        ? courseMap[selectedCourseId]
+        : 'Custom Task';
+    assignment.color =
+      colors && selectedCourseId >= 0
+        ? colors[selectedCourseId]
+        : AssignmentDefaults.color;
+    assignment.position =
+      positions && positions[selectedCourseId]
+        ? positions[selectedCourseId]
+        : AssignmentDefaults.position;
+    assignment.type = AssignmentType.NOTE;
+    if (onSubmit) onSubmit(assignment);
+    createCustomTask(
+      title,
+      assignment.due_at.split('T')[0],
+      assignment.course_id
+    );
+    close();
+  }
   return (
     <FormContainer visible={visible}>
       <Form>
         <FormItem>
-          <FormTitle>{titleLabel}</FormTitle>
+          <FormTitle>
+            {titleLabel}
+            <CheckIcon checkStyle="X" onClick={close} />
+          </FormTitle>
           <TextInput onChange={setTitle} value={title} />
         </FormItem>
         <FormItem>
@@ -93,6 +136,14 @@ export default function TaskForm({
             />
           </FormItem>
         )}
+        <FormItem>
+          <Button
+            color="#ec412d"
+            disabled={!title}
+            label="Save"
+            onClick={submit}
+          />
+        </FormItem>
       </Form>
     </FormContainer>
   );

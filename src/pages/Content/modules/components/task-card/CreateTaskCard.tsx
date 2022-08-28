@@ -54,7 +54,7 @@ interface TaskProps {
 }
 
 export default function CreateTaskCard({ onSubmit }: TaskProps): JSX.Element {
-  const [formVisible, setFormVisible] = useState(true);
+  const [formVisible, setFormVisible] = useState(false);
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
     setFormVisible(true);

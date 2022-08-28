@@ -79,13 +79,13 @@ export default function CourseDropdown({
   }, [courses]);
 
   const name =
-    selectedCourseId != -1
+    selectedCourseId >= 0
       ? courseMap[selectedCourseId].name
       : defaultOption
       ? defaultOption
       : 'All Courses';
   const color =
-    selectedCourseId != -1
+    selectedCourseId >= 0
       ? courseMap[selectedCourseId].color
       : 'var(--ic-brand-font-color-dark)';
 

@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react';
+import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import ArrowButton from '../../arrow-button/ArrowButton';
 import { Direction } from '../../../types';
@@ -34,6 +34,8 @@ const Select = styled.div`
 type Props = {
   onChange?: (value: string) => void;
   onClick?: () => void;
+  onFocus?: () => void;
+  onUnfocus?: () => void;
   select?: boolean;
   value: string;
   menuVisible?: boolean;
@@ -43,6 +45,8 @@ export default function TextInput({
   menuVisible,
   onChange,
   onClick,
+  onFocus,
+  onUnfocus,
   select,
   value,
 }: Props): JSX.Element {
@@ -55,8 +59,10 @@ export default function TextInput({
   return !select ? (
     <Input
       contentEditable={!!onChange}
+      onBlur={onUnfocus}
       onChange={handleChange}
       onClick={onClick}
+      onFocus={onFocus}
       value={value}
     />
   ) : (

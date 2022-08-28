@@ -6,12 +6,11 @@ export default async function createCustomTask(
   date: string,
   course_id?: number
 ): Promise<void> {
-  const data = {
+  const data: Record<string, string | number> = {
     title: title,
     todo_date: date,
-    course_id: course_id,
   };
 
-  if (course_id) data.course_id = course_id;
+  if (course_id && course_id > 0) data['course_id'] = course_id;
   await postReq('/v1/planner_notes', JSON.stringify(data));
 }

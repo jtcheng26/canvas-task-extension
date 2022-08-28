@@ -31,13 +31,15 @@ export default function DatePick({
     setPickerVisible(false);
     setSelected(date);
   }
-  function showPicker() {
-    setPickerVisible(true);
+  function togglePicker() {
+    setPickerVisible(!pickerVisible);
   }
   return (
     <DatePickerContainer>
       <TextInput
-        onClick={showPicker}
+        menuVisible={pickerVisible}
+        onClick={togglePicker}
+        select
         value={selected ? selected.toLocaleDateString() : ''}
       />
       {pickerVisible && (
