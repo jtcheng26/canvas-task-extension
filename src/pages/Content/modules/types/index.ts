@@ -6,6 +6,7 @@ import {
 } from './assignment';
 import UserData from './userData';
 import Options, { Period } from './options';
+import { Direction } from './misc';
 
 export {
   Course,
@@ -15,4 +16,5 @@ export {
   UserData,
   Options,
   Period,
+  Direction,
 };

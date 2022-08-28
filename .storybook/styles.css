@@ -5,7 +5,7 @@ body {
 
   --storybook-theme: #ec412d;
 
-  --ic-brand-primary-darkened-5: #036fac;
+  /* --ic-brand-primary-darkened-5: #036fac;
   --ic-brand-primary-darkened-10: #0369a3;
   --ic-brand-primary-darkened-15: #03639a;
   --ic-brand-primary-lightened-5: #0f7ab8;
@@ -18,16 +18,16 @@ body {
   --ic-brand-font-color-dark-lightened-15: #4c5860;
   --ic-brand-font-color-dark-lightened-30: #6c757c;
   --ic-link-color-darkened-10: #0369a3;
-  --ic-link-color-lightened-10: #1c81bc;
+  --ic-link-color-lightened-10: #1c81bc; */
   --ic-brand-primary: #0374b5;
   --ic-brand-font-color-dark: #2d3b45;
-  --ic-link-color: #0374b5;
+  /* --ic-link-color: #0374b5;
   --ic-brand-button--primary-bgd: var(--ic-brand-primary);
   --ic-brand-button--primary-text: #ffffff;
   --ic-brand-button--secondary-bgd: #2d3b45;
-  --ic-brand-button--secondary-text: #ffffff;
+  --ic-brand-button--secondary-text: #ffffff; */
   --ic-brand-global-nav-bgd: #394b58;
-  --ic-brand-global-nav-ic-icon-svg-fill: #ffffff;
+  /* --ic-brand-global-nav-ic-icon-svg-fill: #ffffff;
   --ic-brand-global-nav-ic-icon-svg-fill--active: #008ee2;
   --ic-brand-global-nav-menu-item__text-color: #ffffff;
   --ic-brand-global-nav-menu-item__text-color--active: #008ee2;
@@ -36,7 +36,7 @@ body {
   --ic-brand-global-nav-menu-item__badge-bgd--active: var(--ic-brand-primary);
   --ic-brand-global-nav-menu-item__badge-text: #000000;
   --ic-brand-global-nav-menu-item__badge-text--active: #ffffff;
-  --ic-brand-global-nav-logo-bgd: #394b58;
+  --ic-brand-global-nav-logo-bgd: #394b58; */
   
   -webkit-font-smoothing: antialiased;
 }

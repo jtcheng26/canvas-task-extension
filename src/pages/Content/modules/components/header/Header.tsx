@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 import { SettingsIcon } from '../../icons';
+import { Direction } from '../../types';
+import ArrowButton from '../arrow-button/ArrowButton';
 
 const TitleDiv = styled.div`
   border-bottom: 1px solid rgb(199, 205, 209);
@@ -9,73 +11,8 @@ const TitleDiv = styled.div`
   display: inline-block;
 `;
 
-interface ButtonProps {
-  clickable: boolean;
-}
-const NextButton = styled.div<ButtonProps>`
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-left: 7px solid
-    ${(props) =>
-      props.clickable
-        ? 'var(--ic-brand-font-color-dark-lightened-30)'
-        : 'var(--ic-brand-font-color-dark)'};
-  border-bottom: 4px solid transparent;
-  background: transparent;
-`;
-
-const PrevButton = styled.div<ButtonProps>`
-  width: 0;
-  height: 0;
-  border-top: 4px solid transparent;
-  border-right: 7px solid
-    ${(props) =>
-      props.clickable
-        ? 'var(--ic-brand-font-color-dark-lightened-30)'
-        : 'var(--ic-brand-font-color-dark)'};
-  border-bottom: 4px solid transparent;
-  background: transparent;
-`;
-
-const ButtonContainerLeft = styled.div<ButtonProps>`
-  padding: 5px;
-  border-radius: 100%;
-  display: inline-block;
-  margin: 0px 2px 0px 2px;
-  background: transparent;
-  &:hover {
-    cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
-    background: ${(props) =>
-      props.clickable ? 'rgba(127, 127, 127, 20%)' : 'transparent'};
-    div {
-      border-right: 7px solid
-        ${(props) =>
-          props.clickable
-            ? 'var(--ic-brand-font-color-dark-lightened-30)'
-            : 'var(--ic-brand-font-color-dark)'};
-    }
-  }
-`;
-
-const ButtonContainerRight = styled.div<ButtonProps>`
-  padding: 5px;
-  border-radius: 100%;
-  display: inline-block;
-  margin: 0px 2px 0px 2px;
-  background: transparent;
-  &:hover {
-    cursor: ${(props) => (props.clickable ? 'pointer' : 'auto')};
-    background: ${(props) =>
-      props.clickable ? 'rgba(127, 127, 127, 20%)' : 'transparent'};
-    div {
-      border-left: 7px solid
-        ${(props) =>
-          props.clickable
-            ? 'var(--ic-brand-font-color-dark-lightened-30)'
-            : 'var(--ic-brand-font-color-dark)'};
-    }
-  }
+const ButtonContainer = styled.div`
+  margin: 0px 2px;
 `;
 
 const LeftFloat = styled.div`
@@ -84,7 +21,7 @@ const LeftFloat = styled.div`
   align-items: center;
 
   .tasks-extension-settings {
-    fill: var(--ic-brand-font-color-dark-lightened-30);
+    fill: #4c5860dd;
     &:hover {
       fill: var(--ic-brand-font-color-dark);
     }
@@ -138,8 +75,6 @@ export default function Header({
       onNextClick();
     }
   }
-  const ButtonLeft = <PrevButton clickable={clickable} />;
-  const ButtonRight = <NextButton clickable={clickable} onClick={nextClick} />;
   return (
     <TitleDiv>
       <LeftFloat>
@@ -153,13 +88,21 @@ export default function Header({
         </a>
       </LeftFloat>
       <RightFloat>
-        <ButtonContainerLeft clickable={clickable} onClick={prevClick}>
-          {ButtonLeft}
-        </ButtonContainerLeft>
+        <ButtonContainer>
+          <ArrowButton
+            direction={Direction.LEFT}
+            disabled={!clickable}
+            onClick={prevClick}
+          />
+        </ButtonContainer>
         {`${start} to ${end}`}
-        <ButtonContainerRight clickable={clickable} onClick={nextClick}>
-          {ButtonRight}
-        </ButtonContainerRight>
+        <ButtonContainer>
+          <ArrowButton
+            direction={Direction.RIGHT}
+            disabled={!clickable}
+            onClick={nextClick}
+          />
+        </ButtonContainer>
       </RightFloat>
     </TitleDiv>
   );
