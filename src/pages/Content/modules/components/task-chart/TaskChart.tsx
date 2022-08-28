@@ -85,7 +85,7 @@ export default function TaskChart({
         <Confetti
           active={confetti}
           config={{
-            elementCount: 50,
+            elementCount: Math.min(200, 10 * done),
             startVelocity: 30,
           }}
         />
