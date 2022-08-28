@@ -8,7 +8,6 @@ import useCourses from '../../hooks/useCourses';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
 import createCustomTask from '../../utils/createCustomTask';
-import onCoursePage from '../../utils/onCoursePage';
 import CourseDropdown from '../course-dropdown';
 import Button from './components/Button';
 import DatePick from './components/DatePick';
@@ -57,12 +56,14 @@ const FormItem = styled.div`
 type Props = {
   close: () => void;
   onSubmit?: (assignment: FinalAssignment) => void;
+  selectedCourse?: number;
   visible?: boolean;
 };
 
 export default function TaskForm({
   close,
   onSubmit,
+  selectedCourse,
   visible = false,
 }: Props): JSX.Element {
   const [title, setTitle] = useState('');
@@ -90,9 +91,9 @@ export default function TaskForm({
     setSelectedDate(date);
   }
 
-  const coursePage = onCoursePage();
+  // const coursePage = onCoursePage();
   const [selectedCourseId, setSelectedCourseId] = useState(
-    coursePage === false ? -1 : coursePage
+    selectedCourse || -1
   );
 
   async function submit() {
@@ -154,7 +155,7 @@ export default function TaskForm({
             courses={coursesWithoutCustom}
             defaultOption="None"
             instructureStyle
-            onCoursePage={coursePage !== false}
+            onCoursePage={selectedCourse !== 0 && !!selectedCourse}
             selectedCourseId={selectedCourseId}
             setCourse={setSelectedCourseId}
           />

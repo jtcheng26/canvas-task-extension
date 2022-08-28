@@ -167,7 +167,10 @@ export default function TaskList({
           : renderedAssignments.map(assignmentToTaskCard)}
         {(sortedAssignments.length <= 4 || viewingMore) &&
         currentTab === 'Unfinished' ? (
-          <CreateTaskCard onSubmit={createAssignment} />
+          <CreateTaskCard
+            onSubmit={createAssignment}
+            selectedCourse={selectedCourseId}
+          />
         ) : (
           ''
         )}

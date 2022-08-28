@@ -51,9 +51,13 @@ const TaskTitle = styled.div`
 
 interface TaskProps {
   onSubmit?: (assignment: FinalAssignment) => void;
+  selectedCourse?: number;
 }
 
-export default function CreateTaskCard({ onSubmit }: TaskProps): JSX.Element {
+export default function CreateTaskCard({
+  onSubmit,
+  selectedCourse,
+}: TaskProps): JSX.Element {
   const [formVisible, setFormVisible] = useState(false);
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -76,7 +80,12 @@ export default function CreateTaskCard({ onSubmit }: TaskProps): JSX.Element {
         </TaskInfo>
       </TaskContainer>
       {formVisible && (
-        <TaskForm close={closeForm} onSubmit={onSubmit} visible={formVisible} />
+        <TaskForm
+          close={closeForm}
+          onSubmit={onSubmit}
+          selectedCourse={selectedCourse}
+          visible={formVisible}
+        />
       )}
     </>
   );
