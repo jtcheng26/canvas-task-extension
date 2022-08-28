@@ -18,17 +18,27 @@ function applyColor(
   });
 }
 
+const CustomCourse: Course = {
+  id: 0,
+  color: AssignmentDefaults.color,
+  position: 0,
+  name: 'Custom Task',
+  course_code: 'Custom Task',
+};
+
 /* Get all courses (200 limit for now, will change to paginate in the future) */
 async function getCourses(colors: Record<string, string>): Promise<Course[]> {
   if (process.env.DEMO) return DemoCourses;
 
   const { data } = await axios.get(`${baseURL()}/api/v1/courses?per_page=200`);
 
-  return applyColor(
-    colors,
-    data.filter((course: Course) => {
-      return !course.access_restricted_by_date;
-    })
+  return [CustomCourse].concat(
+    applyColor(
+      colors,
+      data.filter((course: Course) => {
+        return !course.access_restricted_by_date;
+      })
+    )
   );
 }
 

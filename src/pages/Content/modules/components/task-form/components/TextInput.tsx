@@ -10,6 +10,8 @@ const Input = styled.input`
   border-radius: 4px;
   font-size: 16px;
   outline-color: #ec412d;
+  display: flex;
+  justify-content: space-between;
 `;
 
 const Select = styled.div`

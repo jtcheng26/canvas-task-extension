@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AssignmentDefaults } from '../../constants';
 import useCourseColors from '../../hooks/useCourseColors';
@@ -8,10 +8,12 @@ import useCourses from '../../hooks/useCourses';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
 import createCustomTask from '../../utils/createCustomTask';
+import onCoursePage from '../../utils/onCoursePage';
 import CourseDropdown from '../course-dropdown';
 import Button from './components/Button';
 import DatePick from './components/DatePick';
 import TextInput from './components/TextInput';
+import TimePick from './components/TimePick';
 
 type FormContainerProps = {
   visible?: boolean;
@@ -67,11 +69,18 @@ export default function TaskForm({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
+  const [selectedTime, setSelectedTime] = useState(1439);
   const { data: courses } = useCourses();
   const { data: courseMap } = useCourseNames();
   const { data: colors } = useCourseColors();
   const { data: positions } = useCoursePositions();
-  const [selectedCourseId, setSelectedCourseId] = useState(-1);
+
+  const coursesWithoutCustom = useMemo(() => {
+    if (courses) {
+      return courses.filter((c) => c.id > 0);
+    }
+    return [];
+  }, [courses]);
 
   const titleLabel = 'Title';
   const dateLabel = 'Due Date';
@@ -81,32 +90,38 @@ export default function TaskForm({
     setSelectedDate(date);
   }
 
+  const coursePage = onCoursePage();
+  const [selectedCourseId, setSelectedCourseId] = useState(
+    coursePage === false ? -1 : coursePage
+  );
+
   function submit() {
-    const assignment: FinalAssignment = AssignmentDefaults as FinalAssignment;
+    const assignment: FinalAssignment = {
+      ...AssignmentDefaults,
+    } as FinalAssignment;
     assignment.name = title;
-    selectedDate?.setHours(23, 59, 59);
+    selectedDate?.setHours(selectedTime / 60);
+    selectedDate?.setMinutes(selectedTime % 60);
+    selectedDate?.setSeconds(0);
     assignment.due_at = selectedDate?.toISOString() || new Date().toISOString();
     assignment.course_id =
       selectedCourseId === -1 ? AssignmentDefaults.course_id : selectedCourseId;
     assignment.course_name =
-      courseMap && selectedCourseId >= 0
+      courseMap && selectedCourseId in courseMap
         ? courseMap[selectedCourseId]
         : 'Custom Task';
     assignment.color =
-      colors && selectedCourseId >= 0
+      colors && selectedCourseId in colors
         ? colors[selectedCourseId]
         : AssignmentDefaults.color;
     assignment.position =
-      positions && positions[selectedCourseId]
+      positions && selectedCourseId in positions
         ? positions[selectedCourseId]
         : AssignmentDefaults.position;
     assignment.type = AssignmentType.NOTE;
+    assignment.id = Math.floor(1000000 * Math.random());
     if (onSubmit) onSubmit(assignment);
-    createCustomTask(
-      title,
-      assignment.due_at.split('T')[0],
-      assignment.course_id
-    );
+    createCustomTask(title, assignment.due_at, assignment.course_id);
     close();
   }
   return (
@@ -123,19 +138,20 @@ export default function TaskForm({
           <FormTitle>{dateLabel}</FormTitle>
           <DatePick selected={selectedDate} setSelected={setSelected} />
         </FormItem>
-        {courses && (
-          <FormItem>
-            <FormTitle>{courseLabel}</FormTitle>
-            <CourseDropdown
-              courses={courses}
-              defaultOption="None"
-              instructureStyle
-              onCoursePage={false}
-              selectedCourseId={selectedCourseId}
-              setCourse={setSelectedCourseId}
-            />
-          </FormItem>
-        )}
+        <FormItem>
+          <TimePick selected={selectedTime} setSelected={setSelectedTime} />
+        </FormItem>
+        <FormItem>
+          <FormTitle>{courseLabel}</FormTitle>
+          <CourseDropdown
+            courses={coursesWithoutCustom}
+            defaultOption="None"
+            instructureStyle
+            onCoursePage={coursePage !== false}
+            selectedCourseId={selectedCourseId}
+            setCourse={setSelectedCourseId}
+          />
+        </FormItem>
         <FormItem>
           <Button
             color="#ec412d"

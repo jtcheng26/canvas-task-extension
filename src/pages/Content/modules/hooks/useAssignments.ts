@@ -95,9 +95,12 @@ export function filterCourses(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   const courseSet = new Set(courses);
-  return assignments.filter((assignment) =>
-    courseSet.has(assignment.course_id)
-  );
+  return assignments.filter((assignment) => {
+    return (
+      (assignment.course_id === 0 || !!assignment.course_id) &&
+      courseSet.has(assignment.course_id)
+    );
+  });
 }
 
 /* Only where type is assignment, discussion, quiz, or planner note */
@@ -155,25 +158,12 @@ export function applyCourseValue(
   });
 }
 
-export function applyCompleted(
-  completed: Set<number>,
-  assignments: FinalAssignment[]
-): FinalAssignment[] {
-  return assignments.map((assignment) => {
-    if (completed.has(assignment.id)) assignment.marked_complete = true;
-    return assignment;
-  });
-}
-
 /* Set the course name of custom tasks with no course name to "Custom Task" */
 export function applyCustomTaskLabels(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.map((assignment) => {
-    if (
-      assignment.type === AssignmentType.NOTE &&
-      assignment.course_name === AssignmentDefaults.course_name
-    )
+    if (assignment.type === AssignmentType.NOTE && assignment.course_id === 0)
       assignment.course_name = 'Custom Task';
 
     return assignment;
@@ -219,6 +209,7 @@ async function processAssignments(
   assignments = applyCustomTaskLabels(assignments);
 
   const coursePageId = onCoursePage();
+
   if (coursePageId !== false) {
     assignments = filterCourses([coursePageId], assignments);
   } else {

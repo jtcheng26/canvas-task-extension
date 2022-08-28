@@ -51,8 +51,10 @@ function ContentLoader({
           assignments={assignmentData}
           courseId={onCourse}
           courseList={courseData}
+          endDate={endDate}
           loading={!isSuccess}
           options={options}
+          startDate={startDate}
         />
       ) : (
         ''
