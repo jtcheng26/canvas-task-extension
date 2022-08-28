@@ -104,7 +104,7 @@ function setWeekdayDropdown() {
     'weekday-selected',
     (key: string) => {
       chrome.storage.sync.set({
-        startDate: Object.keys(weekdays).indexOf(key) + 1,
+        start_date: Object.keys(weekdays).indexOf(key) + 1,
       });
     }
   );
@@ -113,7 +113,7 @@ function setWeekdayDropdown() {
 function setHoursDropdown() {
   setDropdown(hours, 'hours-options', 'hours-selected', (key: string) => {
     chrome.storage.sync.set({
-      startHour: hours[key] + ampm[getSelectedAmPm()],
+      start_hour: hours[key] + ampm[getSelectedAmPm()],
     });
   });
 }
@@ -129,7 +129,7 @@ function setMinutesDropdown() {
     'minutes-selected',
     (key: string) => {
       chrome.storage.sync.set({
-        startMinutes: minutes[key],
+        start_minutes: minutes[key],
       });
     },
     (a, b) => parseInt(a) - parseInt(b)
@@ -140,7 +140,7 @@ function setAmPmDropdown() {
   setDropdown(ampm, 'ampm-options', 'ampm-selected', (key: string) => {
     // set option
     chrome.storage.sync.set({
-      startHour: hours[getSelectedHours()] + ampm[key],
+      start_hour: hours[getSelectedHours()] + ampm[key],
     });
   });
 }
