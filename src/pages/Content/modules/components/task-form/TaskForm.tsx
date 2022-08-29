@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { AssignmentDefaults } from '../../constants';
+import { AssignmentDefaults, THEME_COLOR } from '../../constants';
 import useCourseColors from '../../hooks/useCourseColors';
 import useCourseNames from '../../hooks/useCourseNames';
 import useCoursePositions from '../../hooks/useCoursePositions';
@@ -121,7 +121,7 @@ export default function TaskForm({
     assignment.color =
       colors && selectedCourseId in colors
         ? colors[selectedCourseId]
-        : AssignmentDefaults.color;
+        : THEME_COLOR;
     assignment.position =
       positions && selectedCourseId in positions
         ? positions[selectedCourseId]
@@ -173,7 +173,7 @@ export default function TaskForm({
         </FormItem>
         <FormItem>
           <Button
-            color="#ec412d"
+            color={THEME_COLOR}
             disabled={!title}
             label="Save"
             onClick={submit}

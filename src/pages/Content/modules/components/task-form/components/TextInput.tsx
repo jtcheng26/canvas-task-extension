@@ -2,6 +2,7 @@ import React, { ChangeEvent } from 'react';
 import styled from 'styled-components';
 import ArrowButton from '../../arrow-button/ArrowButton';
 import { Direction } from '../../../types';
+import { THEME_COLOR } from '../../../constants';
 
 const Input = styled.input`
   border: 1px solid rgb(199, 205, 299);
@@ -9,7 +10,7 @@ const Input = styled.input`
   padding: 0px 10px;
   border-radius: 4px;
   font-size: 16px;
-  outline-color: #ec412d;
+  outline-color: ${THEME_COLOR};
   display: flex;
   justify-content: space-between;
 `;
@@ -22,7 +23,7 @@ const Select = styled.div`
   font-size: 16px;
   cursor: pointer;
   &:hover {
-    outline-color: #ec412d;
+    outline-color: ${THEME_COLOR};
     outline-width: 2px;
     outline-style: solid;
     outline-offset: -1px;

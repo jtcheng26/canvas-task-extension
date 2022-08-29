@@ -1,3 +1,4 @@
+import { THEME_COLOR } from '../../../constants';
 import { AssignmentType, FinalAssignment } from '../../../types';
 import { Bar, ChartData } from '../../radial-bar-chart';
 import { ringProgress } from '../utils/ringProgress';
@@ -31,7 +32,7 @@ export default function useChartData(
       id: -1,
       value: 0,
       max: 0,
-      color: defaultColor || 'var(--ic-brand-global-nav-bgd)',
+      color: defaultColor || THEME_COLOR,
     });
   return data;
 }

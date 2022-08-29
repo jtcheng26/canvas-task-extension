@@ -16,3 +16,7 @@ export const ASSIGNMENT_ICON: Record<AssignmentType, JSX.Element> = {
 
 export const AssignmentDefaults = JSONAssignmentDefaults as FinalAssignment;
 export const OptionsDefaults = JSONOptionsDefaults as Options;
+
+// export const THEME_COLOR = '#ec412d';
+export const THEME_COLOR = 'var(--ic-brand-global-nav-bgd)';
+export const THEME_COLOR_LIGHT = 'rgba(199, 205, 209)';

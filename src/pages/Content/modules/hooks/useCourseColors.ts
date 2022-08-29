@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
+import { THEME_COLOR } from '../constants';
 import { DemoColors } from '../tests/demo';
 import baseURL from '../utils/baseURL';
 
@@ -12,6 +13,8 @@ async function getCourseColors(): Promise<Record<string, string>> {
   Object.keys(data.custom_colors).forEach((course_id) => {
     data.custom_colors[course_id.substring(7)] = data.custom_colors[course_id];
   });
+
+  data.custom_colors['0'] = THEME_COLOR;
 
   return data.custom_colors;
 }

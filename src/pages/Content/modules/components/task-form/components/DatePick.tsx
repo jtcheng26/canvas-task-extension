@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import styled from 'styled-components';
+import { THEME_COLOR, THEME_COLOR_LIGHT } from '../../../constants';
 import TextInput from './TextInput';
 
 const DatePickerContainer = styled.div`
   .rdp {
     margin: 10px 0px;
     --rdp-cell-size: 30px;
-    --rdp-accent-color: #ec412d;
-    --rdp-background-color: #ec412d33;
-    --rdp-accent-color-dark: #ec412d;
+    --rdp-accent-color: ${THEME_COLOR};
+    --rdp-background-color: ${THEME_COLOR_LIGHT};
+    --rdp-accent-color-dark: ${THEME_COLOR};
     --rdp-background-color-dark: #180270;
   }
 

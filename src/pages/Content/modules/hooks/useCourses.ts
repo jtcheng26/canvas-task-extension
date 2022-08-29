@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
-import { AssignmentDefaults } from '../constants';
+import { THEME_COLOR } from '../constants';
 import { DemoCourses } from '../tests/demo';
 import { Course } from '../types';
 import baseURL from '../utils/baseURL';
@@ -12,15 +12,14 @@ function applyColor(
   courses: Course[]
 ): Course[] {
   return courses.map((course) => {
-    course.color =
-      course.id in colors ? colors[course.id] : AssignmentDefaults.color;
+    course.color = course.id in colors ? colors[course.id] : THEME_COLOR;
     return course;
   });
 }
 
 const CustomCourse: Course = {
   id: 0,
-  color: AssignmentDefaults.color,
+  color: THEME_COLOR,
   position: 0,
   name: 'Custom Task',
   course_code: 'Custom Task',
