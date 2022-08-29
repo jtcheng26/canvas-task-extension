@@ -6,7 +6,7 @@ const HeadingContainer = styled.div`
   flex-direction: column;
   width: 100%;
   padding-top: 5px;
-  color: var(--ic-brand-font-color-dark-lightened-30);
+  color: #6c757c;
   font-size: small;
 `;
 

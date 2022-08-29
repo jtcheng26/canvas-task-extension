@@ -1,33 +1,36 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import Header from './header';
 import ContentLoader from './content-loader';
-import { Options } from '../types';
 import getPeriod from '../utils/getPeriod';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import useOptions from '../hooks/useOptions';
 
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-interface AppProps {
-  options: Options;
-}
-
-const queryClient = new QueryClient();
-
-export default function App({ options }: AppProps): JSX.Element {
+export default function App(): JSX.Element {
   const [delta, setDelta] = useState(0);
   const [clickable, setClickable] = useState(false);
-  const { start, end } = getPeriod(
-    options.period,
-    options.start_date,
-    options.start_hour,
-    options.start_minutes,
-    delta,
-    options.rolling_period
-  );
+  const { data: options } = useOptions();
+  const { start, end } = useMemo(() => {
+    if (options) {
+      return getPeriod(
+        options.period,
+        options.start_date,
+        options.start_hour,
+        options.start_minutes,
+        delta,
+        options.rolling_period
+      );
+    }
+
+    return {
+      start: new Date(),
+      end: new Date(),
+    };
+  }, [options, delta]);
 
   /*
     when prev/next buttons clicked
@@ -49,23 +52,23 @@ export default function App({ options }: AppProps): JSX.Element {
     setClickable(false);
     incrementDelta(1);
   }
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AppContainer>
-        <Header
-          clickable={clickable}
-          onNextClick={onNextClick}
-          onPrevClick={onPrevClick}
-          weekEnd={end}
-          weekStart={start}
-        />
-        <ContentLoader
-          endDate={end}
-          loadedCallback={loadedCallback}
-          options={options}
-          startDate={start}
-        />
-      </AppContainer>
-    </QueryClientProvider>
+  return options ? (
+    <AppContainer>
+      <Header
+        clickable={clickable}
+        onNextClick={onNextClick}
+        onPrevClick={onPrevClick}
+        weekEnd={end}
+        weekStart={start}
+      />
+      <ContentLoader
+        endDate={end}
+        loadedCallback={loadedCallback}
+        options={options}
+        startDate={start}
+      />
+    </AppContainer>
+  ) : (
+    <div />
   );
 }

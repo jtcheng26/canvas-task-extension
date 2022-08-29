@@ -1,4 +1,5 @@
-import { FinalAssignment } from '../../../types';
+import { THEME_COLOR } from '../../../constants';
+import { AssignmentType, FinalAssignment } from '../../../types';
 import { Bar, ChartData } from '../../radial-bar-chart';
 import { ringProgress } from '../utils/ringProgress';
 import sortByPosition from '../utils/sortByPosition';
@@ -20,7 +21,8 @@ export default function useChartData(
       }
 
       a[a.length - 1].value += ringProgress(b);
-      a[a.length - 1].max += b.points_possible == 0 ? 0 : 1;
+      a[a.length - 1].max +=
+        b.points_possible == 0 && b.type !== AssignmentType.NOTE ? 0 : 1; // 0 points = optional, but custom notes should be included
       return a;
     }, []),
   };
@@ -30,7 +32,7 @@ export default function useChartData(
       id: -1,
       value: 0,
       max: 0,
-      color: defaultColor || 'var(--ic-brand-global-nav-bgd)',
+      color: defaultColor || THEME_COLOR,
     });
   return data;
 }

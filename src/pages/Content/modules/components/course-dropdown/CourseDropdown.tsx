@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { Course, Direction } from '../../types';
 import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
+import TextInput from '../task-form/components/TextInput';
 
 interface CourseTitleProps {
   color?: string;
@@ -19,7 +20,7 @@ const CourseTitle = styled.div<CourseTitleProps>`
   font-size: 14px;
   line-height: 1.2;
   position: relative;
-  border-bottom: 1px solid rgba(199, 205, 209, 0.5);
+  border-bottom: 1px solid rgba(199, 205, 209);
   &:hover {
     cursor: pointer;
   }
@@ -27,9 +28,18 @@ const CourseTitle = styled.div<CourseTitleProps>`
   height: auto;
 `;
 
-const Dropdown = styled.div`
+interface DropdownProps {
+  maxHeight?: number;
+  zIndex?: number;
+}
+
+const Dropdown = styled.div<DropdownProps>`
   position: absolute;
-  z-index: 20;
+  z-index: ${(props) => props.zIndex || 20};
+  max-height: ${(props) => props.maxHeight + 'px' || 'auto'};
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   background-color: white;
   border-radius: 0px 0px 4px 4px;
@@ -45,6 +55,11 @@ export interface CourseDropdownProps {
   selectedCourseId?: number;
   setCourse: (id: number) => void;
   onCoursePage: boolean;
+  maxHeight?: number;
+  zIndex?: number;
+  defaultOption?: string;
+  noDefault?: boolean;
+  instructureStyle?: boolean;
 }
 
 /*
@@ -52,6 +67,11 @@ export interface CourseDropdownProps {
 */
 export default function CourseDropdown({
   courses,
+  defaultOption,
+  noDefault,
+  maxHeight,
+  zIndex,
+  instructureStyle,
   selectedCourseId = -1,
   setCourse,
   onCoursePage = false,
@@ -74,9 +94,13 @@ export default function CourseDropdown({
   }, [courses]);
 
   const name =
-    selectedCourseId != -1 ? courseMap[selectedCourseId].name : 'All Courses';
+    selectedCourseId in courseMap
+      ? courseMap[selectedCourseId].name
+      : defaultOption
+      ? defaultOption
+      : 'All Courses';
   const color =
-    selectedCourseId != -1
+    selectedCourseId in courseMap
       ? courseMap[selectedCourseId].color
       : 'var(--ic-brand-font-color-dark)';
 
@@ -86,27 +110,36 @@ export default function CourseDropdown({
 
   return (
     <CourseDropdownContainer>
-      <CourseTitle
-        color={color}
-        onClick={toggleMenu}
-        onMouseEnter={onHover}
-        onMouseLeave={onLeave}
-      >
-        {name}
-        <ArrowButton
-          direction={menuVisible ? Direction.UP : Direction.DOWN}
-          hoverIndependent={false}
-          hovering={hovering}
+      {instructureStyle ? (
+        <TextInput
+          menuVisible={menuVisible}
+          onClick={toggleMenu}
+          select
+          value={name}
         />
-      </CourseTitle>
-      <Dropdown>
-        {!onCoursePage && selectedCourseId != -1 && (
+      ) : (
+        <CourseTitle
+          color={color}
+          onClick={toggleMenu}
+          onMouseEnter={onHover}
+          onMouseLeave={onLeave}
+        >
+          {name}
+          <ArrowButton
+            direction={menuVisible ? Direction.UP : Direction.DOWN}
+            hoverIndependent={false}
+            hovering={hovering}
+          />
+        </CourseTitle>
+      )}
+      <Dropdown maxHeight={maxHeight} zIndex={zIndex}>
+        {!noDefault && !onCoursePage && selectedCourseId != -1 && (
           <CourseButton
             color="var(--ic-brand-font-color-dark)"
             id={-1}
             last={false}
             menuVisible={menuVisible}
-            name="All Courses"
+            name={defaultOption || 'All Courses'}
             setCourse={setCourse}
             setMenuVisible={setMenuVisible}
           />

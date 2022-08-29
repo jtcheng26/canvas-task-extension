@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const SubtitleDiv = styled.div`
-  border-bottom: 1px solid #c7cdd1;
+  border-bottom: 1px solid rgb(199, 205, 209);
   height: 25px;
   display: flex;
   align-items: center;
@@ -14,10 +14,7 @@ interface SubtitleTabProps {
   active?: boolean;
 }
 const SubtitleTab = styled.div<SubtitleTabProps>`
-  color: ${(p) =>
-    p.active
-      ? 'var(--ic-brand-font-color-dark)'
-      : 'var(--ic-brand-font-color-dark-lightened-30)'};
+  color: ${(p) => (p.active ? 'var(--ic-brand-font-color-dark)' : '#6c757c')};
   &:hover {
     cursor: pointer;
     text-decoration: underline;

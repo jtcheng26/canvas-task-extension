@@ -8,6 +8,10 @@ import useSelectedCourse from './utils/useSelectedCourse';
 import { filterByTab, sortByTab } from './utils/sortBy';
 import cutAssignmentList from './utils/cutList';
 import HeadingGroup from './components/HeadingGroup';
+import CreateTaskCard from '../task-card/CreateTaskCard';
+import assignmentIsDone from '../../utils/assignmentIsDone';
+import Confetti from 'react-dom-confetti';
+import useOptions from '../../hooks/useOptions';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -23,6 +27,16 @@ const ListWrapper = styled.div`
   margin: 10px 0px 25px 0px;
 `;
 
+const ConfettiWrapper = styled.div`
+  position: absolute;
+  top: 350px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  align-items: center;
+  z-index: 10000;
+`;
+
 interface ViewMoreProps {
   href: string;
   onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
@@ -33,7 +47,8 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 export interface TaskListProps {
   assignments: FinalAssignment[];
-  markAssignmentAsComplete?: (id: number) => void;
+  createAssignment?: (assignment: FinalAssignment) => void;
+  markAssignment?: (id: number, status: boolean) => void;
   selectedCourseId: number;
   showDateHeadings: boolean;
   skeleton?: boolean;
@@ -44,11 +59,13 @@ export interface TaskListProps {
 */
 export default function TaskList({
   assignments,
-  markAssignmentAsComplete,
+  createAssignment,
+  markAssignment,
   selectedCourseId = -1,
   showDateHeadings,
   skeleton,
 }: TaskListProps): JSX.Element {
+  const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] =
     useState<'Unfinished' | 'Completed'>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
@@ -70,22 +87,37 @@ export default function TaskList({
   const viewMoreText = !viewingMore
     ? `View ${sortedAssignments.length - 4} more`
     : 'View less';
+
   const noneText = 'None';
 
   function markAssignmentFunc(id: number) {
-    if (!markAssignmentAsComplete)
+    if (!markAssignment)
       return () => {
         console.log('Failed to mark as complete');
       };
-    return () => markAssignmentAsComplete(id);
+    else if (currentTab === 'Completed') {
+      return () => markAssignment(id, false);
+    }
+    return () => {
+      setConfetti(true);
+      setTimeout(() => {
+        stopConfetti();
+      }, 100);
+
+      markAssignment(id, true);
+    };
   }
+
+  function stopConfetti() {
+    setConfetti(false);
+  }
+
+  const { data: options } = useOptions();
 
   const assignmentToTaskCard = (assignment: FinalAssignment) => (
     <TaskCard
       color={assignment.color}
-      complete={
-        assignment.submitted || assignment.graded || assignment.marked_complete
-      }
+      complete={assignmentIsDone(assignment)}
       course_name={assignment.course_name}
       due_at={assignment.due_at}
       graded={assignment.graded}
@@ -96,6 +128,7 @@ export default function TaskList({
       name={assignment.name}
       points_possible={assignment.points_possible}
       submitted={assignment.submitted}
+      type={assignment.type}
     />
   );
 
@@ -114,8 +147,22 @@ export default function TaskList({
   return (
     <ListWrapper>
       <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
+      {options && options.show_confetti ? (
+        <ConfettiWrapper>
+          <Confetti
+            active={confetti}
+            config={{
+              elementCount: 15,
+              stagger: 10,
+              startVelocity: 20,
+            }}
+          />
+        </ConfettiWrapper>
+      ) : (
+        ''
+      )}
       <ListContainer>
-        {showDateHeadings || currentTab == 'Completed'
+        {showDateHeadings || currentTab === 'Completed'
           ? Object.keys(headings).map(
               (heading) =>
                 headings[heading].length > 0 && (
@@ -125,7 +172,21 @@ export default function TaskList({
                 )
             )
           : renderedAssignments.map(assignmentToTaskCard)}
-        {renderedAssignments.length == 0 && <span>{noneText}</span>}
+        {(sortedAssignments.length <= 4 || viewingMore) &&
+        currentTab === 'Unfinished' ? (
+          <CreateTaskCard
+            onSubmit={createAssignment}
+            selectedCourse={selectedCourseId}
+          />
+        ) : (
+          ''
+        )}
+
+        {renderedAssignments.length == 0 && currentTab === 'Completed' ? (
+          <span>{noneText}</span>
+        ) : (
+          ''
+        )}
       </ListContainer>
       {sortedAssignments.length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>

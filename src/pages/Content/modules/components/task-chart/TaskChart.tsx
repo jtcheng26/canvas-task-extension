@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart from '../radial-bar-chart';
 import BeatLoader from '../spinners';
 import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
+import Confetti from 'react-dom-confetti';
+import useOptions from '../../hooks/useOptions';
 
 /*
   Renders progress chart
@@ -33,10 +35,16 @@ const TitleText = styled.div`
   color: ${(p) => p.color};
 `;
 
+const ConfettiWrapper = styled.div`
+  position: absolute;
+  top: 250px;
+`;
+
 export interface TaskChartProps {
   assignments: FinalAssignment[];
   colorOverride?: string;
   loading?: boolean;
+  onCoursePage?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
 }
@@ -45,6 +53,7 @@ export default function TaskChart({
   assignments,
   colorOverride,
   loading,
+  onCoursePage,
   selectedCourseId = -1,
   setCourse,
 }: TaskChartProps): JSX.Element {
@@ -60,12 +69,40 @@ export default function TaskChart({
     else setCourse(id);
   }
 
+  const { data: options } = useOptions();
+
   const complete = 'Complete';
   const percent = total === 0 ? '100%' : `${Math.floor((100 * done) / total)}%`;
   const progress = `${done}/${total}`;
 
+  const [confetti, setConfetti] = useState(false);
+  useEffect(() => {
+    if (selectedCourseId === -1 || onCoursePage) {
+      if (total > 0 && done === total) {
+        const confettiTimer = setTimeout(() => {
+          setConfetti(true);
+        }, 1000); // confetti once rings finish animating
+
+        return () => clearTimeout(confettiTimer);
+      } else setConfetti(false);
+    }
+  }, [done, total]);
+
   return (
     <ChartContainer>
+      {options && options.show_confetti ? (
+        <ConfettiWrapper>
+          <Confetti
+            active={confetti}
+            config={{
+              elementCount: Math.min(200, 10 * done),
+              startVelocity: 30,
+            }}
+          />
+        </ConfettiWrapper>
+      ) : (
+        ''
+      )}
       <RadialBarChart
         bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}

@@ -4,6 +4,7 @@ import QuizIcon from './quiz';
 import SettingsIcon from './settings';
 import LockedIcon from './locked';
 import CheckIcon from './check';
+import NoteIcon from './note';
 
 export {
   AssignmentIcon,
@@ -12,4 +13,5 @@ export {
   SettingsIcon,
   LockedIcon,
   CheckIcon,
+  NoteIcon,
 };

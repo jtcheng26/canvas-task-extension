@@ -14,7 +14,6 @@ import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
 import { AssignmentDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
-import assignmentsMarkedAsComplete from '../utils/assignmentsMarkedAsComplete';
 
 /* Get assignments from api */
 function getAllAssignmentsRequest(
@@ -32,12 +31,15 @@ export function convertPlannerAssignments(
 ): FinalAssignment[] {
   return assignments.map((assignment) => {
     const converted: Partial<FinalAssignment> = {
-      html_url: assignment.html_url,
+      html_url:
+        assignment.html_url || assignment.plannable.linked_object_html_url,
       type: assignment.plannable_type,
       id: assignment.plannable_id,
-      course_id: assignment.course_id,
+      plannable_id: assignment.plannable_id, // just in case it changes in the future
+      override_id: assignment.planner_override?.id,
+      course_id: assignment.course_id || assignment.plannable.course_id,
       name: assignment.plannable.title,
-      due_at: assignment.plannable.due_at,
+      due_at: assignment.plannable.due_at || assignment.plannable.todo_date,
       points_possible: assignment.plannable.points_possible,
       submitted:
         assignment.submissions !== false
@@ -45,9 +47,7 @@ export function convertPlannerAssignments(
           : undefined,
       graded:
         assignment.submissions !== false
-          ? assignment.submissions.needs_grading ||
-            assignment.submissions.excused ||
-            assignment.submissions.graded
+          ? assignment.submissions.excused || assignment.submissions.graded
           : undefined,
       graded_at:
         assignment.submissions !== false
@@ -93,9 +93,12 @@ export function filterCourses(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   const courseSet = new Set(courses);
-  return assignments.filter((assignment) =>
-    courseSet.has(assignment.course_id)
-  );
+  return assignments.filter((assignment) => {
+    return (
+      (assignment.course_id === 0 || !!assignment.course_id) &&
+      courseSet.has(assignment.course_id)
+    );
+  });
 }
 
 /* Only where type is assignment, discussion, quiz, or planner note */
@@ -153,12 +156,14 @@ export function applyCourseValue(
   });
 }
 
-export function applyCompleted(
-  completed: Set<number>,
+/* Set the course name of custom tasks with no course name to "Custom Task" */
+export function applyCustomTaskLabels(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.map((assignment) => {
-    if (completed.has(assignment.id)) assignment.marked_complete = true;
+    if (assignment.type === AssignmentType.NOTE && assignment.course_id === 0)
+      assignment.course_name = 'Custom Task';
+
     return assignment;
   });
 }
@@ -199,12 +204,10 @@ async function processAssignments(
   if (colors) assignments = applyCourseColor(colors, assignments);
   if (names) assignments = applyCourseName(names, assignments);
   if (positions) assignments = applyCoursePositions(positions, assignments);
-  assignments = applyCompleted(
-    await assignmentsMarkedAsComplete(),
-    assignments
-  );
+  assignments = applyCustomTaskLabels(assignments);
 
   const coursePageId = onCoursePage();
+
   if (coursePageId !== false) {
     assignments = filterCourses([coursePageId], assignments);
   } else {
