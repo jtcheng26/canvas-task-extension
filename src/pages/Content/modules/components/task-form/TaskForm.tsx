@@ -53,6 +53,11 @@ const FormItem = styled.div`
   flex-direction: column;
 `;
 
+const ErrorMessage = styled.div`
+  color: #ec412d;
+  padding: 5px 0px;
+`;
+
 type Props = {
   close: () => void;
   onSubmit?: (assignment: FinalAssignment) => void;
@@ -86,6 +91,7 @@ export default function TaskForm({
   const titleLabel = 'Title';
   const dateLabel = 'Due Date';
   const courseLabel = 'Course (optional)';
+  const [errorMessage, setErrorMessage] = useState('');
 
   function setSelected(date?: Date) {
     setSelectedDate(date);
@@ -97,6 +103,7 @@ export default function TaskForm({
   );
 
   async function submit() {
+    setErrorMessage('');
     const assignment: FinalAssignment = {
       ...AssignmentDefaults,
     } as FinalAssignment;
@@ -127,10 +134,14 @@ export default function TaskForm({
       assignment.due_at,
       assignment.course_id
     );
-    assignment.id = res.id || assignment.id;
-    assignment.plannable_id = assignment.id; // for marking completing right after creating
-    if (onSubmit) onSubmit(assignment);
-    close();
+    if (!res) {
+      setErrorMessage('An error occurred. Make sure you have cookies enabled.');
+    } else {
+      assignment.id = res.id || assignment.id;
+      assignment.plannable_id = assignment.id; // for marking completing right after creating
+      if (onSubmit) onSubmit(assignment);
+      close();
+    }
   }
   return (
     <FormContainer visible={visible}>
@@ -168,6 +179,7 @@ export default function TaskForm({
             onClick={submit}
           />
         </FormItem>
+        {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
       </Form>
     </FormContainer>
   );
