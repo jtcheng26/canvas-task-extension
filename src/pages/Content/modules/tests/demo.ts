@@ -7,8 +7,8 @@ import { getWeekStart } from '../utils/getPeriod';
 
 const days = [];
 for (let i = 1; i < 7; i++) {
-  const day = getWeekStart(1);
-  day.setDate(day.getDate() + i);
+  const day = new Date();
+  day.setDate(day.getDate() + 1 + Math.floor(4 * Math.random()));
   day.setHours(8, 30, 0);
   days.push(day.toISOString());
 }
@@ -64,7 +64,7 @@ const DemoAssignments: PlannerAssignment[] = [
   {
     html_url: '#',
     plannable: {
-      title: 'Macbeth Essay',
+      title: 'Hamlet Essay',
       id: 13,
       due_at: days[4],
       points_possible: 50,
@@ -187,7 +187,7 @@ const DemoAssignments: PlannerAssignment[] = [
   {
     html_url: '#',
     plannable: {
-      title: 'Monroe Doctrine Quiz',
+      title: 'Civil War Quiz',
       id: 20,
       due_at: days[2],
       points_possible: 15,
@@ -313,13 +313,13 @@ const DemoCourses: Course[] = [
   {
     id: 1,
     color: '#8F3E97',
-    name: 'Algebra 2 - Smith',
+    name: 'Calculus 2 - Parisi',
     position: 0,
   },
   {
     id: 2,
     color: '#1770AB',
-    name: 'English 11 - Brown',
+    name: 'English Literature - Russell',
     position: 1,
   },
   {
@@ -351,8 +351,8 @@ const DemoColors: Record<string, string> = {
 };
 
 const DemoNames: Record<string, string> = {
-  1: 'Algebra 2 - Smith',
-  2: 'English 11 - Brown',
+  1: 'Calculus 2 - Parisi',
+  2: 'English Literature - Russell',
   3: 'US History - Jones',
   4: 'Biology - McCoy',
 };

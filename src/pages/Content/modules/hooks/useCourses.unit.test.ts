@@ -22,7 +22,7 @@ test('useCourses hook gets all the courses', async () => {
     .mockResolvedValueOnce({ data: { custom_colors: {} } })
     .mockResolvedValueOnce({ data: active });
 
-  const res = (await testHookData(useCourses)).data;
+  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
   expect(res).toStrictEqual(active);
 });
 
@@ -31,7 +31,7 @@ test('useCourses hook filters date-restricted courses', async () => {
     .mockResolvedValueOnce({ data: { custom_colors: {} } })
     .mockResolvedValueOnce({ data: activeAndRestricted });
 
-  const res = (await testHookData(useCourses)).data as Course[];
+  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
 
   expect(res.length).toBe(
     activeAndRestricted.reduce(
@@ -46,7 +46,7 @@ test('useCourses hook works when all courses are restricted', async () => {
     .mockResolvedValueOnce({ data: { custom_colors: {} } })
     .mockResolvedValueOnce({ data: restricted });
 
-  const res = (await testHookData(useCourses)).data as Course[];
+  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
   expect(res).toBeDefined();
   expect(res.length).toBe(0);
 });
@@ -68,7 +68,7 @@ test('useCourses hook applies course colors', async () => {
     })
     .mockResolvedValueOnce({ data: activeAndRestricted });
 
-  const res = (await testHookData(useCourses)).data as Course[];
+  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
   expect(res).toBeDefined();
   expect(res.length).toBeGreaterThan(0);
   res.forEach((course) => {
