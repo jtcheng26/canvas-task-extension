@@ -20,7 +20,7 @@ const CourseTitle = styled.div<CourseTitleProps>`
   font-size: 14px;
   line-height: 1.2;
   position: relative;
-  border-bottom: 1px solid rgba(199, 205, 209, 0.5);
+  border-bottom: 1px solid rgba(199, 205, 209);
   &:hover {
     cursor: pointer;
   }

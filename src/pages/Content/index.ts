@@ -68,10 +68,13 @@ if (rightSide) {
     );
     const teacherTodoListContainers =
       rightSide?.getElementsByClassName('todo-list-header');
+    const comingUpContainers = rightSide?.getElementsByClassName('coming_up');
     if (todoListContainers?.length > 0)
       createSidebar(todoListContainers[0] as HTMLElement, observer);
     else if (teacherTodoListContainers?.length > 0)
       createSidebar(teacherTodoListContainers[0] as HTMLElement, observer);
+    else if (comingUpContainers?.length > 0)
+      createSidebar(comingUpContainers[0] as HTMLElement);
   });
 
   /*
@@ -80,12 +83,15 @@ if (rightSide) {
   const containerList = document.getElementsByClassName(
     'Sidebar__TodoListContainer'
   );
+  const comingUpList = document.getElementsByClassName('coming_up');
   const teacherContainerList =
     document.getElementsByClassName('todo-list-header');
 
   if (containerList.length > 0) createSidebar(containerList[0] as HTMLElement);
   else if (teacherContainerList.length > 0)
     createSidebar(teacherContainerList[0] as HTMLElement);
+  else if (comingUpList.length > 0)
+    createSidebar(comingUpList[0] as HTMLElement);
   else if (rightSide)
     observer.observe(rightSide as Node, {
       childList: true,
