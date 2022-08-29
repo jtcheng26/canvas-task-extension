@@ -5,7 +5,7 @@ import { Direction } from '../../types';
 import ArrowButton from '../arrow-button/ArrowButton';
 
 const TitleDiv = styled.div`
-  border-bottom: 1px solid rgba(199, 205, 209);
+  border-bottom: 1px solid rgb(199, 205, 209);
   height: 30px;
   font-weight: bold;
   display: inline-block;

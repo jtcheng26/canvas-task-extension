@@ -83,7 +83,7 @@ if (rightSide) {
   const containerList = document.getElementsByClassName(
     'Sidebar__TodoListContainer'
   );
-  const comingUpList = document.getElementsByClassName('coming_up');
+  const comingUpList = rightSide?.getElementsByClassName('coming_up');
   const teacherContainerList =
     document.getElementsByClassName('todo-list-header');
 

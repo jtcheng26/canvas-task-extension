@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 const SubtitleDiv = styled.div`
-  border-bottom: 1px solid rgba(199, 205, 209);
+  border-bottom: 1px solid rgb(199, 205, 209);
   height: 25px;
   display: flex;
   align-items: center;
