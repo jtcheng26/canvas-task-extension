@@ -7,20 +7,20 @@ export default async function createCustomTask(
   date: string,
   course_id?: number
 ): Promise<PlannerAssignment | null> {
-  const data: Record<string, string | number> = {
-    title: title,
-    todo_date: date,
-  };
+  return new Promise((resolve) => {
+    const data: Record<string, string | number> = {
+      title: title,
+      todo_date: date,
+    };
 
-  if (course_id && course_id > 0) data['course_id'] = course_id;
-  postReq('/v1/planner_notes', JSON.stringify(data))
-    .catch((err) => {
-      console.error(err);
-      return null;
-    })
-    .then((res) => {
-      return res?.data as PlannerAssignment;
-    });
-
-  return null;
+    if (course_id && course_id > 0) data['course_id'] = course_id;
+    postReq('/v1/planner_notes', JSON.stringify(data))
+      .then((res) => {
+        resolve(res?.data as PlannerAssignment);
+      })
+      .catch((err) => {
+        console.error(err);
+        resolve(null);
+      });
+  });
 }
