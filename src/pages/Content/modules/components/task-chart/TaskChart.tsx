@@ -79,9 +79,11 @@ export default function TaskChart({
   useEffect(() => {
     if (selectedCourseId === -1 || onCoursePage) {
       if (total > 0 && done === total) {
-        setTimeout(() => {
+        const confettiTimer = setTimeout(() => {
           setConfetti(true);
         }, 1000); // confetti once rings finish animating
+
+        return () => clearTimeout(confettiTimer);
       } else setConfetti(false);
     }
   }, [done, total]);
