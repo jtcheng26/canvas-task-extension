@@ -34,7 +34,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["icon-128.png"],
+      "resources": ["icon-128.png", "options.html"],
       "matches": [
         "https://*.instructure.com/*",
         "https://*.edu/*",
