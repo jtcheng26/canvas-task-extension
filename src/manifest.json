@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "options_page": "options.html",
   "permissions": ["storage"],
   "host_permissions": [
@@ -12,7 +12,8 @@
     "https://*.nz/*",
     "https://*.ca/*",
     "https://*.mx/*",
-    "https://*.uk/*"
+    "https://*.uk/*",
+    "https://canvas.houstonisd.org/*"
   ],
   "icons": {
     "128": "icon-128.png"
@@ -26,7 +27,8 @@
         "https://*.nz/*",
         "https://*.ca/*",
         "https://*.mx/*",
-        "https://*.uk/*"
+        "https://*.uk/*",
+        "https://canvas.houstonisd.org/*"
       ],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
@@ -42,7 +44,8 @@
         "https://*.nz/*",
         "https://*.ca/*",
         "https://*.mx/*",
-        "https://*.uk/*"
+        "https://*.uk/*",
+        "https://canvas.houstonisd.org/*"
       ]
     }
   ],
