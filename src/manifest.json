@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "options_page": "options.html",
   "permissions": ["storage"],
   "host_permissions": [
@@ -13,7 +13,10 @@
     "https://*.ca/*",
     "https://*.mx/*",
     "https://*.uk/*",
-    "https://canvas.houstonisd.org/*"
+    "https://canvas.houstonisd.org/*",
+    "https://learn.kemu.ac.ke/*",
+    "https://webcourses.ucf.edu/*",
+    "https://canvas.calpoly.edu/*"
   ],
   "icons": {
     "128": "icon-128.png"
@@ -28,7 +31,10 @@
         "https://*.ca/*",
         "https://*.mx/*",
         "https://*.uk/*",
-        "https://canvas.houstonisd.org/*"
+        "https://canvas.houstonisd.org/*",
+        "https://learn.kemu.ac.ke/*",
+        "https://webcourses.ucf.edu/*",
+        "https://canvas.calpoly.edu/*"
       ],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
@@ -45,7 +51,10 @@
         "https://*.ca/*",
         "https://*.mx/*",
         "https://*.uk/*",
-        "https://canvas.houstonisd.org/*"
+        "https://canvas.houstonisd.org/*",
+        "https://learn.kemu.ac.ke/*",
+        "https://webcourses.ucf.edu/*",
+        "https://canvas.calpoly.edu/*"
       ]
     }
   ],
