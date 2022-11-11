@@ -10,6 +10,8 @@ const AppContainer = styled.div`
   flex-direction: column;
 `;
 
+
+// App - Tasks for Canvas
 export default function App(): JSX.Element {
   const [delta, setDelta] = useState(0);
   const [clickable, setClickable] = useState(false);
