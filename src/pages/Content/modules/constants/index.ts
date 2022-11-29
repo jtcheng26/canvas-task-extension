@@ -21,4 +21,4 @@ export const OptionsDefaults = JSONOptionsDefaults as Options;
 export const THEME_COLOR = 'var(--ic-brand-global-nav-bgd)';
 export const THEME_COLOR_LIGHT = 'rgba(199, 205, 209)';
 
-export const HOME_WEBSITE = 'http://www.tasksforcanvas.info';
+export const HOME_WEBSITE = 'https://www.tasksforcanvas.info';
