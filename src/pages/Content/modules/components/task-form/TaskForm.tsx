@@ -8,6 +8,7 @@ import useCourses from '../../hooks/useCourses';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
 import createCustomTask from '../../utils/createCustomTask';
+import isDemo from '../../utils/isDemo';
 import CourseDropdown from '../course-dropdown';
 import Button from './components/Button';
 import DatePick from './components/DatePick';
@@ -134,10 +135,10 @@ export default function TaskForm({
       assignment.due_at,
       assignment.course_id
     );
-    if (!res) {
+    if (!res && !isDemo()) {
       setErrorMessage('An error occurred. Make sure you have cookies enabled.');
     } else {
-      assignment.id = res.id || assignment.id;
+      assignment.id = res && !!res.id ? res.id : assignment.id;
       assignment.plannable_id = assignment.id; // for marking completing right after creating
       if (onSubmit) onSubmit(assignment);
       close();

@@ -14,7 +14,7 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
   */
   if (!data.sidebar) {
     (document.getElementById('right-side') as HTMLElement).className +=
-      'hidden-sidebar';
+      ' hidden-sidebar';
   }
   runApp(newContainer);
 }

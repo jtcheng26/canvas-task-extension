@@ -2,10 +2,11 @@ import axios from 'axios';
 import { useQuery, UseQueryResult } from 'react-query';
 import { DemoPositions } from '../tests/demo';
 import baseURL from '../utils/baseURL';
+import isDemo from '../utils/isDemo';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<Record<string, number>> {
-  if (process.env.DEMO) return DemoPositions;
+  if (isDemo()) return DemoPositions;
 
   const { data } = await axios.get(
     `${baseURL()}/api/v1/users/self/dashboard_positions`

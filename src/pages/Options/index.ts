@@ -22,7 +22,7 @@ function setStoreLinks() {
       'https://addons.mozilla.org/en-US/firefox/addon/tasks-for-canvas';
 
   Array.from(document.getElementsByTagName('a')).forEach((elem) => {
-    elem.href = storeURL;
+    if (elem.className === 'store-link') elem.href = storeURL;
   });
 }
 
