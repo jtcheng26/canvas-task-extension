@@ -4,8 +4,11 @@
   "description": "A better to-do list sidebar for Canvas.",
   "version": "1.2.2",
   "options_page": "options.html",
+  "background": { "service_worker": "background.bundle.js" },
   "permissions": ["storage"],
   "host_permissions": [
+    "https://tasksforcanvas.info/*",
+    "https://www.tasksforcanvas.info/*",
     "https://*.instructure.com/*",
     "https://*.edu/*",
     "https://*.au/*",
@@ -16,7 +19,9 @@
     "https://canvas.houstonisd.org/*",
     "https://learn.kemu.ac.ke/*",
     "https://webcourses.ucf.edu/*",
-    "https://canvas.calpoly.edu/*"
+    "https://canvas.calpoly.edu/*",
+    "https://canvas.siprep.org/*",
+    "https://canvas.kth.se/*"
   ],
   "icons": {
     "128": "icon-128.png"
@@ -24,6 +29,8 @@
   "content_scripts": [
     {
       "matches": [
+        "https://tasksforcanvas.info/*",
+        "https://www.tasksforcanvas.info/*",
         "https://*.instructure.com/*",
         "https://*.edu/*",
         "https://*.au/*",
@@ -34,7 +41,9 @@
         "https://canvas.houstonisd.org/*",
         "https://learn.kemu.ac.ke/*",
         "https://webcourses.ucf.edu/*",
-        "https://canvas.calpoly.edu/*"
+        "https://canvas.calpoly.edu/*",
+        "https://canvas.siprep.org/*",
+        "https://canvas.kth.se/*"
       ],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
@@ -44,6 +53,8 @@
     {
       "resources": ["icon-128.png", "options.html"],
       "matches": [
+        "https://tasksforcanvas.info/*",
+        "https://www.tasksforcanvas.info/*",
         "https://*.instructure.com/*",
         "https://*.edu/*",
         "https://*.au/*",
@@ -54,7 +65,9 @@
         "https://canvas.houstonisd.org/*",
         "https://learn.kemu.ac.ke/*",
         "https://webcourses.ucf.edu/*",
-        "https://canvas.calpoly.edu/*"
+        "https://canvas.calpoly.edu/*",
+        "https://canvas.siprep.org/*",
+        "https://canvas.kth.se/*"
       ]
     }
   ],

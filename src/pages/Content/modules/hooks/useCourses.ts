@@ -4,6 +4,7 @@ import { THEME_COLOR } from '../constants';
 import { DemoCourses } from '../tests/demo';
 import { Course } from '../types';
 import baseURL from '../utils/baseURL';
+import isDemo from '../utils/isDemo';
 import useCourseColors from './useCourseColors';
 
 /* Apply the `color` property to each course. */
@@ -27,7 +28,7 @@ const CustomCourse: Course = {
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
 async function getCourses(colors: Record<string, string>): Promise<Course[]> {
-  if (process.env.DEMO) return DemoCourses;
+  if (isDemo()) return DemoCourses;
 
   const { data } = await axios.get(`${baseURL()}/api/v1/courses?per_page=200`);
 

@@ -14,6 +14,7 @@ import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
 import { AssignmentDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
+import isDemo from '../utils/isDemo';
 
 /* Get assignments from api */
 function getAllAssignmentsRequest(
@@ -180,7 +181,7 @@ export async function getAllAssignments(
 
   const startStr = st.toISOString().split('T')[0];
   const endStr = en.toISOString().split('T')[0];
-  const requests = process.env.DEMO
+  const requests = isDemo()
     ? {
         data: DemoAssignments,
       }

@@ -1,4 +1,5 @@
 # Tasks Browser Extension for Canvas Instructure
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/R6R8FV70G)
 
 Ever had trouble finding your weekly assignments? Wish you had a nice progress bar to motivate you to complete everything?
 

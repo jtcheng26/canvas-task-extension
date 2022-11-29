@@ -343,10 +343,10 @@ const DemoPositions: Record<string, number> = {
 };
 
 const DemoColors: Record<string, string> = {
-  1: '#8F3E97',
-  2: '#1770AB',
-  3: '#FF2717',
-  4: '#009606',
+  1: '#4989F4', //'#8F3E97',
+  2: '#DC4B3F', //'#1770AB',
+  3: '#7E57C2', //'#FF2717',
+  4: '#1AA260', //'#009606',
 };
 
 const DemoNames: Record<string, string> = {

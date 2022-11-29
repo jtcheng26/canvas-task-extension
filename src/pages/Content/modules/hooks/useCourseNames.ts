@@ -1,13 +1,14 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import { DemoNames } from '../tests/demo';
 import { Course } from '../types';
+import isDemo from '../utils/isDemo';
 import useCourses from './useCourses';
 
 /* In case we want to use user-chosen names in the future, which would require another api request. */
 async function getCourseNames(
   courses: Course[]
 ): Promise<Record<string, string>> {
-  if (process.env.DEMO) return DemoNames;
+  if (isDemo()) return DemoNames;
 
   const names: Record<string, string> = {};
   courses.forEach((course: Course) => {

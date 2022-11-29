@@ -3,9 +3,10 @@ import { useQuery, UseQueryResult } from 'react-query';
 import { THEME_COLOR } from '../constants';
 import { DemoColors } from '../tests/demo';
 import baseURL from '../utils/baseURL';
+import isDemo from '../utils/isDemo';
 
 async function getCourseColors(): Promise<Record<string, string>> {
-  if (process.env.DEMO) return DemoColors;
+  if (isDemo()) return DemoColors;
 
   const { data } = await axios.get(`${baseURL()}/api/v1/users/self/colors`);
 
