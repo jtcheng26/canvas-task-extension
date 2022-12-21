@@ -46,6 +46,7 @@ function createSidebar(
   container: HTMLElement,
   observer?: MutationObserver
 ): void {
+  prepareCanvasStyles();
   observer?.disconnect();
   /* IMPORTANT: Only load sidebar once when switching between list view and other views */
   if (!sidebarLoaded) {
@@ -99,6 +100,12 @@ if (rightSide) {
 }
 /* This element is hidden in list view. */
 const rightSideWrapper = document.getElementById('right-side-wrapper');
+
+/* Standardizes school-specific CSS class choices so the sidebar works/looks right. */
+function prepareCanvasStyles() {
+  /* Ensures that there is no max-width, so sidebar stays at right side on large screens. */
+  document.body.classList.add('full-width');
+}
 
 /* If the page loads list view before extension. */
 function checkForListView() {
