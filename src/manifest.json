@@ -2,27 +2,10 @@
   "manifest_version": 3,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "options_page": "options.html",
   "background": { "service_worker": "background.bundle.js" },
   "permissions": ["storage"],
-  "host_permissions": [
-    "https://tasksforcanvas.info/*",
-    "https://www.tasksforcanvas.info/*",
-    "https://*.instructure.com/*",
-    "https://*.edu/*",
-    "https://*.au/*",
-    "https://*.nz/*",
-    "https://*.ca/*",
-    "https://*.mx/*",
-    "https://*.uk/*",
-    "https://canvas.houstonisd.org/*",
-    "https://learn.kemu.ac.ke/*",
-    "https://webcourses.ucf.edu/*",
-    "https://canvas.calpoly.edu/*",
-    "https://canvas.siprep.org/*",
-    "https://canvas.kth.se/*"
-  ],
   "icons": {
     "128": "icon-128.png"
   },
