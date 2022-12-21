@@ -5,3 +5,5 @@ chrome.runtime.onInstalled.addListener(function (object) {
     chrome.tabs.create({ url: externalUrl });
   }
 });
+
+chrome.runtime.setUninstallURL('https://www.tasksforcanvas.info/uninstall');
