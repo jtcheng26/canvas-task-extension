@@ -214,7 +214,7 @@ function setCheckbox(key: string, checked: boolean) {
 document
   .getElementById('color-choice')
   ?.addEventListener('input', (ev: Event) => {
-    setThemeColor(ev.target.value);
+    setThemeColor((ev?.target as HTMLInputElement).value);
   });
 
 /* getPropertyValue() includes CSS formatting whitespace, so trim() is needed. */
@@ -226,13 +226,13 @@ function setThemeColor(color?: string) {
   const colorChoice = document.getElementById('color-choice');
   // const check = document.getElementById('custom-theme-color');
   if (color) {
-    if (colorChoice) colorChoice.value = color;
+    if (colorChoice) (colorChoice as HTMLInputElement).value = color;
     chrome.storage.sync.set({
       theme_color: color,
     });
     document.body.style.setProperty('--bg-theme', color || defaultColor);
   } else {
-    if (colorChoice) colorChoice.value = defaultColor;
+    if (colorChoice) (colorChoice as HTMLInputElement).value = defaultColor;
     chrome.storage.sync.set({
       theme_color: 'var(--ic-brand-global-nav-bgd)',
     });
