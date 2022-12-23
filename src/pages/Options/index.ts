@@ -217,9 +217,10 @@ document
     setThemeColor(ev.target.value);
   });
 
-const defaultColor = getComputedStyle(document.body).getPropertyValue(
-  '--theme-default'
-);
+/* getPropertyValue() includes CSS formatting whitespace, so trim() is needed. */
+const defaultColor = getComputedStyle(document.body)
+  .getPropertyValue('--theme-default')
+  .trim();
 
 function setThemeColor(color?: string) {
   const colorChoice = document.getElementById('color-choice');
@@ -261,6 +262,7 @@ function setCustomColorEffects() {
     colorPicker?.classList.remove('hide');
     colorPicker?.classList.add('show');
   }
+  setThemeColor();
 }
 
 function setBooleanOptions() {
@@ -274,8 +276,6 @@ function setBooleanOptions() {
             booleanOptions[b],
             checkbox.classList.contains('checked')
           );
-        } else {
-          setThemeColor();
         }
         if (b === 'rolling-period') {
           setRollingPeriodEffects();
