@@ -3,11 +3,22 @@ var webpack = require('webpack'),
   fileSystem = require('fs-extra'),
   env = require('./utils/env'),
   { CleanWebpackPlugin } = require('clean-webpack-plugin'),
-  BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-    .BundleAnalyzerPlugin,
+  BundleAnalyzerPlugin =
+    require('webpack-bundle-analyzer').BundleAnalyzerPlugin,
   CopyWebpackPlugin = require('copy-webpack-plugin'),
   HtmlWebpackPlugin = require('html-webpack-plugin'),
   TerserPlugin = require('terser-webpack-plugin');
+
+const BROWSER_ENV = process.argv[2] || 'chrome';
+const BROWSER_MANIFEST = {
+  chrome: 'src/manifest.json',
+  firefox: 'src/manifest-firefox.json',
+};
+
+if (!Object.keys(BROWSER_MANIFEST).includes(BROWSER_ENV)) {
+  console.log('Invalid environment');
+  process.exit();
+}
 
 const ASSET_PATH = process.env.ASSET_PATH || '/';
 
@@ -110,8 +121,8 @@ var options = {
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: 'src/manifest.json',
-          to: path.join(__dirname, 'build'),
+          from: BROWSER_MANIFEST[BROWSER_ENV],
+          to: path.join(__dirname, 'build', 'manifest.json'),
           force: true,
           transform: function (content) {
             // generates the manifest file using the package.json informations
