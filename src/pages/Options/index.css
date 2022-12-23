@@ -18,6 +18,7 @@ body {
   --bg-default: white;
   --bg-dark: #efefef;
   --bg-theme: #ec412d;
+  --theme-default: #ec412d;
 }
 
 .hidden {
@@ -126,6 +127,12 @@ body {
   flex-direction: row;
   border-radius: 500px;
   margin-bottom: 20px;
+}
+
+#color-choice {
+  width: 35px;
+  height: 35px;
+  padding: 2px;
 }
 
 .period-option {

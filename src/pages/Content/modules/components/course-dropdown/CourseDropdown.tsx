@@ -52,6 +52,7 @@ const CourseDropdownContainer = styled.div`
 
 export interface CourseDropdownProps {
   courses: Course[];
+  defaultColor?: string;
   selectedCourseId?: number;
   setCourse: (id: number) => void;
   onCoursePage: boolean;
@@ -68,6 +69,7 @@ export interface CourseDropdownProps {
 export default function CourseDropdown({
   courses,
   defaultOption,
+  defaultColor,
   noDefault,
   maxHeight,
   zIndex,
@@ -112,6 +114,7 @@ export default function CourseDropdown({
     <CourseDropdownContainer>
       {instructureStyle ? (
         <TextInput
+          color={defaultColor}
           menuVisible={menuVisible}
           onClick={toggleMenu}
           select

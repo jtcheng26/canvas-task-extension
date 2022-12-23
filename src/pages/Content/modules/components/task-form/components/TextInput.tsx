@@ -3,19 +3,20 @@ import styled from 'styled-components';
 import ArrowButton from '../../arrow-button/ArrowButton';
 import { Direction } from '../../../types';
 import { THEME_COLOR } from '../../../constants';
+import { ColorProps } from './DatePick';
 
-const Input = styled.input`
+const Input = styled.input<ColorProps>`
   border: 1px solid rgb(199, 205, 299);
   height: 38px;
   padding: 0px 10px;
   border-radius: 4px;
   font-size: 16px;
-  outline-color: ${THEME_COLOR};
+  outline-color: ${(props) => props.color || THEME_COLOR};
   display: flex;
   justify-content: space-between;
 `;
 
-const Select = styled.div`
+const Select = styled.div<ColorProps>`
   border: 1px solid rgb(199, 205, 299);
   height: 38px;
   padding: 0px 10px;
@@ -23,7 +24,7 @@ const Select = styled.div`
   font-size: 16px;
   cursor: pointer;
   &:hover {
-    outline-color: ${THEME_COLOR};
+    outline-color: ${(props) => props.color || THEME_COLOR};
     outline-width: 2px;
     outline-style: solid;
     outline-offset: -1px;
@@ -35,6 +36,7 @@ const Select = styled.div`
 `;
 
 type Props = {
+  color?: string;
   onChange?: (value: string) => void;
   onClick?: () => void;
   onFocus?: () => void;
@@ -46,6 +48,7 @@ type Props = {
 
 export default function TextInput({
   menuVisible,
+  color,
   onChange,
   onClick,
   onFocus,
@@ -61,6 +64,7 @@ export default function TextInput({
   }
   return !select ? (
     <Input
+      color={color}
       contentEditable={!!onChange}
       onBlur={onUnfocus}
       onChange={handleChange}
@@ -69,7 +73,7 @@ export default function TextInput({
       value={value}
     />
   ) : (
-    <Select onClick={handleClick}>
+    <Select color={color} onClick={handleClick}>
       {value}{' '}
       <ArrowButton
         direction={menuVisible ? Direction.UP : Direction.DOWN}
