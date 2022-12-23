@@ -13,7 +13,7 @@
     "node": "^16.0.0"
   },
   "scripts": {
-    "build": "node utils/build.js",
+    "build": "node utils/build.js chrome",
     "firefox": "node utils/build.js firefox",
     "zip": "cd build; zip -r ../build.zip * -x \"build/.*\" -x \"build/__MACOSX\"",
     "start": "node utils/webserver.js",
