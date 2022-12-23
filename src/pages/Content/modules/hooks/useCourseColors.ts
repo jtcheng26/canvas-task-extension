@@ -5,7 +5,9 @@ import { DemoColors } from '../tests/demo';
 import baseURL from '../utils/baseURL';
 import isDemo from '../utils/isDemo';
 
-async function getCourseColors(): Promise<Record<string, string>> {
+async function getCourseColors(
+  defaultColor?: string
+): Promise<Record<string, string>> {
   if (isDemo()) return DemoColors;
 
   const { data } = await axios.get(`${baseURL()}/api/v1/users/self/colors`);
@@ -15,14 +17,16 @@ async function getCourseColors(): Promise<Record<string, string>> {
     data.custom_colors[course_id.substring(7)] = data.custom_colors[course_id];
   });
 
-  data.custom_colors['0'] = THEME_COLOR;
+  data.custom_colors['0'] = defaultColor || THEME_COLOR;
 
   return data.custom_colors;
 }
 
 /* Use cached course colors, lookup using course id */
-export default function useCourseColors(): UseQueryResult<
-  Record<string, string>
-> {
-  return useQuery('colors', getCourseColors, { staleTime: Infinity });
+export default function useCourseColors(
+  defaultColor?: string
+): UseQueryResult<Record<string, string>> {
+  return useQuery('colors', () => getCourseColors(defaultColor), {
+    staleTime: Infinity,
+  });
 }

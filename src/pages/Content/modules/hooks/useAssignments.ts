@@ -12,7 +12,7 @@ import useCourseNames from './useCourseNames';
 import useCourseColors from './useCourseColors';
 import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
-import { AssignmentDefaults } from '../constants';
+import { AssignmentDefaults, OptionsDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
 import isDemo from '../utils/isDemo';
 
@@ -224,7 +224,11 @@ export default function useAssignments(
   endDate: Date,
   options: Options
 ): UseQueryResult<FinalAssignment[]> {
-  const { data: colors } = useCourseColors();
+  const { data: colors } = useCourseColors(
+    options.theme_color !== OptionsDefaults.theme_color
+      ? options.theme_color
+      : undefined
+  );
   const { data: names } = useCourseNames();
   const { data: positions } = useCoursePositions();
   return useQuery(

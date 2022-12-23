@@ -19,6 +19,6 @@ export default function runApp(container: HTMLElement): void {
     container
   );
   console.log(
-    'Check out the repo! https://github.com/jtcheng26/canvas-task-extension'
+    'Tasks for Canvas: Check out the repo! https://github.com/jtcheng26/canvas-task-extension'
   );
 }

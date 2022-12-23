@@ -1,10 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { AssignmentDefaults, THEME_COLOR } from '../../constants';
+import { AssignmentDefaults, OptionsDefaults } from '../../constants';
 import useCourseColors from '../../hooks/useCourseColors';
 import useCourseNames from '../../hooks/useCourseNames';
 import useCoursePositions from '../../hooks/useCoursePositions';
 import useCourses from '../../hooks/useCourses';
+import useOptions from '../../hooks/useOptions';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
 import createCustomTask from '../../utils/createCustomTask';
@@ -81,6 +82,9 @@ export default function TaskForm({
   const { data: courseMap } = useCourseNames();
   const { data: colors } = useCourseColors();
   const { data: positions } = useCoursePositions();
+  const { data: options } = useOptions();
+
+  const themeColor = options?.theme_color || OptionsDefaults.theme_color;
 
   const coursesWithoutCustom = useMemo(() => {
     if (courses) {
@@ -122,7 +126,7 @@ export default function TaskForm({
     assignment.color =
       colors && selectedCourseId in colors
         ? colors[selectedCourseId]
-        : THEME_COLOR;
+        : themeColor;
     assignment.position =
       positions && selectedCourseId in positions
         ? positions[selectedCourseId]
@@ -152,19 +156,28 @@ export default function TaskForm({
             {titleLabel}
             <CheckIcon checkStyle="X" onClick={close} />
           </FormTitle>
-          <TextInput onChange={setTitle} value={title} />
+          <TextInput color={themeColor} onChange={setTitle} value={title} />
         </FormItem>
         <FormItem>
           <FormTitle>{dateLabel}</FormTitle>
-          <DatePick selected={selectedDate} setSelected={setSelected} />
+          <DatePick
+            color={themeColor}
+            selected={selectedDate}
+            setSelected={setSelected}
+          />
         </FormItem>
         <FormItem>
-          <TimePick selected={selectedTime} setSelected={setSelectedTime} />
+          <TimePick
+            color={themeColor}
+            selected={selectedTime}
+            setSelected={setSelectedTime}
+          />
         </FormItem>
         <FormItem>
           <FormTitle>{courseLabel}</FormTitle>
           <CourseDropdown
             courses={coursesWithoutCustom}
+            defaultColor={themeColor}
             defaultOption="None"
             instructureStyle
             onCoursePage={selectedCourse !== 0 && !!selectedCourse}
@@ -174,7 +187,7 @@ export default function TaskForm({
         </FormItem>
         <FormItem>
           <Button
-            color={THEME_COLOR}
+            color={themeColor}
             disabled={!title}
             label="Save"
             onClick={submit}

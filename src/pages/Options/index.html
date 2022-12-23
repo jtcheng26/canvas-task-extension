@@ -16,6 +16,8 @@
           <h1>Settings</h1>
         </div>
       </div>
+      <div id="footer" class="label">Reload Canvas to see changes.</div>
+
       <div id="content">
         <div id="period-selector">
           <div id="day" class="period-option">Day</div>
@@ -86,7 +88,33 @@
             </div>
           </div>
         </div>
+        <div id="color-options" class="label hide">
+          <input
+            type="color"
+            id="color-choice"
+            name="color-choice"
+            class="checkbox"
+            value="#ec412d"
+          />
+          <label for="color-choice">Theme Color</label>
+        </div>
         <div id="boolean-options">
+          <div class="label">
+            <div class="checkbox" id="custom-theme-color">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                class="check"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                />
+              </svg>
+            </div>
+            Custom theme color
+          </div>
           <div class="label">
             <div class="checkbox" id="default-sidebar">
               <svg
@@ -168,7 +196,6 @@
             Show confetti
           </div>
         </div>
-        <div id="footer" class="label">Reload Canvas to see changes.</div>
       </div>
     </div>
   </body>

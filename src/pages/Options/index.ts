@@ -190,6 +190,7 @@ const booleanOptions: Record<string, string> = {
   'show-locked-assignments': 'show_locked_assignments',
   'show-confetti': 'show_confetti',
   'rolling-period': 'rolling_period',
+  'custom-theme-color': 'theme_color',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -209,25 +210,77 @@ function setCheckbox(key: string, checked: boolean) {
   else document.getElementById(key)?.classList.remove('checked');
 }
 
+// let selectedColor = '';
+document
+  .getElementById('color-choice')
+  ?.addEventListener('input', (ev: Event) => {
+    setThemeColor(ev.target.value);
+  });
+
+const defaultColor = getComputedStyle(document.body).getPropertyValue(
+  '--theme-default'
+);
+
+function setThemeColor(color?: string) {
+  const colorChoice = document.getElementById('color-choice');
+  // const check = document.getElementById('custom-theme-color');
+  if (color) {
+    if (colorChoice) colorChoice.value = color;
+    chrome.storage.sync.set({
+      theme_color: color,
+    });
+    document.body.style.setProperty('--bg-theme', color || defaultColor);
+  } else {
+    if (colorChoice) colorChoice.value = defaultColor;
+    chrome.storage.sync.set({
+      theme_color: 'var(--ic-brand-global-nav-bgd)',
+    });
+    document.body.style.setProperty('--bg-theme', defaultColor);
+  }
+}
+
+function setRollingPeriodEffects() {
+  const checkbox = document.getElementById('rolling-period');
+  const startSelector = document.getElementById('start-selector');
+  if (checkbox?.classList.contains('checked')) {
+    startSelector?.classList.remove('show');
+    startSelector?.classList.add('hide');
+  } else {
+    startSelector?.classList.remove('hide');
+    startSelector?.classList.add('show');
+  }
+}
+
+function setCustomColorEffects() {
+  const checkbox = document.getElementById('custom-theme-color');
+  const colorPicker = document.getElementById('color-options');
+  if (!checkbox?.classList.contains('checked')) {
+    colorPicker?.classList.remove('show');
+    colorPicker?.classList.add('hide');
+  } else {
+    colorPicker?.classList.remove('hide');
+    colorPicker?.classList.add('show');
+  }
+}
+
 function setBooleanOptions() {
   Object.keys(booleanOptions).forEach((b) => {
     const checkbox = document.getElementById(b);
     if (checkbox) {
       checkbox.onclick = () => {
         toggleClass('checked', checkbox);
-        setBooleanOption(
-          booleanOptions[b],
-          checkbox.classList.contains('checked')
-        );
+        if (b !== 'custom-theme-color') {
+          setBooleanOption(
+            booleanOptions[b],
+            checkbox.classList.contains('checked')
+          );
+        } else {
+          setThemeColor();
+        }
         if (b === 'rolling-period') {
-          const startSelector = document.getElementById('start-selector');
-          if (checkbox.classList.contains('checked')) {
-            startSelector?.classList.remove('show');
-            startSelector?.classList.add('hide');
-          } else {
-            startSelector?.classList.remove('hide');
-            startSelector?.classList.add('show');
-          }
+          setRollingPeriodEffects();
+        } else if (b === 'custom-theme-color') {
+          setCustomColorEffects();
         }
       };
     }
@@ -240,7 +293,6 @@ setHoursDropdown();
 setMinutesDropdown();
 setAmPmDropdown();
 setPeriods();
-setBooleanOptions();
 
 chrome.storage.sync.get(storedUserOptions, (items) => {
   const options = applyDefaults(items as Options);
@@ -251,6 +303,15 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setCheckbox('due-date-headings', options.due_date_headings);
   setCheckbox('show-locked-assignments', options.show_locked_assignments);
   setCheckbox('show-confetti', options.show_confetti);
+  setCheckbox(
+    'custom-theme-color',
+    options.theme_color !== 'var(--ic-brand-global-nav-bgd)'
+  );
+  setThemeColor(
+    options.theme_color !== OptionsDefaults.theme_color
+      ? options.theme_color
+      : undefined
+  );
   setSelectedDropdownOption(
     Object.keys(weekdays)[options.start_date - 1],
     'weekdays-options',
@@ -276,4 +337,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
     'minutes-options',
     'minutes-selected'
   );
+  setBooleanOptions();
+  setRollingPeriodEffects();
+  setCustomColorEffects();
 });
