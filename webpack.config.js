@@ -46,6 +46,13 @@ var options = (args) => {
     mode: process.env.NODE_ENV || 'development',
     entry: {
       options: path.join(__dirname, 'src', 'pages', 'Options', 'index.ts'),
+      background: path.join(
+        __dirname,
+        'src',
+        'pages',
+        'Background',
+        'index.ts'
+      ),
       contentScript: path.join(
         __dirname,
         'src',
@@ -55,7 +62,7 @@ var options = (args) => {
       ),
     },
     chromeExtensionBoilerplate: {
-      notHotReload: ['contentScript'],
+      notHotReload: ['background', 'contentScript'],
     },
     output: {
       path: path.resolve(__dirname, 'build'),

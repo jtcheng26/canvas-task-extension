@@ -2,26 +2,19 @@
   "manifest_version": 2,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
-  "version": "1.2.1",
+  "version": "1.2.3",
   "icons": {
     "128": "icon-128.png"
   },
   "web_accessible_resources": ["icon-128.png", "options.html"],
   "content_security_policy": "script-src 'self'; object-src 'self'",
   "permissions": ["storage"],
+  "background": {
+    "scripts": ["background.bundle.js"]
+  },
   "content_scripts": [
     {
-      "matches": [
-        "https://*.instructure.com/*",
-        "https://*.edu/*",
-        "https://*.au/*",
-        "https://*.nz/*",
-        "https://*.ca/*",
-        "https://*.mx/*",
-        "https://*.uk/*",
-        "https://canvas.houstonisd.org/*",
-        "https://learn.kemu.ac.ke/*"
-      ],
+      "matches": ["https://*/*"],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }
