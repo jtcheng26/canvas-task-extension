@@ -12,6 +12,7 @@ interface Options {
   due_date_headings: boolean;
   show_locked_assignments: boolean;
   show_confetti: boolean;
+  theme_color: string;
 }
 
 export default Options;

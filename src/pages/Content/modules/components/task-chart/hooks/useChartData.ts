@@ -1,4 +1,3 @@
-import { THEME_COLOR } from '../../../constants';
 import { AssignmentType, FinalAssignment } from '../../../types';
 import { Bar, ChartData } from '../../radial-bar-chart';
 import { ringProgress } from '../utils/ringProgress';
@@ -6,7 +5,7 @@ import sortByPosition from '../utils/sortByPosition';
 
 export default function useChartData(
   assignments: FinalAssignment[],
-  defaultColor?: string
+  defaultColor: string
 ): ChartData {
   const sortedAssignments = sortByPosition(assignments);
   const data: ChartData = {
@@ -32,7 +31,7 @@ export default function useChartData(
       id: -1,
       value: 0,
       max: 0,
-      color: defaultColor || THEME_COLOR,
+      color: defaultColor,
     });
   return data;
 }

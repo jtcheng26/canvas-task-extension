@@ -5,13 +5,17 @@ import styled from 'styled-components';
 import { THEME_COLOR, THEME_COLOR_LIGHT } from '../../../constants';
 import TextInput from './TextInput';
 
-const DatePickerContainer = styled.div`
+export type ColorProps = {
+  color?: string;
+};
+
+const DatePickerContainer = styled.div<ColorProps>`
   .rdp {
     margin: 10px 0px;
     --rdp-cell-size: 30px;
-    --rdp-accent-color: ${THEME_COLOR};
+    --rdp-accent-color: ${(props) => props.color || THEME_COLOR};
     --rdp-background-color: ${THEME_COLOR_LIGHT};
-    --rdp-accent-color-dark: ${THEME_COLOR};
+    --rdp-accent-color-dark: ${(props) => props.color || THEME_COLOR};
     --rdp-background-color-dark: #180270;
   }
 
@@ -19,11 +23,13 @@ const DatePickerContainer = styled.div`
 `;
 
 type Props = {
+  color?: string;
   selected?: Date;
   setSelected: (date?: Date) => void;
 };
 
 export default function DatePick({
+  color,
   selected,
   setSelected,
 }: Props): JSX.Element {
@@ -36,8 +42,9 @@ export default function DatePick({
     setPickerVisible(!pickerVisible);
   }
   return (
-    <DatePickerContainer>
+    <DatePickerContainer color={color}>
       <TextInput
+        color={color}
         menuVisible={pickerVisible}
         onClick={togglePicker}
         select

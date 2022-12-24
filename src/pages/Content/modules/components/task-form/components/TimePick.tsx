@@ -11,11 +11,13 @@ function fmtTime(minutes: number): string {
 }
 
 type Props = {
+  color?: string;
   selected: number;
   setSelected: (value: number) => void;
 };
 
 export default function TimePick({
+  color,
   selected,
   setSelected,
 }: Props): JSX.Element {
@@ -47,6 +49,7 @@ export default function TimePick({
   return (
     <CourseDropdown
       courses={timeChoices}
+      defaultColor={color}
       instructureStyle
       maxHeight={150}
       noDefault

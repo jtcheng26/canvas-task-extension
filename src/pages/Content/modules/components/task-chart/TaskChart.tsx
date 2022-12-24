@@ -7,6 +7,7 @@ import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
 import useOptions from '../../hooks/useOptions';
+import { OptionsDefaults } from '../../constants';
 
 /*
   Renders progress chart
@@ -58,8 +59,11 @@ export default function TaskChart({
   setCourse,
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
+  const { data: options } = useOptions();
+  const themeColor = options?.theme_color || OptionsDefaults.theme_color;
+
   const chartData = useMemo(
-    () => useChartData(assignments, colorOverride),
+    () => useChartData(assignments, colorOverride || themeColor),
     [assignments]
   );
   const [done, total, color] = useSelectChartData(selectedCourseId, chartData);
@@ -68,8 +72,6 @@ export default function TaskChart({
     if (selectedCourseId === id) setCourse(-1);
     else setCourse(id);
   }
-
-  const { data: options } = useOptions();
 
   const complete = 'Complete';
   const percent = total === 0 ? '100%' : `${Math.floor((100 * done) / total)}%`;
