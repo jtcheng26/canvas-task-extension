@@ -15,7 +15,7 @@
   "scripts": {
     "build": "node utils/build.js chrome",
     "firefox": "node utils/build.js firefox",
-    "zip": "cd build; zip -r ../build.zip * -x \"build/.*\" -x \"build/__MACOSX\"",
+    "zip": "zip -r build.zip build/* -x \"build/.*\" -x \"build/__MACOSX\"",
     "start": "node utils/webserver.js",
     "prettier": "prettier --write 'src/**/*.{js,jsx,ts,tsx,css,html}'",
     "lint": "eslint src/**/*.ts src/**/*.tsx",
