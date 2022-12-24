@@ -11,23 +11,7 @@
   },
   "content_scripts": [
     {
-      "matches": [
-        "https://tasksforcanvas.info/*",
-        "https://www.tasksforcanvas.info/*",
-        "https://*.instructure.com/*",
-        "https://*.edu/*",
-        "https://*.au/*",
-        "https://*.nz/*",
-        "https://*.ca/*",
-        "https://*.mx/*",
-        "https://*.uk/*",
-        "https://canvas.houstonisd.org/*",
-        "https://learn.kemu.ac.ke/*",
-        "https://webcourses.ucf.edu/*",
-        "https://canvas.calpoly.edu/*",
-        "https://canvas.siprep.org/*",
-        "https://canvas.kth.se/*"
-      ],
+      "matches": ["https://*/*"],
       "js": ["contentScript.bundle.js"],
       "css": ["content.styles.css"]
     }
@@ -35,23 +19,7 @@
   "web_accessible_resources": [
     {
       "resources": ["icon-128.png", "options.html"],
-      "matches": [
-        "https://tasksforcanvas.info/*",
-        "https://www.tasksforcanvas.info/*",
-        "https://*.instructure.com/*",
-        "https://*.edu/*",
-        "https://*.au/*",
-        "https://*.nz/*",
-        "https://*.ca/*",
-        "https://*.mx/*",
-        "https://*.uk/*",
-        "https://canvas.houstonisd.org/*",
-        "https://learn.kemu.ac.ke/*",
-        "https://webcourses.ucf.edu/*",
-        "https://canvas.calpoly.edu/*",
-        "https://canvas.siprep.org/*",
-        "https://canvas.kth.se/*"
-      ]
+      "matches": ["https://*/*"]
     }
   ],
   "content_security_policy": {
