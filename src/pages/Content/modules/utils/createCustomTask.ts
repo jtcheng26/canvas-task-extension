@@ -1,5 +1,5 @@
 import { PlannerAssignment } from '../types';
-import postReq from './postReq';
+import apiReq from './apiReq';
 
 /* Create a custom task item (Planner note). */
 export default async function createCustomTask(
@@ -14,7 +14,7 @@ export default async function createCustomTask(
     };
 
     if (course_id && course_id > 0) data['course_id'] = course_id;
-    postReq('/v1/planner_notes', JSON.stringify(data))
+    apiReq('/v1/planner_notes', JSON.stringify(data), 'post')
       .then((res) => {
         resolve(res?.data as PlannerAssignment);
       })

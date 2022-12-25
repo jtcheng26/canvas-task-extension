@@ -1,6 +1,6 @@
 import { FinalAssignment } from '../../../types';
 import { AssignmentStatus } from '../../../types/assignment';
-import postReq from '../../../utils/postReq';
+import apiReq from '../../../utils/apiReq';
 import deleteAssignment from './deleteAssignment';
 
 /* Mark an assignment either complete or incomplete via planner overrides.*/
@@ -8,19 +8,15 @@ export default function markAssignment(
   complete: AssignmentStatus,
   assignment: FinalAssignment
 ): FinalAssignment {
-  if (complete === 'deleted') deleteAssignment(assignment);
+  const method = assignment.override_id ? 'put' : 'post';
+  if (complete === AssignmentStatus.DELETED) deleteAssignment(assignment);
   else {
     const json = JSON.stringify({
       plannable_type: assignment.type.toString(),
       plannable_id: assignment.plannable_id,
-      marked_complete: complete,
+      marked_complete: complete === AssignmentStatus.COMPLETE,
     });
-    postReq(
-      '/v1/planner/overrides',
-      json,
-      !!assignment.override_id,
-      assignment.override_id + ''
-    );
+    apiReq('/v1/planner/overrides', json, method, assignment.override_id + '');
     assignment.marked_complete = complete === AssignmentStatus.COMPLETE;
   }
   return assignment;
