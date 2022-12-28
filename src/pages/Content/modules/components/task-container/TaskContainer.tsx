@@ -8,6 +8,7 @@ import { filterCourses, filterTimeBounds } from '../../hooks/useAssignments';
 import markAssignment from './utils/markAssignment';
 import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
+import { OptionsDefaults } from '../../constants';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -103,12 +104,15 @@ export default function TaskContainer({
         onCoursePage={!!courseId}
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
+        showConfetti={options.show_confetti}
+        themeColor={options.theme_color || OptionsDefaults.theme_color}
       />
       <TaskList
         assignments={updatedAssignments}
         createAssignment={createNewAssignment}
         markAssignment={markAssignmentAs}
         selectedCourseId={chosenCourseId}
+        showConfetti={options.show_confetti}
         showDateHeadings={options.due_date_headings}
       />
     </>

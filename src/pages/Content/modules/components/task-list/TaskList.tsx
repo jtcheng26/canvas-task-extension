@@ -11,7 +11,6 @@ import HeadingGroup from './components/HeadingGroup';
 import CreateTaskCard from '../task-card/CreateTaskCard';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 import Confetti from 'react-dom-confetti';
-import useOptions from '../../hooks/useOptions';
 import { AssignmentStatus } from '../../types/assignment';
 
 const ListContainer = styled.div`
@@ -51,6 +50,7 @@ export interface TaskListProps {
   createAssignment?: (assignment: FinalAssignment) => void;
   markAssignment?: (id: number, status: AssignmentStatus) => void;
   selectedCourseId: number;
+  showConfetti?: boolean;
   showDateHeadings: boolean;
   skeleton?: boolean;
 }
@@ -64,6 +64,7 @@ export default function TaskList({
   markAssignment,
   selectedCourseId = -1,
   showDateHeadings,
+  showConfetti = true,
   skeleton,
 }: TaskListProps): JSX.Element {
   const [confetti, setConfetti] = useState(false);
@@ -114,8 +115,6 @@ export default function TaskList({
     setConfetti(false);
   }
 
-  const { data: options } = useOptions();
-
   const assignmentToTaskCard = (assignment: FinalAssignment) => (
     <TaskCard
       color={assignment.color}
@@ -153,7 +152,7 @@ export default function TaskList({
   return (
     <ListWrapper>
       <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
-      {options && options.show_confetti ? (
+      {showConfetti ? (
         <ConfettiWrapper>
           <Confetti
             active={confetti}
