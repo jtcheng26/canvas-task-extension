@@ -223,10 +223,10 @@ const defaultColor = getComputedStyle(document.body)
   .trim();
 
 function debounce(func: (...args: string[]) => void, timeout = 300) {
-  let timer: NodeJS.Timeout;
+  let timer: number;
   return (...args: string[]) => {
     clearTimeout(timer);
-    timer = setTimeout(function (this: (...args: string[]) => void) {
+    timer = window.setTimeout(function (this: (...args: string[]) => void) {
       func.apply(this, args);
     }, timeout);
   };
