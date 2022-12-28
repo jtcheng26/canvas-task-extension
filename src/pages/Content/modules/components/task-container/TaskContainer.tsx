@@ -6,6 +6,8 @@ import { Course, FinalAssignment, Options } from '../../types';
 import extractCourses from './utils/extractCourses';
 import { filterCourses, filterTimeBounds } from '../../hooks/useAssignments';
 import markAssignment from './utils/markAssignment';
+import deleteAssignment from './utils/deleteAssignment';
+import { AssignmentStatus } from '../../types/assignment';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -44,12 +46,25 @@ export default function TaskContainer({
     return extractCourses(updatedAssignments);
   }, [updatedAssignments, courseId]);
 
-  async function markAssignmentAs(id: number, status: boolean) {
-    const newAssignments = updatedAssignments.map((a) => {
-      if (a.id == id) return markAssignment(status, a);
-      return a;
-    });
-    setUpdatedAssignments(newAssignments);
+  async function markAssignmentAs(id: number, status: AssignmentStatus) {
+    if (status === AssignmentStatus.DELETED) {
+      setUpdatedAssignments(
+        updatedAssignments.filter((a) => {
+          if (a.id == id) {
+            deleteAssignment(a);
+            return false;
+          }
+          return true;
+        })
+      );
+    } else {
+      setUpdatedAssignments(
+        updatedAssignments.map((a) => {
+          if (a.id == id) return markAssignment(status, a);
+          return a;
+        })
+      );
+    }
   }
 
   async function createNewAssignment(assignment: FinalAssignment) {

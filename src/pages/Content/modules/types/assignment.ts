@@ -65,4 +65,10 @@ enum AssignmentType {
   EVENT = 'calender_event',
 }
 
-export { PlannerAssignment, FinalAssignment, AssignmentType };
+enum AssignmentStatus {
+  UNFINISHED = 'unfinished',
+  COMPLETE = 'complete',
+  DELETED = 'deleted',
+}
+
+export { PlannerAssignment, FinalAssignment, AssignmentType, AssignmentStatus };

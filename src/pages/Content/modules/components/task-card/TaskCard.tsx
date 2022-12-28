@@ -133,6 +133,7 @@ interface TaskProps {
   graded?: boolean;
   course_name?: string;
   markComplete?: () => void;
+  markDeleted?: () => void;
   skeleton?: boolean;
 }
 /*
@@ -152,6 +153,7 @@ export default function TaskCard({
   color,
   submitted,
   markComplete,
+  markDeleted,
   skeleton,
 }: TaskProps): JSX.Element {
   const [due_date, due_time] = fmtDate(due_at);
@@ -186,6 +188,11 @@ export default function TaskCard({
       markComplete();
     }
   }
+  function markAssignmentAsDeleted() {
+    if (markDeleted) {
+      markDeleted();
+    }
+  }
   return (
     <TaskContainer>
       <TaskLeft
@@ -204,6 +211,11 @@ export default function TaskCard({
               checkStyle={complete ? 'Revert' : 'Check'}
               onClick={markAssignmentAsComplete}
             />
+          ) : (
+            ''
+          )}
+          {!skeleton && complete && type === AssignmentType.NOTE ? (
+            <CheckIcon checkStyle="X" onClick={markAssignmentAsDeleted} />
           ) : (
             ''
           )}

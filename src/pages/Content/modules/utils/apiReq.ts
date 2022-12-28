@@ -2,10 +2,10 @@ import axios, { AxiosResponse } from 'axios';
 import baseURL from './baseURL';
 
 /* Send a post request w/ CSRF Token. */
-export default async function postReq(
+export default async function apiReq(
   path: string,
   body: string,
-  put = false,
+  method: 'post' | 'put' | 'delete',
   id?: string
 ): Promise<AxiosResponse> {
   const CSRFtoken = function () {
@@ -21,9 +21,14 @@ export default async function postReq(
     },
   };
   // Try the specified method first, flip to the other if error occurs.
-  if (put) {
+  if (method === 'put') {
     return await axios.put(url + '/' + id, body, headers);
-  } else {
+  } else if (method === 'post') {
     return await axios.post(url, body, headers);
+  } else {
+    return await axios.delete(url, {
+      ...headers,
+      data: JSON.parse(body),
+    });
   }
 }

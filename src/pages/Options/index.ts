@@ -222,7 +222,17 @@ const defaultColor = getComputedStyle(document.body)
   .getPropertyValue('--theme-default')
   .trim();
 
-function setThemeColor(color?: string) {
+function debounce(func: (...args: string[]) => void, timeout = 300) {
+  let timer: NodeJS.Timeout;
+  return (...args: string[]) => {
+    clearTimeout(timer);
+    timer = setTimeout(function (this: (...args: string[]) => void) {
+      func.apply(this, args);
+    }, timeout);
+  };
+}
+
+const setThemeColor = debounce((color?: string) => {
   const colorChoice = document.getElementById('color-choice');
   // const check = document.getElementById('custom-theme-color');
   if (color) {
@@ -238,7 +248,7 @@ function setThemeColor(color?: string) {
     });
     document.body.style.setProperty('--bg-theme', defaultColor);
   }
-}
+});
 
 function setRollingPeriodEffects() {
   const checkbox = document.getElementById('rolling-period');
@@ -262,7 +272,6 @@ function setCustomColorEffects() {
     colorPicker?.classList.remove('hide');
     colorPicker?.classList.add('show');
   }
-  setThemeColor();
 }
 
 function setBooleanOptions() {
@@ -281,6 +290,7 @@ function setBooleanOptions() {
           setRollingPeriodEffects();
         } else if (b === 'custom-theme-color') {
           setCustomColorEffects();
+          setThemeColor();
         }
       };
     }
@@ -310,7 +320,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setThemeColor(
     options.theme_color !== OptionsDefaults.theme_color
       ? options.theme_color
-      : undefined
+      : ''
   );
   setSelectedDropdownOption(
     Object.keys(weekdays)[options.start_date - 1],

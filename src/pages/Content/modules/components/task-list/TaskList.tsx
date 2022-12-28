@@ -12,6 +12,7 @@ import CreateTaskCard from '../task-card/CreateTaskCard';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 import Confetti from 'react-dom-confetti';
 import useOptions from '../../hooks/useOptions';
+import { AssignmentStatus } from '../../types/assignment';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -48,7 +49,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 export interface TaskListProps {
   assignments: FinalAssignment[];
   createAssignment?: (assignment: FinalAssignment) => void;
-  markAssignment?: (id: number, status: boolean) => void;
+  markAssignment?: (id: number, status: AssignmentStatus) => void;
   selectedCourseId: number;
   showDateHeadings: boolean;
   skeleton?: boolean;
@@ -90,22 +91,23 @@ export default function TaskList({
 
   const noneText = 'None';
 
-  function markAssignmentFunc(id: number) {
+  function markAssignmentFunc(id: number, status: AssignmentStatus) {
     if (!markAssignment)
       return () => {
         console.log('Failed to mark as complete');
       };
-    else if (currentTab === 'Completed') {
-      return () => markAssignment(id, false);
-    }
-    return () => {
-      setConfetti(true);
-      setTimeout(() => {
-        stopConfetti();
-      }, 100);
+    else if (currentTab === 'Unfinished') {
+      return () => {
+        setConfetti(true);
+        setTimeout(() => {
+          stopConfetti();
+        }, 100);
 
-      markAssignment(id, true);
-    };
+        markAssignment(id, AssignmentStatus.COMPLETE);
+      };
+    } else {
+      return () => markAssignment(id, status);
+    }
   }
 
   function stopConfetti() {
@@ -124,7 +126,11 @@ export default function TaskList({
       graded_at={assignment.graded_at}
       html_url={assignment.html_url}
       key={assignment.id}
-      markComplete={markAssignmentFunc(assignment.id)}
+      markComplete={markAssignmentFunc(
+        assignment.id,
+        AssignmentStatus.UNFINISHED
+      )}
+      markDeleted={markAssignmentFunc(assignment.id, AssignmentStatus.DELETED)}
       name={assignment.name}
       points_possible={assignment.points_possible}
       submitted={assignment.submitted}
