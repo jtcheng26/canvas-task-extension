@@ -21,9 +21,9 @@ const LeftFloat = styled.div`
   align-items: center;
 
   .tasks-extension-settings {
-    fill: #4c5860dd;
+    fill: var(--ic-brand-font-color-dark);
     &:hover {
-      fill: var(--ic-brand-font-color-dark);
+      fill: rgb(125, 134, 141);
     }
   }
 

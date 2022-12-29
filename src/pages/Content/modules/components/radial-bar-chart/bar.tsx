@@ -7,6 +7,7 @@ const Group = styled.g`
     filter: opacity(0.6);
     cursor: pointer;
   }
+  transition: filter 0.2s;
 `;
 
 const BgCircle = styled.circle`

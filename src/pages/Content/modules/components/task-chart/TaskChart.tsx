@@ -6,7 +6,6 @@ import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
-import useOptions from '../../hooks/useOptions';
 import { OptionsDefaults } from '../../constants';
 
 /*
@@ -48,6 +47,8 @@ export interface TaskChartProps {
   onCoursePage?: boolean;
   selectedCourseId: number;
   setCourse: (id: number) => void;
+  showConfetti?: boolean;
+  themeColor?: string;
 }
 
 export default function TaskChart({
@@ -57,10 +58,10 @@ export default function TaskChart({
   onCoursePage,
   selectedCourseId = -1,
   setCourse,
+  showConfetti = true,
+  themeColor = OptionsDefaults.theme_color,
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
-  const { data: options } = useOptions();
-  const themeColor = options?.theme_color || OptionsDefaults.theme_color;
 
   const chartData = useMemo(
     () => useChartData(assignments, colorOverride || themeColor),
@@ -92,7 +93,7 @@ export default function TaskChart({
 
   return (
     <ChartContainer>
-      {options && options.show_confetti ? (
+      {showConfetti ? (
         <ConfettiWrapper>
           <Confetti
             active={confetti}
