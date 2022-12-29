@@ -20,6 +20,7 @@ export const TaskContainer = styled.div`
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
   }
+  transition: box-shadow 0.2s;
 `;
 
 const TaskInfo = styled.div`

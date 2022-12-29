@@ -59,7 +59,11 @@ export default function ArrowButton({
       >
         <path
           d="M23.677 18.52c.914 1.523-.183 3.472-1.967 3.472h-19.414c-1.784 0-2.881-1.949-1.967-3.472l9.709-16.18c.891-1.483 3.041-1.48 3.93 0l9.709 16.18z"
-          fill={hovering || disabled ? 'rgb(125, 134, 141)' : 'rgb(62, 76, 86)'}
+          fill={
+            hovering || disabled
+              ? 'rgb(125, 134, 141)'
+              : 'var(--ic-brand-font-color-dark)'
+          }
         />
       </svg>
     </div>

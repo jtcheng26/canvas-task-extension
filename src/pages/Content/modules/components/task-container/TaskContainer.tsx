@@ -37,6 +37,8 @@ export default function TaskContainer({
     courseList && courseId ? courseId : -1
   );
 
+  const themeColor = options.theme_color || OptionsDefaults.theme_color;
+
   // update assignments in state when marked as complete, then push updates asynchronously to local storage
   const [updatedAssignments, setUpdatedAssignments] =
     useState<FinalAssignment[]>(assignments);
@@ -105,7 +107,7 @@ export default function TaskContainer({
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
         showConfetti={options.show_confetti}
-        themeColor={options.theme_color || OptionsDefaults.theme_color}
+        themeColor={themeColor}
       />
       <TaskList
         assignments={updatedAssignments}
