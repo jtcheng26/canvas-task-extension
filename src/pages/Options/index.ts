@@ -191,6 +191,7 @@ const booleanOptions: Record<string, string> = {
   'show-confetti': 'show_confetti',
   'rolling-period': 'rolling_period',
   'custom-theme-color': 'theme_color',
+  'show-streak': 'show_streak',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -313,6 +314,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setCheckbox('due-date-headings', options.due_date_headings);
   setCheckbox('show-locked-assignments', options.show_locked_assignments);
   setCheckbox('show-confetti', options.show_confetti);
+  setCheckbox('show-streak', options.show_streak);
   setCheckbox(
     'custom-theme-color',
     options.theme_color !== 'var(--ic-brand-global-nav-bgd)'
