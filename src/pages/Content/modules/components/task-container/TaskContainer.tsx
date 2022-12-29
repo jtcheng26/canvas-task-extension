@@ -9,6 +9,7 @@ import markAssignment from './utils/markAssignment';
 import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
+import StreakIndicator from '../streak-indicator';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -97,6 +98,7 @@ export default function TaskContainer({
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />
+      {options.show_streak && <StreakIndicator streak={7} />}
       <TaskChart
         assignments={updatedAssignments}
         colorOverride={
@@ -107,6 +109,7 @@ export default function TaskContainer({
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
         showConfetti={options.show_confetti}
+        showStreak={options.show_streak}
         themeColor={themeColor}
       />
       <TaskList

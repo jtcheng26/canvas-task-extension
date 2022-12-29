@@ -12,6 +12,7 @@ interface Options {
   due_date_headings: boolean;
   show_locked_assignments: boolean;
   show_confetti: boolean;
+  show_streak: boolean;
   theme_color: string;
 }
 

@@ -10,5 +10,6 @@
   "complete_assignments": [],
   "show_locked_assignments": false,
   "show_confetti": true,
+  "show_streak": true,
   "theme_color": "var(--ic-brand-global-nav-bgd)"
 }

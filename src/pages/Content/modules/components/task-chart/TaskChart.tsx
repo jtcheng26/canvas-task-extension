@@ -12,13 +12,17 @@ import { OptionsDefaults } from '../../constants';
   Renders progress chart
 */
 
-const ChartContainer = styled.div`
+type StreakProp = {
+  streaks?: boolean;
+};
+
+const ChartContainer = styled.div<StreakProp>`
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 15px 0px;
+  margin: ${(props) => (props.streaks ? '5' : '15')}px 0px 15px 0px;
 `;
 
 const SubtitleText = styled.div`
@@ -48,6 +52,7 @@ export interface TaskChartProps {
   selectedCourseId: number;
   setCourse: (id: number) => void;
   showConfetti?: boolean;
+  showStreak?: boolean;
   themeColor?: string;
 }
 
@@ -59,6 +64,7 @@ export default function TaskChart({
   selectedCourseId = -1,
   setCourse,
   showConfetti = true,
+  showStreak = true,
   themeColor = OptionsDefaults.theme_color,
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
@@ -92,7 +98,7 @@ export default function TaskChart({
   }, [done, total]);
 
   return (
-    <ChartContainer>
+    <ChartContainer streaks={showStreak}>
       {showConfetti ? (
         <ConfettiWrapper>
           <Confetti
