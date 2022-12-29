@@ -31,7 +31,7 @@ export const TaskContainer = styled.div`
       }
     }
 
-    transition: box-shadow, 0.2s;
+    transition: box-shadow 0.2s;
   `,
   TaskInfo = styled.div`
     display: flex;
