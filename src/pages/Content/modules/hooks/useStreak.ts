@@ -49,7 +49,10 @@ export function shouldBreakStreak(task: FinalAssignment): boolean {
   } else if (task.graded) {
     return dateAfter(task.graded_at, task.due_at);
   }
-  return false;
+  // if not submitted
+  const now = Date.now();
+  const due = new Date(task.due_at).getTime();
+  return now > due;
 }
 
 function extractBreakDate(tasks: FinalAssignment[]): string {
@@ -69,20 +72,22 @@ function filterStreak(
   );
 }
 
-function computeStreak(tasks: FinalAssignment[]): string[] {
+function computeStreak(tasks: FinalAssignment[]): FinalAssignment[] {
   console.log('computing strak');
   const breakDate = extractBreakDate(tasks);
   console.log(breakDate);
   const res = filterStreak(tasks, breakDate);
   console.log(res);
-  return res.map((task) => task.id + '');
+  return res;
 }
 
 function getPreviousLoad(): Date {
   return new Date(2022, 1, 1);
 }
 
-export default function useStreak(options: Options): UseQueryResult<string[]> {
+export default function useStreak(
+  options: Options
+): UseQueryResult<FinalAssignment[]> {
   const startDate = getPreviousLoad();
   const { data: tasks } = useAssignments(startDate, undefined, options, true);
   return useQuery(

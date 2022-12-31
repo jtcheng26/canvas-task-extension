@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import CourseDropdown from '../course-dropdown';
 import TaskChart from '../task-chart';
 import TaskList from '../task-list';
@@ -10,7 +10,12 @@ import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
 import StreakIndicator from '../streak-indicator';
-import { shouldBreakStreak, taskOnTime } from '../../hooks/useStreak';
+import {
+  dateAfter,
+  shouldBreakStreak,
+  taskOnTime,
+} from '../../hooks/useStreak';
+import { sortByDate } from '../task-list/utils/sortBy';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -20,7 +25,7 @@ export interface TaskContainerProps {
   options: Options;
   startDate?: Date;
   endDate?: Date;
-  streakList?: string[];
+  streakList?: FinalAssignment[]; // list of assignments part of streak, sorted by due date
   streakLoaded?: boolean;
 }
 
@@ -43,13 +48,58 @@ export default function TaskContainer({
     courseList && courseId ? courseId : -1
   );
 
+  const [updatedStreakList, setUpdatedStreakList] = useState(streakList);
+  const [streakBreakDate, setStreakBreakDate] = useState<string>('');
+
+  // const setStreakBreakPoint = useCallback(
+  //   (assignment: FinalAssignment) => {
+  //     setStreakBreakDate(assignment.due_at);
+  //     console.log('breaking', assignment.due_at);
+  //     // setUpdatedStreakList(
+  //     //   updatedStreakList.filter((a) => dateAfter(a.due_at, assignment.due_at))
+  //     // );
+  //   },
+  //   [updatedStreakList, setUpdatedStreakList]
+  // );
+
+  const setStreakBreak = useCallback(
+    (a: FinalAssignment) => {
+      if (streakBreakDate === '' || dateAfter(a.due_at, streakBreakDate))
+        setStreakBreakDate(a.due_at);
+    },
+    [streakBreakDate]
+  );
+
+  // useEffect(() => {
+  //   const seen: Record<number, boolean> = {};
+  //   const newStreakList = updatedStreakList.concat(assignments).filter((a) => {
+  //     if (a.id in seen) return false;
+  //     seen[a.id] = true;
+  //     return true;
+  //   });
+  //   setUpdatedStreakList(newStreakList);
+  // }, [assignments]);
+
+  useEffect(() => {
+    if (streakLoaded) {
+      console.log('Updating');
+      setUpdatedStreakList(streakList);
+      if (streakList.length > 0) {
+        const breakDate = new Date(
+          new Date(streakList[0].due_at).getTime() - 1000
+        ).toISOString();
+        setStreakBreakDate(breakDate);
+      }
+    }
+  }, [streakList, streakLoaded]);
+
   function scheduleTimeout(a: FinalAssignment) {
     const dueAt = new Date(a.due_at).getTime();
     const now = new Date(Date.now()).getTime();
     const until = dueAt - now;
     if (until > 0) {
       return window.setTimeout(() => {
-        setStreakCount(0);
+        setStreakBreak(a);
       }, until);
     }
 
@@ -87,13 +137,40 @@ export default function TaskContainer({
     setExplodeTimeouts(explodeTimeouts);
   }
 
-  const [streakCount, setStreakCount] = useState(streakList.length);
-
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
 
   // update assignments in state when marked as complete, then push updates asynchronously to local storage
   const [updatedAssignments, setUpdatedAssignments] =
     useState<FinalAssignment[]>(assignments);
+
+  const sortedAssignments = useMemo(() => {
+    return sortByDate(updatedAssignments);
+  }, [updatedAssignments]);
+
+  const initialStreakCount = useMemo(() => {
+    console.log('str');
+    // console.log(streakList, updatedStreakList);
+    if (sortedAssignments.length === 0) return updatedStreakList.length;
+    const oldestDisplayed = sortedAssignments[0];
+    const newestDisplayed = sortedAssignments[sortedAssignments.length - 1];
+    return updatedStreakList.filter((a) => {
+      if (!dateAfter(a.due_at, streakBreakDate))
+        console.log('BAD', a.due_at, streakBreakDate);
+      return (
+        dateAfter(a.due_at, streakBreakDate) &&
+        (dateAfter(oldestDisplayed.due_at, a.due_at) ||
+          dateAfter(a.due_at, newestDisplayed.due_at))
+      );
+    }).length;
+  }, [sortedAssignments, streakBreakDate, updatedStreakList]);
+
+  const partOfStreak = useMemo(() => {
+    return updatedAssignments.filter(
+      (a) => dateAfter(a.due_at, streakBreakDate) && taskOnTime(a)
+    );
+  }, [streakBreakDate, updatedAssignments]);
+
+  console.log(initialStreakCount, partOfStreak);
 
   const courses = useMemo(() => {
     if (courseList && courseId !== false)
@@ -106,8 +183,6 @@ export default function TaskContainer({
       updatedAssignments.map((a) => {
         if (a.id == id) {
           const marked = markAssignment(AssignmentStatus.COMPLETE, a);
-          if (shouldBreakStreak(marked)) setStreakCount(0);
-          else if (taskOnTime(marked)) setStreakCount(streakCount + 1);
           cancelExplodingTimeout(a);
           return marked;
         }
@@ -122,9 +197,9 @@ export default function TaskContainer({
         if (a.id == id) {
           const wasGood = taskOnTime(a);
           const marked = markAssignment(AssignmentStatus.UNFINISHED, a);
-          if (shouldBreakStreak(marked)) setStreakCount(0);
-          else if (wasGood) {
-            setStreakCount(streakCount - 1);
+          if (shouldBreakStreak(a)) {
+            setStreakBreak(a);
+          } else if (wasGood) {
             addExplodingTimeout(a);
           }
           return marked;
@@ -162,9 +237,10 @@ export default function TaskContainer({
       if (withinBounds.length) {
         const newAssignments = updatedAssignments.concat(withinBounds);
         setUpdatedAssignments(newAssignments);
-        if (shouldBreakStreak(assignment)) setStreakCount(0);
-        else {
+        if (!shouldBreakStreak(assignment)) {
           addExplodingTimeout(assignment);
+        } else {
+          setStreakBreak(assignment);
         }
       }
     }
@@ -179,9 +255,9 @@ export default function TaskContainer({
     else setUpdatedAssignments(assignments);
   }, [assignments, courseId]);
 
-  useEffect(() => {
-    if (streakLoaded) setStreakCount(streakList.length);
-  }, [streakLoaded, setStreakCount, streakList]);
+  // useEffect(() => {
+  //   if (streakLoaded)
+  // }, [streakLoaded, setStreakCount, streakList]);
 
   return (
     <>
@@ -191,9 +267,11 @@ export default function TaskContainer({
         selectedCourseId={chosenCourseId}
         setCourse={setSelectedCourseId}
       />
-      {options.show_streak && streakCount > 0 && (
-        <StreakIndicator streak={streakCount} />
-      )}
+      {options.show_streak &&
+        streakLoaded &&
+        initialStreakCount + partOfStreak.length > 0 && (
+          <StreakIndicator streak={initialStreakCount + partOfStreak.length} />
+        )}
       <TaskChart
         assignments={updatedAssignments}
         colorOverride={
