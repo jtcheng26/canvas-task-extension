@@ -24,7 +24,7 @@ const StreakWrapper = styled.div.attrs({ className: 'tfc-streak' })`
   display: flex;
   flex-direction: row;
   align-items: center;
-  transition: opacity 0.3s;
+  transition: opacity 0.2s;
 `;
 
 const StreakText = styled.div<ColorProps>`
@@ -41,7 +41,7 @@ const StreakText = styled.div<ColorProps>`
 
 const Tooltip = styled.div.attrs({ className: 'tfc-tooltip' })`
   visibility: hidden;
-  transition: visibility 0s, opacity 0.3s;
+  transition: visibility 0s, opacity 0.2s;
   opacity: 0;
   position: absolute;
   top: 27px;
@@ -57,6 +57,32 @@ const Tooltip = styled.div.attrs({ className: 'tfc-tooltip' })`
   z-index: 1000;
   box-shadow: 0 4px 7px rgba(0, 0, 0, 0.3);
 `;
+
+/*
+
+Algorithm:
+
+
+
+
+Live updates:
+
+Runs on assignment list update (check complete or incomplete)
+Component keeps:
+    list of assignments part of the streak and in current period
+
+When list of tasks is updated:
+    1. check for break point, if so reset streak
+        check if any assignments in potential list are overdue
+        check if any assignments in streak list that are overdue were manually marked incomplete
+    2. check for new streak elements
+        check if any assignments not in streak list are complete (in time):
+            if so, add to streak
+    3. check for removed streak elements
+        check if any assignments in streak list are deleted (remove from list but don't break)
+    Update streak list in storage
+
+*/
 
 type Props = {
   streak?: number;

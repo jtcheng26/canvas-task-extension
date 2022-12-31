@@ -18,6 +18,7 @@ export default function markAssignment(
     });
     apiReq('/v1/planner/overrides', json, method, assignment.override_id + '');
     assignment.marked_complete = complete === AssignmentStatus.COMPLETE;
+    assignment.marked_at = new Date(Date.now()).toISOString();
   }
   return assignment;
 }

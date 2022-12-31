@@ -6,6 +6,7 @@ import useAssignments from '../../hooks/useAssignments';
 import Skeleton from '../skeleton';
 import onCoursePage from '../../utils/onCoursePage';
 import useCourses from '../../hooks/useCourses';
+import useStreak from '../../hooks/useStreak';
 
 interface ContentLoaderProps {
   options: Options;
@@ -43,6 +44,7 @@ function ContentLoader({
 
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
+  const { data: streak, isSuccess: streakLoaded } = useStreak(options);
   return (
     <>
       {!isSuccess && !isError && !assignmentData && <Skeleton />}
@@ -55,6 +57,8 @@ function ContentLoader({
           loading={!isSuccess}
           options={options}
           startDate={startDate}
+          streakList={streak}
+          streakLoaded={streakLoaded}
         />
       ) : (
         ''

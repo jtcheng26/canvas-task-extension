@@ -9,6 +9,7 @@ interface PlannerAssignment {
     id: number;
     marked_complete: boolean;
     dismissed: boolean;
+    updated_at: string;
   } | null;
   submissions:
     | {
@@ -46,12 +47,14 @@ interface FinalAssignment {
   plannable_id: number; // id of planner item for marking complete
   override_id?: number; // id of existing planner override
   submitted: boolean; // has the user submitted it?
+  submitted_late?: boolean;
   graded: boolean; // has the teacher graded it?
   graded_at: string; // date the teacher graded (if graded)
   score: number; // grade assigned, 0 if ungraded or unsubmitted
   type: AssignmentType;
   course_name: string; // via useCourseName
   marked_complete: boolean; // marked complete in the sidebar or through the planner
+  marked_at?: string; // time of marking completion
   position: number;
 }
 

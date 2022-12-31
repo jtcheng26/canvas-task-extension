@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   AssignmentType,
   FinalAssignment,
@@ -16,14 +16,44 @@ import { AssignmentDefaults, OptionsDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
 import isDemo from '../utils/isDemo';
 
+const parseLinkHeader = (link: string) => {
+  const re = /<([^>]+)>; rel="([^"]+)"/g;
+  let arrRes: RegExpExecArray | null;
+  const ret: Record<string, { url: string; page: string }> = {};
+  while ((arrRes = re.exec(link)) !== null) {
+    ret[arrRes[2]] = {
+      url: arrRes[1],
+      page: arrRes[2],
+    };
+  }
+  return ret;
+};
+
+export async function getPaginatedRequest<T>(
+  url: string,
+  recurse = false
+): Promise<T[]> {
+  const res = await axios.get(url);
+  if (recurse && 'link' in res.headers) {
+    const parsed = parseLinkHeader(res.headers['link']);
+    if (parsed && 'next' in parsed && parsed['next'].url !== url)
+      return (res.data as T[]).concat(
+        (await getPaginatedRequest(parsed['next'].url, true)) as T[]
+      );
+  }
+  return res.data;
+}
+
 /* Get assignments from api */
-function getAllAssignmentsRequest(
+async function getAllAssignmentsRequest(
   start: string,
-  end: string
-): Promise<AxiosResponse<PlannerAssignment[]>> {
-  return axios.get(
-    `${baseURL()}/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=1000`
-  );
+  end: string,
+  allPages = false
+): Promise<PlannerAssignment[]> {
+  const initialURL = `${baseURL()}/api/v1/planner/items?start_date=${start}${
+    end ? '&end_date=' + end : ''
+  }&per_page=1000`;
+  return await getPaginatedRequest<PlannerAssignment>(initialURL, allPages);
 }
 
 /* Merge api objects into Assignment objects. */
@@ -46,6 +76,8 @@ export function convertPlannerAssignments(
         assignment.submissions !== false
           ? assignment.submissions.submitted
           : undefined,
+      submitted_late:
+        assignment.submissions !== false && assignment.submissions.late,
       graded:
         assignment.submissions !== false
           ? assignment.submissions.excused || assignment.submissions.graded
@@ -57,6 +89,7 @@ export function convertPlannerAssignments(
       marked_complete:
         assignment.planner_override?.marked_complete ||
         assignment.planner_override?.dismissed,
+      marked_at: assignment.planner_override?.updated_at,
     };
 
     const full: FinalAssignment = {
@@ -76,14 +109,14 @@ export function convertPlannerAssignments(
 /* Only assignments between the exact datetimes */
 export function filterTimeBounds(
   startDate: Date,
-  endDate: Date,
+  endDate: Date | '' = '',
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.filter((assignment) => {
     const due_date = new Date(assignment.due_at);
     return (
       due_date.valueOf() >= startDate.valueOf() &&
-      due_date.valueOf() < endDate.valueOf()
+      (!endDate || due_date.valueOf() < endDate.valueOf())
     );
   });
 }
@@ -171,35 +204,39 @@ export function applyCustomTaskLabels(
 
 export async function getAllAssignments(
   startDate: Date,
-  endDate: Date
+  endDate?: Date,
+  allPages = false
 ): Promise<FinalAssignment[]> {
   /* Expand bounds by 1 day to account for possible time zone differences with api. */
   const st = new Date(startDate);
   st.setDate(startDate.getDate() - 1);
-  const en = new Date(endDate);
-  en.setDate(en.getDate() + 1);
-
   const startStr = st.toISOString().split('T')[0];
-  const endStr = en.toISOString().split('T')[0];
-  const requests = isDemo()
-    ? {
-        data: DemoAssignments,
-      }
-    : await getAllAssignmentsRequest(startStr, endStr);
+  let endStr = '';
 
-  return convertPlannerAssignments(requests.data as PlannerAssignment[]);
+  if (endDate) {
+    const en = new Date(endDate);
+    en.setDate(en.getDate() + 1);
+
+    endStr = en.toISOString().split('T')[0];
+  }
+
+  const requests = isDemo()
+    ? DemoAssignments
+    : await getAllAssignmentsRequest(startStr, endStr, allPages);
+  return convertPlannerAssignments(requests as PlannerAssignment[]);
 }
 
 async function processAssignments(
   startDate: Date,
-  endDate: Date,
-  options: Options,
+  endDate?: Date,
+  options: Options = OptionsDefaults,
   colors?: Record<string, string>,
   names?: Record<string, string>,
-  positions?: Record<string, number>
+  positions?: Record<string, number>,
+  allPages = false
 ): Promise<FinalAssignment[]> {
   /* modify this filter if announcements are used in the future */
-  let assignments = await getAllAssignments(startDate, endDate);
+  let assignments = await getAllAssignments(startDate, endDate, allPages);
   assignments = filterAssignmentTypes(assignments);
   assignments = filterTimeBounds(startDate, endDate, assignments);
   if (colors) assignments = applyCourseColor(colors, assignments);
@@ -221,8 +258,9 @@ async function processAssignments(
 
 export default function useAssignments(
   startDate: Date,
-  endDate: Date,
-  options: Options
+  endDate?: Date,
+  options: Options = OptionsDefaults,
+  allPages = false
 ): UseQueryResult<FinalAssignment[]> {
   const { data: colors } = useCourseColors(
     options.theme_color !== OptionsDefaults.theme_color
@@ -240,7 +278,8 @@ export default function useAssignments(
         options,
         colors as Record<string, string>,
         names as Record<string, string>,
-        positions as Record<string, number>
+        positions as Record<string, number>,
+        allPages
       ),
     {
       staleTime: Infinity,
