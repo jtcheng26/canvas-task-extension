@@ -9,8 +9,9 @@ type StyledButtonProps = {
 const StyledButton = styled.button<StyledButtonProps>`
   background-color: ${(props) => props.color};
   outline: none;
+  opacity: 1;
   &:hover {
-    background-color: ${(props) => props.color}aa;
+    opacity: ${(props) => (props.disabled ? '1' : '0.7')};
   }
 
   font-size: 16px;
