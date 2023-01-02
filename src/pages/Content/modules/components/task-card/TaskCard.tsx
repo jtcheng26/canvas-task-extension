@@ -7,11 +7,13 @@ import fmtDate from './utils/fmtDate';
 
 interface AnimatedProps {
   static?: boolean;
+  opacity?: number;
+  height?: number;
 }
 
-export const TaskContainer = styled.div`
+export const TaskContainer = styled.div<AnimatedProps>`
     width: 100%;
-    height: 65px;
+    height: ${(props) => (props.height ? props.height : '0')}px;
     margin: 5px;
     background-color: inherit;
     border-radius: 4px;
@@ -19,6 +21,7 @@ export const TaskContainer = styled.div`
     flex-direction: row;
     font-size: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    opacity: ${(props) => (props.opacity ? props.opacity : '0')};
     &:hover {
       box-shadow: 0 4px 7px rgba(0, 0, 0, 0.3);
     }
@@ -137,6 +140,12 @@ interface TaskProps {
   markComplete?: () => void;
   markDeleted?: () => void;
   skeleton?: boolean;
+  transitionState?: TransitionState;
+}
+
+export interface TransitionState {
+  opacity: number;
+  height: number;
 }
 /*
     Renders an individual task item
@@ -157,7 +166,9 @@ export default function TaskCard({
   markComplete,
   markDeleted,
   skeleton,
+  transitionState,
 }: TaskProps): JSX.Element {
+  console.log(transitionState);
   const [due_date, due_time] = fmtDate(due_at);
   const [graded_date, graded_time] = fmtDate(
     graded_at ? graded_at : new Date().toISOString()
@@ -196,12 +207,17 @@ export default function TaskCard({
     }
   }
   return (
-    <TaskContainer>
+    <TaskContainer
+      height={transitionState ? transitionState?.height : 65}
+      opacity={transitionState ? transitionState?.opacity : 1}
+    >
       <TaskLeft
         color={(!skeleton ? color : '#e8e8e8') || '000000'}
         onClick={onClick}
       >
-        {!skeleton ? icon : ''}
+        {!skeleton && transitionState && transitionState?.height >= 40
+          ? icon
+          : ''}
       </TaskLeft>
       <TaskInfo>
         <TaskTop>

@@ -12,6 +12,8 @@ import CreateTaskCard from '../task-card/CreateTaskCard';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 import Confetti from 'react-dom-confetti';
 import { AssignmentStatus } from '../../types/assignment';
+import NodeGroup from 'react-move/NodeGroup';
+import { TransitionState } from '../task-card/TaskCard';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -99,10 +101,12 @@ export default function TaskList({
       };
     else if (currentTab === 'Unfinished') {
       return () => {
-        setConfetti(true);
         setTimeout(() => {
-          stopConfetti();
-        }, 100);
+          setConfetti(true);
+          setTimeout(() => {
+            stopConfetti();
+          }, 100);
+        }, 270);
 
         markAssignment(id, AssignmentStatus.COMPLETE);
       };
@@ -115,7 +119,15 @@ export default function TaskList({
     setConfetti(false);
   }
 
-  const assignmentToTaskCard = (assignment: FinalAssignment) => (
+  const assignmentToTaskCard = ({
+    key,
+    data: assignment,
+    state,
+  }: {
+    key: number;
+    data: FinalAssignment;
+    state: TransitionState;
+  }) => (
     <TaskCard
       color={assignment.color}
       complete={assignmentIsDone(assignment)}
@@ -124,7 +136,7 @@ export default function TaskList({
       graded={assignment.graded}
       graded_at={assignment.graded_at}
       html_url={assignment.html_url}
-      key={assignment.id}
+      key={key}
       markComplete={markAssignmentFunc(
         assignment.id,
         AssignmentStatus.UNFINISHED
@@ -133,10 +145,34 @@ export default function TaskList({
       name={assignment.name}
       points_possible={assignment.points_possible}
       submitted={assignment.submitted}
+      transitionState={state}
       type={assignment.type}
     />
   );
 
+  function startTransition() {
+    return {
+      height: 0,
+      opacity: 0,
+    };
+  }
+  function enterTransition() {
+    return {
+      height: [65],
+      opacity: [1],
+      timing: { duration: 250 },
+    };
+  }
+  function leaveTransition() {
+    return {
+      height: [0],
+      opacity: [0],
+      timing: { duration: 250 },
+    };
+  }
+  function keyAccess(a: FinalAssignment) {
+    return a.id;
+  }
   if (skeleton)
     return (
       <ListWrapper>
@@ -167,16 +203,26 @@ export default function TaskList({
         ''
       )}
       <ListContainer>
-        {showDateHeadings || currentTab === 'Completed'
-          ? Object.keys(headings).map(
-              (heading) =>
-                headings[heading].length > 0 && (
-                  <HeadingGroup heading={heading} key={heading}>
-                    {headings[heading].map(assignmentToTaskCard)}
-                  </HeadingGroup>
-                )
-            )
-          : renderedAssignments.map(assignmentToTaskCard)}
+        {showDateHeadings ? (
+          Object.keys(headings).map(
+            (heading) =>
+              headings[heading].length > 0 && (
+                <HeadingGroup heading={heading} key={heading}>
+                  {/* {headings[heading].map(assignmentToTaskCard)} */}
+                </HeadingGroup>
+              )
+          )
+        ) : (
+          <NodeGroup
+            data={renderedAssignments}
+            enter={enterTransition}
+            keyAccessor={keyAccess}
+            leave={leaveTransition}
+            start={startTransition}
+          >
+            {(nodes) => <>{nodes.map(assignmentToTaskCard)}</>}
+          </NodeGroup>
+        )}
         {(sortedAssignments.length <= 4 || viewingMore) &&
         currentTab === 'Unfinished' ? (
           <CreateTaskCard
