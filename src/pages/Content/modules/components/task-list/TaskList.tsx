@@ -106,26 +106,30 @@ export default function TaskList({
 
   const [unfinishedList, allUnfinishedList] = useMemo(
     () =>
-      processRenderList(
-        assignments,
-        'Unfinished',
-        selectedCourseId,
-        viewingMore,
-        showDateHeadings
-      ),
-    [assignments, selectedCourseId, viewingMore, showDateHeadings]
+      skeleton
+        ? [[], []]
+        : processRenderList(
+            assignments,
+            'Unfinished',
+            selectedCourseId,
+            viewingMore,
+            showDateHeadings
+          ),
+    [assignments, skeleton, selectedCourseId, viewingMore, showDateHeadings]
   );
 
   const [completedList, allCompletedList] = useMemo(
     () =>
-      processRenderList(
-        assignments,
-        'Completed',
-        selectedCourseId,
-        viewingMore,
-        showDateHeadings
-      ),
-    [assignments, selectedCourseId, viewingMore, showDateHeadings]
+      skeleton
+        ? [[], []]
+        : processRenderList(
+            assignments,
+            'Completed',
+            selectedCourseId,
+            viewingMore,
+            showDateHeadings
+          ),
+    [assignments, selectedCourseId, skeleton, viewingMore, showDateHeadings]
   );
 
   const allList: Record<TabType, FinalAssignment[]> = {

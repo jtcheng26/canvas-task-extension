@@ -171,7 +171,6 @@ export default function TaskCard({
   skeleton,
   transitionState,
 }: TaskProps): JSX.Element {
-  // console.log(transitionState);
   const [due_date, due_time] = fmtDate(due_at);
   const [graded_date, graded_time] = fmtDate(
     graded_at ? graded_at : new Date().toISOString()
