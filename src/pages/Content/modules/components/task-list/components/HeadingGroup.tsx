@@ -4,7 +4,7 @@ import { AnimatedProps, TransitionState } from '../../task-card/TaskCard';
 
 const HeadingContainer = styled.div.attrs((props: AnimatedProps) => ({
   style: {
-    height: props.height ? 24 * (props.height / 65) : 0,
+    height: props.opacity ? 24 * props.opacity : 0,
     opacity: props.opacity ? props.opacity * props.opacity : 0,
   },
 }))<AnimatedProps>`
@@ -25,13 +25,11 @@ const TextDiv = styled.span`
 interface HeadingGroupProps {
   heading: string;
   transitionState: TransitionState;
-  // children?: React.ReactNode;
 }
 export default function HeadingGroup({
   heading,
   transitionState,
-}: // children,
-HeadingGroupProps): JSX.Element {
+}: HeadingGroupProps): JSX.Element {
   const dueText = 'due';
   const noDueLabel = new Set(['Overdue', 'Graded', 'Ungraded']);
   return (
@@ -43,7 +41,6 @@ HeadingGroupProps): JSX.Element {
       <TextDiv>
         {!noDueLabel.has(heading) ? dueText : ''} <strong>{heading}</strong>
       </TextDiv>
-      {/* {children} */}
     </HeadingContainer>
   );
 }

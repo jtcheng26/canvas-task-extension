@@ -14,7 +14,7 @@ export interface AnimatedProps {
 export const TaskContainer = styled.div.attrs((props: AnimatedProps) => ({
     style: {
       height: props.height ? props.height : 0,
-      margin: props.height ? 5 * (props.height / 65) : 0,
+      margin: props.opacity ? 5 * props.opacity : 0,
       opacity: props.opacity ? props.opacity : 0,
     },
   }))<AnimatedProps>`

@@ -40,7 +40,7 @@ function ContentLoader({
   useEffect(() => {
     if (isSuccess) {
       const loadTime = Date.now() - animationStart;
-      console.log(loadTime / 1000);
+      console.log('Tasks for Canvas: ' + loadTime / 1000 + 's load');
       if (loadTime < MIN_LOAD_TIME) {
         const to = setTimeout(() => {
           setAssignmentData(data as FinalAssignment[]);
