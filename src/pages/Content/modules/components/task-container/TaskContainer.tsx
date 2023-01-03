@@ -38,6 +38,7 @@ export default function TaskContainer({
   );
 
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
+  const weekKey = startDate?.toISOString() || '1';
 
   // update assignments in state when marked as complete, then push updates asynchronously to local storage
   const [updatedAssignments, setUpdatedAssignments] =
@@ -112,10 +113,12 @@ export default function TaskContainer({
       <TaskList
         assignments={updatedAssignments}
         createAssignment={createNewAssignment}
+        loading={loading}
         markAssignment={markAssignmentAs}
         selectedCourseId={chosenCourseId}
         showConfetti={options.show_confetti}
         showDateHeadings={options.due_date_headings}
+        weekKey={weekKey}
       />
     </>
   );

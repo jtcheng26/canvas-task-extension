@@ -41,6 +41,7 @@ export default function Skeleton(): JSX.Element {
         selectedCourseId={-1}
         showDateHeadings={false}
         skeleton
+        weekKey="skeleton"
       />
     </LoadingDiv>
   );

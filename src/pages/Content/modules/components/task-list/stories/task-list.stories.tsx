@@ -30,6 +30,7 @@ const Template: ComponentStory<typeof TaskList> = ({
         selectedCourseId={selectedCourseId}
         showDateHeadings={showDateHeadings}
         skeleton={skeleton}
+        weekKey="1"
       />
     </div>
   );

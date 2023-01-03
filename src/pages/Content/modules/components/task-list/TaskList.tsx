@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import TaskCard from '../task-card';
 import SubTabs from '../sub-tabs/SubTabs';
@@ -39,6 +39,10 @@ const ConfettiWrapper = styled.div`
   z-index: 10000;
 `;
 
+const HideDiv = styled.div<{ visible: boolean }>`
+  display: ${(props) => (props.visible ? 'block' : 'none')};
+`;
+
 interface ViewMoreProps {
   href: string;
   onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
@@ -50,11 +54,13 @@ const ViewMore = styled.a<ViewMoreProps>`
 export interface TaskListProps {
   assignments: FinalAssignment[];
   createAssignment?: (assignment: FinalAssignment) => void;
+  loading?: boolean;
   markAssignment?: (id: number, status: AssignmentStatus) => void;
   selectedCourseId: number;
   showConfetti?: boolean;
   showDateHeadings: boolean;
   skeleton?: boolean;
+  weekKey: string; // unique key value for same headings between different weeks
 }
 
 /*
@@ -63,25 +69,69 @@ export interface TaskListProps {
 export default function TaskList({
   assignments,
   createAssignment,
+  loading = false,
   markAssignment,
   selectedCourseId = -1,
   showDateHeadings,
   showConfetti = true,
   skeleton,
+  weekKey,
 }: TaskListProps): JSX.Element {
+  type TabType = 'Unfinished' | 'Completed';
   const [confetti, setConfetti] = useState(false);
-  const [currentTab, setCurrentTab] =
-    useState<'Unfinished' | 'Completed'>('Unfinished');
+  const [currentTab, setCurrentTab] = useState<TabType>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
-  const selectedAssignments = useSelectedCourse(selectedCourseId, assignments);
-  const filteredAssignments = filterByTab(currentTab, selectedAssignments);
-  const sortedAssignments = sortByTab(currentTab, filteredAssignments);
-  const renderedAssignments = cutAssignmentList(
-    !viewingMore,
-    4,
-    sortedAssignments
+  function processRenderList(
+    assignments: FinalAssignment[],
+    tab: TabType,
+    selectedCourseId: number,
+    viewingMore: boolean,
+    showDateHeadings: boolean
+  ) {
+    const selected = useSelectedCourse(selectedCourseId, assignments);
+    const filtered = filterByTab(tab, selected);
+    const sorted = sortByTab(tab, filtered);
+    const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
+    const headings = useHeadings(tab, renderedTasks);
+    const allRendered = Object.keys(headings).reduce<
+      (FinalAssignment | string)[]
+    >((prev, curr) => {
+      let nxt = prev;
+      if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
+      nxt = nxt.concat(headings[curr]);
+      return nxt;
+    }, []);
+    return [allRendered, sorted as FinalAssignment[]];
+  }
+
+  const [unfinishedList, allUnfinishedList] = useMemo(
+    () =>
+      processRenderList(
+        assignments,
+        'Unfinished',
+        selectedCourseId,
+        viewingMore,
+        showDateHeadings
+      ),
+    [assignments, selectedCourseId, viewingMore, showDateHeadings]
   );
-  const headings = useHeadings(currentTab, renderedAssignments);
+
+  const [completedList, allCompletedList] = useMemo(
+    () =>
+      processRenderList(
+        assignments,
+        'Completed',
+        selectedCourseId,
+        viewingMore,
+        showDateHeadings
+      ),
+    [assignments, selectedCourseId, viewingMore, showDateHeadings]
+  );
+
+  const allList: Record<TabType, FinalAssignment[]> = {
+    Unfinished: allUnfinishedList as FinalAssignment[],
+    Completed: allCompletedList as FinalAssignment[],
+  };
 
   function handleViewMoreClick(event: React.MouseEvent<HTMLAnchorElement>) {
     event.preventDefault();
@@ -89,29 +139,34 @@ export default function TaskList({
   }
 
   const viewMoreText = !viewingMore
-    ? `View ${sortedAssignments.length - 4} more`
+    ? `View ${allList[currentTab].length - 4} more`
     : 'View less';
 
   const noneText = 'None';
 
-  function markAssignmentFunc(id: number, status: AssignmentStatus) {
-    if (!markAssignment)
+  function markAssignmentFunc(
+    id: number,
+    tab: TabType,
+    status: AssignmentStatus,
+    mark?: typeof markAssignment
+  ) {
+    if (!mark)
       return () => {
         console.log('Failed to mark as complete');
       };
-    else if (currentTab === 'Unfinished') {
+    else if (tab === 'Unfinished') {
       return () => {
         setTimeout(() => {
           setConfetti(true);
           setTimeout(() => {
             stopConfetti();
           }, 100);
-        }, 270);
+        }, 300);
 
-        markAssignment(id, AssignmentStatus.COMPLETE);
+        mark(id, AssignmentStatus.COMPLETE);
       };
     } else {
-      return () => markAssignment(id, status);
+      return () => mark(id, status);
     }
   }
 
@@ -119,15 +174,16 @@ export default function TaskList({
     setConfetti(false);
   }
 
-  const assignmentToTaskCard = ({
-    key,
-    data: assignment,
-    state,
-  }: {
+  interface TaskCardTransitionProps {
     key: number;
     data: FinalAssignment;
     state: TransitionState;
-  }) => (
+  }
+
+  const assignmentToTaskCard = (
+    tab: TabType,
+    { key, data: assignment, state }: TaskCardTransitionProps
+  ) => (
     <TaskCard
       color={assignment.color}
       complete={assignmentIsDone(assignment)}
@@ -139,9 +195,16 @@ export default function TaskList({
       key={key}
       markComplete={markAssignmentFunc(
         assignment.id,
-        AssignmentStatus.UNFINISHED
+        tab,
+        AssignmentStatus.UNFINISHED,
+        markAssignment
       )}
-      markDeleted={markAssignmentFunc(assignment.id, AssignmentStatus.DELETED)}
+      markDeleted={markAssignmentFunc(
+        assignment.id,
+        tab,
+        AssignmentStatus.DELETED,
+        markAssignment
+      )}
       name={assignment.name}
       points_possible={assignment.points_possible}
       submitted={assignment.submitted}
@@ -149,6 +212,45 @@ export default function TaskList({
       type={assignment.type}
     />
   );
+
+  interface HeadingTransitionProps {
+    key: string;
+    data: string;
+    state: TransitionState;
+  }
+
+  const headingToComponent = ({
+    key,
+    data: heading,
+    state,
+  }: HeadingTransitionProps) => (
+    <HeadingGroup heading={heading} key={key} transitionState={state} />
+  );
+
+  function dataToComponentFunc(tab: TabType) {
+    return ({
+      key,
+      data,
+      state,
+    }: {
+      key: string | number;
+      data: FinalAssignment | string;
+      state: TransitionState;
+    }) => {
+      if (typeof data === 'string')
+        return headingToComponent({
+          key,
+          data,
+          state,
+        } as HeadingTransitionProps);
+      else
+        return assignmentToTaskCard(tab, {
+          key,
+          data,
+          state,
+        } as TaskCardTransitionProps);
+    };
+  }
 
   function startTransition() {
     return {
@@ -170,9 +272,10 @@ export default function TaskList({
       timing: { duration: 250 },
     };
   }
-  function keyAccess(a: FinalAssignment) {
-    return a.id;
+  function keyAccess(a: FinalAssignment | string) {
+    return typeof a === 'string' ? a + '-' + weekKey : a.id;
   }
+
   if (skeleton)
     return (
       <ListWrapper>
@@ -188,7 +291,7 @@ export default function TaskList({
   return (
     <ListWrapper>
       <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
-      {showConfetti ? (
+      {showConfetti && (
         <ConfettiWrapper>
           <Confetti
             active={confetti}
@@ -199,47 +302,42 @@ export default function TaskList({
             }}
           />
         </ConfettiWrapper>
-      ) : (
-        ''
       )}
-      <ListContainer>
-        {showDateHeadings ? (
-          Object.keys(headings).map(
-            (heading) =>
-              headings[heading].length > 0 && (
-                <HeadingGroup heading={heading} key={heading}>
-                  {/* {headings[heading].map(assignmentToTaskCard)} */}
-                </HeadingGroup>
-              )
-          )
-        ) : (
+      <HideDiv visible={currentTab === 'Unfinished'}>
+        <ListContainer>
           <NodeGroup
-            data={renderedAssignments}
+            data={loading ? [] : unfinishedList}
             enter={enterTransition}
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
           >
-            {(nodes) => <>{nodes.map(assignmentToTaskCard)}</>}
+            {(nodes) => <>{nodes.map(dataToComponentFunc('Unfinished'))}</>}
           </NodeGroup>
-        )}
-        {(sortedAssignments.length <= 4 || viewingMore) &&
-        currentTab === 'Unfinished' ? (
-          <CreateTaskCard
-            onSubmit={createAssignment}
-            selectedCourse={selectedCourseId}
-          />
-        ) : (
-          ''
-        )}
+          {(allList['Unfinished'].length <= 4 || viewingMore) && (
+            <CreateTaskCard
+              onSubmit={createAssignment}
+              selectedCourse={selectedCourseId}
+            />
+          )}
+        </ListContainer>
+      </HideDiv>
 
-        {renderedAssignments.length == 0 && currentTab === 'Completed' ? (
-          <span>{noneText}</span>
-        ) : (
-          ''
-        )}
-      </ListContainer>
-      {sortedAssignments.length > 4 && (
+      <HideDiv visible={currentTab === 'Completed'}>
+        <ListContainer>
+          <NodeGroup
+            data={loading ? [] : completedList}
+            enter={enterTransition}
+            keyAccessor={keyAccess}
+            leave={leaveTransition}
+            start={startTransition}
+          >
+            {(nodes) => <>{nodes.map(dataToComponentFunc('Completed'))}</>}
+          </NodeGroup>
+          {completedList.length === 0 && <span>{noneText}</span>}
+        </ListContainer>
+      </HideDiv>
+      {allList[currentTab].length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>

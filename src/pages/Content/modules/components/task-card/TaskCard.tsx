@@ -5,23 +5,26 @@ import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
 import fmtDate from './utils/fmtDate';
 
-interface AnimatedProps {
+export interface AnimatedProps {
   static?: boolean;
   opacity?: number;
   height?: number;
 }
 
-export const TaskContainer = styled.div<AnimatedProps>`
+export const TaskContainer = styled.div.attrs((props: AnimatedProps) => ({
+    style: {
+      height: props.height ? props.height : 0,
+      margin: props.height ? 5 * (props.height / 65) : 0,
+      opacity: props.opacity ? props.opacity : 0,
+    },
+  }))<AnimatedProps>`
     width: 100%;
-    height: ${(props) => (props.height ? props.height : '0')}px;
-    margin: 5px;
     background-color: inherit;
     border-radius: 4px;
     display: flex;
     flex-direction: row;
     font-size: 12px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    opacity: ${(props) => (props.opacity ? props.opacity : '0')};
     &:hover {
       box-shadow: 0 4px 7px rgba(0, 0, 0, 0.3);
     }
@@ -168,7 +171,7 @@ export default function TaskCard({
   skeleton,
   transitionState,
 }: TaskProps): JSX.Element {
-  console.log(transitionState);
+  // console.log(transitionState);
   const [due_date, due_time] = fmtDate(due_at);
   const [graded_date, graded_time] = fmtDate(
     graded_at ? graded_at : new Date().toISOString()
