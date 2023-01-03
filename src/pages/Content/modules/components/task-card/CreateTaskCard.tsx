@@ -8,7 +8,7 @@ import TaskForm from '../task-form/TaskForm';
 export const TaskContainer = styled.div`
   width: 100%;
   height: 36px;
-  margin: 10px 5px 5px 15px;
+  margin: 10px 0px 5px 0px;
   background-color: inherit;
   border-radius: 4px;
   display: flex;
