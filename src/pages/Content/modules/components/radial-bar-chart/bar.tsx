@@ -20,6 +20,7 @@ const ColorCircle = styled.circle`
   fill: none;
 
   transition: stroke-dashoffset 1s ease-in-out;
+  stroke-linecap: round;
 `;
 
 interface Props {
@@ -50,13 +51,15 @@ export default function RadialChartBar({
   const circumference = 2 * Math.PI * radius;
   const [strokeDashoffset, setOffset] = useState(circumference);
   useEffect(() => {
-    setOffset(circumference);
-    const timeout = setTimeout(() => {
+    if (strokeDashoffset === circumference) {
+      const timeout = setTimeout(() => {
+        setOffset((1 - progress) * circumference);
+      }, 100);
+      return () => clearTimeout(timeout);
+    } else {
       setOffset((1 - progress) * circumference);
-    }, 100);
-
-    return () => clearTimeout(timeout);
-  }, []);
+    }
+  }, [progress]);
 
   function handleClick(e: MouseEvent) {
     if (onClick) onClick(id, e);

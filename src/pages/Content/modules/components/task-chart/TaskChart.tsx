@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import RadialBarChart from '../radial-bar-chart';
+import RadialBarChart, { ChartData } from '../radial-bar-chart';
 import BeatLoader from '../spinners';
 import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
@@ -49,6 +49,7 @@ export interface TaskChartProps {
   setCourse: (id: number) => void;
   showConfetti?: boolean;
   themeColor?: string;
+  weekKey?: string;
 }
 
 export default function TaskChart({
@@ -60,14 +61,56 @@ export default function TaskChart({
   setCourse,
   showConfetti = true,
   themeColor = OptionsDefaults.theme_color,
+  weekKey = '',
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
 
-  const chartData = useMemo(
-    () => useChartData(assignments, colorOverride || themeColor),
-    [assignments]
+  const [chartData, setChartData] = useState(
+    useChartData(assignments, colorOverride || themeColor)
   );
-  const [done, total, color] = useSelectChartData(selectedCourseId, chartData);
+
+  const [currKey, setCurrKey] = useState(weekKey);
+  function compareData(a: ChartData, b: ChartData) {
+    if (a.bars.length !== b.bars.length) return false;
+    return a.bars.reduce(
+      (prev, curr, i) =>
+        prev &&
+        b.bars[i].id === curr.id &&
+        b.bars[i].max === curr.max &&
+        b.bars[i].value === curr.value,
+      true
+    );
+  }
+
+  function isEmpty(a: ChartData) {
+    return a.bars.length === 0 || (a.bars.length === 1 && a.bars[0].max === 0);
+  }
+
+  useEffect(() => {
+    // if assignments is same but weekkey different just change currkey
+    // else update assignments
+    // in order for everything to re-animate when weeks change, the key has to change at the same time as the data
+    const newData = useChartData(
+      assignments,
+      colorOverride || themeColor,
+      currKey
+    );
+    if (weekKey !== currKey) setCurrKey(weekKey);
+    else if (
+      (!loading &&
+        isEmpty(chartData) &&
+        isEmpty(newData) &&
+        chartData.key !== newData.key) ||
+      !compareData(newData, chartData)
+    ) {
+      setChartData(newData);
+    }
+  }, [assignments, loading, currKey, weekKey]);
+
+  const [done, total, color] = useMemo(
+    () => useSelectChartData(selectedCourseId, chartData),
+    [selectedCourseId, chartData]
+  );
 
   function handleClick(id: number) {
     if (selectedCourseId === id) setCourse(-1);

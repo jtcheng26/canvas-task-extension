@@ -5,7 +5,8 @@ import sortByPosition from '../utils/sortByPosition';
 
 export default function useChartData(
   assignments: FinalAssignment[],
-  defaultColor: string
+  defaultColor: string,
+  key = ''
 ): ChartData {
   const sortedAssignments = sortByPosition(assignments);
   const data: ChartData = {
@@ -24,6 +25,7 @@ export default function useChartData(
         b.points_possible == 0 && b.type !== AssignmentType.NOTE ? 0 : 1; // 0 points = optional, but custom notes should be included
       return a;
     }, []),
+    key: key,
   };
 
   if (data.bars.length === 0)

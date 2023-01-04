@@ -46,7 +46,11 @@ function ContentLoader({
           setAssignmentData(data as FinalAssignment[]);
           loadedCallback();
         }, Math.min(20, MIN_LOAD_TIME - loadTime));
-        return () => clearTimeout(to);
+        return () => {
+          clearTimeout(to);
+          setAssignmentData(data as FinalAssignment[]);
+          loadedCallback();
+        };
       } else {
         setAssignmentData(data as FinalAssignment[]);
         loadedCallback();
