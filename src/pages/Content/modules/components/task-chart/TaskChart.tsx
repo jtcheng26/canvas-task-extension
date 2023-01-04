@@ -66,7 +66,7 @@ export default function TaskChart({
   /* useMemo so it doesn't animate the bars when switching courses. */
 
   const [chartData, setChartData] = useState(
-    useChartData(assignments, colorOverride || themeColor)
+    useChartData(assignments, colorOverride || themeColor, weekKey)
   );
 
   const [currKey, setCurrKey] = useState(weekKey);
@@ -150,7 +150,7 @@ export default function TaskChart({
         ''
       )}
       <RadialBarChart
-        bgColor="rgba(127, 127, 127, 10%)"
+        // bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
         onSelect={handleClick}
         selectedBar={colorOverride ? -1 : selectedCourseId}

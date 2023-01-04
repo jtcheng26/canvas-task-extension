@@ -96,7 +96,11 @@ export default function RadialBarChart({
       <ChartSVG height={size} viewBox="0 0 280 280" width={size}>
         {data.bars.map((bar, i) => (
           <RadialChartBar
-            bg={bgColor}
+            bg={
+              !bgColor && (selectedBar === -1 || selectedBar === bar.id)
+                ? undefined
+                : bgColor || '#f2f2f2'
+            }
             center={center}
             color={
               selectedBar === -1 || selectedBar === bar.id
