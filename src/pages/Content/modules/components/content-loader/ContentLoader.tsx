@@ -34,10 +34,25 @@ function ContentLoader({
 
   const { data: courseData } = useCourses();
 
+  const MIN_LOAD_TIME = 300; // keep waiting for animation if data loads too fast
+  const [animationStart, setAnimationStart] = useState(0);
+
   useEffect(() => {
     if (isSuccess) {
-      setAssignmentData(data as FinalAssignment[]);
-      loadedCallback();
+      const loadTime = Date.now() - animationStart;
+      console.log('Tasks for Canvas: ' + loadTime / 1000 + 's load');
+      if (loadTime < MIN_LOAD_TIME) {
+        const to = setTimeout(() => {
+          setAssignmentData(data as FinalAssignment[]);
+          loadedCallback();
+        }, Math.min(20, MIN_LOAD_TIME - loadTime));
+        return () => clearTimeout(to);
+      } else {
+        setAssignmentData(data as FinalAssignment[]);
+        loadedCallback();
+      }
+    } else {
+      setAnimationStart(Date.now());
     }
   }, [isSuccess]);
 
