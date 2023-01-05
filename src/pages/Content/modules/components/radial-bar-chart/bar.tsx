@@ -24,6 +24,7 @@ const BgCircle = styled.circle.attrs((props) => ({
 
 interface ColorProps {
   rounded?: boolean;
+  transition?: boolean;
 }
 
 const ColorCircle = styled.circle<ColorProps>`
@@ -31,7 +32,8 @@ const ColorCircle = styled.circle<ColorProps>`
   transform: rotate(-90deg);
   fill: none;
 
-  transition: stroke-dashoffset 1s ease-in-out;
+  ${(props) =>
+    props.transition ? 'transition: stroke-dashoffset 1s ease-in-out;' : ''}
   stroke-linecap: ${(props) => (props.rounded ? 'round' : 'butt')};
 `;
 
@@ -64,7 +66,10 @@ export default function RadialChartBar({
 }: Props): JSX.Element {
   const circumference = 2 * Math.PI * radius;
   const [strokeDashoffset, setOffset] = useState(circumference);
+  const [transition, setTransition] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(false);
   useEffect(() => {
+    setFirstLoad(true);
     if (strokeDashoffset === circumference) {
       const timeout = setTimeout(() => {
         setOffset((1 - progress) * circumference);
@@ -74,6 +79,17 @@ export default function RadialChartBar({
       setOffset((1 - progress) * circumference);
     }
   }, [progress]);
+
+  useEffect(() => {
+    if (circumference !== strokeDashoffset && firstLoad) {
+      setTransition(false);
+      setOffset((1 - progress) * circumference);
+      const to = setTimeout(() => {
+        setTransition(true);
+      }, 100);
+      return () => clearTimeout(to);
+    }
+  }, [circumference]);
 
   function handleClick(e: MouseEvent) {
     if (onClick) onClick(id, e);
@@ -109,6 +125,7 @@ export default function RadialChartBar({
         strokeDasharray={circumference}
         strokeDashoffset={strokeDashoffset}
         strokeWidth={width}
+        transition={transition}
       />
     </Group>
   );

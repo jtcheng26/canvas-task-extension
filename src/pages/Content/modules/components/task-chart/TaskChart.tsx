@@ -11,14 +11,22 @@ import { OptionsDefaults } from '../../constants';
 /*
   Renders progress chart
 */
-
-const ChartContainer = styled.div`
+type OpacityProps = {
+  opacity: number;
+};
+const ChartContainer = styled.div.attrs((props: OpacityProps) => ({
+  style: {
+    opacity: props.opacity,
+  },
+}))<OpacityProps>`
   width: 100%;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 15px 0px;
+
+  transition: opacity 0.3s ease-in-out;
 `;
 
 const SubtitleText = styled.div`
@@ -121,6 +129,7 @@ export default function TaskChart({
   const percent = total === 0 ? '100%' : `${Math.floor((100 * done) / total)}%`;
   const progress = `${done}/${total}`;
 
+  const [completion, setCompletion] = useState(false);
   const [confetti, setConfetti] = useState(false);
   useEffect(() => {
     if (selectedCourseId === -1 || onCoursePage) {
@@ -129,13 +138,31 @@ export default function TaskChart({
           setConfetti(true);
         }, 1000); // confetti once rings finish animating
 
-        return () => clearTimeout(confettiTimer);
-      } else setConfetti(false);
+        const completionTimer = setTimeout(() => {
+          setCompletion(true);
+        }, 1000);
+        return () => {
+          clearTimeout(confettiTimer);
+          clearTimeout(completionTimer);
+        };
+      } else {
+        setConfetti(false);
+        setCompletion(false);
+      }
     }
   }, [done, total]);
 
+  useEffect(() => {
+    if (completion) {
+      const to = setTimeout(() => {
+        setCompletion(false);
+      }, 300);
+      return () => clearTimeout(to);
+    }
+  }, [completion]);
+
   return (
-    <ChartContainer>
+    <ChartContainer opacity={completion ? 0.7 : 1}>
       {showConfetti ? (
         <ConfettiWrapper>
           <Confetti
