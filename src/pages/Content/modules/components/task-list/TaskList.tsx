@@ -14,6 +14,7 @@ import Confetti from 'react-dom-confetti';
 import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
+import { easeQuadInOut } from 'd3-ease';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -266,14 +267,14 @@ export default function TaskList({
     return {
       height: [65],
       opacity: [1],
-      timing: { duration: 250 },
+      timing: { duration: 500, ease: easeQuadInOut },
     };
   }
   function leaveTransition() {
     return {
       height: [0],
       opacity: [0],
-      timing: { duration: 250 },
+      timing: { duration: 300, ease: easeQuadInOut },
     };
   }
   function keyAccess(a: FinalAssignment | string) {

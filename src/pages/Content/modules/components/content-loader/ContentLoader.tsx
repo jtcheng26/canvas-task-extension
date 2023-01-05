@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import TaskContainer from '../task-container';
 import { FinalAssignment, Options } from '../../types';
 import CompareMonthDate from './utils/compareMonthDate';
@@ -34,8 +34,16 @@ function ContentLoader({
 
   const { data: courseData } = useCourses();
 
-  const MIN_LOAD_TIME = 300; // keep waiting for animation if data loads too fast
+  const MIN_LOAD_TIME = 350; // keep waiting for animation if data loads too fast
   const [animationStart, setAnimationStart] = useState(0);
+
+  const [loaded, setLoaded] = useState(false);
+
+  const onLoad = useCallback((data: FinalAssignment[]) => {
+    setLoaded(true);
+    setAssignmentData(data);
+    loadedCallback();
+  }, []);
 
   useEffect(() => {
     if (isSuccess) {
@@ -43,20 +51,17 @@ function ContentLoader({
       console.log('Tasks for Canvas: ' + loadTime / 1000 + 's load');
       if (loadTime < MIN_LOAD_TIME) {
         const to = setTimeout(() => {
-          setAssignmentData(data as FinalAssignment[]);
-          loadedCallback();
-        }, Math.min(20, MIN_LOAD_TIME - loadTime));
+          onLoad(data as FinalAssignment[]);
+        }, Math.max(20, MIN_LOAD_TIME - loadTime));
         return () => {
           clearTimeout(to);
-          setAssignmentData(data as FinalAssignment[]);
-          loadedCallback();
         };
       } else {
-        setAssignmentData(data as FinalAssignment[]);
-        loadedCallback();
+        onLoad(data as FinalAssignment[]);
       }
     } else {
       setAnimationStart(Date.now());
+      setLoaded(false);
     }
   }, [isSuccess]);
 
@@ -71,7 +76,7 @@ function ContentLoader({
           courseId={onCourse}
           courseList={courseData}
           endDate={endDate}
-          loading={!isSuccess}
+          loading={!loaded}
           options={options}
           startDate={startDate}
         />
