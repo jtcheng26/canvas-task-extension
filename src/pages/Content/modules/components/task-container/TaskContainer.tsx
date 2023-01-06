@@ -109,6 +109,7 @@ export default function TaskContainer({
         setCourse={setSelectedCourseId}
         showConfetti={options.show_confetti}
         themeColor={themeColor}
+        weekKey={weekKey}
       />
       <TaskList
         assignments={updatedAssignments}

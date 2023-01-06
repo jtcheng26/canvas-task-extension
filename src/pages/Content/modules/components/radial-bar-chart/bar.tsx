@@ -10,16 +10,31 @@ const Group = styled.g`
   transition: filter 0.2s;
 `;
 
-const BgCircle = styled.circle`
+interface BgProps {
+  opacity: number;
+}
+
+const BgCircle = styled.circle.attrs((props) => ({
+  style: {
+    opacity: props.opacity,
+  },
+}))<BgProps>`
   fill: none;
 `;
 
-const ColorCircle = styled.circle`
+interface ColorProps {
+  rounded?: boolean;
+  transition?: boolean;
+}
+
+const ColorCircle = styled.circle<ColorProps>`
   transform-origin: center center;
   transform: rotate(-90deg);
   fill: none;
 
-  transition: stroke-dashoffset 1s ease-in-out;
+  ${(props) =>
+    props.transition ? 'transition: stroke-dashoffset 1s ease-in-out;' : ''}
+  stroke-linecap: ${(props) => (props.rounded ? 'round' : 'butt')};
 `;
 
 interface Props {
@@ -28,6 +43,7 @@ interface Props {
   bg?: string;
   center: number;
   radius: number;
+  rounded?: boolean;
   width: number;
   id: number;
   onClick?: (id: number, e: MouseEvent) => void;
@@ -46,17 +62,34 @@ export default function RadialChartBar({
   onClick,
   onMouseEnter,
   onMouseLeave,
+  rounded = true,
 }: Props): JSX.Element {
   const circumference = 2 * Math.PI * radius;
   const [strokeDashoffset, setOffset] = useState(circumference);
+  const [transition, setTransition] = useState(true);
+  const [firstLoad, setFirstLoad] = useState(false);
   useEffect(() => {
-    setOffset(circumference);
-    const timeout = setTimeout(() => {
+    setFirstLoad(true);
+    if (strokeDashoffset === circumference) {
+      const timeout = setTimeout(() => {
+        setOffset((1 - progress) * circumference);
+      }, 100);
+      return () => clearTimeout(timeout);
+    } else {
       setOffset((1 - progress) * circumference);
-    }, 100);
+    }
+  }, [progress]);
 
-    return () => clearTimeout(timeout);
-  }, []);
+  useEffect(() => {
+    if (circumference !== strokeDashoffset && firstLoad) {
+      setTransition(false);
+      setOffset((1 - progress) * circumference);
+      const to = setTimeout(() => {
+        setTransition(true);
+      }, 100);
+      return () => clearTimeout(to);
+    }
+  }, [circumference]);
 
   function handleClick(e: MouseEvent) {
     if (onClick) onClick(id, e);
@@ -78,18 +111,21 @@ export default function RadialChartBar({
       <BgCircle
         cx={center}
         cy={center}
+        opacity={bg ? 1 : 0.1}
         r={radius}
-        stroke={bg || '#f2f2f2'}
+        stroke={bg || color}
         strokeWidth={width}
       />
       <ColorCircle
         cx={center}
         cy={center}
         r={radius}
+        rounded={rounded}
         stroke={color}
         strokeDasharray={circumference}
         strokeDashoffset={strokeDashoffset}
         strokeWidth={width}
+        transition={transition}
       />
     </Group>
   );

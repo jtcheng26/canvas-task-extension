@@ -7,4 +7,5 @@ export interface Bar {
 
 export default interface ChartData {
   bars: Bar[];
+  key?: string;
 }
