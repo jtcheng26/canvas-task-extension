@@ -11,7 +11,7 @@ export default function useChartData(
   const sortedAssignments = sortByPosition(assignments);
   const data: ChartData = {
     bars: sortedAssignments.reduce((a: Bar[], b: FinalAssignment) => {
-      if (a.length == 0 || a[a.length - 1].id != b.course_id) {
+      if (a.length == 0 || a[a.length - 1].id !== b.course_id) {
         a.push({
           id: b.course_id,
           value: 0,
@@ -30,7 +30,7 @@ export default function useChartData(
 
   if (data.bars.length === 0)
     data.bars.push({
-      id: -1,
+      id: '',
       value: 0,
       max: 0,
       color: defaultColor,

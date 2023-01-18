@@ -20,10 +20,10 @@ interface storyProps {
 const Template: ComponentStory<typeof RadialBarChart> = ({
   data,
 }: storyProps) => {
-  function onEnter(id: number) {
+  function onEnter(id: string) {
     console.log(id);
   }
-  function onLeave(id: number) {
+  function onLeave(id: string) {
     console.log(id);
   }
   const titleText = '69%';
@@ -32,7 +32,7 @@ const Template: ComponentStory<typeof RadialBarChart> = ({
       data={data}
       onMouseEnter={onEnter}
       onMouseLeave={onLeave}
-      selectedBar={-1}
+      selectedBar=""
       size={300}
     >
       <TitleText>{titleText}</TitleText>
@@ -42,79 +42,79 @@ const Template: ComponentStory<typeof RadialBarChart> = ({
 
 const sampleBars = [
   {
-    id: 1,
+    id: '1',
     value: 2,
     color: '#000000',
     max: 10,
   },
   {
-    id: 2,
+    id: '2',
     value: 4,
     color: '#00AAFF',
     max: 10,
   },
   {
-    id: 3,
+    id: '3',
     value: 10,
     color: '#AAFF00',
     max: 10,
   },
   {
-    id: 4,
+    id: '4',
     value: 4,
     color: '#00AAFF',
     max: 10,
   },
   {
-    id: 5,
+    id: '5',
     value: 7,
     color: '#AAFF00',
     max: 10,
   },
   {
-    id: 6,
+    id: '6',
     value: 8,
     color: '#AAFF00',
     max: 10,
   },
   {
-    id: 7,
+    id: '7',
     value: 3,
     color: '#AAFF00',
     max: 10,
   },
   {
-    id: 8,
+    id: '8',
     value: 6,
     color: '#00AAFF',
     max: 10,
   },
   {
-    id: 9,
+    id: '9',
     value: 6,
     color: '#AAFF00',
     max: 10,
   },
   {
-    id: 10,
+    id: '10',
     value: 6,
     color: '#00FFAA',
     max: 10,
   },
   {
-    id: 11,
+    id: '11',
     value: 6,
     color: '#AA00FF',
     max: 10,
   },
   {
-    id: 12,
+    id: '12',
     value: 6,
     color: '#FF00AA',
     max: 10,
   },
   {
-    id: 13,
+    id: '13',
     value: 6,
     color: '#BB5544',
     max: 10,

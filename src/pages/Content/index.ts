@@ -115,10 +115,11 @@ if (isCanvas) {
       createSidebar(teacherContainerList[0] as HTMLElement);
     else if (comingUpList.length > 0)
       createSidebar(comingUpList[0] as HTMLElement);
-    else if (rightSide)
+    else if (rightSide) {
       observer.observe(rightSide as Node, {
         childList: true,
       });
+    }
   }
 }
 
@@ -141,6 +142,7 @@ function checkForListView(
     rightSideWrapper.style.top = '0px';
     rightSideWrapper.style.overflowY = 'scroll';
     rightSideWrapper.style.height = '100vh';
+    console.log('Entrypoint: List View');
     createSidebar(rightSide);
     return true;
   }

@@ -52,7 +52,7 @@ const TaskTitle = styled.div`
 
 interface TaskProps {
   onSubmit?: (assignment: FinalAssignment) => void;
-  selectedCourse?: number;
+  selectedCourse?: string;
 }
 
 export default function CreateTaskCard({

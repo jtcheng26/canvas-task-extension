@@ -52,7 +52,7 @@ test('useCourses hook works when all courses are restricted', async () => {
 });
 
 test('useCourses hook applies course colors', async () => {
-  const colors: { custom_colors: Record<number, string> } = {
+  const colors: { custom_colors: Record<string, string> } = {
     custom_colors: {
       1: '#26f',
       2: '#2f6',

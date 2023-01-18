@@ -12,8 +12,8 @@ function fmtTime(minutes: number): string {
 
 type Props = {
   color?: string;
-  selected: number;
-  setSelected: (value: number) => void;
+  selected: string;
+  setSelected: (value: string) => void;
 };
 
 export default function TimePick({
@@ -25,7 +25,7 @@ export default function TimePick({
     const times: Course[] = [];
     for (let i = 0; i < 48; i++) {
       times.push({
-        id: i * 30,
+        id: i * 30 + '',
         name: fmtTime(i * 30),
         position: i,
         color: '#2d3b45',
@@ -33,7 +33,7 @@ export default function TimePick({
     }
 
     times.push({
-      id: 1439,
+      id: '1439',
       name: fmtTime(1439),
       position: 48,
       color: '#2d3b45',
@@ -42,7 +42,7 @@ export default function TimePick({
     return times;
   }, []);
 
-  function chooseTime(id: number) {
+  function chooseTime(id: string) {
     setSelected(id);
   }
 

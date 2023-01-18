@@ -35,9 +35,9 @@ const StyledButton = styled.div<StyledButtonProps>`
 export interface CourseButtonProps {
   name: string;
   color: string;
-  id: number;
+  id: string;
   last: boolean;
-  setCourse: (id: number) => void;
+  setCourse: (id: string) => void;
   menuVisible: boolean;
   setMenuVisible: (menuVisible: boolean) => void;
 }
@@ -48,7 +48,7 @@ export interface CourseButtonProps {
 export default function CourseButton({
   name,
   color = 'black',
-  id = -1,
+  id = '',
   last = false,
   setCourse,
   menuVisible,

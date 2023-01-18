@@ -20,7 +20,7 @@ const storyDefaults: TaskContainerProps = {
 
 const Template: ComponentStory<typeof TaskContainer> = function ({
   assignments,
-  courseId = -1,
+  courseId = '',
   courseList = [],
   loading,
   options,
@@ -87,23 +87,23 @@ OnCoursePage.args = {
   ...storyDefaults,
   courseList: [
     {
-      id: 1,
+      id: '1',
       name: 'Unknown Course',
       color: '#26f',
       position: 0,
     },
   ],
-  courseId: 1,
+  courseId: '1',
 };
 
 export const OnCoursePageNoAssignments = Template.bind({});
 OnCoursePageNoAssignments.args = {
   ...storyDefaults,
   assignments: [],
-  courseId: 1,
+  courseId: '1',
   courseList: [
     {
-      id: 1,
+      id: '1',
       name: 'The only course',
       color: '#62f',
       position: 0,

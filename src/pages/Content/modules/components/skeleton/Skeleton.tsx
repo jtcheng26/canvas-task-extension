@@ -38,7 +38,7 @@ export default function Skeleton(): JSX.Element {
       </ClipLoadingDiv>
       <TaskList
         assignments={[]}
-        selectedCourseId={-1}
+        selectedCourseId=""
         showDateHeadings={false}
         skeleton
         weekKey="skeleton"

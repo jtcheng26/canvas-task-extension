@@ -53,8 +53,8 @@ export interface TaskChartProps {
   colorOverride?: string;
   loading?: boolean;
   onCoursePage?: boolean;
-  selectedCourseId: number;
-  setCourse: (id: number) => void;
+  selectedCourseId: string;
+  setCourse: (id: string) => void;
   showConfetti?: boolean;
   themeColor?: string;
   weekKey?: string;
@@ -65,7 +65,7 @@ export default function TaskChart({
   colorOverride,
   loading,
   onCoursePage,
-  selectedCourseId = -1,
+  selectedCourseId = '',
   setCourse,
   showConfetti = true,
   themeColor = OptionsDefaults.theme_color,
@@ -120,8 +120,8 @@ export default function TaskChart({
     [selectedCourseId, chartData]
   );
 
-  function handleClick(id: number) {
-    if (selectedCourseId === id) setCourse(-1);
+  function handleClick(id: string) {
+    if (selectedCourseId === id) setCourse('');
     else setCourse(id);
   }
 
@@ -132,7 +132,7 @@ export default function TaskChart({
   const [completion, setCompletion] = useState(false);
   const [confetti, setConfetti] = useState(false);
   useEffect(() => {
-    if (selectedCourseId === -1 || onCoursePage) {
+    if (selectedCourseId === '' || onCoursePage) {
       if (total > 0 && done === total) {
         const confettiTimer = setTimeout(() => {
           setConfetti(true);
@@ -180,7 +180,7 @@ export default function TaskChart({
         // bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
         onSelect={handleClick}
-        selectedBar={colorOverride ? -1 : selectedCourseId}
+        selectedBar={colorOverride ? '' : selectedCourseId}
         size={chartData.bars.length < 7 ? 210 : 280}
       >
         {loading ? (

@@ -40,10 +40,10 @@ interface Props {
   children?: React.ReactNode;
   data: ChartData;
   bgColor?: string;
-  onMouseEnter?: (id: number, e: MouseEvent) => void;
-  onMouseLeave?: (id: number, e: MouseEvent) => void;
-  onSelect?: (id: number, e: MouseEvent) => void;
-  selectedBar: number;
+  onMouseEnter?: (id: string, e: MouseEvent) => void;
+  onMouseLeave?: (id: string, e: MouseEvent) => void;
+  onSelect?: (id: string, e: MouseEvent) => void;
+  selectedBar: string;
   size: number;
 }
 
@@ -76,18 +76,18 @@ export default function RadialBarChart({
     return [strokeWidth, radius, data.key !== undefined ? data.key : ''];
   }, [data]);
 
-  function handleClick(id: number, e: MouseEvent) {
+  function handleClick(id: string, e: MouseEvent) {
     if (selectedBar === id) {
-      if (onSelect) onSelect(-1, e);
+      if (onSelect) onSelect('', e);
     } else {
       if (onSelect) onSelect(id, e);
     }
   }
 
-  function handleMouseEnter(id: number, e: MouseEvent) {
+  function handleMouseEnter(id: string, e: MouseEvent) {
     if (onMouseEnter) onMouseEnter(id, e);
   }
-  function handleMouseLeave(id: number, e: MouseEvent) {
+  function handleMouseLeave(id: string, e: MouseEvent) {
     if (onMouseLeave) onMouseLeave(id, e);
   }
 
@@ -97,13 +97,13 @@ export default function RadialBarChart({
         {data.bars.map((bar, i) => (
           <RadialChartBar
             bg={
-              !bgColor && (selectedBar === -1 || selectedBar === bar.id)
+              !bgColor && (selectedBar === '' || selectedBar === bar.id)
                 ? undefined
                 : bgColor || '#f2f2f2'
             }
             center={center}
             color={
-              selectedBar === -1 || selectedBar === bar.id
+              selectedBar === '' || selectedBar === bar.id
                 ? bar.color
                 : '#f2f2f2'
             }

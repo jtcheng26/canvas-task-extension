@@ -63,7 +63,7 @@ const ErrorMessage = styled.div`
 type Props = {
   close: () => void;
   onSubmit?: (assignment: FinalAssignment) => void;
-  selectedCourse?: number;
+  selectedCourse?: string;
   visible?: boolean;
 };
 
@@ -77,7 +77,7 @@ export default function TaskForm({
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  const [selectedTime, setSelectedTime] = useState(1439);
+  const [selectedTime, setSelectedTime] = useState('1439');
   const { data: courses } = useCourses();
   const { data: courseMap } = useCourseNames();
   const { data: colors } = useCourseColors();
@@ -88,7 +88,7 @@ export default function TaskForm({
 
   const coursesWithoutCustom = useMemo(() => {
     if (courses) {
-      return courses.filter((c) => c.id > 0);
+      return courses.filter((c) => c.id !== '');
     }
     return [];
   }, [courses]);
@@ -104,7 +104,7 @@ export default function TaskForm({
 
   // const coursePage = onCoursePage();
   const [selectedCourseId, setSelectedCourseId] = useState(
-    selectedCourse || -1
+    selectedCourse || ''
   );
 
   async function submit() {
@@ -113,12 +113,12 @@ export default function TaskForm({
       ...AssignmentDefaults,
     } as FinalAssignment;
     assignment.name = title;
-    selectedDate?.setHours(selectedTime / 60);
-    selectedDate?.setMinutes(selectedTime % 60);
+    selectedDate?.setHours(parseInt(selectedTime) / 60);
+    selectedDate?.setMinutes(parseInt(selectedTime) % 60);
     selectedDate?.setSeconds(0);
     assignment.due_at = selectedDate?.toISOString() || new Date().toISOString();
     assignment.course_id =
-      selectedCourseId === -1 ? AssignmentDefaults.course_id : selectedCourseId;
+      selectedCourseId === '' ? AssignmentDefaults.course_id : selectedCourseId;
     assignment.course_name =
       courseMap && selectedCourseId in courseMap
         ? courseMap[selectedCourseId]
@@ -132,7 +132,7 @@ export default function TaskForm({
         ? positions[selectedCourseId]
         : AssignmentDefaults.position;
     assignment.type = AssignmentType.NOTE;
-    assignment.id = Math.floor(1000000 * Math.random());
+    assignment.id = '' + Math.floor(1000000 * Math.random());
 
     const res = await createCustomTask(
       title,
@@ -143,7 +143,7 @@ export default function TaskForm({
       setErrorMessage('An error occurred. Make sure you have cookies enabled.');
     } else {
       assignment.id = res && !!res.id ? res.id : assignment.id;
-      assignment.plannable_id = assignment.id; // for marking completing right after creating
+      assignment.plannable_id = assignment.id; // assignment.id; // for marking completing right after creating
       if (onSubmit) onSubmit(assignment);
       close();
     }
@@ -180,7 +180,7 @@ export default function TaskForm({
             defaultColor={themeColor}
             defaultOption="None"
             instructureStyle
-            onCoursePage={selectedCourse !== 0 && !!selectedCourse}
+            onCoursePage={!!selectedCourse}
             selectedCourseId={selectedCourseId}
             setCourse={setSelectedCourseId}
           />

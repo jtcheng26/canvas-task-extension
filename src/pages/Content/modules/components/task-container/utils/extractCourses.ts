@@ -5,7 +5,7 @@ export default function extractCourses(
   assignments: FinalAssignment[]
 ): Course[] {
   return Object.values(
-    assignments.reduce((a: Record<number, Course>, b: FinalAssignment) => {
+    assignments.reduce((a: Record<string, Course>, b: FinalAssignment) => {
       if (!(b.course_id in a)) {
         a[b.course_id] = {
           name: b.course_name,

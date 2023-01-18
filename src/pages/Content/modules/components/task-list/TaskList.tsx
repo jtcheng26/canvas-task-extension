@@ -56,8 +56,8 @@ export interface TaskListProps {
   assignments: FinalAssignment[];
   createAssignment?: (assignment: FinalAssignment) => void;
   loading?: boolean;
-  markAssignment?: (id: number, status: AssignmentStatus) => void;
-  selectedCourseId: number;
+  markAssignment?: (id: string, status: AssignmentStatus) => void;
+  selectedCourseId: string;
   showConfetti?: boolean;
   showDateHeadings: boolean;
   skeleton?: boolean;
@@ -72,7 +72,7 @@ export default function TaskList({
   createAssignment,
   loading = false,
   markAssignment,
-  selectedCourseId = -1,
+  selectedCourseId = '',
   showDateHeadings,
   showConfetti = true,
   skeleton,
@@ -85,7 +85,7 @@ export default function TaskList({
   function processRenderList(
     assignments: FinalAssignment[],
     tab: TabType,
-    selectedCourseId: number,
+    selectedCourseId: string,
     viewingMore: boolean,
     showDateHeadings: boolean
   ) {
@@ -150,7 +150,7 @@ export default function TaskList({
   const noneText = 'None';
 
   function markAssignmentFunc(
-    id: number,
+    id: string,
     tab: TabType,
     status: AssignmentStatus,
     mark?: typeof markAssignment
