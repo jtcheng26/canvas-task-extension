@@ -88,7 +88,7 @@ export default function TaskForm({
 
   const coursesWithoutCustom = useMemo(() => {
     if (courses) {
-      return courses.filter((c) => c.id !== '');
+      return courses.filter((c) => c.id !== '' && c.id !== '0');
     }
     return [];
   }, [courses]);
@@ -143,7 +143,7 @@ export default function TaskForm({
       setErrorMessage('An error occurred. Make sure you have cookies enabled.');
     } else {
       assignment.id = res && !!res.id ? res.id : assignment.id;
-      assignment.plannable_id = assignment.id; // assignment.id; // for marking completing right after creating
+      assignment.plannable_id = assignment.id; // for marking completing right after creating
       if (onSubmit) onSubmit(assignment);
       close();
     }
@@ -180,7 +180,7 @@ export default function TaskForm({
             defaultColor={themeColor}
             defaultOption="None"
             instructureStyle
-            onCoursePage={!!selectedCourse}
+            onCoursePage={selectedCourse !== '0' && !!selectedCourse}
             selectedCourseId={selectedCourseId}
             setCourse={setSelectedCourseId}
           />

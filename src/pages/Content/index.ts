@@ -142,7 +142,6 @@ function checkForListView(
     rightSideWrapper.style.top = '0px';
     rightSideWrapper.style.overflowY = 'scroll';
     rightSideWrapper.style.height = '100vh';
-    console.log('Entrypoint: List View');
     createSidebar(rightSide);
     return true;
   }
