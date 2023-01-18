@@ -5,15 +5,15 @@ import apiReq from './apiReq';
 export default async function createCustomTask(
   title: string,
   date: string,
-  course_id?: number
+  course_id?: string
 ): Promise<PlannerAssignment | null> {
   return new Promise((resolve) => {
-    const data: Record<string, string | number> = {
+    const data: Record<string, string> = {
       title: title,
       todo_date: date,
     };
 
-    if (course_id && course_id > 0) data['course_id'] = course_id;
+    if (course_id && course_id !== '0') data['course_id'] = course_id;
     apiReq('/v1/planner_notes', JSON.stringify(data), 'post')
       .then((res) => {
         resolve(res?.data as PlannerAssignment);

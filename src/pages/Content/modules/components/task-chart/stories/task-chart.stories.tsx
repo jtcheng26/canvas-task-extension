@@ -17,7 +17,7 @@ const Template: ComponentStory<typeof TaskChart> = ({
   selectedCourseId,
 }) => {
   const [selected, setSelected] = useState(selectedCourseId);
-  function func(id: number) {
+  function func(id: string) {
     setSelected(id);
   }
   return (
@@ -35,7 +35,7 @@ const Template: ComponentStory<typeof TaskChart> = ({
 const storyDefaults: Partial<TaskChartProps> = {
   assignments: AssignmentListSample2 as FinalAssignment[],
   loading: false,
-  selectedCourseId: -1,
+  selectedCourseId: '',
 };
 
 export const NoAssignments = Template.bind({});

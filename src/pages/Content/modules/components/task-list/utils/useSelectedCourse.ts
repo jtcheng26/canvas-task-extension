@@ -2,10 +2,10 @@ import { filterCourses } from '../../../hooks/useAssignments';
 import { FinalAssignment } from '../../../types';
 
 export default function useSelectedCourse(
-  selectedCourseId: number,
+  selectedCourseId: string,
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
-  return selectedCourseId != -1
+  return selectedCourseId !== ''
     ? filterCourses([selectedCourseId], assignments)
     : assignments;
 }

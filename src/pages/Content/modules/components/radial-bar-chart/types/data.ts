@@ -1,5 +1,5 @@
 export interface Bar {
-  id: number;
+  id: string;
   value: number;
   max: number;
   color: string;

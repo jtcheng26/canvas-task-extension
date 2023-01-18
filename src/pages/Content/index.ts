@@ -115,10 +115,11 @@ if (isCanvas) {
       createSidebar(teacherContainerList[0] as HTMLElement);
     else if (comingUpList.length > 0)
       createSidebar(comingUpList[0] as HTMLElement);
-    else if (rightSide)
+    else if (rightSide) {
       observer.observe(rightSide as Node, {
         childList: true,
       });
+    }
   }
 }
 

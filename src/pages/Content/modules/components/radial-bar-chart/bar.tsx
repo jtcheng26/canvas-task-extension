@@ -45,10 +45,10 @@ interface Props {
   radius: number;
   rounded?: boolean;
   width: number;
-  id: number;
-  onClick?: (id: number, e: MouseEvent) => void;
-  onMouseEnter?: (id: number, e: MouseEvent) => void;
-  onMouseLeave?: (id: number, e: MouseEvent) => void;
+  id: string;
+  onClick?: (id: string, e: MouseEvent) => void;
+  onMouseEnter?: (id: string, e: MouseEvent) => void;
+  onMouseLeave?: (id: string, e: MouseEvent) => void;
 }
 
 export default function RadialChartBar({

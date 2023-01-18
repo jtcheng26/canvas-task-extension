@@ -90,13 +90,13 @@ export function filterTimeBounds(
 
 /* Only assignments from the specified courses */
 export function filterCourses(
-  courses: number[],
+  courses: string[],
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   const courseSet = new Set(courses);
   return assignments.filter((assignment) => {
     return (
-      (assignment.course_id === 0 || !!assignment.course_id) &&
+      (assignment.course_id === '0' || !!assignment.course_id) &&
       courseSet.has(assignment.course_id)
     );
   });
@@ -162,7 +162,7 @@ export function applyCustomTaskLabels(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.map((assignment) => {
-    if (assignment.type === AssignmentType.NOTE && assignment.course_id === 0)
+    if (assignment.type === AssignmentType.NOTE && assignment.course_id === '0')
       assignment.course_name = 'Custom Task';
 
     return assignment;

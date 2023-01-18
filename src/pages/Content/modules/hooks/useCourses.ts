@@ -25,7 +25,7 @@ async function getCourses(colors: Record<string, string>): Promise<Course[]> {
   const { data } = await axios.get(`${baseURL()}/api/v1/courses?per_page=200`);
 
   const CustomCourse: Course = {
-    id: 0,
+    id: '0',
     color: colors['0'] || THEME_COLOR,
     position: 0,
     name: 'Custom Task',

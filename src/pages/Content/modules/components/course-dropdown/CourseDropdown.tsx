@@ -53,8 +53,8 @@ const CourseDropdownContainer = styled.div`
 export interface CourseDropdownProps {
   courses: Course[];
   defaultColor?: string;
-  selectedCourseId?: number;
-  setCourse: (id: number) => void;
+  selectedCourseId?: string;
+  setCourse: (id: string) => void;
   onCoursePage: boolean;
   maxHeight?: number;
   zIndex?: number;
@@ -74,7 +74,7 @@ export default function CourseDropdown({
   maxHeight,
   zIndex,
   instructureStyle,
-  selectedCourseId = -1,
+  selectedCourseId = '',
   setCourse,
   onCoursePage = false,
 }: CourseDropdownProps): JSX.Element {
@@ -88,7 +88,7 @@ export default function CourseDropdown({
   }
 
   const courseMap = useMemo(() => {
-    const map: Record<number, Course> = {};
+    const map: Record<string, Course> = {};
     courses.forEach((course) => {
       map[course.id] = course;
     });
@@ -136,10 +136,10 @@ export default function CourseDropdown({
         </CourseTitle>
       )}
       <Dropdown maxHeight={maxHeight} zIndex={zIndex}>
-        {!noDefault && !onCoursePage && selectedCourseId != -1 && (
+        {!noDefault && !onCoursePage && selectedCourseId && (
           <CourseButton
             color="var(--ic-brand-font-color-dark)"
-            id={-1}
+            id=""
             last={false}
             menuVisible={menuVisible}
             name={defaultOption || 'All Courses'}
@@ -147,7 +147,7 @@ export default function CourseDropdown({
             setMenuVisible={setMenuVisible}
           />
         )}
-        {onCoursePage && selectedCourseId != -1 ? (
+        {onCoursePage && selectedCourseId ? (
           <CourseButton
             color={courseMap[selectedCourseId].color}
             id={selectedCourseId}

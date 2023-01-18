@@ -35,35 +35,35 @@ const storyDefaults: Partial<CourseDropdownProps> = {
     {
       name: 'Course #1',
       color: 'var(--storybook-theme)',
-      id: 1,
+      id: '1',
       position: 1,
     },
     {
       name: 'Course #2',
       color: '#26f',
-      id: 2,
+      id: '2',
       position: 1,
     },
     {
       name: 'Course #3',
       color: '#2f6',
-      id: 3,
+      id: '3',
       position: 1,
     },
     {
       name: 'Course #4',
       color: '#62f',
-      id: 4,
+      id: '4',
       position: 1,
     },
     {
       name: 'Course #5',
       color: '#f62',
-      id: 5,
+      id: '5',
       position: 1,
     },
   ],
-  selectedCourseId: -1,
+  selectedCourseId: '',
 };
 
 export const NoCourses = Template.bind({});
@@ -87,7 +87,7 @@ SomeCourses.args = {
 export const CourseSelected = Template.bind({});
 CourseSelected.args = {
   ...storyDefaults,
-  selectedCourseId: 4,
+  selectedCourseId: '4',
 };
 
 export const OnCoursePageOneCourse = Template.bind({});
@@ -95,14 +95,14 @@ OnCoursePageOneCourse.args = {
   ...storyDefaults,
   courses: storyDefaults.courses?.slice(0, 1),
   onCoursePage: true,
-  selectedCourseId: 1,
+  selectedCourseId: '1',
 };
 
 export const OnCoursePage = Template.bind({});
 OnCoursePage.args = {
   ...storyDefaults,
   onCoursePage: true,
-  selectedCourseId: 4,
+  selectedCourseId: '4',
 };
 
 // error case, shouldn't happen

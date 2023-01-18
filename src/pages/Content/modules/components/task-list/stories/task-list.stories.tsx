@@ -40,7 +40,7 @@ const storyDefaults: Partial<TaskListProps> = {
   assignments: AssignmentListSample as FinalAssignment[],
   showDateHeadings: true,
   skeleton: false,
-  selectedCourseId: -1,
+  selectedCourseId: '',
 };
 
 export const Skeleton = Template.bind({});

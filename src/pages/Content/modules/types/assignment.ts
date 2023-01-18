@@ -1,12 +1,12 @@
 // JSON response from /api/v1/planner/items
 interface PlannerAssignment {
-  id?: number; // returned by POST /api/v1/planner_notes
+  id?: string; // returned by POST /api/v1/planner_notes
   color?: string;
-  course_id: number;
-  plannable_id: number;
+  course_id: string;
+  plannable_id: string;
   plannable_type: AssignmentType;
   planner_override: {
-    id: number;
+    id: string;
     marked_complete: boolean;
     dismissed: boolean;
   } | null;
@@ -23,12 +23,12 @@ interface PlannerAssignment {
       }
     | false;
   plannable: {
-    id: number;
+    id: string;
     title: string;
     due_at?: string;
     todo_date?: string; // for custom planner notes
     points_possible?: number;
-    course_id?: number; // for custom planner notes
+    course_id?: string; // for custom planner notes
     linked_object_html_url?: string; // for custom planner notes
   };
   html_url: string;
@@ -41,10 +41,10 @@ interface FinalAssignment {
   name: string; // title of assignment
   points_possible: number;
   due_at: string;
-  course_id: number; // course the assignment belongs to
-  id: number; // id of the assignment
-  plannable_id: number; // id of planner item for marking complete
-  override_id?: number; // id of existing planner override
+  course_id: string; // course the assignment belongs to
+  id: string; // id of the assignment
+  plannable_id: string; // id of planner item for marking complete
+  override_id?: string; // id of existing planner override
   submitted: boolean; // has the user submitted it?
   graded: boolean; // has the teacher graded it?
   graded_at: string; // date the teacher graded (if graded)

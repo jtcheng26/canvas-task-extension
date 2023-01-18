@@ -38,7 +38,7 @@ const Template: ComponentStory<typeof CourseButton> = ({
 const storyDefaults: Partial<CourseButtonProps> = {
   name: 'Course Name',
   color: 'var(--storybook-theme)',
-  id: 0,
+  id: '0',
   last: false,
   menuVisible: true,
 };

@@ -2,7 +2,7 @@ import { ChartData } from '../../radial-bar-chart';
 
 /* Return done, total, and color values for the selected bar, or all bars if none selected. */
 export default function useSelectChartData(
-  selectedCourseId: number,
+  selectedCourseId: string,
   chartData: ChartData
 ): [number, number, string] {
   const selectBar = chartData.bars.filter((bar) => bar.id == selectedCourseId);

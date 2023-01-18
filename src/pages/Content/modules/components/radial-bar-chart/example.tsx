@@ -24,43 +24,43 @@ export default function RadialBarChartExample({ size }: Props): JSX.Element {
   const chartData: ChartData = {
     bars: [
       {
-        id: 1,
+        id: '1',
         value: 2,
         color: '#000000',
         max: 10,
       },
       {
-        id: 2,
+        id: '2',
         value: 4,
         color: '#00AAFF',
         max: 10,
       },
       {
-        id: 3,
+        id: '3',
         value: 10,
         color: '#AAFF00',
         max: 10,
       },
       {
-        id: 4,
+        id: '4',
         value: 4,
         color: '#00AAFF',
         max: 10,
       },
       {
-        id: 5,
+        id: '5',
         value: 10,
         color: '#AAFF00',
         max: 10,
       },
       {
-        id: 6,
+        id: '6',
         value: 10,
         color: '#AAFF00',
         max: 10,
       },
       {
-        id: 7,
+        id: '7',
         value: 10,
         color: '#AAFF00',
         max: 10,
@@ -100,14 +100,14 @@ export default function RadialBarChartExample({ size }: Props): JSX.Element {
       //   value: 6,
       //   color: '#BB5544',
       //   max: 10,
-      // },
+      // },ƒ
     ],
   };
-  const [selected, setSelected] = useState(-1);
-  function onEnter(id: number) {
+  const [selected, setSelected] = useState('');
+  function onEnter(id: string) {
     console.log(id);
   }
-  function onLeave(id: number) {
+  function onLeave(id: string) {
     console.log(id);
   }
 

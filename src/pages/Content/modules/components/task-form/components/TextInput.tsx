@@ -7,8 +7,8 @@ import { ColorProps } from './DatePick';
 
 const Input = styled.input<ColorProps>`
   border: 1px solid rgb(199, 205, 299);
-  height: 38px;
-  padding: 0px 10px;
+  min-height: 28px;
+  padding: 5px 10px;
   border-radius: 4px;
   font-size: 16px;
   outline-color: ${(props) => props.color || THEME_COLOR};
@@ -18,8 +18,8 @@ const Input = styled.input<ColorProps>`
 
 const Select = styled.div<ColorProps>`
   border: 1px solid rgb(199, 205, 299);
-  height: 38px;
-  padding: 0px 10px;
+  min-height: 28px;
+  padding: 5px 10px;
   border-radius: 4px;
   font-size: 16px;
   cursor: pointer;

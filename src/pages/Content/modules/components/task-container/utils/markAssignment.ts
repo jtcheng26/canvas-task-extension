@@ -19,7 +19,7 @@ export default function markAssignment(
     apiReq('/v1/planner/overrides', json, method, assignment.override_id + '');
     assignment.marked_complete = complete === AssignmentStatus.COMPLETE;
     if (complete === AssignmentStatus.UNFINISHED && !assignment.override_id)
-      assignment.override_id = -1;
+      assignment.override_id = '0';
   }
   return assignment;
 }

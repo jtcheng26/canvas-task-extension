@@ -13,7 +13,7 @@ import { OptionsDefaults } from '../../constants';
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
   loading?: boolean;
-  courseId?: number | false;
+  courseId?: string | false;
   courseList?: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
   startDate?: Date;
@@ -33,8 +33,8 @@ export default function TaskContainer({
   startDate,
   endDate,
 }: TaskContainerProps): JSX.Element {
-  const [selectedCourseId, setSelectedCourseId] = useState<number>(
-    courseList && courseId ? courseId : -1
+  const [selectedCourseId, setSelectedCourseId] = useState<string>(
+    courseList && courseId ? courseId : ''
   );
 
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
@@ -50,11 +50,11 @@ export default function TaskContainer({
     return extractCourses(updatedAssignments);
   }, [updatedAssignments, courseId]);
 
-  async function markAssignmentAs(id: number, status: AssignmentStatus) {
+  async function markAssignmentAs(id: string, status: AssignmentStatus) {
     if (status === AssignmentStatus.DELETED) {
       setUpdatedAssignments(
         updatedAssignments.filter((a) => {
-          if (a.id == id) {
+          if (a.id === id) {
             deleteAssignment(a);
             return false;
           }
@@ -85,8 +85,7 @@ export default function TaskContainer({
   const chosenCourseId = courseId ? courseId : selectedCourseId;
 
   useEffect(() => {
-    if (courseId && courseId !== -1)
-      setUpdatedAssignments(filterCourses([courseId], assignments));
+    if (courseId) setUpdatedAssignments(filterCourses([courseId], assignments));
     else setUpdatedAssignments(assignments);
   }, [assignments, courseId]);
 
@@ -100,9 +99,7 @@ export default function TaskContainer({
       />
       <TaskChart
         assignments={updatedAssignments}
-        colorOverride={
-          courseId && courseId !== -1 ? courses[0].color : undefined
-        }
+        colorOverride={courseId ? courses[0].color : undefined}
         loading={loading}
         onCoursePage={!!courseId}
         selectedCourseId={chosenCourseId}
