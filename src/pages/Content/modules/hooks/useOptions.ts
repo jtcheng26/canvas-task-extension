@@ -1,14 +1,17 @@
 import { useQuery, UseQueryResult } from 'react-query';
 import { OptionsDefaults } from '../constants';
 import { Options } from '../types';
+import isDarkMode from '../utils/isDarkMode';
 
 const storedUserOptions = Object.keys(OptionsDefaults);
 
 function applyDefaults(options: Options): Options {
-  return {
+  const opts = {
     ...OptionsDefaults,
     ...options,
   };
+  opts.dark_mode = isDarkMode(); // auto detect, might change to option in the future
+  return opts;
 }
 
 export async function getOptions(): Promise<Options> {

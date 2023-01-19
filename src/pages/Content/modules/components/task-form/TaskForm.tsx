@@ -8,6 +8,7 @@ import useCourses from '../../hooks/useCourses';
 import useOptions from '../../hooks/useOptions';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
+import { DarkProps } from '../../types/props';
 import createCustomTask from '../../utils/createCustomTask';
 import isDemo from '../../utils/isDemo';
 import CourseDropdown from '../course-dropdown';
@@ -32,8 +33,8 @@ const FormContainer = styled.div<FormContainerProps>`
   align-items: center;
 `;
 
-const Form = styled.div`
-  background-color: white;
+const Form = styled.div<DarkProps>`
+  background-color: ${(props) => (props.dark ? 'black' : 'white')};
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   display: flex;
@@ -150,7 +151,7 @@ export default function TaskForm({
   }
   return (
     <FormContainer visible={visible}>
-      <Form>
+      <Form dark={options?.dark_mode}>
         <FormItem>
           <FormTitle>
             {titleLabel}
