@@ -82,6 +82,18 @@ HasAssignments.args = {
   }),
 };
 
+export const DarkMode = Template.bind({});
+DarkMode.args = {
+  ...storyDefaults,
+  options: { ...OptionsDefaults, dark_mode: true },
+  assignments: storyDefaults.assignments?.map((assignment, i) => {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + i / 2 - 1);
+    assignment.due_at = dueDate.toISOString();
+    return assignment;
+  }),
+};
+
 export const OnCoursePage = Template.bind({});
 OnCoursePage.args = {
   ...storyDefaults,
