@@ -99,13 +99,13 @@ export default function RadialBarChart({
             bg={
               !bgColor && (selectedBar === '' || selectedBar === bar.id)
                 ? undefined
-                : bgColor || '#f2f2f2'
+                : bgColor || '#92929222'
             }
             center={center}
             color={
               selectedBar === '' || selectedBar === bar.id
                 ? bar.color
-                : '#f2f2f2'
+                : '#00000000'
             }
             id={bar.id}
             key={bar.id + currKey}
