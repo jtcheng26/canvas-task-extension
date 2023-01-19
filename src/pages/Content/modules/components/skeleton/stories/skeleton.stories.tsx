@@ -7,8 +7,15 @@ export default { title: 'Components/Skeleton' } as ComponentMeta<
   typeof Skeleton
 >;
 
-export const SkeletonLoader: ComponentStory<typeof Skeleton> = () => (
+export const SkeletonLoader: ComponentStory<typeof Skeleton> = ({
+  dark = false,
+}) => (
   <div style={{ width: '288px', padding: '24px', boxSizing: 'border-box' }}>
-    <Skeleton />
+    <Skeleton dark={dark} />
   </div>
 );
+
+export const DarkSkeletonLoader = SkeletonLoader.bind({});
+DarkSkeletonLoader.args = {
+  dark: true,
+};

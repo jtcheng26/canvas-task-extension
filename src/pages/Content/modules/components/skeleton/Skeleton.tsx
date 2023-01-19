@@ -1,5 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
+import { DarkContext } from '../../contexts/darkContext';
+import { DarkProps } from '../../types/props';
 import BeatLoader from '../spinners';
 import TaskList from '../task-list';
 
@@ -10,10 +12,10 @@ const LoadingDiv = styled.div`
   width: 100%;
 `;
 
-const SkeletonChart = styled.div`
+const SkeletonChart = styled.div<DarkProps>`
   width: 110px;
   height: 110px;
-  border: 40px solid #e8e8e8;
+  border: 40px solid ${(props) => (props.dark ? '#3f3f46' : '#e8e8e8')};
   border-radius: 100%;
   display: flex;
   justify-content: center;
@@ -28,12 +30,12 @@ const ClipLoadingDiv = styled.div`
   height: 220px;
 `;
 
-export default function Skeleton(): JSX.Element {
-  return (
+export default function Skeleton({ dark }: DarkProps): JSX.Element {
+  const elem = (
     <LoadingDiv>
       <ClipLoadingDiv>
-        <SkeletonChart>
-          <BeatLoader color="#e8e8e8" />
+        <SkeletonChart dark={dark}>
+          <BeatLoader color={dark ? '#3f3f46' : '#e8e8e8'} />
         </SkeletonChart>
       </ClipLoadingDiv>
       <TaskList
@@ -45,4 +47,8 @@ export default function Skeleton(): JSX.Element {
       />
     </LoadingDiv>
   );
+  if (dark)
+    // testing purposes
+    return <DarkContext.Provider value={dark}>{elem}</DarkContext.Provider>;
+  else return elem;
 }

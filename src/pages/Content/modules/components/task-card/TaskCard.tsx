@@ -106,29 +106,33 @@ export const TaskContainer = styled.div.attrs(
     overflow: hidden;
     text-overflow: ellipsis;
   `,
-  SkeletonTitle = styled.div<AnimatedProps>`
+  SkeletonTitle = styled.div<AnimatedProps & DarkProps>`
     width: 90%;
     height: 12px;
-    background-color: #e8e8e8;
-    margin: 3px 0px;
+    background-color: ${(props) => (!props.dark ? '#e8e8e8' : '#3f3f46')};
+    border-radius: 100px;
+    margin: 2px 0px;
     animation: ${(props) =>
       props.static ? 'none' : 'canvas-tasks-skeleton-pulse 1s infinite'};
   `,
-  SkeletonInfo = styled.div<AnimatedProps>`
+  SkeletonInfo = styled.div<AnimatedProps & DarkProps>`
     width: 75%;
     height: 12px;
-    background-color: #e8e8e8;
+    background-color: ${(props) => (!props.dark ? '#e8e8e8' : '#3f3f46')};
+    border-radius: 100px;
     margin: 2px 0px;
     animation: ${(props) =>
       props.static
         ? 'none'
         : 'canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both'};
   `,
-  SkeletonCourseCode = styled.div<AnimatedProps>`
+  SkeletonCourseCode = styled.div<AnimatedProps & DarkProps>`
     width: 50%;
     height: 12px;
-    background-color: #e8e8e8;
+    background-color: ${(props) => (!props.dark ? '#e8e8e8' : '#3f3f46')};
+    border-radius: 100px;
     margin: 2px 0px;
+    margin-top: 6px;
     animation: ${(props) =>
       props.static
         ? 'none'
@@ -222,7 +226,9 @@ export default function TaskCard({
       opacity={transitionState ? transitionState?.opacity : 1}
     >
       <TaskLeft
-        color={(!skeleton ? color : '#e8e8e8') || '000000'}
+        color={
+          (!skeleton ? color : darkMode ? '#3f3f46' : '#e8e8e8') || '000000'
+        }
         onClick={onClick}
       >
         {!skeleton && transitionState && transitionState?.height >= 40
@@ -232,7 +238,7 @@ export default function TaskCard({
       <TaskInfo dark={darkMode}>
         <TaskTop>
           <CourseCodeText color={color}>
-            {!skeleton ? course_name : <SkeletonCourseCode />}
+            {!skeleton ? course_name : <SkeletonCourseCode dark={darkMode} />}
           </CourseCodeText>
           {!skeleton ? (
             <CheckIcon
@@ -254,11 +260,11 @@ export default function TaskCard({
           )}
         </TaskTop>
         <TaskLink dark={darkMode} href={html_url}>
-          {!skeleton ? name : <SkeletonTitle />}
+          {!skeleton ? name : <SkeletonTitle dark={darkMode} />}
         </TaskLink>
         <TaskDetailsText>
           {skeleton ? (
-            <SkeletonInfo />
+            <SkeletonInfo dark={darkMode} />
           ) : !complete ? (
             <>
               <strong>{due}</strong>

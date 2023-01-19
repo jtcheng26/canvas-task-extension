@@ -69,7 +69,9 @@ function ContentLoader({
   const onCourse = onCoursePage();
   return (
     <>
-      {!isSuccess && !isError && !assignmentData && <Skeleton />}
+      {!isSuccess && !isError && !assignmentData && (
+        <Skeleton dark={options.dark_mode} />
+      )}
       {assignmentData ? (
         <TaskContainer
           assignments={assignmentData}
