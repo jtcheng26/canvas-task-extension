@@ -23,7 +23,8 @@ export const TaskContainer = styled.div.attrs(
     })
   )<AnimatedProps & DarkProps>`
     width: 100%;
-    background-color: ${(props) => (props.dark ? '#27272a' : 'inherit')};
+    background-color: ${(props) =>
+      props.dark ? 'var(--tfc-dark-mode-bg-primary)' : 'inherit'};
     border-radius: 4px;
     display: flex;
     flex-direction: row;
@@ -50,7 +51,8 @@ export const TaskContainer = styled.div.attrs(
     box-sizing: border-box;
     width: 100%;
     font-size: 11px;
-    color: ${(props) => (props.dark ? '#71717a' : '#4c5860')};
+    color: ${(props) =>
+      props.dark ? 'var(--tfc-dark-mode-text-secondary)' : '#4c5860'};
     overflow-x: auto;
     white-space: nowrap;
     overflow: hidden;
@@ -58,12 +60,16 @@ export const TaskContainer = styled.div.attrs(
   `,
   TaskLink = styled.a<DarkProps>`
     color: ${(props) =>
-      props.dark ? '#e4e4e7' : 'var(--ic-brand-font-color-dark)'};
+      props.dark
+        ? 'var(--tfc-dark-mode-text-primary)'
+        : 'var(--ic-brand-font-color-dark)'};
     font-weight: 700;
     font-size: 15px;
     &:hover {
       color: ${(props) =>
-        props.dark ? '#e4e4e7' : 'var(--ic-brand-font-color-dark)'};
+        props.dark
+          ? 'var(--tfc-dark-mode-text-primary)'
+          : 'var(--ic-brand-font-color-dark)'};
     }
     overflow-x: auto;
     white-space: nowrap;

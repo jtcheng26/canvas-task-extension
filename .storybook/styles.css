@@ -38,6 +38,10 @@ body {
   --ic-brand-global-nav-menu-item__badge-text--active: #ffffff;
   --ic-brand-global-nav-logo-bgd: #394b58; */
 
+  --tfc-dark-mode-text-primary: #e4e4e7;
+  --tfc-dark-mode-text-secondary: #71717a;
+  --tfc-dark-mode-bg-primary: #27272a;
+
   -webkit-font-smoothing: antialiased;
 }
 
