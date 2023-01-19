@@ -138,6 +138,7 @@ export default function CourseDropdown({
         >
           {name}
           <ArrowButton
+            dark={darkMode}
             direction={menuVisible ? Direction.UP : Direction.DOWN}
             hoverIndependent={false}
             hovering={hovering}

@@ -43,6 +43,7 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
     >
       <Header
         clickable
+        dark={options.dark_mode}
         onNextClick={func}
         onPrevClick={func}
         weekEnd={tmr}
