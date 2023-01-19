@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { TaskLeft, TaskLink } from './TaskCard';
 import PlusIcon from '../../icons/plus';
 import { FinalAssignment } from '../../types';
 import TaskForm from '../task-form/TaskForm';
+import { DarkContext } from '../../contexts/darkContext';
+import { DarkProps } from '../../types/props';
 
-export const TaskContainer = styled.div`
+export const TaskContainer = styled.div<DarkProps>`
   width: 100%;
   height: 36px;
   margin: 10px 0px 5px 0px;
-  background-color: inherit;
   border-radius: 4px;
   display: flex;
   flex-direction: row;
   align-items: center;
   font-size: 12px;
-  background-color: rgba(220, 220, 220, 0.4);
+  background-color: ${(props) =>
+    props.dark
+      ? 'var(--tfc-dark-mode-bg-primary)'
+      : 'rgba(220, 220, 220, 0.4)'};
   &:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
@@ -59,6 +63,7 @@ export default function CreateTaskCard({
   onSubmit,
   selectedCourse,
 }: TaskProps): JSX.Element {
+  const darkMode = useContext(DarkContext);
   const [formVisible, setFormVisible] = useState(false);
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
@@ -72,8 +77,11 @@ export default function CreateTaskCard({
 
   return (
     <>
-      <TaskContainer onClick={onClick}>
-        <TaskLeft color="#d8d8d8" onClick={onClick}>
+      <TaskContainer dark={darkMode} onClick={onClick}>
+        <TaskLeft
+          color={darkMode ? 'var(--tfc-dark-mode-bg-secondary)' : '#d8d8d8'}
+          onClick={onClick}
+        >
           {PlusIcon}
         </TaskLeft>
         <TaskInfo>
