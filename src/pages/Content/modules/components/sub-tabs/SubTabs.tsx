@@ -5,7 +5,9 @@ import { DarkProps } from '../../types/props';
 const SubtitleDiv = styled.div<DarkProps>`
   border-bottom: 1px solid
     ${(props) =>
-      props.dark ? 'var(--tfc-dark-mode-bg-primary)' : 'rgb(199, 205, 209)'};
+      props.dark
+        ? 'var(--tfc-dark-mode-text-secondary)'
+        : 'rgb(199, 205, 209)'};
   height: 25px;
   display: flex;
   align-items: center;

@@ -19,7 +19,7 @@ const StyledButton = styled.div<StyledButtonProps>`
   z-index: 20;
   &:hover {
     cursor: pointer;
-    background: rgba(199, 205, 209, 0.5);
+    background: rgba(150, 150, 150, 0.2);
   }
   display: ${(props) => (props.menuVisible ? 'block' : 'none')};
   color: ${(props) => props.color};
