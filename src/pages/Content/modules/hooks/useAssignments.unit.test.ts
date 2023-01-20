@@ -35,8 +35,8 @@ describe('getAllAssignment', () => {
       new Date('2022-01-01')
     );
     expect(assignments.length).toBe(plannerRes.length);
-    expect(assignments[0].course_id).toBe(plannerRes[0].course_id);
-    expect(assignments[0].id).toBe(plannerRes[0].plannable.id);
+    expect(assignments[0].course_id).toBe(plannerRes[0].course_id.toString());
+    expect(assignments[0].id).toBe(plannerRes[0].plannable.id.toString());
     expect(assignments[0].marked_complete).toBe(false);
   });
   it('substitutes null/empty values with defaults', async () => {
