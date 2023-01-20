@@ -1,5 +1,4 @@
 function isColorDark(r: number, g: number, b: number, a: number): boolean {
-  console.log(r, g, b, a);
   if (a === 0) return false;
   return r < 100 || g < 100 || b < 100;
 }
