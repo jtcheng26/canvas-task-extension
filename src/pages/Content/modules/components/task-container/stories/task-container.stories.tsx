@@ -13,7 +13,7 @@ export default { title: 'Components/TaskContainer' } as ComponentMeta<
 >;
 
 const storyDefaults: TaskContainerProps = {
-  assignments: AssignmentListSample2 as FinalAssignment[],
+  assignments: AssignmentListSample2 as unknown as FinalAssignment[],
   loading: false,
   options: OptionsDefaults,
 };

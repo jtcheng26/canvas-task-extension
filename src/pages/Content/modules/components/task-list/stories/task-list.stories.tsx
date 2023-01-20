@@ -37,7 +37,7 @@ const Template: ComponentStory<typeof TaskList> = ({
 };
 
 const storyDefaults: Partial<TaskListProps> = {
-  assignments: AssignmentListSample as FinalAssignment[],
+  assignments: AssignmentListSample as unknown as FinalAssignment[],
   showDateHeadings: true,
   skeleton: false,
   selectedCourseId: '',

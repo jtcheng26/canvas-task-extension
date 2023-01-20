@@ -33,7 +33,7 @@ const Template: ComponentStory<typeof TaskChart> = ({
 };
 
 const storyDefaults: Partial<TaskChartProps> = {
-  assignments: AssignmentListSample2 as FinalAssignment[],
+  assignments: AssignmentListSample2 as unknown as FinalAssignment[],
   loading: false,
   selectedCourseId: '',
 };
