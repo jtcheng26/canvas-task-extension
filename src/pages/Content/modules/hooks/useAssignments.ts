@@ -15,6 +15,7 @@ import { DemoAssignments } from '../tests/demo';
 import { AssignmentDefaults, OptionsDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
 import isDemo from '../utils/isDemo';
+import JSONBigInt from 'json-bigint';
 
 /* Get assignments from api */
 function getAllAssignmentsRequest(
@@ -22,7 +23,8 @@ function getAllAssignmentsRequest(
   end: string
 ): Promise<AxiosResponse<PlannerAssignment[]>> {
   return axios.get(
-    `${baseURL()}/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=1000`
+    `${baseURL()}/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=1000`,
+    { transformResponse: [(data) => JSONBigInt.parse(data)] }
   );
 }
 
@@ -35,10 +37,12 @@ export function convertPlannerAssignments(
       html_url:
         assignment.html_url || assignment.plannable.linked_object_html_url,
       type: assignment.plannable_type,
-      id: assignment.plannable_id,
-      plannable_id: assignment.plannable_id, // just in case it changes in the future
-      override_id: assignment.planner_override?.id,
-      course_id: assignment.course_id || assignment.plannable.course_id,
+      id: assignment.plannable_id.toString(),
+      plannable_id: assignment.plannable_id.toString(), // just in case it changes in the future
+      override_id: assignment.planner_override?.id.toString(),
+      course_id: (
+        assignment.course_id || assignment.plannable.course_id
+      )?.toString(),
       name: assignment.plannable.title,
       due_at: assignment.plannable.due_at || assignment.plannable.todo_date,
       points_possible: assignment.plannable.points_possible,
@@ -186,6 +190,8 @@ export async function getAllAssignments(
         data: DemoAssignments,
       }
     : await getAllAssignmentsRequest(startStr, endStr);
+
+  console.log(requests.data);
 
   return convertPlannerAssignments(requests.data as PlannerAssignment[]);
 }
