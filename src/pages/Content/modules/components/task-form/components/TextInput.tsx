@@ -4,9 +4,18 @@ import ArrowButton from '../../arrow-button/ArrowButton';
 import { Direction } from '../../../types';
 import { THEME_COLOR } from '../../../constants';
 import { ColorProps } from './DatePick';
+import { DarkProps } from '../../../types/props';
 
-const Input = styled.input<ColorProps>`
-  border: 1px solid rgb(199, 205, 299);
+const Input = styled.input<ColorProps & DarkProps>`
+  border: 1px solid
+    ${(props) =>
+      props.dark
+        ? 'var(--tfc-dark-mode-text-secondary)'
+        : 'rgb(199, 205, 299)'};
+  color: ${(props) =>
+    props.dark ? 'var(--tfc-dark-mode-text-primary)' : 'inherit'};
+  background-color: ${(props) =>
+    props.dark ? 'var(--tfc-dark-mode-bg-primary)' : 'white'};
   min-height: 28px;
   padding: 5px 10px;
   border-radius: 4px;
@@ -16,8 +25,12 @@ const Input = styled.input<ColorProps>`
   justify-content: space-between;
 `;
 
-const Select = styled.div<ColorProps>`
-  border: 1px solid rgb(199, 205, 299);
+const Select = styled.div<ColorProps & DarkProps>`
+  border: 1px solid
+    ${(props) =>
+      props.dark
+        ? 'var(--tfc-dark-mode-text-secondary)'
+        : 'rgb(199, 205, 299)'};
   min-height: 28px;
   padding: 5px 10px;
   border-radius: 4px;
@@ -37,6 +50,7 @@ const Select = styled.div<ColorProps>`
 
 type Props = {
   color?: string;
+  dark?: boolean;
   onChange?: (value: string) => void;
   onClick?: () => void;
   onFocus?: () => void;
@@ -49,6 +63,7 @@ type Props = {
 export default function TextInput({
   menuVisible,
   color,
+  dark,
   onChange,
   onClick,
   onFocus,
@@ -66,6 +81,7 @@ export default function TextInput({
     <Input
       color={color}
       contentEditable={!!onChange}
+      dark={dark}
       onBlur={onUnfocus}
       onChange={handleChange}
       onClick={onClick}
@@ -73,9 +89,10 @@ export default function TextInput({
       value={value}
     />
   ) : (
-    <Select color={color} onClick={handleClick}>
+    <Select color={color} dark={dark} onClick={handleClick}>
       {value}{' '}
       <ArrowButton
+        dark={dark}
         direction={menuVisible ? Direction.UP : Direction.DOWN}
         hoverIndependent={false}
         hovering={false}

@@ -34,7 +34,8 @@ const FormContainer = styled.div<FormContainerProps>`
 `;
 
 const Form = styled.div<DarkProps>`
-  background-color: ${(props) => (props.dark ? 'black' : 'white')};
+  background-color: ${(props) =>
+    props.dark ? 'var(--tfc-dark-mode-bg-primary)' : 'white'};
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   display: flex;
@@ -149,20 +150,28 @@ export default function TaskForm({
       close();
     }
   }
+
+  const darkMode = !!options?.dark_mode;
   return (
     <FormContainer visible={visible}>
-      <Form dark={options?.dark_mode}>
+      <Form dark={darkMode}>
         <FormItem>
           <FormTitle>
             {titleLabel}
-            <CheckIcon checkStyle="X" onClick={close} />
+            <CheckIcon checkStyle="X" dark={darkMode} onClick={close} />
           </FormTitle>
-          <TextInput color={themeColor} onChange={setTitle} value={title} />
+          <TextInput
+            color={themeColor}
+            dark={darkMode}
+            onChange={setTitle}
+            value={title}
+          />
         </FormItem>
         <FormItem>
           <FormTitle>{dateLabel}</FormTitle>
           <DatePick
             color={themeColor}
+            dark={darkMode}
             selected={selectedDate}
             setSelected={setSelected}
           />
@@ -170,6 +179,7 @@ export default function TaskForm({
         <FormItem>
           <TimePick
             color={themeColor}
+            dark={darkMode}
             selected={selectedTime}
             setSelected={setSelectedTime}
           />
@@ -189,6 +199,7 @@ export default function TaskForm({
         <FormItem>
           <Button
             color={themeColor}
+            dark={darkMode}
             disabled={!title}
             label="Save"
             onClick={submit}

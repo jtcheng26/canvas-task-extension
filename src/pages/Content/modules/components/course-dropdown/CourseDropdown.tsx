@@ -46,7 +46,7 @@ const Dropdown = styled.div<DropdownProps & DarkProps>`
   overflow-y: auto;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   background-color: ${(props) =>
-    props.dark ? 'var(--tfc-dark-mode-bg-primary)' : 'white'};
+    props.dark ? 'var(--tfc-dark-mode-bg-primary-2)' : 'white'};
   border-radius: 0px 0px 4px 4px;
   width: 100%;
 `;
@@ -123,6 +123,7 @@ export default function CourseDropdown({
       {instructureStyle ? (
         <TextInput
           color={defaultColor}
+          dark={darkMode}
           menuVisible={menuVisible}
           onClick={toggleMenu}
           select

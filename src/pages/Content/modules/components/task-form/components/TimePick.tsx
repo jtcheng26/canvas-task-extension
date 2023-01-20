@@ -12,12 +12,14 @@ function fmtTime(minutes: number): string {
 
 type Props = {
   color?: string;
+  dark?: boolean;
   selected: string;
   setSelected: (value: string) => void;
 };
 
 export default function TimePick({
   color,
+  dark,
   selected,
   setSelected,
 }: Props): JSX.Element {
@@ -28,7 +30,7 @@ export default function TimePick({
         id: i * 30 + '',
         name: fmtTime(i * 30),
         position: i,
-        color: '#2d3b45',
+        color: dark ? 'var(--tfc-dark-mode-text-primary)' : '#2d3b45',
       });
     }
 
@@ -36,7 +38,7 @@ export default function TimePick({
       id: '1439',
       name: fmtTime(1439),
       position: 48,
-      color: '#2d3b45',
+      color: dark ? 'var(--tfc-dark-mode-text-primary)' : '#2d3b45',
     });
 
     return times;

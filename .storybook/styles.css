@@ -41,6 +41,7 @@ body {
   --tfc-dark-mode-text-primary: #e4e4e7;
   --tfc-dark-mode-text-secondary: #71717a;
   --tfc-dark-mode-bg-primary: #27272a;
+  --tfc-dark-mode-bg-primary-2: #3f3f46;
   --tfc-dark-mode-bg-secondary: #52525b;
 
   -webkit-font-smoothing: antialiased;
