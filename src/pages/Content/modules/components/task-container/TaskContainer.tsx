@@ -46,7 +46,6 @@ export default function TaskContainer({
     useState<FinalAssignment[]>(assignments);
 
   const courses = useMemo(() => {
-    console.log(courseList, courseId, updatedAssignments);
     if (courseList && courseId !== false)
       return courseList.filter((c) => c.id === courseId);
     return extractCourses(updatedAssignments);

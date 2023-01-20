@@ -147,7 +147,6 @@ export default function TaskForm({
       assignment.id =
         res && !!res.id ? res.id.toString() : assignment.id.toString();
       assignment.plannable_id = assignment.id.toString(); // for marking completing right after creating
-      console.log('created:', res, assignment);
       if (onSubmit) onSubmit(assignment);
       close();
     }

@@ -191,8 +191,6 @@ export async function getAllAssignments(
       }
     : await getAllAssignmentsRequest(startStr, endStr);
 
-  console.log(requests.data);
-
   return convertPlannerAssignments(requests.data as PlannerAssignment[]);
 }
 
