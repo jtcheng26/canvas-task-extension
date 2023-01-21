@@ -2,10 +2,17 @@ import React from 'react';
 import styled from 'styled-components';
 import { SettingsIcon } from '../../icons';
 import { Direction } from '../../types';
+import { DarkProps } from '../../types/props';
 import ArrowButton from '../arrow-button/ArrowButton';
 
-const TitleDiv = styled.div`
-  border-bottom: 1px solid rgb(199, 205, 209);
+const TitleDiv = styled.div<DarkProps>`
+  border-bottom: 1px solid
+    ${(props) =>
+      props.dark
+        ? 'var(--tfc-dark-mode-text-secondary)'
+        : 'rgb(199, 205, 209)'};
+  color: ${(props) =>
+    props.dark ? 'var(--tfc-dark-mode-text-primary)' : 'inherit'};
   height: 30px;
   font-weight: bold;
   display: inline-block;
@@ -15,13 +22,16 @@ const ButtonContainer = styled.div`
   margin: 0px 2px;
 `;
 
-const LeftFloat = styled.div`
+const LeftFloat = styled.div<DarkProps>`
   float: left;
   display: flex;
   align-items: center;
 
   .tasks-extension-settings {
-    fill: var(--ic-brand-font-color-dark);
+    fill: ${(props) =>
+      props.dark
+        ? 'var(--tfc-dark-mode-text-secondary)'
+        : 'var(--ic-brand-font-color-dark)'};
     &:hover {
       fill: rgb(125, 134, 141);
     }
@@ -42,6 +52,7 @@ const RightFloat = styled.div`
 `;
 
 export interface HeaderProps {
+  dark?: boolean;
   weekStart: Date;
   weekEnd: Date;
   clickable: boolean;
@@ -53,6 +64,7 @@ export interface HeaderProps {
   Renders the title of the app, bounds for current time period, and prev/next buttons
 */
 export default function Header({
+  dark,
   weekStart,
   weekEnd,
   clickable = false,
@@ -76,8 +88,8 @@ export default function Header({
     }
   }
   return (
-    <TitleDiv>
-      <LeftFloat>
+    <TitleDiv dark={dark}>
+      <LeftFloat dark={dark}>
         <span style={{ marginRight: '4px' }}>{tasks}</span>
         <a
           href={chrome.runtime.getURL('options.html')}
@@ -90,6 +102,7 @@ export default function Header({
       <RightFloat>
         <ButtonContainer>
           <ArrowButton
+            dark={dark}
             direction={Direction.LEFT}
             disabled={!clickable}
             onClick={prevClick}
@@ -98,6 +111,7 @@ export default function Header({
         {`${start} to ${end}`}
         <ButtonContainer>
           <ArrowButton
+            dark={dark}
             direction={Direction.RIGHT}
             disabled={!clickable}
             onClick={nextClick}

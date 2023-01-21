@@ -56,6 +56,7 @@ export default function App(): JSX.Element {
     <AppContainer>
       <Header
         clickable={clickable}
+        dark={options.dark_mode}
         onNextClick={onNextClick}
         onPrevClick={onPrevClick}
         weekEnd={end}

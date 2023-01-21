@@ -13,7 +13,7 @@ export default { title: 'Components/TaskContainer' } as ComponentMeta<
 >;
 
 const storyDefaults: TaskContainerProps = {
-  assignments: AssignmentListSample2 as FinalAssignment[],
+  assignments: AssignmentListSample2 as unknown as FinalAssignment[],
   loading: false,
   options: OptionsDefaults,
 };
@@ -43,6 +43,7 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
     >
       <Header
         clickable
+        dark={options.dark_mode}
         onNextClick={func}
         onPrevClick={func}
         weekEnd={tmr}
@@ -74,6 +75,18 @@ NoAssignments.args = {
 export const HasAssignments = Template.bind({});
 HasAssignments.args = {
   ...storyDefaults,
+  assignments: storyDefaults.assignments?.map((assignment, i) => {
+    const dueDate = new Date();
+    dueDate.setDate(dueDate.getDate() + i / 2 - 1);
+    assignment.due_at = dueDate.toISOString();
+    return assignment;
+  }),
+};
+
+export const DarkMode = Template.bind({});
+DarkMode.args = {
+  ...storyDefaults,
+  options: { ...OptionsDefaults, dark_mode: true },
   assignments: storyDefaults.assignments?.map((assignment, i) => {
     const dueDate = new Date();
     dueDate.setDate(dueDate.getDate() + i / 2 - 1);

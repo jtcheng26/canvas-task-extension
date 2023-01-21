@@ -24,12 +24,14 @@ const DatePickerContainer = styled.div<ColorProps>`
 
 type Props = {
   color?: string;
+  dark?: boolean;
   selected?: Date;
   setSelected: (date?: Date) => void;
 };
 
 export default function DatePick({
   color,
+  dark,
   selected,
   setSelected,
 }: Props): JSX.Element {
@@ -45,6 +47,7 @@ export default function DatePick({
     <DatePickerContainer color={color}>
       <TextInput
         color={color}
+        dark={dark}
         menuVisible={pickerVisible}
         onClick={togglePicker}
         select

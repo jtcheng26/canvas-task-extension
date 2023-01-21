@@ -13,6 +13,7 @@ interface Options {
   show_locked_assignments: boolean;
   show_confetti: boolean;
   theme_color: string;
+  dark_mode: boolean;
 }
 
 export default Options;

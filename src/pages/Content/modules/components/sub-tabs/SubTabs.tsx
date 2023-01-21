@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+import { DarkProps } from '../../types/props';
 
-const SubtitleDiv = styled.div`
-  border-bottom: 1px solid rgb(199, 205, 209);
+const SubtitleDiv = styled.div<DarkProps>`
+  border-bottom: 1px solid
+    ${(props) =>
+      props.dark
+        ? 'var(--tfc-dark-mode-text-secondary)'
+        : 'rgb(199, 205, 209)'};
   height: 25px;
   display: flex;
   align-items: center;
@@ -13,8 +18,13 @@ const SubtitleDiv = styled.div`
 interface SubtitleTabProps {
   active?: boolean;
 }
-const SubtitleTab = styled.div<SubtitleTabProps>`
-  color: ${(p) => (p.active ? 'var(--ic-brand-font-color-dark)' : '#6c757c')};
+const SubtitleTab = styled.div<SubtitleTabProps & DarkProps>`
+  color: ${(p) =>
+    p.active
+      ? p.dark
+        ? 'var(--tfc-dark-mode-text-primary)'
+        : 'var(--ic-brand-font-color-dark)'
+      : '#6c757c'};
   &:hover {
     cursor: pointer;
     text-decoration: underline;
@@ -23,6 +33,7 @@ const SubtitleTab = styled.div<SubtitleTabProps>`
 `;
 
 export interface SubTabsProps {
+  dark?: boolean;
   setTaskListState?: (state: 'Unfinished' | 'Completed') => void;
   taskListState?: 'Unfinished' | 'Completed';
 }
@@ -31,6 +42,7 @@ export interface SubTabsProps {
   Renders a subtitle within the app
 */
 export default function SubTabs({
+  dark,
   setTaskListState,
   taskListState,
 }: SubTabsProps): JSX.Element {
@@ -47,15 +59,17 @@ export default function SubTabs({
   const unfinishedString = 'Unfinished';
   const finishedString = 'Completed';
   return (
-    <SubtitleDiv onClick={toggleDropdown}>
+    <SubtitleDiv dark={dark} onClick={toggleDropdown}>
       <SubtitleTab
         active={taskListState === 'Unfinished'}
+        dark={dark}
         onClick={setTaskListUnfinished}
       >
         {unfinishedString}
       </SubtitleTab>
       <SubtitleTab
         active={taskListState === 'Completed'}
+        dark={dark}
         onClick={setTaskListCompleted}
       >
         {finishedString}

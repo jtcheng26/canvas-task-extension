@@ -1,14 +1,16 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
+import { DarkContext } from '../../contexts/darkContext';
 import { Course, Direction } from '../../types';
 import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
 import TextInput from '../task-form/components/TextInput';
+import { DarkProps } from '../../types/props';
 
 interface CourseTitleProps {
   color?: string;
 }
-const CourseTitle = styled.div<CourseTitleProps>`
+const CourseTitle = styled.div<CourseTitleProps & DarkProps>`
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -20,7 +22,9 @@ const CourseTitle = styled.div<CourseTitleProps>`
   font-size: 14px;
   line-height: 1.2;
   position: relative;
-  border-bottom: 1px solid rgba(199, 205, 209);
+  border-bottom: 1px solid
+    ${(p) =>
+      p.dark ? 'var(--tfc-dark-mode-text-secondary)' : 'rgba(199, 205, 209)'};
   &:hover {
     cursor: pointer;
   }
@@ -33,15 +37,16 @@ interface DropdownProps {
   zIndex?: number;
 }
 
-const Dropdown = styled.div<DropdownProps>`
+const Dropdown = styled.div<DropdownProps & DarkProps>`
   position: absolute;
   z-index: ${(props) => props.zIndex || 20};
   max-height: ${(props) => props.maxHeight + 'px' || 'auto'};
   display: flex;
   flex-direction: column;
-  overflow-y: scroll;
+  overflow-y: auto;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-  background-color: white;
+  background-color: ${(props) =>
+    props.dark ? 'var(--tfc-dark-mode-bg-primary-2)' : 'white'};
   border-radius: 0px 0px 4px 4px;
   width: 100%;
 `;
@@ -78,6 +83,7 @@ export default function CourseDropdown({
   setCourse,
   onCoursePage = false,
 }: CourseDropdownProps): JSX.Element {
+  const darkMode = useContext(DarkContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [hovering, setHovering] = useState(false);
   function onHover() {
@@ -104,6 +110,8 @@ export default function CourseDropdown({
   const color =
     selectedCourseId in courseMap
       ? courseMap[selectedCourseId].color
+      : darkMode
+      ? 'var(--tfc-dark-mode-text-primary)'
       : 'var(--ic-brand-font-color-dark)';
 
   function toggleMenu() {
@@ -115,6 +123,7 @@ export default function CourseDropdown({
       {instructureStyle ? (
         <TextInput
           color={defaultColor}
+          dark={darkMode}
           menuVisible={menuVisible}
           onClick={toggleMenu}
           select
@@ -123,22 +132,28 @@ export default function CourseDropdown({
       ) : (
         <CourseTitle
           color={color}
+          dark={darkMode}
           onClick={toggleMenu}
           onMouseEnter={onHover}
           onMouseLeave={onLeave}
         >
           {name}
           <ArrowButton
+            dark={darkMode}
             direction={menuVisible ? Direction.UP : Direction.DOWN}
             hoverIndependent={false}
             hovering={hovering}
           />
         </CourseTitle>
       )}
-      <Dropdown maxHeight={maxHeight} zIndex={zIndex}>
+      <Dropdown dark={darkMode} maxHeight={maxHeight} zIndex={zIndex}>
         {!noDefault && !onCoursePage && selectedCourseId && (
           <CourseButton
-            color="var(--ic-brand-font-color-dark)"
+            color={
+              darkMode
+                ? 'var(--tfc-dark-mode-text-primary)'
+                : 'var(--ic-brand-font-color-dark)'
+            }
             id=""
             last={false}
             menuVisible={menuVisible}

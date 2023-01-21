@@ -9,6 +9,7 @@ import markAssignment from './utils/markAssignment';
 import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
+import { DarkContext } from '../../contexts/darkContext';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -90,7 +91,7 @@ export default function TaskContainer({
   }, [assignments, courseId]);
 
   return (
-    <>
+    <DarkContext.Provider value={options.dark_mode}>
       <CourseDropdown
         courses={courses}
         onCoursePage={!!courseId}
@@ -118,6 +119,6 @@ export default function TaskContainer({
         showDateHeadings={options.due_date_headings}
         weekKey={weekKey}
       />
-    </>
+    </DarkContext.Provider>
   );
 }

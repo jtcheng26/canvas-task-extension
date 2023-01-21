@@ -30,18 +30,26 @@ type Props = {
   label: string;
   onClick: () => void;
   color: string;
+  dark?: boolean;
   disabled?: boolean;
 };
 
 export default function Button({
   color,
+  dark,
   disabled,
   label,
   onClick,
 }: Props): JSX.Element {
   return (
     <StyledButton
-      color={disabled ? 'rgba(180, 180, 180)' : color}
+      color={
+        disabled
+          ? !dark
+            ? 'rgba(180, 180, 180)'
+            : 'var(--tfc-dark-mode-bg-secondary)'
+          : color
+      }
       disabled={disabled}
       onClick={onClick}
       type="button"

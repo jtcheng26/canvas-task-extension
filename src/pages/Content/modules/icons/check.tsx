@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import { DarkProps } from '../types/props';
 
 interface CheckIconProps {
+  dark?: boolean;
   onClick: () => void;
   checkStyle: 'Check' | 'Revert' | 'X';
 }
 
-const CheckIconWrapper = styled.div`
+const CheckIconWrapper = styled.div<DarkProps>`
   width: 16px;
   height: 16px;
   border-radius: 100%;
@@ -16,7 +18,8 @@ const CheckIconWrapper = styled.div`
   &:hover {
     svg {
       cursor: pointer;
-      fill: var(--ic-brand-font-color-dark);
+      fill: ${(props) =>
+        props.dark ? '#d4d4d8' : 'var(--ic-brand-font-color-dark)'};
     }
   }
 `;
@@ -77,11 +80,12 @@ const Revert = (
 );
 
 function CheckIcon({
+  dark,
   onClick,
   checkStyle,
 }: CheckIconProps): React.ReactElement {
   return (
-    <CheckIconWrapper onClick={onClick}>
+    <CheckIconWrapper dark={dark} onClick={onClick}>
       {checkStyle === 'Check' ? Check : checkStyle === 'Revert' ? Revert : X}
     </CheckIconWrapper>
   );

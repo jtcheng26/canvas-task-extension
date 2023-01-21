@@ -35,9 +35,12 @@ async function getCourses(colors: Record<string, string>): Promise<Course[]> {
   return [CustomCourse].concat(
     applyColor(
       colors,
-      data.filter((course: Course) => {
-        return !course.access_restricted_by_date;
-      })
+      data
+        .filter((course: Course) => !course.access_restricted_by_date)
+        .map((course: Course) => {
+          course.id = course.id.toString();
+          return course;
+        })
     )
   );
 }

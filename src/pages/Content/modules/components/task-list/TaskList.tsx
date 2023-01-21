@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import TaskCard from '../task-card';
 import SubTabs from '../sub-tabs/SubTabs';
@@ -15,6 +15,7 @@ import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
+import { DarkContext } from '../../contexts/darkContext';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -281,10 +282,16 @@ export default function TaskList({
     return typeof a === 'string' ? a + '-' + weekKey : a.id;
   }
 
+  const darkMode = useContext(DarkContext);
+
   if (skeleton)
     return (
       <ListWrapper>
-        <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
+        <SubTabs
+          dark={darkMode}
+          setTaskListState={setCurrentTab}
+          taskListState={currentTab}
+        />
         <ListContainer>
           <TaskCard skeleton />
           <TaskCard skeleton />
@@ -295,7 +302,11 @@ export default function TaskList({
     );
   return (
     <ListWrapper>
-      <SubTabs setTaskListState={setCurrentTab} taskListState={currentTab} />
+      <SubTabs
+        dark={darkMode}
+        setTaskListState={setCurrentTab}
+        taskListState={currentTab}
+      />
       {showConfetti && (
         <ConfettiWrapper>
           <Confetti

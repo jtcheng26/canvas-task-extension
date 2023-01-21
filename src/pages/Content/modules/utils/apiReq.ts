@@ -1,5 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 import baseURL from './baseURL';
+import JSONBigInt from 'json-bigint';
 
 /* Send a post request w/ CSRF Token. */
 export default async function apiReq(
@@ -22,13 +23,20 @@ export default async function apiReq(
   };
   // Try the specified method first, flip to the other if error occurs.
   if (method === 'put') {
-    return await axios.put(url + '/' + id, body, headers);
+    return await axios.put(url + '/' + id, body, {
+      ...headers,
+      transformResponse: [(data) => JSONBigInt.parse(data)],
+    });
   } else if (method === 'post') {
-    return await axios.post(url, body, headers);
+    return await axios.post(url, body, {
+      ...headers,
+      transformResponse: [(data) => JSONBigInt.parse(data)],
+    });
   } else {
     return await axios.delete(url, {
       ...headers,
       data: JSON.parse(body),
+      transformResponse: [(data) => JSONBigInt.parse(data)],
     });
   }
 }

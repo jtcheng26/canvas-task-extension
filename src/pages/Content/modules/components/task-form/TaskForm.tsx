@@ -8,6 +8,7 @@ import useCourses from '../../hooks/useCourses';
 import useOptions from '../../hooks/useOptions';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
+import { DarkProps } from '../../types/props';
 import createCustomTask from '../../utils/createCustomTask';
 import isDemo from '../../utils/isDemo';
 import CourseDropdown from '../course-dropdown';
@@ -32,8 +33,9 @@ const FormContainer = styled.div<FormContainerProps>`
   align-items: center;
 `;
 
-const Form = styled.div`
-  background-color: white;
+const Form = styled.div<DarkProps>`
+  background-color: ${(props) =>
+    props.dark ? 'var(--tfc-dark-mode-bg-primary)' : 'white'};
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
   border-radius: 4px;
   display: flex;
@@ -142,26 +144,35 @@ export default function TaskForm({
     if (!res && !isDemo()) {
       setErrorMessage('An error occurred. Make sure you have cookies enabled.');
     } else {
-      assignment.id = res && !!res.id ? res.id : assignment.id;
-      assignment.plannable_id = assignment.id; // for marking completing right after creating
+      assignment.id =
+        res && !!res.id ? res.id.toString() : assignment.id.toString();
+      assignment.plannable_id = assignment.id.toString(); // for marking completing right after creating
       if (onSubmit) onSubmit(assignment);
       close();
     }
   }
+
+  const darkMode = !!options?.dark_mode;
   return (
     <FormContainer visible={visible}>
-      <Form>
+      <Form dark={darkMode}>
         <FormItem>
           <FormTitle>
             {titleLabel}
-            <CheckIcon checkStyle="X" onClick={close} />
+            <CheckIcon checkStyle="X" dark={darkMode} onClick={close} />
           </FormTitle>
-          <TextInput color={themeColor} onChange={setTitle} value={title} />
+          <TextInput
+            color={themeColor}
+            dark={darkMode}
+            onChange={setTitle}
+            value={title}
+          />
         </FormItem>
         <FormItem>
           <FormTitle>{dateLabel}</FormTitle>
           <DatePick
             color={themeColor}
+            dark={darkMode}
             selected={selectedDate}
             setSelected={setSelected}
           />
@@ -169,6 +180,7 @@ export default function TaskForm({
         <FormItem>
           <TimePick
             color={themeColor}
+            dark={darkMode}
             selected={selectedTime}
             setSelected={setSelectedTime}
           />
@@ -188,6 +200,7 @@ export default function TaskForm({
         <FormItem>
           <Button
             color={themeColor}
+            dark={darkMode}
             disabled={!title}
             label="Save"
             onClick={submit}
