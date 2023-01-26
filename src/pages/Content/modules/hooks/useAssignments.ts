@@ -84,7 +84,7 @@ export function filterTimeBounds(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.filter((assignment) => {
-    const due_date = new Date(assignment.due_at);
+    const due_date = new Date(assignment.due_at ?? assignment.plannable_date);
     return (
       due_date.valueOf() >= startDate.valueOf() &&
       due_date.valueOf() < endDate.valueOf()
