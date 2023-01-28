@@ -44,7 +44,7 @@ export function convertPlannerAssignments(
         assignment.course_id || assignment.plannable.course_id
       )?.toString(),
       name: assignment.plannable.title,
-      due_at: assignment.plannable.due_at || assignment.plannable.todo_date,
+      due_at: assignment.plannable_date || assignment.plannable.due_at || assignment.plannable.todo_date,
       points_possible: assignment.plannable.points_possible,
       submitted:
         assignment.submissions !== false
@@ -84,7 +84,7 @@ export function filterTimeBounds(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.filter((assignment) => {
-    const due_date = new Date(assignment.due_at ?? assignment.plannable_date);
+    const due_date = new Date(assignment.due_at);
     return (
       due_date.valueOf() >= startDate.valueOf() &&
       due_date.valueOf() < endDate.valueOf()
