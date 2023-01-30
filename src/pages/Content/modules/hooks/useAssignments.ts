@@ -44,7 +44,10 @@ export function convertPlannerAssignments(
         assignment.course_id || assignment.plannable.course_id
       )?.toString(),
       name: assignment.plannable.title,
-      due_at: assignment.plannable.due_at || assignment.plannable.todo_date || assignment.plannable_date,
+      due_at:
+        assignment.plannable.due_at ||
+        assignment.plannable.todo_date ||
+        assignment.plannable_date,
       points_possible: assignment.plannable.points_possible,
       submitted:
         assignment.submissions !== false
