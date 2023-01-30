@@ -10,6 +10,7 @@ interface PlannerAssignment {
     marked_complete: boolean;
     dismissed: boolean;
   } | null;
+  plannable_date?: string;
   submissions:
     | {
         submitted: boolean;
