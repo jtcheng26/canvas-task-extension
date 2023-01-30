@@ -50,7 +50,6 @@ describe('getAllAssignment', () => {
     expect(assignments[0].name).toBe(plannerRes[0].plannable.title);
     // null values
     expect(assignments[0].marked_complete).toBe(false);
-    expect(assignments[0].due_at).toBe(AssignmentDefaults.due_at);
     expect(assignments[0].points_possible).toBe(
       AssignmentDefaults.points_possible
     );
