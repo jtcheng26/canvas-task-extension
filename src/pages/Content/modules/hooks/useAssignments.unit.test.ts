@@ -28,7 +28,7 @@ const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe('getAllAssignment', () => {
   it('fetches assignments from the planner/items endpoint and fills in values', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
+    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes, headers: {} });
 
     const assignments = await getAllAssignments(
       new Date('2022-01-01'),
@@ -40,7 +40,7 @@ describe('getAllAssignment', () => {
     expect(assignments[0].marked_complete).toBe(false);
   });
   it('substitutes null/empty values with defaults', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
+    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes, headers: {} });
 
     const assignments = await getAllAssignments(
       new Date('2022-01-01'),
@@ -58,7 +58,7 @@ describe('getAllAssignment', () => {
     expect(assignments[0].color).toBe(AssignmentDefaults.color);
   });
   it('filters to assignment types', async () => {
-    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes });
+    mockedAxios.get.mockResolvedValueOnce({ data: plannerRes, headers: {} });
 
     let assignments = await getAllAssignments(
       new Date('2022-01-01'),
