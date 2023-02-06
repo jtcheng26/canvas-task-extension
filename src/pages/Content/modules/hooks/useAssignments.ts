@@ -1,4 +1,4 @@
-import axios, { AxiosResponse } from 'axios';
+import axios from 'axios';
 import {
   AssignmentType,
   FinalAssignment,
@@ -17,15 +17,46 @@ import useCoursePositions from './useCoursePositions';
 import isDemo from '../utils/isDemo';
 import JSONBigInt from 'json-bigint';
 
+const parseLinkHeader = (link: string) => {
+  const re = /<([^>]+)>; rel="([^"]+)"/g;
+  let arrRes: RegExpExecArray | null;
+  const ret: Record<string, { url: string; page: string }> = {};
+  while ((arrRes = re.exec(link)) !== null) {
+    ret[arrRes[2]] = {
+      url: arrRes[1],
+      page: arrRes[2],
+    };
+  }
+  return ret;
+};
+
+export async function getPaginatedRequest<T>(
+  url: string,
+  recurse = false
+): Promise<T[]> {
+  const res = await axios.get(url, {
+    transformResponse: [(data) => JSONBigInt.parse(data)],
+  });
+  if (recurse && 'link' in res.headers) {
+    const parsed = parseLinkHeader(res.headers['link']);
+    if (parsed && 'next' in parsed && parsed['next'].url !== url)
+      return (res.data as T[]).concat(
+        (await getPaginatedRequest(parsed['next'].url, true)) as T[]
+      );
+  }
+  return res.data;
+}
+
 /* Get assignments from api */
-function getAllAssignmentsRequest(
+async function getAllAssignmentsRequest(
   start: string,
-  end: string
-): Promise<AxiosResponse<PlannerAssignment[]>> {
-  return axios.get(
-    `${baseURL()}/api/v1/planner/items?start_date=${start}&end_date=${end}&per_page=1000`,
-    { transformResponse: [(data) => JSONBigInt.parse(data)] }
-  );
+  end: string,
+  allPages = true
+): Promise<PlannerAssignment[]> {
+  const initialURL = `${baseURL()}/api/v1/planner/items?start_date=${start}${
+    end ? '&end_date=' + end : ''
+  }&per_page=1000`;
+  return await getPaginatedRequest<PlannerAssignment>(initialURL, allPages);
 }
 
 /* Merge api objects into Assignment objects. */
@@ -188,13 +219,11 @@ export async function getAllAssignments(
 
   const startStr = st.toISOString().split('T')[0];
   const endStr = en.toISOString().split('T')[0];
-  const requests = isDemo()
-    ? {
-        data: DemoAssignments,
-      }
+  const data = isDemo()
+    ? DemoAssignments
     : await getAllAssignmentsRequest(startStr, endStr);
 
-  return convertPlannerAssignments(requests.data as PlannerAssignment[]);
+  return convertPlannerAssignments(data as PlannerAssignment[]);
 }
 
 async function processAssignments(
