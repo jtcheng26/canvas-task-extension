@@ -16,7 +16,11 @@ export function sortByGraded(
 }
 
 export function sortByDate(assignments: FinalAssignment[]): FinalAssignment[] {
-  return assignments.sort((a, b) => compareISODates(a.due_at, b.due_at));
+  return assignments.sort((a, b) => {
+    if (a.needs_grading_count && !b.needs_grading_count) return 1;
+    else if (!a.needs_grading_count && b.needs_grading_count) return -1;
+    return compareISODates(a.due_at, b.due_at);
+  });
 }
 
 export function filterByTab(

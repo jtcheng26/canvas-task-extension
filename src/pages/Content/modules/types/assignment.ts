@@ -35,6 +35,23 @@ interface PlannerAssignment {
   html_url: string;
 }
 
+// JSON response from /api/v1/users/self/todo
+export interface TodoAssignment {
+  id: string;
+  due_at: string;
+  needs_grading_count?: number;
+  html_url: string;
+  name: string;
+  course_id: string;
+  points_possible?: number;
+  is_quiz_assignment?: number;
+}
+
+interface TodoResponse {
+  assignment?: TodoAssignment;
+  needs_grading_count?: number;
+}
+
 // Immutable object representation used in our code
 interface FinalAssignment {
   color: string; // color assigned to course
@@ -54,6 +71,7 @@ interface FinalAssignment {
   course_name: string; // via useCourseName
   marked_complete: boolean; // marked complete in the sidebar or through the planner
   position: number;
+  needs_grading_count?: number;
 }
 
 // possible values from plannable_type field
@@ -72,4 +90,10 @@ enum AssignmentStatus {
   DELETED = 'deleted',
 }
 
-export { PlannerAssignment, FinalAssignment, AssignmentType, AssignmentStatus };
+export {
+  TodoResponse,
+  PlannerAssignment,
+  FinalAssignment,
+  AssignmentType,
+  AssignmentStatus,
+};

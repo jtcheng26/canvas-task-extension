@@ -16,6 +16,7 @@ import { AssignmentDefaults, OptionsDefaults } from '../constants';
 import useCoursePositions from './useCoursePositions';
 import isDemo from '../utils/isDemo';
 import JSONBigInt from 'json-bigint';
+import useNeedsGrading from './useNeedsGrading';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -226,16 +227,15 @@ export async function getAllAssignments(
   return convertPlannerAssignments(data as PlannerAssignment[]);
 }
 
-async function processAssignments(
+export function processAssignmentList(
+  assignments: FinalAssignment[],
   startDate: Date,
   endDate: Date,
   options: Options,
   colors?: Record<string, string>,
   names?: Record<string, string>,
   positions?: Record<string, number>
-): Promise<FinalAssignment[]> {
-  /* modify this filter if announcements are used in the future */
-  let assignments = await getAllAssignments(startDate, endDate);
+): FinalAssignment[] {
   assignments = filterAssignmentTypes(assignments);
   assignments = filterTimeBounds(startDate, endDate, assignments);
   if (colors) assignments = applyCourseColor(colors, assignments);
@@ -255,6 +255,27 @@ async function processAssignments(
   return assignments;
 }
 
+async function processAssignments(
+  startDate: Date,
+  endDate: Date,
+  options: Options,
+  colors?: Record<string, string>,
+  names?: Record<string, string>,
+  positions?: Record<string, number>
+): Promise<FinalAssignment[]> {
+  /* modify this filter if announcements are used in the future */
+  const assignments = await getAllAssignments(startDate, endDate);
+  return processAssignmentList(
+    assignments,
+    startDate,
+    endDate,
+    options,
+    colors,
+    names,
+    positions
+  );
+}
+
 export default function useAssignments(
   startDate: Date,
   endDate: Date,
@@ -267,20 +288,24 @@ export default function useAssignments(
   );
   const { data: names } = useCourseNames();
   const { data: positions } = useCoursePositions();
+  const { data: needsGradingAssignments } = useNeedsGrading(endDate, options);
   return useQuery(
     ['names', startDate, endDate],
-    () =>
-      processAssignments(
-        startDate,
-        endDate,
-        options,
-        colors as Record<string, string>,
-        names as Record<string, string>,
-        positions as Record<string, number>
-      ),
+    async () => {
+      return needsGradingAssignments?.concat(
+        await processAssignments(
+          startDate,
+          endDate,
+          options,
+          colors as Record<string, string>,
+          names as Record<string, string>,
+          positions as Record<string, number>
+        )
+      );
+    },
     {
       staleTime: Infinity,
-      enabled: !!colors && !!names,
+      enabled: !!colors && !!names && !!needsGradingAssignments,
     }
   );
 }
