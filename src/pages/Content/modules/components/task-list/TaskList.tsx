@@ -55,7 +55,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 
 export interface TaskListProps {
   assignments: FinalAssignment[];
-  createAssignment?: (assignment: FinalAssignment) => void;
+  createAssignment?: (assignment: FinalAssignment | FinalAssignment[]) => void;
   loading?: boolean;
   markAssignment?: (id: string, status: AssignmentStatus) => void;
   selectedCourseId: string;

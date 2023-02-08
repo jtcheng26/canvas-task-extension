@@ -72,9 +72,15 @@ export default function TaskContainer({
     }
   }
 
-  async function createNewAssignment(assignment: FinalAssignment) {
+  async function createNewAssignment(
+    assignment: FinalAssignment | FinalAssignment[]
+  ) {
     if (startDate && endDate) {
-      const withinBounds = filterTimeBounds(startDate, endDate, [assignment]);
+      const withinBounds = filterTimeBounds(
+        startDate,
+        endDate,
+        Array.isArray(assignment) ? assignment : [assignment]
+      );
       if (withinBounds.length) {
         const newAssignments = updatedAssignments.concat(withinBounds);
         setUpdatedAssignments(newAssignments);
