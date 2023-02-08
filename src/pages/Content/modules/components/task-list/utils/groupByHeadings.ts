@@ -19,8 +19,8 @@ export function groupByDateHeadings(
   const headings: Record<string, FinalAssignment[]> = {};
   assignments.forEach((a) => {
     if (a.needs_grading_count) {
-      if (!('Needs grading' in headings)) headings['Needs grading'] = [];
-      else headings['Needs grading'].push(a);
+      if (!('Needs Grading' in headings)) headings['Needs Grading'] = [];
+      else headings['Needs Grading'].push(a);
     } else {
       const daysLeft = getDueDateHeadingLabel(getDaysLeft(a));
       if (!(daysLeft in headings)) headings[daysLeft] = [];

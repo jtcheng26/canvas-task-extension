@@ -212,6 +212,7 @@ export default function TaskList({
         markAssignment
       )}
       name={assignment.name}
+      needs_grading_count={assignment.needs_grading_count}
       points_possible={assignment.points_possible}
       submitted={assignment.submitted}
       transitionState={state}
