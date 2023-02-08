@@ -13,5 +13,6 @@
   "type": "assignment",
   "course_name": "Unknown Course",
   "marked_complete": false,
-  "position": 0
+  "position": 0,
+  "needs_grading_count": 0
 }

@@ -156,6 +156,7 @@ interface TaskProps {
   color?: string;
   graded?: boolean;
   course_name?: string;
+  needs_grading_count?: number;
   markComplete?: () => void;
   markDeleted?: () => void;
   skeleton?: boolean;
@@ -182,6 +183,7 @@ export default function TaskCard({
   graded_at,
   color,
   submitted,
+  needs_grading_count,
   markComplete,
   markDeleted,
   skeleton,
@@ -237,7 +239,7 @@ export default function TaskCard({
         }
         onClick={onClick}
       >
-        {!skeleton && transitionState && transitionState?.height >= 40
+        {!skeleton && (transitionState ? transitionState?.height >= 40 : true)
           ? icon
           : ''}
       </TaskLeft>
