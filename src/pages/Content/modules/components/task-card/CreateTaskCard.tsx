@@ -55,7 +55,7 @@ const TaskTitle = styled.div`
 */
 
 interface TaskProps {
-  onSubmit?: (assignment: FinalAssignment) => void;
+  onSubmit?: (assignment: FinalAssignment | FinalAssignment[]) => void;
   selectedCourse?: string;
 }
 

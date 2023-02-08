@@ -14,6 +14,7 @@ import isDemo from '../../utils/isDemo';
 import CourseDropdown from '../course-dropdown';
 import Button from './components/Button';
 import DatePick from './components/DatePick';
+import RecurCheckbox from './components/RecurCheckbox';
 import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
 
@@ -64,7 +65,7 @@ const ErrorMessage = styled.div`
 
 type Props = {
   close: () => void;
-  onSubmit?: (assignment: FinalAssignment) => void;
+  onSubmit?: (assignment: FinalAssignment | FinalAssignment[]) => void;
   selectedCourse?: string;
   visible?: boolean;
 };
@@ -80,6 +81,7 @@ export default function TaskForm({
     new Date()
   );
   const [selectedTime, setSelectedTime] = useState('1439');
+  const [recurrences, setRecurrences] = useState(1);
   const { data: courses } = useCourses();
   const { data: courseMap } = useCourseNames();
   const { data: colors } = useCourseColors();
@@ -111,45 +113,59 @@ export default function TaskForm({
 
   async function submit() {
     setErrorMessage('');
-    const assignment: FinalAssignment = {
-      ...AssignmentDefaults,
-    } as FinalAssignment;
-    assignment.name = title;
-    selectedDate?.setHours(parseInt(selectedTime) / 60);
-    selectedDate?.setMinutes(parseInt(selectedTime) % 60);
-    selectedDate?.setSeconds(0);
-    assignment.due_at = selectedDate?.toISOString() || new Date().toISOString();
-    assignment.course_id =
-      selectedCourseId === '' ? AssignmentDefaults.course_id : selectedCourseId;
-    assignment.course_name =
-      courseMap && selectedCourseId in courseMap
-        ? courseMap[selectedCourseId]
-        : 'Custom Task';
-    assignment.color =
-      colors && selectedCourseId in colors
-        ? colors[selectedCourseId]
-        : themeColor;
-    assignment.position =
-      positions && selectedCourseId in positions
-        ? positions[selectedCourseId]
-        : AssignmentDefaults.position;
-    assignment.type = AssignmentType.NOTE;
-    assignment.id = '' + Math.floor(1000000 * Math.random());
+    const recurringAssignments = [];
+    const RECUR_DELTA = 7; // num days to recur
+    for (let i = 0; i < recurrences; i++) {
+      const assignment: FinalAssignment = {
+        ...AssignmentDefaults,
+      } as FinalAssignment;
+      assignment.name = title;
+      const dueDate = new Date(
+        (selectedDate ? selectedDate?.valueOf() : new Date().valueOf()) +
+          i * (RECUR_DELTA * 24 * 60 * 60 * 1000)
+      );
+      dueDate.setHours(parseInt(selectedTime) / 60);
+      dueDate.setMinutes(parseInt(selectedTime) % 60);
+      dueDate.setSeconds(0);
+      assignment.due_at = dueDate.toISOString();
+      assignment.course_id =
+        selectedCourseId === ''
+          ? AssignmentDefaults.course_id
+          : selectedCourseId;
+      assignment.course_name =
+        courseMap && selectedCourseId in courseMap
+          ? courseMap[selectedCourseId]
+          : 'Custom Task';
+      assignment.color =
+        colors && selectedCourseId in colors
+          ? colors[selectedCourseId]
+          : themeColor;
+      assignment.position =
+        positions && selectedCourseId in positions
+          ? positions[selectedCourseId]
+          : AssignmentDefaults.position;
+      assignment.type = AssignmentType.NOTE;
+      assignment.id = '' + Math.floor(1000000 * Math.random());
 
-    const res = await createCustomTask(
-      title,
-      assignment.due_at,
-      assignment.course_id
-    );
-    if (!res && !isDemo()) {
-      setErrorMessage('An error occurred. Make sure you have cookies enabled.');
-    } else {
-      assignment.id =
-        res && !!res.id ? res.id.toString() : assignment.id.toString();
-      assignment.plannable_id = assignment.id.toString(); // for marking completing right after creating
-      if (onSubmit) onSubmit(assignment);
-      close();
+      const res = await createCustomTask(
+        title,
+        assignment.due_at,
+        assignment.course_id
+      );
+      if (!res && !isDemo()) {
+        setErrorMessage(
+          'An error occurred. Make sure you have cookies enabled.'
+        );
+      } else {
+        assignment.id =
+          res && !!res.id ? res.id.toString() : assignment.id.toString();
+        assignment.plannable_id = assignment.id.toString(); // for marking completing right after creating
+      }
+      recurringAssignments.push(assignment);
     }
+
+    if (onSubmit) onSubmit(recurringAssignments);
+    close();
   }
 
   const darkMode = !!options?.dark_mode;
@@ -183,6 +199,14 @@ export default function TaskForm({
             dark={darkMode}
             selected={selectedTime}
             setSelected={setSelectedTime}
+          />
+        </FormItem>
+        <FormItem>
+          <RecurCheckbox
+            color={themeColor}
+            dark={darkMode}
+            recurrences={recurrences}
+            setRecurrences={setRecurrences}
           />
         </FormItem>
         <FormItem>
