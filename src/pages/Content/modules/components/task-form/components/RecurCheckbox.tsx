@@ -38,6 +38,12 @@ const Row = styled.div`
   align-items: center;
 `;
 
+const WarningText = styled.div`
+  margin-top: 5px;
+  font-size: 12px;
+  opacity: 0.7;
+`;
+
 type Props = {
   color: string;
   dark?: boolean;
@@ -61,9 +67,11 @@ export default function RecurCheckbox({
   }
   const repeatWeeklyText = 'Repeat Weekly';
   const numberOfWeeksText = 'Repeat for ';
+  const repeatWarningText =
+    'Note that repeating tasks can only be deleted individually.';
   const RECUR_MAX = 10;
   const recurOptions: Course[] = [];
-  for (let i = 2; i < RECUR_MAX; i++) {
+  for (let i = 2; i <= RECUR_MAX; i++) {
     recurOptions.push({
       id: i + '',
       name: i + ' Weeks',
@@ -115,6 +123,7 @@ export default function RecurCheckbox({
               zIndex={25}
             />
           </Row>
+          <WarningText>{repeatWarningText}</WarningText>
         </>
       )}
     </div>
