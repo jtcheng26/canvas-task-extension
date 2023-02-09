@@ -9,8 +9,8 @@
     "url": "https://github.com/jtcheng26/canvas-task-extension.git"
   },
   "engines": {
-    "npm": "^8.0.0",
-    "node": "^16.0.0"
+    "npm": ">=8.0.0",
+    "node": ">=16.0.0"
   },
   "scripts": {
     "build": "node utils/build.js chrome",
