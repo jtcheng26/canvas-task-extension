@@ -31,7 +31,12 @@ export default function HeadingGroup({
   transitionState,
 }: HeadingGroupProps): JSX.Element {
   const dueText = 'due';
-  const noDueLabel = new Set(['Overdue', 'Graded', 'Ungraded']);
+  const noDueLabel = new Set([
+    'Overdue',
+    'Graded',
+    'Ungraded',
+    'Needs Grading',
+  ]);
   return (
     <HeadingContainer
       height={transitionState ? transitionState.height : 5}

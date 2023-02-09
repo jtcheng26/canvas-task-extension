@@ -18,9 +18,14 @@ export function groupByDateHeadings(
 ): Record<string, FinalAssignment[]> {
   const headings: Record<string, FinalAssignment[]> = {};
   assignments.forEach((a) => {
-    const daysLeft = getDueDateHeadingLabel(getDaysLeft(a));
-    if (!(daysLeft in headings)) headings[daysLeft] = [];
-    headings[daysLeft].push(a);
+    if (a.needs_grading_count) {
+      if (!('Needs Grading' in headings)) headings['Needs Grading'] = [];
+      else headings['Needs Grading'].push(a);
+    } else {
+      const daysLeft = getDueDateHeadingLabel(getDaysLeft(a));
+      if (!(daysLeft in headings)) headings[daysLeft] = [];
+      headings[daysLeft].push(a);
+    }
   });
   return headings;
 }

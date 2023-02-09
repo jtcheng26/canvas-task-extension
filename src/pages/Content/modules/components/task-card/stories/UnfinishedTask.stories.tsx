@@ -29,11 +29,18 @@ const storyDefaults = {
   color: '#ab3c7d',
   submitted: false,
   skeleton: false,
+  needs_grading_count: 0,
 };
 
 export const Assignment = Template.bind({});
 Assignment.args = {
   ...storyDefaults,
+};
+
+export const NeedsGrading = Template.bind({});
+NeedsGrading.args = {
+  ...storyDefaults,
+  needs_grading_count: 4,
 };
 
 export const Discussion = Template.bind({});

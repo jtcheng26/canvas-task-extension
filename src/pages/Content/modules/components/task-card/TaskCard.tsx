@@ -156,6 +156,7 @@ interface TaskProps {
   color?: string;
   graded?: boolean;
   course_name?: string;
+  needs_grading_count?: number;
   markComplete?: () => void;
   markDeleted?: () => void;
   skeleton?: boolean;
@@ -182,6 +183,7 @@ export default function TaskCard({
   graded_at,
   color,
   submitted,
+  needs_grading_count,
   markComplete,
   markDeleted,
   skeleton,
@@ -195,7 +197,7 @@ export default function TaskCard({
     e.preventDefault();
     window.location.href = html_url;
   }
-  const icon = ASSIGNMENT_ICON[type];
+  const icon = ASSIGNMENT_ICON[needs_grading_count ? 'ungraded' : type];
 
   const due = 'Due';
   const submittedText =
@@ -210,6 +212,9 @@ export default function TaskCard({
     : 'point';
   const pointsText = points_possible
     ? ` \xa0|\xa0 ${points_possible} ${pointsPlural}`
+    : '';
+  const needsGradingText = needs_grading_count
+    ? ` \xa0|\xa0 ${needs_grading_count} ungraded`
     : '';
   const gradedText = points_possible
     ? ` ${!graded ? ' Waiting for grade' : ' Graded'}`
@@ -237,7 +242,7 @@ export default function TaskCard({
         }
         onClick={onClick}
       >
-        {!skeleton && transitionState && transitionState?.height >= 40
+        {!skeleton && (transitionState ? transitionState?.height >= 40 : true)
           ? icon
           : ''}
       </TaskLeft>
@@ -246,7 +251,7 @@ export default function TaskCard({
           <CourseCodeText color={color}>
             {!skeleton ? course_name : <SkeletonCourseCode dark={darkMode} />}
           </CourseCodeText>
-          {!skeleton ? (
+          {!skeleton && !needs_grading_count ? ( // assignments that need grading should not be marked manually
             <CheckIcon
               checkStyle={complete ? 'Revert' : 'Check'}
               dark={darkMode}
@@ -271,10 +276,15 @@ export default function TaskCard({
         <TaskDetailsText>
           {skeleton ? (
             <SkeletonInfo dark={darkMode} />
-          ) : !complete ? (
+          ) : !complete || needs_grading_count ? (
             <>
               <strong>{due}</strong>
-              {dueText + pointsText}
+              {dueText}
+              {needs_grading_count ? (
+                <strong>{needsGradingText}</strong>
+              ) : (
+                pointsText
+              )}
             </>
           ) : (
             <>
