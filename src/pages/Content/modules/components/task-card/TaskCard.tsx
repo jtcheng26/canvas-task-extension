@@ -279,7 +279,12 @@ export default function TaskCard({
           ) : !complete || needs_grading_count ? (
             <>
               <strong>{due}</strong>
-              {dueText + (needs_grading_count ? needsGradingText : pointsText)}
+              {dueText}
+              {needs_grading_count ? (
+                <strong>{needsGradingText}</strong>
+              ) : (
+                pointsText
+              )}
             </>
           ) : (
             <>

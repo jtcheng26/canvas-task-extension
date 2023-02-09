@@ -1,9 +1,15 @@
 import React from 'react';
+import { ICON_FILL, ICON_SHADOW } from './constants';
 
 const NeedsGradingIcon = (
   <svg
     height="74"
-    style={{ fill: 'white', height: '22px', width: '22px' }}
+    style={{
+      fill: ICON_FILL,
+      height: '22px',
+      width: '22px',
+      filter: ICON_SHADOW,
+    }}
     viewBox="0 0 65 74"
     width="65"
     xmlns="http://www.w3.org/2000/svg"
