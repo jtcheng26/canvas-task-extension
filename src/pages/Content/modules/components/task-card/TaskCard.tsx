@@ -214,7 +214,7 @@ export default function TaskCard({
     ? ` \xa0|\xa0 ${points_possible} ${pointsPlural}`
     : '';
   const needsGradingText = needs_grading_count
-    ? ` \xa0|\xa0 ${needs_grading_count} ungraded`
+    ? `${needs_grading_count} ungraded`
     : '';
   const gradedText = points_possible
     ? ` ${!graded ? ' Waiting for grade' : ' Graded'}`
@@ -281,7 +281,10 @@ export default function TaskCard({
               <strong>{due}</strong>
               {dueText}
               {needs_grading_count ? (
-                <strong>{needsGradingText}</strong>
+                <strong>
+                  {' \xa0|\xa0 '}
+                  <span style={{ color: color }}>{needsGradingText}</span>
+                </strong>
               ) : (
                 pointsText
               )}
