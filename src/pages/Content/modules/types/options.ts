@@ -14,6 +14,7 @@ interface Options {
   show_confetti: boolean;
   theme_color: string;
   dark_mode: boolean;
+  show_needs_grading: boolean;
 }
 
 export default Options;
