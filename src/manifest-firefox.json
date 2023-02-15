@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "Tasks for Canvas™",
   "description": "A better to-do list sidebar for Canvas.",
-  "version": "1.2.5",
+  "version": "1.2.6",
   "icons": {
     "128": "icon-128.png"
   },
