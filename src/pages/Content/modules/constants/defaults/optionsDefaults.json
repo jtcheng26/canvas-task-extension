@@ -11,5 +11,6 @@
   "show_locked_assignments": false,
   "show_confetti": true,
   "theme_color": "var(--ic-brand-global-nav-bgd)",
-  "dark_mode": false
+  "dark_mode": false,
+  "show_needs_grading": false
 }

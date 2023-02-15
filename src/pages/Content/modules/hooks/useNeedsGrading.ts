@@ -65,6 +65,7 @@ async function processAssignments(
   names?: Record<string, string>,
   positions?: Record<string, number>
 ): Promise<FinalAssignment[]> {
+  if (!options.show_needs_grading) return [];
   const assignments: FinalAssignment[] = await getAllTodos();
   return processAssignmentList(
     assignments,
