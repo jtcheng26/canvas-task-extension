@@ -12,5 +12,5 @@
   "show_confetti": true,
   "theme_color": "var(--ic-brand-global-nav-bgd)",
   "dark_mode": false,
-  "show_needs_grading": true
+  "show_needs_grading": false
 }
