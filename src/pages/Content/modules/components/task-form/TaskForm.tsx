@@ -92,6 +92,7 @@ export default function TaskForm({
 
   const coursesWithoutCustom = useMemo(() => {
     if (courses) {
+      console.log(courses);
       return courses.filter((c) => c.id !== '' && c.id !== '0');
     }
     return [];

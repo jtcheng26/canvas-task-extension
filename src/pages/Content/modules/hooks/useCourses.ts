@@ -10,10 +10,12 @@ import useCourseColors from './useCourseColors';
 /* Apply the `color` property to each course. */
 function applyColor(
   colors: Record<string, string>,
-  courses: Course[]
+  courses: Course[],
+  defaultColor?: string
 ): Course[] {
   return courses.map((course) => {
-    course.color = course.id in colors ? colors[course.id] : THEME_COLOR;
+    course.color =
+      course.id in colors ? colors[course.id] : defaultColor || THEME_COLOR;
     return course;
   });
 }
@@ -40,7 +42,8 @@ async function getCourses(colors: Record<string, string>): Promise<Course[]> {
         .map((course: Course) => {
           course.id = course.id.toString();
           return course;
-        })
+        }),
+      colors['0']
     )
   );
 }

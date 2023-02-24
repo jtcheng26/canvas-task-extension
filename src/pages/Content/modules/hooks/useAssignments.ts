@@ -161,7 +161,12 @@ export function applyCourseColor(
   colors: Record<string, string>,
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
-  return applyCourseValue('color', colors, assignments);
+  const applied = applyCourseValue('color', colors, assignments);
+  // apply theme color for courses without a custom color
+  return applied.map((a) => {
+    if (!(a.course_id in colors)) a.color = colors['0'];
+    return a;
+  });
 }
 
 /* Fill out the `course_name` attribute in the assignment object. */
