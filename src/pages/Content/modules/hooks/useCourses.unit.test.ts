@@ -1,12 +1,10 @@
 import axios from 'axios';
 import baseURL from '../utils/baseURL';
-import useCourses, { getCourses } from './useCourses';
+import { getCourses } from './useCourses';
 
 import activeAndRestricted from '../tests/data/api/courses/activeAndRestrictedCourses.json';
 import active from '../tests/data/api/courses/activeCourses.json';
 import restricted from '../tests/data/api/courses/restrictedCourses.json';
-import testHookData from '../tests/utils/testHookData';
-import { Course } from '../types';
 
 jest.mock('axios');
 jest.mock('../utils/baseURL');
