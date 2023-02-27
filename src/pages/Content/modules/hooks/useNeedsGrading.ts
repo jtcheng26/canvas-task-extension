@@ -53,7 +53,6 @@ export function convertTodoAssignments(
 
 export async function getAllTodos(): Promise<FinalAssignment[]> {
   const data = isDemo() ? [] : await getAllTodoRequest();
-  //   console.log(data);
   return convertTodoAssignments(data as TodoResponse[]);
 }
 

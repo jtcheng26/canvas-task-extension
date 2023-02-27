@@ -21,7 +21,9 @@ function applyColor(
 }
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
-async function getCourses(colors: Record<string, string>): Promise<Course[]> {
+export async function getCourses(
+  colors: Record<string, string>
+): Promise<Course[]> {
   if (isDemo()) return DemoCourses;
 
   const { data } = await axios.get(`${baseURL()}/api/v1/courses?per_page=200`);

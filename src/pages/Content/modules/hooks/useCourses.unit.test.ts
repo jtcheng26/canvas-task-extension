@@ -1,6 +1,6 @@
 import axios from 'axios';
 import baseURL from '../utils/baseURL';
-import useCourses from './useCourses';
+import useCourses, { getCourses } from './useCourses';
 
 import activeAndRestricted from '../tests/data/api/courses/activeAndRestrictedCourses.json';
 import active from '../tests/data/api/courses/activeCourses.json';
@@ -18,20 +18,16 @@ beforeAll(() => {
 });
 
 test('useCourses hook gets all the courses', async () => {
-  mockedAxios.get
-    .mockResolvedValueOnce({ data: { custom_colors: {} } })
-    .mockResolvedValueOnce({ data: active });
+  mockedAxios.get.mockResolvedValueOnce({ data: active });
 
-  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
+  const res = (await getCourses({})).slice(1);
   expect(res).toStrictEqual(active);
 });
 
 test('useCourses hook filters date-restricted courses', async () => {
-  mockedAxios.get
-    .mockResolvedValueOnce({ data: { custom_colors: {} } })
-    .mockResolvedValueOnce({ data: activeAndRestricted });
+  mockedAxios.get.mockResolvedValueOnce({ data: activeAndRestricted });
 
-  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
+  const res = (await getCourses({})).slice(1);
 
   expect(res.length).toBe(
     activeAndRestricted.reduce(
@@ -42,11 +38,9 @@ test('useCourses hook filters date-restricted courses', async () => {
 });
 
 test('useCourses hook works when all courses are restricted', async () => {
-  mockedAxios.get
-    .mockResolvedValueOnce({ data: { custom_colors: {} } })
-    .mockResolvedValueOnce({ data: restricted });
+  mockedAxios.get.mockResolvedValueOnce({ data: restricted });
 
-  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
+  const res = (await getCourses({})).slice(1);
   expect(res).toBeDefined();
   expect(res.length).toBe(0);
 });
@@ -62,13 +56,9 @@ test('useCourses hook applies course colors', async () => {
       6: '#f62',
     },
   };
-  mockedAxios.get
-    .mockResolvedValueOnce({
-      data: colors,
-    })
-    .mockResolvedValueOnce({ data: activeAndRestricted });
+  mockedAxios.get.mockResolvedValueOnce({ data: activeAndRestricted });
 
-  const res = ((await testHookData(useCourses)).data as Course[]).slice(1);
+  const res = (await getCourses(colors.custom_colors)).slice(1);
   expect(res).toBeDefined();
   expect(res.length).toBeGreaterThan(0);
   res.forEach((course) => {
