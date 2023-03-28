@@ -91,9 +91,7 @@ export default function TaskForm({
   const themeColor = options?.theme_color || OptionsDefaults.theme_color;
 
   const coursesWithoutCustom = useMemo(() => {
-    if (courses) {
-      return courses.filter((c) => c.id !== '' && c.id !== '0');
-    }
+    if (courses) return courses.filter((c) => c.id !== '' && c.id !== '0');
     return [];
   }, [courses]);
 

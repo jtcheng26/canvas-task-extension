@@ -4,6 +4,7 @@ import { THEME_COLOR } from '../constants';
 import { DemoColors } from '../tests/demo';
 import baseURL from '../utils/baseURL';
 import isDemo from '../utils/isDemo';
+import useOptions from './useOptions';
 
 async function getCourseColors(
   defaultColor?: string
@@ -26,7 +27,13 @@ async function getCourseColors(
 export default function useCourseColors(
   defaultColor?: string
 ): UseQueryResult<Record<string, string>> {
-  return useQuery('colors', () => getCourseColors(defaultColor), {
-    staleTime: Infinity,
-  });
+  const { data: options } = useOptions();
+  return useQuery(
+    'colors',
+    () => getCourseColors(defaultColor ?? options?.theme_color),
+    {
+      staleTime: Infinity,
+      enabled: !!options,
+    }
+  );
 }
