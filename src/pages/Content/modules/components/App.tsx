@@ -53,7 +53,7 @@ export default function App(): JSX.Element {
     incrementDelta(1);
   }
   return options ? (
-    <AppContainer>
+    <AppContainer id="tfc-wall-sina">
       <Header
         clickable={clickable}
         dark={options.dark_mode}
