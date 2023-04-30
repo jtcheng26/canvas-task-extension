@@ -10,6 +10,10 @@
   display: none;
 }
 
+#tfc-wall-rose {
+  position: relative;
+}
+
 body {
   --tfc-dark-mode-text-primary: #e4e4e7;
   --tfc-dark-mode-text-secondary: #71717a;
