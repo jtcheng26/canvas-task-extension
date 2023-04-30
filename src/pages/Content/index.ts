@@ -25,6 +25,7 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
     insert new div at top of sidebar to hold content
   */
   const newContainer = document.createElement('div');
+  newContainer.id = 'tfc-wall-rose';
   (container.parentNode as Node).insertBefore(newContainer, container);
   /*
     only visually hide sidebar to prevent issues with DOM modification
@@ -84,42 +85,12 @@ if (isCanvas) {
   const rightSide = document.getElementById('right-side');
 
   if (rightSide) {
-    const observer = new MutationObserver(() => {
-      const todoListContainers = rightSide?.getElementsByClassName(
-        'Sidebar__TodoListContainer'
-      );
-      const teacherTodoListContainers =
-        rightSide?.getElementsByClassName('todo-list-header');
-      const comingUpContainers = rightSide?.getElementsByClassName('coming_up');
-      if (todoListContainers?.length > 0)
-        createSidebar(todoListContainers[0] as HTMLElement, observer);
-      else if (teacherTodoListContainers?.length > 0)
-        createSidebar(teacherTodoListContainers[0] as HTMLElement, observer);
-      else if (comingUpContainers?.length > 0)
-        createSidebar(comingUpContainers[0] as HTMLElement);
-    });
-
-    /*
-  in case the element is already loaded and not caught by mutation observer
-*/
-    const containerList = document.getElementsByClassName(
-      'Sidebar__TodoListContainer'
-    );
-    const comingUpList = rightSide?.getElementsByClassName('coming_up');
-    const teacherContainerList =
-      document.getElementsByClassName('todo-list-header');
-
-    if (containerList.length > 0)
-      createSidebar(containerList[0] as HTMLElement);
-    else if (teacherContainerList.length > 0)
-      createSidebar(teacherContainerList[0] as HTMLElement);
-    else if (comingUpList.length > 0)
-      createSidebar(comingUpList[0] as HTMLElement);
-    else if (rightSide) {
-      observer.observe(rightSide as Node, {
-        childList: true,
-      });
-    }
+    // We can't insert directly in the right side element because of certain other extensions...
+    // This might make it appear above the logo though, need someone to test that
+    const container = document.createElement('div');
+    container.id = 'tfc-wall-maria';
+    rightSide.parentElement?.insertBefore(container, rightSide);
+    createSidebar(container);
   }
 }
 
