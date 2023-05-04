@@ -69,8 +69,12 @@ function createSidebar(
     // // @ts-expect-error: InstallTrigger is a firefox global
     const isFirefox = false; // typeof InstallTrigger !== 'undefined'
 
-    if (isFirefox) runAppInFirefox(container);
-    else runAppInChrome(container);
+    const outerWall = document.createElement('div');
+    outerWall.id = 'tfc-wall-maria';
+    container.parentElement?.insertBefore(outerWall, container);
+
+    if (isFirefox) runAppInFirefox(outerWall);
+    else runAppInChrome(outerWall);
   }
 }
 
@@ -83,14 +87,50 @@ if (isCanvas) {
 
   /* This is the <aside> element contains the existing canvas sidebar. */
   const rightSide = document.getElementById('right-side');
+  const path = window.location.pathname.split('/');
+  const onCoursePage = path.length >= 2 && path[path.length - 2] === 'courses';
 
   if (rightSide) {
     // We can't insert directly in the right side element because of certain other extensions...
     // This might make it appear above the logo though, need someone to test that
-    const container = document.createElement('div');
-    container.id = 'tfc-wall-maria';
-    rightSide.parentElement?.insertBefore(container, rightSide);
-    createSidebar(container);
+    const observer = new MutationObserver(() => {
+      const todoListContainers = rightSide?.getElementsByClassName(
+        'Sidebar__TodoListContainer'
+      );
+      const teacherTodoListContainers =
+        rightSide?.getElementsByClassName('todo-list-header');
+      const comingUpContainers = rightSide?.getElementsByClassName('coming_up');
+      if (
+        onCoursePage ||
+        todoListContainers?.length > 0 ||
+        teacherTodoListContainers?.length > 0 ||
+        comingUpContainers?.length > 0
+      )
+        createSidebar(rightSide);
+    });
+
+    /*
+  in case the element is already loaded and not caught by mutation observer
+*/
+    const containerList = document.getElementsByClassName(
+      'Sidebar__TodoListContainer'
+    );
+    const comingUpList = rightSide?.getElementsByClassName('coming_up');
+    const teacherContainerList =
+      document.getElementsByClassName('todo-list-header');
+
+    if (
+      onCoursePage ||
+      containerList?.length > 0 ||
+      teacherContainerList?.length > 0 ||
+      comingUpList?.length > 0
+    )
+      createSidebar(rightSide);
+    else if (rightSide) {
+      observer.observe(rightSide as Node, {
+        childList: true,
+      });
+    }
   }
 }
 
