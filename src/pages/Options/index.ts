@@ -310,9 +310,9 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setSelectedPeriod(options.period.toLowerCase());
   setCheckbox('rolling-period', options.rolling_period);
   setCheckbox('default-sidebar', !options.sidebar);
-  setCheckbox('active-rings', !options.dash_courses);
+  // setCheckbox('active-rings', !options.dash_courses);
   setCheckbox('due-date-headings', options.due_date_headings);
-  setCheckbox('show-locked-assignments', options.show_locked_assignments);
+  // setCheckbox('show-locked-assignments', options.show_locked_assignments);
   setCheckbox('show-confetti', options.show_confetti);
   setCheckbox('show-needs-grading', options.show_needs_grading);
   setCheckbox(
