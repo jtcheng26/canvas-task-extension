@@ -7,10 +7,12 @@ import {
 import UserData from './userData';
 import Options, { Period } from './options';
 import { Direction } from './misc';
+import { ExperimentConfig } from './experiment';
 
 export {
   Course,
   FinalAssignment,
+  ExperimentConfig,
   PlannerAssignment,
   AssignmentType,
   UserData,
