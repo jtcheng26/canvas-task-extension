@@ -1,5 +1,6 @@
 import { FinalAssignment } from '../../../types';
 import getDaysLeft from './getDaysLeft';
+import { TaskTypeTab } from './useHeadings';
 
 function getDueDateHeadingLabel(delta: number): string {
   let label = `${Math.floor(delta / 7)} weeks`;
@@ -31,15 +32,25 @@ export function groupByDateHeadings(
 }
 
 export function groupByStatusHeadings(
-  assignments: FinalAssignment[]
+  assignments: FinalAssignment[],
+  currentTab: TaskTypeTab = 'Completed'
 ): Record<string, FinalAssignment[]> {
   const headings: Record<string, FinalAssignment[]> = {
     Ungraded: [],
     Graded: [],
+    Unread: [],
+    Seen: [],
   };
-  assignments.forEach((a) => {
-    if (a.graded) headings['Graded'].push(a);
-    else headings['Ungraded'].push(a);
-  });
+  if (currentTab === 'Completed') {
+    assignments.forEach((a) => {
+      if (a.graded) headings['Graded'].push(a);
+      else headings['Ungraded'].push(a);
+    });
+  } else if (currentTab === 'Announcements') {
+    assignments.forEach((a) => {
+      if (a.marked_complete) headings['Seen'].push(a);
+      else headings['Unread'].push(a);
+    });
+  }
   return headings;
 }

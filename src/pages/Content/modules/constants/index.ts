@@ -1,4 +1,5 @@
 import {
+  AnnouncementIcon,
   AssignmentIcon,
   DiscussionIcon,
   NoteIcon,
@@ -17,7 +18,7 @@ export const ASSIGNMENT_ICON: Record<AssignmentType | 'ungraded', JSX.Element> =
     [AssignmentType.DISCUSSION]: DiscussionIcon,
     [AssignmentType.QUIZ]: QuizIcon,
     [AssignmentType.NOTE]: NoteIcon,
-    [AssignmentType.ANNOUNCEMENT]: AssignmentIcon,
+    [AssignmentType.ANNOUNCEMENT]: AnnouncementIcon,
     [AssignmentType.EVENT]: AssignmentIcon,
     ungraded: NeedsGradingIcon,
   };

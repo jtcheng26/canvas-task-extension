@@ -31,6 +31,7 @@ interface PlannerAssignment {
     points_possible?: number;
     course_id?: string; // for custom planner notes
     linked_object_html_url?: string; // for custom planner notes
+    read_state?: string; // for announcements
   };
   html_url: string;
 }
@@ -88,6 +89,7 @@ enum AssignmentStatus {
   UNFINISHED = 'unfinished',
   COMPLETE = 'complete',
   DELETED = 'deleted',
+  SEEN = 'seen',
 }
 
 export {

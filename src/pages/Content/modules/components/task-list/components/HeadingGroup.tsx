@@ -36,6 +36,8 @@ export default function HeadingGroup({
     'Graded',
     'Ungraded',
     'Needs Grading',
+    'Seen',
+    'Unread',
   ]);
   return (
     <HeadingContainer

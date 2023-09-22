@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { DarkProps } from '../../types/props';
+import { TaskTypeTab } from '../task-list/utils/useHeadings';
 
 const SubtitleDiv = styled.div<DarkProps>`
   border-bottom: 1px solid
@@ -34,8 +35,8 @@ const SubtitleTab = styled.div<SubtitleTabProps & DarkProps>`
 
 export interface SubTabsProps {
   dark?: boolean;
-  setTaskListState?: (state: 'Unfinished' | 'Completed') => void;
-  taskListState?: 'Unfinished' | 'Completed';
+  setTaskListState?: (state: TaskTypeTab) => void;
+  taskListState?: TaskTypeTab;
 }
 
 /*

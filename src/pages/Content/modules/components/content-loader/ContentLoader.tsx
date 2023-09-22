@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import TaskContainer from '../task-container';
-import { FinalAssignment, Options } from '../../types';
+import { AssignmentType, FinalAssignment, Options } from '../../types';
 import CompareMonthDate from './utils/compareMonthDate';
 import useAssignments from '../../hooks/useAssignments';
 import Skeleton from '../skeleton';
@@ -14,6 +14,11 @@ interface ContentLoaderProps {
   loadedCallback: () => void;
 }
 
+interface AssignmentData {
+  assignments: FinalAssignment[];
+  announcements: FinalAssignment[];
+}
+
 /*
   utility component that fetches async data and re-renders content when necessary
 */
@@ -24,8 +29,7 @@ function ContentLoader({
   endDate,
   loadedCallback,
 }: ContentLoaderProps): JSX.Element {
-  const [assignmentData, setAssignmentData] =
-    useState<FinalAssignment[] | null>();
+  const [assignmentData, setAssignmentData] = useState<AssignmentData | null>();
   const { data, isError, isSuccess } = useAssignments(
     startDate,
     endDate,
@@ -39,9 +43,23 @@ function ContentLoader({
 
   const [loaded, setLoaded] = useState(false);
 
+  function filterAnnouncements(
+    data: FinalAssignment[],
+    announcements: boolean
+  ) {
+    return data.filter((a) =>
+      announcements
+        ? a.type === AssignmentType.ANNOUNCEMENT
+        : a.type !== AssignmentType.ANNOUNCEMENT
+    );
+  }
+
   const onLoad = useCallback((data: FinalAssignment[]) => {
     setLoaded(true);
-    setAssignmentData(data);
+    setAssignmentData({
+      assignments: filterAnnouncements(data, false),
+      announcements: filterAnnouncements(data, true),
+    });
     loadedCallback();
   }, []);
 
@@ -67,6 +85,7 @@ function ContentLoader({
 
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
+
   return (
     <>
       {!isSuccess && !isError && !assignmentData && (
@@ -74,7 +93,8 @@ function ContentLoader({
       )}
       {assignmentData ? (
         <TaskContainer
-          assignments={assignmentData}
+          announcements={assignmentData.announcements}
+          assignments={assignmentData.assignments}
           courseId={onCourse}
           courseList={courseData}
           endDate={endDate}

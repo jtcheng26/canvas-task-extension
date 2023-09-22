@@ -13,6 +13,7 @@ import { DarkContext } from '../../contexts/darkContext';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
+  announcements: FinalAssignment[];
   loading?: boolean;
   courseId?: string | false;
   courseList?: Course[]; // all courses, for corner case when on course page w/ no assignments
@@ -26,6 +27,7 @@ export interface TaskContainerProps {
 */
 
 export default function TaskContainer({
+  announcements,
   assignments,
   courseId,
   courseList,
@@ -45,13 +47,16 @@ export default function TaskContainer({
   const [updatedAssignments, setUpdatedAssignments] =
     useState<FinalAssignment[]>(assignments);
 
+  const [updatedAnnouncements, setUpdatedAnnouncements] =
+    useState<FinalAssignment[]>(announcements);
+
   const courses = useMemo(() => {
     if (courseList && courseId !== false)
       return courseList.filter((c) => c.id === courseId);
-    return extractCourses(updatedAssignments);
-  }, [updatedAssignments, courseId]);
+    return extractCourses(updatedAssignments.concat(updatedAnnouncements));
+  }, [updatedAssignments, updatedAnnouncements, courseId]);
 
-  async function markAssignmentAs(id: string, status: AssignmentStatus) {
+  function markAssignmentAs(id: string, status: AssignmentStatus) {
     if (status === AssignmentStatus.DELETED) {
       setUpdatedAssignments(
         updatedAssignments.filter((a) => {
@@ -60,6 +65,13 @@ export default function TaskContainer({
             return false;
           }
           return true;
+        })
+      );
+    } else if (status === AssignmentStatus.SEEN) {
+      setUpdatedAnnouncements(
+        updatedAnnouncements.map((a) => {
+          if (a.id == id) return markAssignment(AssignmentStatus.SEEN, a);
+          return a;
         })
       );
     } else {
@@ -92,9 +104,14 @@ export default function TaskContainer({
   const chosenCourseId = courseId ? courseId : selectedCourseId;
 
   useEffect(() => {
-    if (courseId) setUpdatedAssignments(filterCourses([courseId], assignments));
-    else setUpdatedAssignments(assignments);
-  }, [assignments, courseId]);
+    if (courseId) {
+      setUpdatedAssignments(filterCourses([courseId], assignments));
+      setUpdatedAnnouncements(filterCourses([courseId], announcements));
+    } else {
+      setUpdatedAssignments(assignments);
+      setUpdatedAnnouncements(announcements);
+    }
+  }, [assignments, announcements, courseId]);
 
   return (
     <DarkContext.Provider value={options.dark_mode}>
@@ -116,6 +133,7 @@ export default function TaskContainer({
         weekKey={weekKey}
       />
       <TaskList
+        announcements={updatedAnnouncements}
         assignments={updatedAssignments}
         createAssignment={createNewAssignment}
         loading={loading}

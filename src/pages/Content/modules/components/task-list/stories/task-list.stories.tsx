@@ -25,6 +25,7 @@ const Template: ComponentStory<typeof TaskList> = ({
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       <TaskList
+        announcements={[]}
         assignments={assignments}
         markAssignment={func}
         selectedCourseId={selectedCourseId}

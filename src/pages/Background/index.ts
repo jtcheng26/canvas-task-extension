@@ -5,7 +5,7 @@ const INSTALL_URL = 'https://www.tasksforcanvas.info/getting-started';
 chrome.runtime.onInstalled.addListener(function (object) {
   if (object.reason === 'install') {
     const now = new Date().getTime();
-    chrome.tabs.create({ url: `${INSTALL_URL}?b=${now}` });
+    chrome.tabs.create({ url: `${INSTALL_URL}?ref=install` });
     chrome.storage.sync.set({ install_time: now });
     chrome.runtime.setUninstallURL(`${UNINSTALL_URL}?b=${now}`);
   }

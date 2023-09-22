@@ -10,7 +10,15 @@ export default function markAssignment(
 ): FinalAssignment {
   const method = assignment.override_id ? 'put' : 'post';
   if (complete === AssignmentStatus.DELETED) deleteAssignment(assignment);
-  else {
+  else if (complete === AssignmentStatus.SEEN) {
+    apiReq(
+      `/v1/courses/${assignment.course_id}/discussion_topics/${assignment.id}`,
+      '',
+      'put',
+      'read'
+    );
+    assignment.marked_complete = true;
+  } else {
     const json = JSON.stringify({
       plannable_type: assignment.type.toString(),
       plannable_id: assignment.plannable_id,
