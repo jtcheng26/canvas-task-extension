@@ -27,6 +27,6 @@ export function fmtDateSince(date: string): string {
   else if (diff > HOUR) res = [diff / HOUR, 'hour'];
   else res = [diff / MINUTE, 'min'];
   return `${Math.floor(res[0] as number)} ${res[1]}${
-    res[0] !== 1 ? 's' : ''
+    Math.floor(res[0] as number) !== 1 ? 's' : ''
   } ago`;
 }
