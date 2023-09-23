@@ -52,13 +52,19 @@ interface ColorProps {
   visible: boolean;
 }
 
-const BorderBottom = styled.div<ColorProps>`
+interface AnimatedProps {
+  pos: number;
+}
+
+const BorderBottom = styled.div<ColorProps & AnimatedProps>`
   height: 3px;
   margin-top: 5px;
-  width: 100%;
+  width: 33.33%;
   background-color: ${(props) => (props.color ? props.color : ICON_FILL)};
   border-radius: 100px;
   opacity: ${(props) => (props.visible ? 1 : 0)};
+  transition: all 0.2s ease-in-out;
+  margin-left: ${(props) => ((100 * props.pos) / 3).toFixed(2)}%;
 `;
 
 export interface SubTabsProps {
@@ -97,6 +103,12 @@ export default function IconSubTabs1({
 
   const activeColor = skeleton ? '#6c757c' : options?.theme_color;
 
+  const positions = {
+    Announcements: 0,
+    Unfinished: 1,
+    Completed: 2,
+  };
+
   return (
     <div>
       <SubtitleDiv dark={dark} onClick={toggleDropdown}>
@@ -114,10 +126,6 @@ export default function IconSubTabs1({
             notifs={notifs}
             variant={taskListState === 'Announcements' ? 'solid' : 'outline'}
           />
-          <BorderBottom
-            color={activeColor}
-            visible={taskListState === 'Announcements'}
-          />
         </SubtitleTab>
         <SubtitleTab
           active={taskListState === 'Unfinished'}
@@ -132,10 +140,6 @@ export default function IconSubTabs1({
             flat
             variant={taskListState === 'Unfinished' ? 'solid' : 'outline'}
           />
-          <BorderBottom
-            color={activeColor}
-            visible={taskListState === 'Unfinished'}
-          />
         </SubtitleTab>
         <SubtitleTab
           active={taskListState === 'Completed'}
@@ -149,12 +153,13 @@ export default function IconSubTabs1({
             color={taskListState === 'Completed' ? activeColor : '#6c757c'}
             variant={taskListState === 'Completed' ? 'solid' : 'outline'}
           />
-          <BorderBottom
-            color={activeColor}
-            visible={taskListState === 'Completed'}
-          />
         </SubtitleTab>
       </SubtitleDiv>
+      <BorderBottom
+        color={activeColor}
+        pos={positions[taskListState ?? 'Unfinished']}
+        visible
+      />
     </div>
   );
 }
