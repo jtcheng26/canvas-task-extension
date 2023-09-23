@@ -325,6 +325,8 @@ export default function TaskList({
 
   const darkMode = useContext(DarkContext);
 
+  const numNotifs = announcements.filter((x) => !x.marked_complete).length;
+
   if (skeleton)
     return (
       <ListWrapper>
@@ -359,6 +361,7 @@ export default function TaskList({
         />
         <IconSubTabs1
           dark={darkMode}
+          notifs={numNotifs}
           setTaskListState={setCurrentTab}
           taskListState={currentTab}
         />

@@ -38,7 +38,6 @@ const SubtitleTab = styled.div<SubtitleTabProps & DarkProps>`
       fill: ${(props) => props.color};
     }
     cursor: pointer;
-    text-decoration: underline;
   }
   font-weight: ${(p) => (p.active ? 'bold' : 'normal')};
   width: 33.33%;
@@ -67,6 +66,7 @@ export interface SubTabsProps {
   setTaskListState?: (state: TaskTypeTab) => void;
   taskListState?: TaskTypeTab;
   skeleton?: boolean;
+  notifs?: number;
 }
 
 /*
@@ -77,6 +77,7 @@ export default function IconSubTabs1({
   setTaskListState,
   taskListState,
   skeleton = false,
+  notifs = 0,
 }: SubTabsProps): JSX.Element {
   const [dropdown, setDropdown] = useState(false);
   function toggleDropdown() {
@@ -110,6 +111,7 @@ export default function IconSubTabs1({
           <AnnouncementIconComponent
             color={taskListState === 'Announcements' ? activeColor : '#6c757c'}
             flat
+            notifs={notifs}
             variant={taskListState === 'Announcements' ? 'solid' : 'outline'}
           />
           <BorderBottom
