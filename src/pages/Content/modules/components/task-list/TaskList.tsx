@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import TaskCard from '../task-card';
 import SubTabs from '../sub-tabs/SubTabs';
 import { FinalAssignment } from '../../types';
-import useHeadings from './utils/useHeadings';
+import useHeadings, { TaskTypeTab } from './utils/useHeadings';
 import useSelectedCourse from './utils/useSelectedCourse';
 import { filterByTab, sortByTab } from './utils/sortBy';
 import cutAssignmentList from './utils/cutList';
@@ -16,6 +16,9 @@ import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
 import { DarkContext } from '../../contexts/darkContext';
+import Experiment from '../experiment';
+import AnnouncementCard from '../task-card/AnnouncementCard';
+import IconSubTabs1 from '../sub-tabs/IconSubTabs1';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -54,6 +57,7 @@ const ViewMore = styled.a<ViewMoreProps>`
 `;
 
 export interface TaskListProps {
+  announcements: FinalAssignment[];
   assignments: FinalAssignment[];
   createAssignment?: (assignment: FinalAssignment | FinalAssignment[]) => void;
   loading?: boolean;
@@ -69,6 +73,7 @@ export interface TaskListProps {
   Renders all unfinished assignments
 */
 export default function TaskList({
+  announcements,
   assignments,
   createAssignment,
   loading = false,
@@ -79,13 +84,12 @@ export default function TaskList({
   skeleton,
   weekKey,
 }: TaskListProps): JSX.Element {
-  type TabType = 'Unfinished' | 'Completed';
   const [confetti, setConfetti] = useState(false);
-  const [currentTab, setCurrentTab] = useState<TabType>('Unfinished');
+  const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
   function processRenderList(
     assignments: FinalAssignment[],
-    tab: TabType,
+    tab: TaskTypeTab,
     selectedCourseId: string,
     viewingMore: boolean,
     showDateHeadings: boolean
@@ -134,9 +138,24 @@ export default function TaskList({
     [assignments, selectedCourseId, skeleton, viewingMore, showDateHeadings]
   );
 
-  const allList: Record<TabType, FinalAssignment[]> = {
+  const [announcementList, allAnnouncementList] = useMemo(
+    () =>
+      skeleton
+        ? [[], []]
+        : processRenderList(
+            announcements,
+            'Announcements',
+            selectedCourseId,
+            viewingMore,
+            showDateHeadings
+          ),
+    [announcements, selectedCourseId, skeleton, viewingMore, showDateHeadings]
+  );
+
+  const allList: Record<TaskTypeTab, FinalAssignment[]> = {
     Unfinished: allUnfinishedList as FinalAssignment[],
     Completed: allCompletedList as FinalAssignment[],
+    Announcements: allAnnouncementList as FinalAssignment[],
   };
 
   function handleViewMoreClick(event: React.MouseEvent<HTMLAnchorElement>) {
@@ -152,7 +171,7 @@ export default function TaskList({
 
   function markAssignmentFunc(
     id: string,
-    tab: TabType,
+    tab: TaskTypeTab,
     status: AssignmentStatus,
     mark?: typeof markAssignment
   ) {
@@ -171,8 +190,10 @@ export default function TaskList({
 
         mark(id, AssignmentStatus.COMPLETE);
       };
-    } else {
+    } else if (tab === 'Completed') {
       return () => mark(id, status);
+    } else if (tab === 'Announcements') {
+      return () => mark(id, AssignmentStatus.SEEN);
     }
   }
 
@@ -187,38 +208,57 @@ export default function TaskList({
   }
 
   const assignmentToTaskCard = (
-    tab: TabType,
+    tab: TaskTypeTab,
     { key, data: assignment, state }: TaskCardTransitionProps
-  ) => (
-    <TaskCard
-      color={assignment.color}
-      complete={assignmentIsDone(assignment)}
-      course_name={assignment.course_name}
-      due_at={assignment.due_at}
-      graded={assignment.graded}
-      graded_at={assignment.graded_at}
-      html_url={assignment.html_url}
-      key={key}
-      markComplete={markAssignmentFunc(
-        assignment.id,
-        tab,
-        AssignmentStatus.UNFINISHED,
-        markAssignment
-      )}
-      markDeleted={markAssignmentFunc(
-        assignment.id,
-        tab,
-        AssignmentStatus.DELETED,
-        markAssignment
-      )}
-      name={assignment.name}
-      needs_grading_count={assignment.needs_grading_count}
-      points_possible={assignment.points_possible}
-      submitted={assignment.submitted}
-      transitionState={state}
-      type={assignment.type}
-    />
-  );
+  ) =>
+    tab !== 'Announcements' ? (
+      <TaskCard
+        color={assignment.color}
+        complete={assignmentIsDone(assignment)}
+        course_name={assignment.course_name}
+        due_at={assignment.due_at}
+        graded={assignment.graded}
+        graded_at={assignment.graded_at}
+        html_url={assignment.html_url}
+        key={key}
+        markComplete={markAssignmentFunc(
+          assignment.id,
+          tab,
+          AssignmentStatus.UNFINISHED,
+          markAssignment
+        )}
+        markDeleted={markAssignmentFunc(
+          assignment.id,
+          tab,
+          AssignmentStatus.DELETED,
+          markAssignment
+        )}
+        name={assignment.name}
+        needs_grading_count={assignment.needs_grading_count}
+        points_possible={assignment.points_possible}
+        submitted={assignment.submitted}
+        transitionState={state}
+        type={assignment.type}
+      />
+    ) : (
+      <AnnouncementCard
+        color={assignment.color}
+        complete={assignmentIsDone(assignment)}
+        course_name={assignment.course_name}
+        due_at={assignment.due_at}
+        html_url={assignment.html_url}
+        key={key}
+        markComplete={markAssignmentFunc(
+          assignment.id,
+          tab,
+          AssignmentStatus.SEEN,
+          markAssignment
+        )}
+        name={assignment.name}
+        transitionState={state}
+        type={assignment.type}
+      />
+    );
 
   interface HeadingTransitionProps {
     key: string;
@@ -234,7 +274,7 @@ export default function TaskList({
     <HeadingGroup heading={heading} key={key} transitionState={state} />
   );
 
-  function dataToComponentFunc(tab: TabType) {
+  function dataToComponentFunc(tab: TaskTypeTab) {
     return ({
       key,
       data,
@@ -285,14 +325,24 @@ export default function TaskList({
 
   const darkMode = useContext(DarkContext);
 
+  const numNotifs = announcements.filter((x) => !x.marked_complete).length;
+
   if (skeleton)
     return (
       <ListWrapper>
-        <SubTabs
-          dark={darkMode}
-          setTaskListState={setCurrentTab}
-          taskListState={currentTab}
-        />
+        <Experiment id="announcements">
+          <SubTabs
+            dark={darkMode}
+            setTaskListState={setCurrentTab}
+            taskListState={currentTab}
+          />
+          <IconSubTabs1
+            dark={darkMode}
+            setTaskListState={setCurrentTab}
+            skeleton
+            taskListState={currentTab}
+          />
+        </Experiment>
         <ListContainer>
           <TaskCard skeleton />
           <TaskCard skeleton />
@@ -303,11 +353,19 @@ export default function TaskList({
     );
   return (
     <ListWrapper>
-      <SubTabs
-        dark={darkMode}
-        setTaskListState={setCurrentTab}
-        taskListState={currentTab}
-      />
+      <Experiment id="announcements">
+        <SubTabs
+          dark={darkMode}
+          setTaskListState={setCurrentTab}
+          taskListState={currentTab}
+        />
+        <IconSubTabs1
+          dark={darkMode}
+          notifs={numNotifs}
+          setTaskListState={setCurrentTab}
+          taskListState={currentTab}
+        />
+      </Experiment>
       {showConfetti && (
         <ConfettiWrapper>
           <Confetti
@@ -320,6 +378,24 @@ export default function TaskList({
           />
         </ConfettiWrapper>
       )}
+      <Experiment id="announcements">
+        <HideDiv visible={currentTab === 'Announcements'}>
+          <ListContainer>
+            <NodeGroup
+              data={loading ? [] : announcementList}
+              enter={enterTransition}
+              keyAccessor={keyAccess}
+              leave={leaveTransition}
+              start={startTransition}
+            >
+              {(nodes) => (
+                <>{nodes.map(dataToComponentFunc('Announcements'))}</>
+              )}
+            </NodeGroup>
+            {announcementList.length === 0 && <span>{noneText}</span>}
+          </ListContainer>
+        </HideDiv>
+      </Experiment>
       <HideDiv visible={currentTab === 'Unfinished'}>
         <ListContainer>
           <NodeGroup

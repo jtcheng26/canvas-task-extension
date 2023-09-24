@@ -39,6 +39,7 @@ export default function Skeleton({ dark }: DarkProps): JSX.Element {
         </SkeletonChart>
       </ClipLoadingDiv>
       <TaskList
+        announcements={[]}
         assignments={[]}
         selectedCourseId=""
         showDateHeadings={false}

@@ -58,11 +58,12 @@ export const TaskContainer = styled.div.attrs(
     overflow: hidden;
     text-overflow: ellipsis;
   `,
-  TaskLink = styled.a<DarkProps>`
+  TaskLink = styled.a<DarkProps & AnimatedProps>`
     color: ${(props) =>
       props.dark
         ? 'var(--tfc-dark-mode-text-primary)'
         : 'var(--ic-brand-font-color-dark)'};
+    opacity: ${(props) => (props.opacity ? props.opacity : '1')};
     font-weight: 700;
     font-size: 15px;
     &:hover {
@@ -106,11 +107,12 @@ export const TaskContainer = styled.div.attrs(
     align-items: center;
     justify-content: space-between;
   `,
-  TaskDetailsText = styled.div`
+  TaskDetailsText = styled.div<AnimatedProps>`
     overflow-x: auto;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    opacity: ${(props) => (props.opacity ? props.opacity : '1')};
   `,
   SkeletonTitle = styled.div<AnimatedProps & DarkProps>`
     width: 90%;
@@ -144,7 +146,7 @@ export const TaskContainer = styled.div.attrs(
         ? 'none'
         : 'canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both'};
   `;
-interface TaskProps {
+export interface TaskProps {
   name?: string;
   type?: AssignmentType;
   html_url?: string;

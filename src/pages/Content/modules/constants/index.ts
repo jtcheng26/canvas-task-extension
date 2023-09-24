@@ -1,4 +1,5 @@
 import {
+  AnnouncementIcon,
   AssignmentIcon,
   DiscussionIcon,
   NoteIcon,
@@ -17,7 +18,7 @@ export const ASSIGNMENT_ICON: Record<AssignmentType | 'ungraded', JSX.Element> =
     [AssignmentType.DISCUSSION]: DiscussionIcon,
     [AssignmentType.QUIZ]: QuizIcon,
     [AssignmentType.NOTE]: NoteIcon,
-    [AssignmentType.ANNOUNCEMENT]: AssignmentIcon,
+    [AssignmentType.ANNOUNCEMENT]: AnnouncementIcon,
     [AssignmentType.EVENT]: AssignmentIcon,
     ungraded: NeedsGradingIcon,
   };
@@ -29,4 +30,10 @@ export const OptionsDefaults = JSONOptionsDefaults as Options;
 export const THEME_COLOR = 'var(--ic-brand-global-nav-bgd)';
 export const THEME_COLOR_LIGHT = 'rgba(199, 205, 209)';
 
+export const CLIENT_ID_LENGTH = 9;
+
 export const HOME_WEBSITE = 'https://www.tasksforcanvas.info';
+export const UNINSTALL_URL = 'https://www.tasksforcanvas.info/uninstall';
+export const INSTALL_URL = 'https://www.tasksforcanvas.info/getting-started';
+export const EXPERIMENT_CONFIG_URL =
+  'https://canvas-task-static.onrender.com/live.json';

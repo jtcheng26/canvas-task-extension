@@ -95,7 +95,9 @@ export function convertPlannerAssignments(
           : undefined,
       marked_complete:
         assignment.planner_override?.marked_complete ||
-        assignment.planner_override?.dismissed,
+        assignment.planner_override?.dismissed ||
+        (assignment.plannable_type === AssignmentType.ANNOUNCEMENT &&
+          assignment.plannable.read_state === 'read'),
     };
 
     const full: FinalAssignment = {
@@ -150,6 +152,7 @@ export function filterAssignmentTypes(
     AssignmentType.DISCUSSION,
     AssignmentType.QUIZ,
     AssignmentType.NOTE,
+    AssignmentType.ANNOUNCEMENT,
   ];
   return assignments.filter((assignment) =>
     validAssignments.includes(assignment.type)

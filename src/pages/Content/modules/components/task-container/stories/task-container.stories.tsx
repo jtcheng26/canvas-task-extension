@@ -14,11 +14,13 @@ export default { title: 'Components/TaskContainer' } as ComponentMeta<
 
 const storyDefaults: TaskContainerProps = {
   assignments: AssignmentListSample2 as unknown as FinalAssignment[],
+  announcements: [],
   loading: false,
   options: OptionsDefaults,
 };
 
 const Template: ComponentStory<typeof TaskContainer> = function ({
+  announcements,
   assignments,
   courseId = '',
   courseList = [],
@@ -50,6 +52,7 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
         weekStart={now}
       />
       <TaskContainer
+        announcements={announcements}
         assignments={assignments}
         courseId={courseId}
         courseList={courseList}

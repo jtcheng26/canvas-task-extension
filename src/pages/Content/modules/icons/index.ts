@@ -1,3 +1,4 @@
+import AnnouncementIcon from './announcement';
 import AssignmentIcon from './assignment';
 import DiscussionIcon from './discussion';
 import QuizIcon from './quiz';
@@ -8,6 +9,7 @@ import NoteIcon from './note';
 import NeedsGradingIcon from './grade';
 
 export {
+  AnnouncementIcon,
   AssignmentIcon,
   DiscussionIcon,
   NeedsGradingIcon,
