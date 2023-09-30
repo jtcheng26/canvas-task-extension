@@ -54,13 +54,20 @@ export default function TaskContainer({
   const courses = useMemo(() => {
     if (courseList && courseId !== false)
       return courseList.filter((c) => c.id === courseId);
+    const extracted = extractCourses(
+      updatedAssignments.concat(updatedAnnouncements)
+    );
     if (options.dash_courses && courseList) {
+      const inExtracted = new Set();
+      extracted.forEach((x) => inExtracted.add(x.id));
       const dash = dashCourses();
       return dash
-        ? courseList.filter((c) => dash.has(c.id) || c.id === '0')
-        : [];
+        ? extracted.concat(
+            courseList.filter((c) => dash.has(c.id) && !inExtracted.has(c.id))
+          )
+        : extracted;
     }
-    return extractCourses(updatedAssignments.concat(updatedAnnouncements));
+    return extracted;
   }, [updatedAssignments, updatedAnnouncements, courseId, courseList]);
 
   function markAssignmentAs(id: string, status: AssignmentStatus) {
