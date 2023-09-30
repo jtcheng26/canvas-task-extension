@@ -258,7 +258,7 @@ export function processAssignmentList(
   } else {
     const dash = dashCourses();
     if (options.dash_courses && dash)
-      assignments = filterCourses(Array.from(dash), assignments);
+      assignments = filterCourses(Array.from(dash).concat(['0']), assignments);
   }
   return assignments;
 }

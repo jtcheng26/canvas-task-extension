@@ -24,6 +24,7 @@ const Template: ComponentStory<typeof TaskChart> = ({
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       <TaskChart
         assignments={assignments}
+        courses={[]}
         loading={loading}
         selectedCourseId={selected}
         setCourse={func}

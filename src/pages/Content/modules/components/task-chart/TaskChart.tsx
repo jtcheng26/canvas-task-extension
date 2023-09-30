@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart, { ChartData } from '../radial-bar-chart';
 import BeatLoader from '../spinners';
-import { FinalAssignment } from '../../types';
+import { Course, FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
@@ -50,6 +50,7 @@ const ConfettiWrapper = styled.div`
 
 export interface TaskChartProps {
   assignments: FinalAssignment[];
+  courses: Course[];
   colorOverride?: string;
   loading?: boolean;
   onCoursePage?: boolean;
@@ -62,6 +63,7 @@ export interface TaskChartProps {
 
 export default function TaskChart({
   assignments,
+  courses,
   colorOverride,
   loading,
   onCoursePage,
@@ -72,9 +74,8 @@ export default function TaskChart({
   weekKey = '',
 }: TaskChartProps): JSX.Element {
   /* useMemo so it doesn't animate the bars when switching courses. */
-
   const [chartData, setChartData] = useState(
-    useChartData(assignments, colorOverride || themeColor, weekKey)
+    useChartData(assignments, courses, colorOverride || themeColor, weekKey)
   );
 
   const [currKey, setCurrKey] = useState(weekKey);
@@ -100,6 +101,7 @@ export default function TaskChart({
     // in order for everything to re-animate when weeks change, the key has to change at the same time as the data
     const newData = useChartData(
       assignments,
+      courses,
       colorOverride || themeColor,
       currKey
     );
@@ -113,7 +115,7 @@ export default function TaskChart({
     ) {
       setChartData(newData);
     }
-  }, [assignments, loading, currKey, weekKey]);
+  }, [assignments, courses, loading, currKey, weekKey]);
 
   const [done, total, color] = useMemo(
     () => useSelectChartData(selectedCourseId, chartData),
