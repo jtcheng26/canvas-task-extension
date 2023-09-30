@@ -101,7 +101,8 @@ export default function IconSubTabs1({
 
   const { data: options } = useOptions();
 
-  const activeColor = skeleton ? '#6c757c' : options?.theme_color;
+  const activeColor =
+    skeleton || !options?.color_tabs ? '#6c757c' : options?.theme_color;
 
   const positions = {
     Announcements: 0,

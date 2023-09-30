@@ -1,6 +1,7 @@
 export type Period = 'Day' | 'Week' | 'Month';
 
 interface Options {
+  color_tabs: boolean;
   complete_assignments?: number[];
   rolling_period: boolean;
   start_date: number;
