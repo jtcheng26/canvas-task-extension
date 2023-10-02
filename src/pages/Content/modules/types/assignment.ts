@@ -73,6 +73,7 @@ interface FinalAssignment {
   marked_complete: boolean; // marked complete in the sidebar or through the planner
   position: number;
   needs_grading_count?: number;
+  total_submissions?: number;
 }
 
 // possible values from plannable_type field

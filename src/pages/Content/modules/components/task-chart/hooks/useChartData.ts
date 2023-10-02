@@ -1,5 +1,5 @@
 import { AssignmentDefaults } from '../../../constants';
-import { AssignmentType, Course, FinalAssignment } from '../../../types';
+import { Course, FinalAssignment } from '../../../types';
 import { Bar, ChartData } from '../../radial-bar-chart';
 import { ringProgress } from '../utils/ringProgress';
 import sortByPosition from '../utils/sortByPosition';
@@ -50,8 +50,11 @@ export default function useChartData(
       }
 
       a[a.length - 1].value += ringProgress(b);
-      a[a.length - 1].max +=
-        b.points_possible == 0 && b.type !== AssignmentType.NOTE ? 0 : 1; // 0 points = optional, but custom notes should be included
+      if (b.total_submissions) {
+        a[a.length - 1].max += b.total_submissions;
+      } else {
+        a[a.length - 1].max += 1; // Just include everything for clarity/simplicty
+      }
       return a;
     }, []),
     key: key,

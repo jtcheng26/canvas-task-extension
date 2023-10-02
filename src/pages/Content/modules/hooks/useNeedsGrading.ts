@@ -8,6 +8,53 @@ import useCoursePositions from './useCoursePositions';
 import isDemo from '../utils/isDemo';
 import { getPaginatedRequest, processAssignmentList } from './useAssignments';
 import { TodoAssignment, TodoResponse } from '../types/assignment';
+import apiReq from '../utils/apiReq';
+
+interface NeedsGradingCount {
+  id: string;
+  needs_grading: number;
+  total: number;
+}
+
+async function queryNeedsGradingCounts(
+  ids: string[]
+): Promise<Record<string, NeedsGradingCount>> {
+  const newQuery = (
+    id: string,
+    idx: number
+  ) => `  item${idx}: assignment(id: ${id}) {
+      submissionsConnection {
+        nodes {
+          gradingStatus
+        }
+      }
+    }`;
+
+  const queries = ids.map((id, idx) => newQuery(id, idx));
+
+  const data = {
+    query: `query MyQuery {
+      ${queries.reduce((prev, curr) => prev + '\n' + curr, '')}
+    }`,
+  };
+
+  const res = (await apiReq('/graphql', JSON.stringify(data), 'post')).data
+    .data;
+
+  const keys = Object.keys(res);
+  const ret: Record<string, NeedsGradingCount> = {};
+  ids.forEach((id, idx) => {
+    ret[id] = {
+      id: id,
+      total: res[keys[idx]].submissionsConnection?.nodes.length,
+      needs_grading: res[keys[idx]].submissionsConnection?.nodes.filter(
+        (x: { gradingStatus: string }) => x.gradingStatus === 'needs_grading'
+      ).length,
+    } as NeedsGradingCount;
+  });
+
+  return ret;
+}
 
 /* Get assignments from api */
 async function getAllTodoRequest(allPages = true): Promise<TodoResponse[]> {
@@ -53,7 +100,15 @@ export function convertTodoAssignments(
 
 export async function getAllTodos(): Promise<FinalAssignment[]> {
   const data = isDemo() ? [] : await getAllTodoRequest();
-  return convertTodoAssignments(data as TodoResponse[]);
+  const assignments = convertTodoAssignments(data as TodoResponse[]);
+  const counts = await queryNeedsGradingCounts(assignments.map((a) => a.id));
+  return assignments.map(
+    (a) =>
+      ({
+        ...a,
+        total_submissions: counts[a.id].total,
+      } as FinalAssignment)
+  );
 }
 
 async function processAssignments(
@@ -66,6 +121,7 @@ async function processAssignments(
 ): Promise<FinalAssignment[]> {
   if (!options.show_needs_grading) return [];
   const assignments: FinalAssignment[] = await getAllTodos();
+  console.log(assignments);
   return processAssignmentList(
     assignments,
     startDate,
