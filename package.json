@@ -35,7 +35,6 @@
     "react-dom-confetti": "^0.2.0",
     "react-move": "^6.5.0",
     "react-query": "^3.19.2",
-    "storybook": "^7.4.5",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
@@ -76,6 +75,7 @@
     "jest": "^26.6.3",
     "prettier": "^2.1.2",
     "source-map-loader": "^1.1.2",
+    "storybook": "^7.4.6",
     "storybook-dark-mode": "^2.0.5",
     "style-loader": "^2.0.0",
     "terser-webpack-plugin": "^5.0.2",
