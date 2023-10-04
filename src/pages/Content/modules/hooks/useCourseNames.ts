@@ -3,13 +3,6 @@ import { DemoNames } from '../tests/demo';
 import { Course } from '../types';
 import isDemo from '../utils/isDemo';
 import useCourses from './useCourses';
-import axios from 'axios';
-
-interface CourseNickname {
-  course_id: string;
-  name: string;
-  nickname: string;
-}
 
 /* In case we want to use user-chosen names in the future, which would require another api request. */
 async function getCourseNames(
@@ -17,18 +10,11 @@ async function getCourseNames(
 ): Promise<Record<string, string>> {
   if (isDemo()) return DemoNames;
 
-  const nicknames = (await axios.get('/api/v1/users/self/course_nicknames'))
-    .data as CourseNickname[];
-
   const names: Record<string, string> = {};
   courses.forEach((course: Course) => {
     names[course.id] = course.original_name
       ? (course.name as string)
       : (course.course_code as string);
-  });
-
-  nicknames.forEach((course) => {
-    names[course.course_id] = course.nickname;
   });
   return names;
 }
