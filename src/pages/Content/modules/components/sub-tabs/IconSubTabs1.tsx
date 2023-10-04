@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import { DarkProps } from '../../types/props';
 import { TaskTypeTab } from '../task-list/utils/useHeadings';
 import { AssignmentIconComponent } from '../../icons/assignment';
-import useOptions from '../../hooks/useOptions';
 import { AnnouncementIconComponent } from '../../icons/announcement';
 import { CompletedIconComponent } from '../../icons/completed';
 import { ICON_FILL } from '../../icons/constants';
@@ -68,10 +67,10 @@ const BorderBottom = styled.div<ColorProps & AnimatedProps>`
 `;
 
 export interface SubTabsProps {
+  activeColor?: string;
   dark?: boolean;
   setTaskListState?: (state: TaskTypeTab) => void;
   taskListState?: TaskTypeTab;
-  skeleton?: boolean;
   notifs?: number;
 }
 
@@ -79,10 +78,10 @@ export interface SubTabsProps {
   Renders a subtitle within the app
 */
 export default function IconSubTabs1({
+  activeColor,
   dark,
   setTaskListState,
   taskListState,
-  skeleton = false,
   notifs = 0,
 }: SubTabsProps): JSX.Element {
   const [dropdown, setDropdown] = useState(false);
@@ -98,15 +97,6 @@ export default function IconSubTabs1({
   function setTaskListAnnouncements() {
     if (setTaskListState) setTaskListState('Announcements');
   }
-
-  const { data: options } = useOptions();
-
-  const activeColor =
-    skeleton || !options?.color_tabs
-      ? dark
-        ? '#6c757c'
-        : 'var(--ic-brand-font-color-dark)'
-      : options?.theme_color;
 
   const positions = {
     Announcements: 0,
