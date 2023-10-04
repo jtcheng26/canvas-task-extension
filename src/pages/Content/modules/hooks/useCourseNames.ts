@@ -12,7 +12,9 @@ async function getCourseNames(
 
   const names: Record<string, string> = {};
   courses.forEach((course: Course) => {
-    names[course.id] = course.course_code as string;
+    names[course.id] = course.original_name
+      ? (course.name as string)
+      : (course.course_code as string);
   });
   return names;
 }
