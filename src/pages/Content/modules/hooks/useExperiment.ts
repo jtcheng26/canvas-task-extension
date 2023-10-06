@@ -38,8 +38,12 @@ export function useClientId(): UseQueryResult<string> {
 
 async function getExperimentConfigs(): Promise<ExperimentConfig[]> {
   if (isDemo()) return [];
-  const res = await fetch(EXPERIMENT_CONFIG_URL);
-  return (await res.json())['experiments'] as ExperimentConfig[];
+  try {
+    const res = await fetch(EXPERIMENT_CONFIG_URL);
+    return (await res.json())['experiments'] as ExperimentConfig[];
+  } catch (err) {
+    return [];
+  }
 }
 
 function useExperimentConfigs(): UseQueryResult<ExperimentConfig[]> {

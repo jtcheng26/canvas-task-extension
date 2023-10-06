@@ -10,6 +10,7 @@ import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
 import { DarkContext } from '../../contexts/darkContext';
+import dashCourses from '../../utils/dashCourses';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -53,8 +54,21 @@ export default function TaskContainer({
   const courses = useMemo(() => {
     if (courseList && courseId !== false)
       return courseList.filter((c) => c.id === courseId);
-    return extractCourses(updatedAssignments.concat(updatedAnnouncements));
-  }, [updatedAssignments, updatedAnnouncements, courseId]);
+    const extracted = extractCourses(
+      updatedAssignments.concat(updatedAnnouncements)
+    );
+    if (options.dash_courses && courseList) {
+      const inExtracted = new Set();
+      extracted.forEach((x) => inExtracted.add(x.id));
+      const dash = dashCourses();
+      return dash
+        ? extracted.concat(
+            courseList.filter((c) => dash.has(c.id) && !inExtracted.has(c.id))
+          )
+        : extracted;
+    }
+    return extracted;
+  }, [updatedAssignments, updatedAnnouncements, courseId, courseList]);
 
   function markAssignmentAs(id: string, status: AssignmentStatus) {
     if (status === AssignmentStatus.DELETED) {
@@ -124,6 +138,7 @@ export default function TaskContainer({
       <TaskChart
         assignments={updatedAssignments}
         colorOverride={courseId ? courses[0].color : undefined}
+        courses={courses}
         loading={loading}
         onCoursePage={!!courseId}
         selectedCourseId={chosenCourseId}

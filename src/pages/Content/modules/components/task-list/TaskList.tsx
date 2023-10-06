@@ -19,6 +19,9 @@ import { DarkContext } from '../../contexts/darkContext';
 import Experiment from '../experiment';
 import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs1 from '../sub-tabs/IconSubTabs1';
+import useOptions from '../../hooks/useOptions';
+import { THEME_COLOR } from '../../constants';
+import useCourseColors from '../../hooks/useCourseColors';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -327,6 +330,17 @@ export default function TaskList({
 
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;
 
+  const { data: options } = useOptions();
+
+  const { data: colors } = useCourseColors();
+  const iconColor = useMemo(() => {
+    if (selectedCourseId && colors && selectedCourseId in colors)
+      return colors[selectedCourseId];
+    if (options?.color_tabs) return options?.theme_color || THEME_COLOR;
+    if (darkMode) return '#6c757c';
+    return 'var(--ic-brand-font-color-dark)';
+  }, [options, selectedCourseId, colors]);
+
   if (skeleton)
     return (
       <ListWrapper>
@@ -337,9 +351,11 @@ export default function TaskList({
             taskListState={currentTab}
           />
           <IconSubTabs1
+            activeColor={
+              darkMode ? '#6c757c' : 'var(--ic-brand-font-color-dark)'
+            }
             dark={darkMode}
             setTaskListState={setCurrentTab}
-            skeleton
             taskListState={currentTab}
           />
         </Experiment>
@@ -360,6 +376,7 @@ export default function TaskList({
           taskListState={currentTab}
         />
         <IconSubTabs1
+          activeColor={iconColor}
           dark={darkMode}
           notifs={numNotifs}
           setTaskListState={setCurrentTab}

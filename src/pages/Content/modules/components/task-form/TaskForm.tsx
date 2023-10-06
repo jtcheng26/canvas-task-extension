@@ -17,6 +17,7 @@ import DatePick from './components/DatePick';
 import RecurCheckbox from './components/RecurCheckbox';
 import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
+import dashCourses from '../../utils/dashCourses';
 
 type FormContainerProps = {
   visible?: boolean;
@@ -91,9 +92,16 @@ export default function TaskForm({
   const themeColor = options?.theme_color || OptionsDefaults.theme_color;
 
   const coursesWithoutCustom = useMemo(() => {
-    if (courses) return courses.filter((c) => c.id !== '' && c.id !== '0');
+    if (courses) {
+      if (options?.dash_courses) {
+        const dash = dashCourses();
+        if (dash) return courses.filter((c) => dash.has(c.id));
+      }
+      return courses.filter((c) => c.id !== '' && c.id !== '0');
+    }
+
     return [];
-  }, [courses]);
+  }, [courses, options]);
 
   const titleLabel = 'Title';
   const dateLabel = 'Due Date';

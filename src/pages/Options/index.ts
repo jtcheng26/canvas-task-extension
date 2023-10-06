@@ -192,6 +192,7 @@ const booleanOptions: Record<string, string> = {
   'rolling-period': 'rolling_period',
   'custom-theme-color': 'theme_color',
   'show-needs-grading': 'show_needs_grading',
+  'color-tabs': 'color_tabs',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -310,7 +311,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   setSelectedPeriod(options.period.toLowerCase());
   setCheckbox('rolling-period', options.rolling_period);
   setCheckbox('default-sidebar', !options.sidebar);
-  // setCheckbox('active-rings', !options.dash_courses);
+  setCheckbox('active-rings', !options.dash_courses);
   setCheckbox('due-date-headings', options.due_date_headings);
   // setCheckbox('show-locked-assignments', options.show_locked_assignments);
   setCheckbox('show-confetti', options.show_confetti);
@@ -319,6 +320,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
     'custom-theme-color',
     options.theme_color !== 'var(--ic-brand-global-nav-bgd)'
   );
+  setCheckbox('color-tabs', options.color_tabs);
   setThemeColor(
     options.theme_color !== OptionsDefaults.theme_color
       ? options.theme_color
