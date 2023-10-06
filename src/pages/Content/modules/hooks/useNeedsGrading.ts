@@ -38,16 +38,18 @@ async function queryNeedsGradingCounts(
     }`,
   };
 
-  const res = (await apiReq('/graphql', JSON.stringify(data), 'post')).data
-    .data;
+  const resp = await apiReq('/graphql', JSON.stringify(data), 'post');
+  if ('errors' in resp.data || resp.status / 100 != 2) return {};
+  const counts = resp.data.data;
 
-  const keys = Object.keys(res);
+  const keys = Object.keys(counts);
+
   const ret: Record<string, NeedsGradingCount> = {};
   ids.forEach((id, idx) => {
     ret[id] = {
       id: id,
-      total: res[keys[idx]].submissionsConnection?.nodes.length,
-      needs_grading: res[keys[idx]].submissionsConnection?.nodes.filter(
+      total: counts[keys[idx]].submissionsConnection?.nodes.length,
+      needs_grading: counts[keys[idx]].submissionsConnection?.nodes.filter(
         (x: { gradingStatus: string }) => x.gradingStatus === 'needs_grading'
       ).length,
     } as NeedsGradingCount;
@@ -101,13 +103,14 @@ export function convertTodoAssignments(
 export async function getAllTodos(): Promise<FinalAssignment[]> {
   const data = isDemo() ? [] : await getAllTodoRequest();
   const assignments = convertTodoAssignments(data as TodoResponse[]);
-  if (!assignments.length) return [];
+  // if (!assignments.length) return [];
   const counts = await queryNeedsGradingCounts(assignments.map((a) => a.id));
   return assignments.map(
     (a) =>
       ({
         ...a,
-        total_submissions: counts[a.id].total,
+        total_submissions:
+          a.id in counts ? counts[a.id].total : a.needs_grading_count,
       } as FinalAssignment)
   );
 }
