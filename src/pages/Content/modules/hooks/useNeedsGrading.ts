@@ -101,6 +101,7 @@ export function convertTodoAssignments(
 export async function getAllTodos(): Promise<FinalAssignment[]> {
   const data = isDemo() ? [] : await getAllTodoRequest();
   const assignments = convertTodoAssignments(data as TodoResponse[]);
+  if (!assignments.length) return [];
   const counts = await queryNeedsGradingCounts(assignments.map((a) => a.id));
   return assignments.map(
     (a) =>
@@ -121,7 +122,6 @@ async function processAssignments(
 ): Promise<FinalAssignment[]> {
   if (!options.show_needs_grading) return [];
   const assignments: FinalAssignment[] = await getAllTodos();
-  console.log(assignments);
   return processAssignmentList(
     assignments,
     startDate,
