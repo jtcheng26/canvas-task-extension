@@ -35,17 +35,24 @@ export async function getPaginatedRequest<T>(
   url: string,
   recurse = false
 ): Promise<T[]> {
-  const res = await axios.get(url, {
-    transformResponse: [(data) => JSONBigInt.parse(data)],
-  });
-  if (recurse && 'link' in res.headers) {
-    const parsed = parseLinkHeader(res.headers['link']);
-    if (parsed && 'next' in parsed && parsed['next'].url !== url)
-      return (res.data as T[]).concat(
-        (await getPaginatedRequest(parsed['next'].url, true)) as T[]
-      );
+  try {
+    const res = await axios.get(url, {
+      transformResponse: [(data) => JSONBigInt.parse(data)],
+    });
+
+    if (recurse && 'link' in res.headers) {
+      const parsed = parseLinkHeader(res.headers['link']);
+      if (parsed && 'next' in parsed && parsed['next'].url !== url)
+        return (res.data as T[]).concat(
+          (await getPaginatedRequest(parsed['next'].url, true)) as T[]
+        );
+    }
+
+    return res.data;
+  } catch (err) {
+    console.error(err);
+    return []; // still return all successful pages if error instead of hanging
   }
-  return res.data;
 }
 
 /* Get assignments from api */
