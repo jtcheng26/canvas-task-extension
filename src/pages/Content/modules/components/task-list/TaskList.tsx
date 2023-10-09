@@ -141,6 +141,20 @@ export default function TaskList({
     [assignments, selectedCourseId, skeleton, viewingMore, showDateHeadings]
   );
 
+  const [gradingList, allGradingList] = useMemo(
+    () =>
+      skeleton
+        ? [[], []]
+        : processRenderList(
+            assignments,
+            'NeedsGrading',
+            selectedCourseId,
+            viewingMore,
+            showDateHeadings
+          ),
+    [assignments, skeleton, selectedCourseId, viewingMore, showDateHeadings]
+  );
+
   const [announcementList, allAnnouncementList] = useMemo(
     () =>
       skeleton
@@ -158,6 +172,7 @@ export default function TaskList({
   const allList: Record<TaskTypeTab, FinalAssignment[]> = {
     Unfinished: allUnfinishedList as FinalAssignment[],
     Completed: allCompletedList as FinalAssignment[],
+    NeedsGrading: allGradingList as FinalAssignment[],
     Announcements: allAnnouncementList as FinalAssignment[],
   };
 
@@ -378,6 +393,7 @@ export default function TaskList({
         <IconSubTabs1
           activeColor={iconColor}
           dark={darkMode}
+          gradebook={!!allGradingList.length}
           notifs={numNotifs}
           setTaskListState={setCurrentTab}
           taskListState={currentTab}
@@ -430,6 +446,20 @@ export default function TaskList({
               selectedCourse={selectedCourseId}
             />
           )}
+        </ListContainer>
+      </HideDiv>
+      <HideDiv visible={currentTab === 'NeedsGrading'}>
+        <ListContainer>
+          <NodeGroup
+            data={loading ? [] : gradingList}
+            enter={enterTransition}
+            keyAccessor={keyAccess}
+            leave={leaveTransition}
+            start={startTransition}
+          >
+            {(nodes) => <>{nodes.map(dataToComponentFunc('NeedsGrading'))}</>}
+          </NodeGroup>
+          {gradingList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
 

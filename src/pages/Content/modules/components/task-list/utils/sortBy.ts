@@ -39,6 +39,8 @@ export function filterByTab(
   if (currentTab === 'Announcements') return assignments;
   return assignments.filter((a) => {
     const done = assignmentIsDone(a);
+    if (currentTab === 'NeedsGrading') return !done && a.needs_grading_count;
+    if (currentTab === 'Unfinished') return !done && !a.needs_grading_count;
     return currentTab === 'Completed' ? done : !done;
   });
 }
