@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import SubTabs from '../IconSubTabs1';
+import SubTabs from '../IconSubTabs';
 import { TaskTypeTab } from '../../task-list/utils/useHeadings';
 
 export default {

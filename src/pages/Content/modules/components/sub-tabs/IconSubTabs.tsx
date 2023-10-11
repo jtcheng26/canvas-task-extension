@@ -80,7 +80,7 @@ export interface SubTabsProps {
 /*
   Renders a subtitle within the app
 */
-export default function IconSubTabs1({
+export default function IconSubTabs({
   activeColor,
   dark,
   gradebook,

@@ -1,7 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import TaskCard from '../task-card';
-import SubTabs from '../sub-tabs/SubTabs';
 import { FinalAssignment } from '../../types';
 import useHeadings, { TaskTypeTab } from './utils/useHeadings';
 import useSelectedCourse from './utils/useSelectedCourse';
@@ -16,9 +15,8 @@ import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
 import { DarkContext } from '../../contexts/darkContext';
-import Experiment from '../experiment';
 import AnnouncementCard from '../task-card/AnnouncementCard';
-import IconSubTabs1 from '../sub-tabs/IconSubTabs1';
+import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';
 import { THEME_COLOR } from '../../constants';
 import useCourseColors from '../../hooks/useCourseColors';
@@ -359,21 +357,6 @@ export default function TaskList({
   if (skeleton)
     return (
       <ListWrapper>
-        <Experiment id="announcements">
-          <SubTabs
-            dark={darkMode}
-            setTaskListState={setCurrentTab}
-            taskListState={currentTab}
-          />
-          <IconSubTabs1
-            activeColor={
-              darkMode ? '#6c757c' : 'var(--ic-brand-font-color-dark)'
-            }
-            dark={darkMode}
-            setTaskListState={setCurrentTab}
-            taskListState={currentTab}
-          />
-        </Experiment>
         <ListContainer>
           <TaskCard skeleton />
           <TaskCard skeleton />
@@ -384,21 +367,14 @@ export default function TaskList({
     );
   return (
     <ListWrapper>
-      <Experiment id="announcements">
-        <SubTabs
-          dark={darkMode}
-          setTaskListState={setCurrentTab}
-          taskListState={currentTab}
-        />
-        <IconSubTabs1
-          activeColor={iconColor}
-          dark={darkMode}
-          gradebook={!!allGradingList.length}
-          notifs={numNotifs}
-          setTaskListState={setCurrentTab}
-          taskListState={currentTab}
-        />
-      </Experiment>
+      <IconSubTabs
+        activeColor={iconColor}
+        dark={darkMode}
+        gradebook={!!allGradingList.length}
+        notifs={numNotifs}
+        setTaskListState={setCurrentTab}
+        taskListState={currentTab}
+      />
       {showConfetti && (
         <ConfettiWrapper>
           <Confetti
@@ -411,24 +387,20 @@ export default function TaskList({
           />
         </ConfettiWrapper>
       )}
-      <Experiment id="announcements">
-        <HideDiv visible={currentTab === 'Announcements'}>
-          <ListContainer>
-            <NodeGroup
-              data={loading ? [] : announcementList}
-              enter={enterTransition}
-              keyAccessor={keyAccess}
-              leave={leaveTransition}
-              start={startTransition}
-            >
-              {(nodes) => (
-                <>{nodes.map(dataToComponentFunc('Announcements'))}</>
-              )}
-            </NodeGroup>
-            {announcementList.length === 0 && <span>{noneText}</span>}
-          </ListContainer>
-        </HideDiv>
-      </Experiment>
+      <HideDiv visible={currentTab === 'Announcements'}>
+        <ListContainer>
+          <NodeGroup
+            data={loading ? [] : announcementList}
+            enter={enterTransition}
+            keyAccessor={keyAccess}
+            leave={leaveTransition}
+            start={startTransition}
+          >
+            {(nodes) => <>{nodes.map(dataToComponentFunc('Announcements'))}</>}
+          </NodeGroup>
+          {announcementList.length === 0 && <span>{noneText}</span>}
+        </ListContainer>
+      </HideDiv>
       <HideDiv visible={currentTab === 'Unfinished'}>
         <ListContainer>
           <NodeGroup
