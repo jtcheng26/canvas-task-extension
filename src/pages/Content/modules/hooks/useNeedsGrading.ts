@@ -38,24 +38,28 @@ async function queryNeedsGradingCounts(
     }`,
   };
 
-  const resp = await apiReq('/graphql', JSON.stringify(data), 'post');
-  if ('errors' in resp.data || resp.status / 100 != 2) return {};
-  const counts = resp.data.data;
+  try {
+    const resp = await apiReq('/graphql', JSON.stringify(data), 'post');
+    if ('errors' in resp.data || resp.status / 100 != 2) return {};
+    const counts = resp.data.data;
 
-  const keys = Object.keys(counts);
+    const keys = Object.keys(counts);
 
-  const ret: Record<string, NeedsGradingCount> = {};
-  ids.forEach((id, idx) => {
-    ret[id] = {
-      id: id,
-      total: counts[keys[idx]].submissionsConnection?.nodes.length,
-      needs_grading: counts[keys[idx]].submissionsConnection?.nodes.filter(
-        (x: { gradingStatus: string }) => x.gradingStatus === 'needs_grading'
-      ).length,
-    } as NeedsGradingCount;
-  });
-
-  return ret;
+    const ret: Record<string, NeedsGradingCount> = {};
+    ids.forEach((id, idx) => {
+      ret[id] = {
+        id: id,
+        total: counts[keys[idx]].submissionsConnection?.nodes.length,
+        needs_grading: counts[keys[idx]].submissionsConnection?.nodes.filter(
+          (x: { gradingStatus: string }) => x.gradingStatus === 'needs_grading'
+        ).length,
+      } as NeedsGradingCount;
+    });
+    return ret;
+  } catch (err) {
+    console.error(err);
+    return {};
+  }
 }
 
 /* Get assignments from api */

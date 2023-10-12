@@ -6,6 +6,7 @@ import { AssignmentIconComponent } from '../../icons/assignment';
 import { AnnouncementIconComponent } from '../../icons/announcement';
 import { CompletedIconComponent } from '../../icons/completed';
 import { ICON_FILL } from '../../icons/constants';
+import { NeedsGradingIconComponent } from '../../icons/grade';
 
 const SubtitleDiv = styled.div<DarkProps>`
   height: 25px;
@@ -53,21 +54,23 @@ interface ColorProps {
 
 interface AnimatedProps {
   pos: number;
+  numTabs: number;
 }
 
 const BorderBottom = styled.div<ColorProps & AnimatedProps>`
   height: 3px;
   margin-top: 5px;
-  width: 33.33%;
+  width: ${(props) => 100 / props.numTabs}%;
   background-color: ${(props) => (props.color ? props.color : ICON_FILL)};
   border-radius: 100px;
   opacity: ${(props) => (props.visible ? 1 : 0)};
   transition: all 0.2s ease-in-out;
-  margin-left: ${(props) => ((100 * props.pos) / 3).toFixed(2)}%;
+  margin-left: ${(props) => ((100 * props.pos) / props.numTabs).toFixed(2)}%;
 `;
 
 export interface SubTabsProps {
   activeColor?: string;
+  gradebook?: boolean;
   dark?: boolean;
   setTaskListState?: (state: TaskTypeTab) => void;
   taskListState?: TaskTypeTab;
@@ -77,9 +80,10 @@ export interface SubTabsProps {
 /*
   Renders a subtitle within the app
 */
-export default function IconSubTabs1({
+export default function IconSubTabs({
   activeColor,
   dark,
+  gradebook,
   setTaskListState,
   taskListState,
   notifs = 0,
@@ -88,20 +92,20 @@ export default function IconSubTabs1({
   function toggleDropdown() {
     setDropdown(!dropdown);
   }
-  function setTaskListUnfinished() {
-    if (setTaskListState) setTaskListState('Unfinished');
-  }
-  function setTaskListCompleted() {
-    if (setTaskListState) setTaskListState('Completed');
-  }
-  function setTaskListAnnouncements() {
-    if (setTaskListState) setTaskListState('Announcements');
+
+  function setTaskListStateFunc(state: TaskTypeTab) {
+    if (!setTaskListState)
+      return () => {
+        return;
+      };
+    return () => setTaskListState(state);
   }
 
   const positions = {
     Announcements: 0,
     Unfinished: 1,
-    Completed: 2,
+    NeedsGrading: 2,
+    Completed: gradebook ? 3 : 2,
   };
 
   return (
@@ -112,7 +116,7 @@ export default function IconSubTabs1({
           color={activeColor}
           dark={dark}
           iconClassname="tfc-announcement-tab"
-          onClick={setTaskListAnnouncements}
+          onClick={setTaskListStateFunc('Announcements')}
           opacity={taskListState === 'Announcements' ? 1 : 0.5}
         >
           <AnnouncementIconComponent
@@ -127,7 +131,7 @@ export default function IconSubTabs1({
           color={activeColor}
           dark={dark}
           iconClassname="tfc-todo-tab"
-          onClick={setTaskListUnfinished}
+          onClick={setTaskListStateFunc('Unfinished')}
           opacity={taskListState === 'Unfinished' ? 1 : 0.5}
         >
           <AssignmentIconComponent
@@ -136,12 +140,30 @@ export default function IconSubTabs1({
             variant={taskListState === 'Unfinished' ? 'solid' : 'outline'}
           />
         </SubtitleTab>
+        {gradebook ? (
+          <SubtitleTab
+            active={taskListState === 'NeedsGrading'}
+            color={activeColor}
+            dark={dark}
+            iconClassname="tfc-todo-tab"
+            onClick={setTaskListStateFunc('NeedsGrading')}
+            opacity={taskListState === 'NeedsGrading' ? 1 : 0.5}
+          >
+            <NeedsGradingIconComponent
+              color={taskListState === 'NeedsGrading' ? activeColor : '#6c757c'}
+              flat
+              variant={taskListState === 'NeedsGrading' ? 'solid' : 'outline'}
+            />
+          </SubtitleTab>
+        ) : (
+          ''
+        )}
         <SubtitleTab
           active={taskListState === 'Completed'}
           color={activeColor}
           dark={dark}
           iconClassname="tfc-completed-tab"
-          onClick={setTaskListCompleted}
+          onClick={setTaskListStateFunc('Completed')}
           opacity={taskListState === 'Completed' ? 1 : 0.5}
         >
           <CompletedIconComponent
@@ -152,6 +174,7 @@ export default function IconSubTabs1({
       </SubtitleDiv>
       <BorderBottom
         color={activeColor}
+        numTabs={gradebook ? 4 : 3}
         pos={positions[taskListState ?? 'Unfinished']}
         visible
       />

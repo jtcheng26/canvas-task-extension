@@ -11,6 +11,7 @@ body {
   min-height: 100vh;
   width: 100vw;
 
+  --text-light-light: #94a3b8;
   --text-light: #878787;
   --text-default: #626e7b;
   --text-dark: #303b44;
@@ -201,6 +202,45 @@ body {
   display: flex;
   align-items: center;
   margin-left: 20px;
+}
+
+.label-right {
+  text-align: left;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.label-description {
+  color: var(--text-light-light);
+  padding-left: 55px;
+  padding-bottom: 20px;
+}
+
+.label-description a {
+  color: var(--theme-default);
+}
+
+.label-description a:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.support-button {
+  margin-top: 30px;
+  background-color: var(--bg-theme);
+  color: white;
+  font-weight: bold;
+  font-size: 19px;
+  width: 100%;
+  text-align: center;
+  padding: 20px 0px;
+  border-radius: 8px;
+  transition: opacity 0.1s ease-in-out;
+}
+
+.support-button:hover {
+  opacity: 0.7;
+  text-decoration: none;
 }
 
 .checkbox {
