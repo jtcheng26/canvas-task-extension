@@ -1,4 +1,4 @@
-import { Course, FinalAssignment } from '../../../types';
+import { AssignmentType, Course, FinalAssignment } from '../../../types';
 
 /* Returns a list of `Course` objects from a list of `Assignment` objects. */
 export default function extractCourses(
@@ -6,7 +6,7 @@ export default function extractCourses(
 ): Course[] {
   return Object.values(
     assignments.reduce((a: Record<string, Course>, b: FinalAssignment) => {
-      if (!(b.course_id in a)) {
+      if (b.type !== AssignmentType.ANNOUNCEMENT && !(b.course_id in a)) {
         a[b.course_id] = {
           name: b.course_name,
           id: b.course_id,
