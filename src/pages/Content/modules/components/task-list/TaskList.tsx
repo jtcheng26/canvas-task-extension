@@ -14,7 +14,7 @@ import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';

@@ -9,7 +9,7 @@ import markAssignment from './utils/markAssignment';
 import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
 
 export interface TaskContainerProps {

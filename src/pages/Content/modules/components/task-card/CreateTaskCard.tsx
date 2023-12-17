@@ -4,7 +4,7 @@ import { TaskLeft, TaskLink } from './TaskCard';
 import PlusIcon from '../../icons/plus';
 import { FinalAssignment } from '../../types';
 import TaskForm from '../task-form/TaskForm';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import { DarkProps } from '../../types/props';
 
 export const TaskContainer = styled.div<DarkProps>`
