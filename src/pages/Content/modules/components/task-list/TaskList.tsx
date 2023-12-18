@@ -14,7 +14,7 @@ import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
-import { DarkContext } from '../../contexts/contexts';
+import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
 import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';
@@ -85,6 +85,7 @@ export default function TaskList({
   skeleton,
   weekKey,
 }: TaskListProps): JSX.Element {
+  const courseStore = useContext(CourseStoreContext);
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
@@ -226,10 +227,10 @@ export default function TaskList({
   const assignmentToTaskCard = (
     tab: TaskTypeTab,
     { key, data: assignment, state }: TaskCardTransitionProps
-  ) =>
-    tab !== 'Announcements' ? (
+  ) => {
+    return tab !== 'Announcements' ? (
       <TaskCard
-        color={assignment.color}
+        color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
         course_name={assignment.course_name}
         due_at={assignment.due_at}
@@ -258,7 +259,7 @@ export default function TaskList({
       />
     ) : (
       <AnnouncementCard
-        color={assignment.color}
+        color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
         course_name={assignment.course_name}
         due_at={assignment.due_at}
@@ -275,6 +276,7 @@ export default function TaskList({
         type={assignment.type}
       />
     );
+  };
 
   interface HeadingTransitionProps {
     key: string;

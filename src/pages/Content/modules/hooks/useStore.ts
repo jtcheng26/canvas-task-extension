@@ -9,10 +9,18 @@ export default function useStore<Type>(
   const [state, updateState] = useState<Record<string, Type>>(arg);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function updateKey(root: string[], value: any) {
-    const spec = root.toReversed().reduce((spec, key, i) => {
-      if (i == 0) return { $set: value };
-      return { [key]: spec };
-    }, {}) as Spec<Record<string, Type>, never>;
+    // no error handling is done, assume all entries filled when initialized
+    root.push(''); // for the { $set: value } in the reduction
+    const spec = root
+      .reverse()
+      .reduce(
+        (spec: Spec<Record<string, Type>, never>, key: string, i: number) => {
+          if (i == 0)
+            return { $set: value } as Spec<Record<string, Type>, never>;
+          return { [key]: spec } as Spec<Record<string, Type>, never>;
+        },
+        {} as Spec<Record<string, Type>, never>
+      );
     const newState = update(state, spec);
     updateState(newState);
   }

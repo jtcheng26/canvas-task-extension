@@ -91,7 +91,7 @@ function ContentLoader({
       {!isSuccess && !isError && !assignmentData && (
         <Skeleton dark={options.dark_mode} />
       )}
-      {assignmentData ? (
+      {assignmentData && courseData ? (
         <TaskContainer
           announcements={assignmentData.announcements}
           assignments={assignmentData.assignments}
