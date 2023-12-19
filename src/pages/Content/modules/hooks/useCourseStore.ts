@@ -27,6 +27,7 @@ function watchDashboardColors(callback: (id: string, color: string) => void) {
         const color = coloredHeader[0].style.backgroundColor;
         const url = courseLink[0].href.split('/');
         const course_id = url.pop() || url.pop(); // handle trailing slashes in URL
+        console.log(course_id, color);
         callback(course_id as string, color);
       }
     });
@@ -51,7 +52,7 @@ export interface CourseStoreInterface {
 }
 
 export default function useCourseStore(
-  courses: Course[]
+  courses: Course[] = []
 ): CourseStoreInterface {
   const initial: Record<string, Course> = {};
   courses.forEach((course) => (initial[course.id] = course));

@@ -1,6 +1,6 @@
 import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { DarkContext } from '../../contexts/contexts';
+import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
 import { Course, Direction } from '../../types';
 import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
@@ -56,7 +56,7 @@ const CourseDropdownContainer = styled.div`
 `;
 
 export interface CourseDropdownProps {
-  courses: Course[];
+  courses: string[];
   defaultColor?: string;
   selectedCourseId?: string;
   setCourse: (id: string) => void;
@@ -84,6 +84,7 @@ export default function CourseDropdown({
   onCoursePage = false,
 }: CourseDropdownProps): JSX.Element {
   const darkMode = useContext(DarkContext);
+  const courseStore = useContext(CourseStoreContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [hovering, setHovering] = useState(false);
   function onHover() {
@@ -96,10 +97,10 @@ export default function CourseDropdown({
   const courseMap = useMemo(() => {
     const map: Record<string, Course> = {};
     courses.forEach((course) => {
-      map[course.id] = course;
+      map[course] = courseStore.state[course];
     });
     return map;
-  }, [courses]);
+  }, [courses, courseStore]);
 
   const name =
     selectedCourseId in courseMap
@@ -175,12 +176,12 @@ export default function CourseDropdown({
         ) : (
           courses.map((course, i) => (
             <CourseButton
-              color={course.color}
-              id={course.id}
-              key={`course-btn-${course.id}`}
+              color={courseStore.state[course].color}
+              id={course}
+              key={`course-btn-${course}`}
               last={i === courses.length - 1}
               menuVisible={menuVisible}
-              name={course.name}
+              name={courseStore.state[course].name}
               setCourse={setCourse}
               setMenuVisible={setMenuVisible}
             />

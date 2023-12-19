@@ -1,12 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart, { ChartData } from '../radial-bar-chart';
 import BeatLoader from '../spinners';
-import { Course, FinalAssignment } from '../../types';
+import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
 import { OptionsDefaults } from '../../constants';
+import { CourseStoreContext } from '../../contexts/contexts';
 
 /*
   Renders progress chart
@@ -50,7 +51,7 @@ const ConfettiWrapper = styled.div`
 
 export interface TaskChartProps {
   assignments: FinalAssignment[];
-  courses: Course[];
+  courses: string[];
   colorOverride?: string;
   loading?: boolean;
   onCoursePage?: boolean;
@@ -73,9 +74,16 @@ export default function TaskChart({
   themeColor = OptionsDefaults.theme_color,
   weekKey = '',
 }: TaskChartProps): JSX.Element {
+  const courseStore = useContext(CourseStoreContext);
   /* useMemo so it doesn't animate the bars when switching courses. */
   const [chartData, setChartData] = useState(
-    useChartData(assignments, courses, colorOverride || themeColor, weekKey)
+    useChartData(
+      assignments,
+      courses,
+      courseStore,
+      colorOverride || themeColor,
+      weekKey
+    )
   );
 
   const [currKey, setCurrKey] = useState(weekKey);
@@ -84,6 +92,7 @@ export default function TaskChart({
     return a.bars.reduce(
       (prev, curr, i) =>
         prev &&
+        b.bars[i].color == curr.color &&
         b.bars[i].id === curr.id &&
         b.bars[i].max === curr.max &&
         b.bars[i].value === curr.value,
@@ -102,6 +111,7 @@ export default function TaskChart({
     const newData = useChartData(
       assignments,
       courses,
+      courseStore,
       colorOverride || themeColor,
       currKey
     );
@@ -115,7 +125,7 @@ export default function TaskChart({
     ) {
       setChartData(newData);
     }
-  }, [assignments, courses, loading, currKey, weekKey]);
+  }, [assignments, courses, courseStore, loading, currKey, weekKey]);
 
   const [done, total, color] = useMemo(
     () => useSelectChartData(selectedCourseId, chartData),

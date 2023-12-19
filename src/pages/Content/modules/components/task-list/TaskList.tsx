@@ -232,7 +232,7 @@ export default function TaskList({
       <TaskCard
         color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
-        course_name={assignment.course_name}
+        course_name={courseStore.state[assignment.course_id].name}
         due_at={assignment.due_at}
         graded={assignment.graded}
         graded_at={assignment.graded_at}
@@ -261,7 +261,7 @@ export default function TaskList({
       <AnnouncementCard
         color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
-        course_name={assignment.course_name}
+        course_name={courseStore.state[assignment.course_id].name}
         due_at={assignment.due_at}
         html_url={assignment.html_url}
         key={key}

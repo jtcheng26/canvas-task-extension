@@ -7,6 +7,7 @@ export default function useStore<Type>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): [{ [key: string]: Type }, (root: string[], value: any) => void] {
   const [state, updateState] = useState<Record<string, Type>>(arg);
+  let cached = state; // so sequenced updates (i.e. using another extension to change all colors quickly) aren't lost
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function updateKey(root: string[], value: any) {
     // no error handling is done, assume all entries filled when initialized
@@ -21,8 +22,9 @@ export default function useStore<Type>(
         },
         {} as Spec<Record<string, Type>, never>
       );
-    const newState = update(state, spec);
-    updateState(newState);
+    const newState = update(cached, spec);
+    cached = newState;
+    updateState(cached);
   }
   return [state, updateKey];
 }

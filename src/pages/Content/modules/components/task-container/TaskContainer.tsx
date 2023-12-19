@@ -18,7 +18,7 @@ export interface TaskContainerProps {
   announcements: FinalAssignment[];
   loading?: boolean;
   courseId?: string | false;
-  courseList: Course[]; // all courses, for corner case when on course page w/ no assignments
+  courseData: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
   startDate?: Date;
   endDate?: Date;
@@ -32,12 +32,14 @@ export default function TaskContainer({
   announcements,
   assignments,
   courseId,
-  courseList,
+  courseData,
   loading,
   options,
   startDate,
   endDate,
 }: TaskContainerProps): JSX.Element {
+  const courseStore = useCourseStore(courseData);
+  const courseList = Object.values(courseStore.state);
   const [selectedCourseId, setSelectedCourseId] = useState<string>(
     courseList && courseId ? courseId : ''
   );
@@ -52,19 +54,21 @@ export default function TaskContainer({
   const [updatedAnnouncements, setUpdatedAnnouncements] =
     useState<FinalAssignment[]>(announcements);
 
-  const courses = useMemo(() => {
+  const courses: string[] = useMemo(() => {
     if (courseList && courseId !== false)
-      return courseList.filter((c) => c.id === courseId);
+      return courseId ? [courseId as string] : [];
     const extracted = extractCourses(
       updatedAssignments.concat(updatedAnnouncements)
     );
     if (options.dash_courses && courseList) {
       const inExtracted = new Set();
-      extracted.forEach((x) => inExtracted.add(x.id));
+      extracted.forEach((id) => inExtracted.add(id));
       const dash = dashCourses();
       return dash
         ? extracted.concat(
-            courseList.filter((c) => dash.has(c.id) && !inExtracted.has(c.id))
+            courseList
+              .filter((c) => dash.has(c.id) && !inExtracted.has(c.id))
+              .map((c) => c.id)
           )
         : extracted;
     }
@@ -128,8 +132,6 @@ export default function TaskContainer({
     }
   }, [assignments, announcements, courseId]);
 
-  const courseStore = useCourseStore(courseList);
-
   return (
     <DarkContext.Provider value={options.dark_mode}>
       <CourseStoreContext.Provider value={courseStore}>
@@ -141,7 +143,9 @@ export default function TaskContainer({
         />
         <TaskChart
           assignments={updatedAssignments}
-          colorOverride={courseId ? courses[0].color : undefined}
+          colorOverride={
+            courseId ? courseStore.state[courses[0]].color : undefined
+          }
           courses={courses}
           loading={loading}
           onCoursePage={!!courseId}

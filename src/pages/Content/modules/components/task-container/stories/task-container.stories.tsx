@@ -15,7 +15,7 @@ export default { title: 'Components/TaskContainer' } as ComponentMeta<
 const storyDefaults: TaskContainerProps = {
   assignments: AssignmentListSample2 as unknown as FinalAssignment[],
   announcements: [],
-  courseList: [],
+  courseData: [],
   loading: false,
   options: OptionsDefaults,
 };
@@ -24,7 +24,7 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
   announcements,
   assignments,
   courseId = '',
-  courseList = [],
+  courseData = [],
   loading,
   options,
 }: TaskContainerProps) {
@@ -55,8 +55,8 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
       <TaskContainer
         announcements={announcements}
         assignments={assignments}
+        courseData={courseData}
         courseId={courseId}
-        courseList={courseList}
         loading={loading}
         options={options}
       />
@@ -102,7 +102,7 @@ DarkMode.args = {
 export const OnCoursePage = Template.bind({});
 OnCoursePage.args = {
   ...storyDefaults,
-  courseList: [
+  courseData: [
     {
       id: '1',
       name: 'Unknown Course',
@@ -118,7 +118,7 @@ OnCoursePageNoAssignments.args = {
   ...storyDefaults,
   assignments: [],
   courseId: '1',
-  courseList: [
+  courseData: [
     {
       id: '1',
       name: 'The only course',

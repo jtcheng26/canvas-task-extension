@@ -95,8 +95,8 @@ function ContentLoader({
         <TaskContainer
           announcements={assignmentData.announcements}
           assignments={assignmentData.assignments}
+          courseData={courseData}
           courseId={onCourse}
-          courseList={courseData}
           endDate={endDate}
           loading={!loaded}
           options={options}
