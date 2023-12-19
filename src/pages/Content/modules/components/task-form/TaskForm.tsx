@@ -95,9 +95,11 @@ export default function TaskForm({
     if (courses) {
       if (options?.dash_courses) {
         const dash = dashCourses();
-        if (dash) return courses.filter((c) => dash.has(c.id));
+        if (dash) return courses.filter((c) => dash.has(c.id)).map((c) => c.id);
       }
-      return courses.filter((c) => c.id !== '' && c.id !== '0');
+      return courses
+        .filter((c) => c.id !== '' && c.id !== '0')
+        .map((c) => c.id);
     }
 
     return [];
