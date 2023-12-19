@@ -113,10 +113,8 @@ export default function TaskChart({
     );
     const isSame = compareData(newData, chartData);
     if (weekKey !== currKey) setCurrKey(weekKey);
-    else if ((!loading && chartData.key !== newData.key) || !isSame) {
-      console.log(loading, chartData, newData);
+    else if ((!loading && chartData.key !== newData.key) || !isSame)
       setChartData(newData);
-    }
   }, [assignments, courses, courseStore, loading, currKey, weekKey]);
 
   const [done, total, color] = useMemo(
