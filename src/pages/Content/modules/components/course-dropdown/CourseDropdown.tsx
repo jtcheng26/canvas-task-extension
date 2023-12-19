@@ -1,11 +1,12 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
 import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
-import { Course, Direction } from '../../types';
+import { Direction } from '../../types';
 import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
 import TextInput from '../task-form/components/TextInput';
 import { DarkProps } from '../../types/props';
+import { CourseStoreInterface } from '../../hooks/useCourseStore';
 
 interface CourseTitleProps {
   color?: string;
@@ -55,11 +56,17 @@ const CourseDropdownContainer = styled.div`
   position: relative;
 `;
 
+export interface DropdownChoice {
+  id: string;
+  name: string;
+  color: string;
+}
+
 export interface CourseDropdownProps {
-  courses: string[];
+  choices: DropdownChoice[];
   defaultColor?: string;
-  selectedCourseId?: string;
-  setCourse: (id: string) => void;
+  selectedId?: string;
+  setChoice: (id: string) => void;
   onCoursePage: boolean;
   maxHeight?: number;
   zIndex?: number;
@@ -68,23 +75,33 @@ export interface CourseDropdownProps {
   instructureStyle?: boolean;
 }
 
+export function coursesToChoices(
+  courses: string[],
+  store: CourseStoreInterface
+): DropdownChoice[] {
+  return courses.map((id) => ({
+    id: id,
+    name: store.state[id].name,
+    color: store.state[id].color,
+  }));
+}
+
 /*
   Renders the current filtered course and dropdown menu to change the current course
 */
 export default function CourseDropdown({
-  courses,
+  choices,
   defaultOption,
   defaultColor,
   noDefault,
   maxHeight,
   zIndex,
   instructureStyle,
-  selectedCourseId = '',
-  setCourse,
+  selectedId = '',
+  setChoice,
   onCoursePage = false,
 }: CourseDropdownProps): JSX.Element {
   const darkMode = useContext(DarkContext);
-  const courseStore = useContext(CourseStoreContext);
   const [menuVisible, setMenuVisible] = useState(false);
   const [hovering, setHovering] = useState(false);
   function onHover() {
@@ -94,26 +111,20 @@ export default function CourseDropdown({
     setHovering(false);
   }
 
-  const courseMap = useMemo(() => {
-    const map: Record<string, Course> = {};
-    courses.forEach((course) => {
-      map[course] = courseStore.state[course];
-    });
-    return map;
-  }, [courses, courseStore]);
+  const selectedChoice = selectedId
+    ? choices.filter((choice) => choice.id == selectedId)[0]
+    : choices[0];
 
-  const name =
-    selectedCourseId in courseMap
-      ? courseMap[selectedCourseId].name
-      : defaultOption
-      ? defaultOption
-      : 'All Courses';
-  const color =
-    selectedCourseId in courseMap
-      ? courseMap[selectedCourseId].color
-      : darkMode
-      ? 'var(--tfc-dark-mode-text-primary)'
-      : 'var(--ic-brand-font-color-dark)';
+  const name = selectedId
+    ? selectedChoice.name
+    : defaultOption
+    ? defaultOption
+    : 'All Courses';
+  const color = selectedId
+    ? selectedChoice.color
+    : darkMode
+    ? 'var(--tfc-dark-mode-text-primary)'
+    : 'var(--ic-brand-font-color-dark)';
 
   function toggleMenu() {
     setMenuVisible(!menuVisible);
@@ -148,7 +159,7 @@ export default function CourseDropdown({
         </CourseTitle>
       )}
       <Dropdown dark={darkMode} maxHeight={maxHeight} zIndex={zIndex}>
-        {!noDefault && !onCoursePage && selectedCourseId && (
+        {!noDefault && !onCoursePage && selectedId && (
           <CourseButton
             color={
               darkMode
@@ -159,30 +170,30 @@ export default function CourseDropdown({
             last={false}
             menuVisible={menuVisible}
             name={defaultOption || 'All Courses'}
-            setCourse={setCourse}
+            setCourse={setChoice}
             setMenuVisible={setMenuVisible}
           />
         )}
-        {onCoursePage && selectedCourseId ? (
+        {onCoursePage && selectedId ? (
           <CourseButton
-            color={courseMap[selectedCourseId].color}
-            id={selectedCourseId}
+            color={selectedChoice.color}
+            id={selectedId}
             last
             menuVisible={menuVisible}
-            name={courseMap[selectedCourseId].name}
-            setCourse={setCourse}
+            name={selectedChoice.name}
+            setCourse={setChoice}
             setMenuVisible={setMenuVisible}
           />
         ) : (
-          courses.map((course, i) => (
+          choices.map((choice, i) => (
             <CourseButton
-              color={courseStore.state[course].color}
-              id={course}
-              key={`course-btn-${course}`}
-              last={i === courses.length - 1}
+              color={choice.color}
+              id={choice.id}
+              key={`course-btn-${choice.id}`}
+              last={i === choices.length - 1}
               menuVisible={menuVisible}
-              name={courseStore.state[course].name}
-              setCourse={setCourse}
+              name={choice.name}
+              setCourse={setChoice}
               setMenuVisible={setMenuVisible}
             />
           ))

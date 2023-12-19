@@ -12,6 +12,7 @@ import { OptionsDefaults } from '../../constants';
 import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
 import useCourseStore from '../../hooks/useCourseStore';
+import { coursesToChoices } from '../course-dropdown/CourseDropdown';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -136,10 +137,10 @@ export default function TaskContainer({
     <DarkContext.Provider value={options.dark_mode}>
       <CourseStoreContext.Provider value={courseStore}>
         <CourseDropdown
-          courses={courses}
+          choices={coursesToChoices(courses, courseStore)}
           onCoursePage={!!courseId}
-          selectedCourseId={chosenCourseId}
-          setCourse={setSelectedCourseId}
+          selectedId={chosenCourseId}
+          setChoice={setSelectedCourseId}
         />
         <TaskChart
           assignments={updatedAssignments}

@@ -11,8 +11,8 @@ export default {
 
 const Template: ComponentStory<typeof CourseDropdown> = ({
   onCoursePage,
-  courses,
-  selectedCourseId,
+  choices,
+  selectedId,
 }) => {
   function func() {
     console.log('click');
@@ -20,10 +20,10 @@ const Template: ComponentStory<typeof CourseDropdown> = ({
   return (
     <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
       <CourseDropdown
-        courses={courses}
+        choices={choices}
         onCoursePage={onCoursePage}
-        selectedCourseId={selectedCourseId}
-        setCourse={func}
+        selectedId={selectedId}
+        setChoice={func}
       />
     </div>
   );
@@ -31,51 +31,46 @@ const Template: ComponentStory<typeof CourseDropdown> = ({
 
 const storyDefaults: Partial<CourseDropdownProps> = {
   onCoursePage: false,
-  courses: [
+  choices: [
     {
       name: 'Course #1',
       color: 'var(--storybook-theme)',
       id: '1',
-      position: 1,
     },
     {
       name: 'Course #2',
       color: '#26f',
       id: '2',
-      position: 1,
     },
     {
       name: 'Course #3',
       color: '#2f6',
       id: '3',
-      position: 1,
     },
     {
       name: 'Course #4',
       color: '#62f',
       id: '4',
-      position: 1,
     },
     {
       name: 'Course #5',
       color: '#f62',
       id: '5',
-      position: 1,
     },
   ],
-  selectedCourseId: '',
+  selectedId: '',
 };
 
 export const NoCourses = Template.bind({});
 NoCourses.args = {
   ...storyDefaults,
-  courses: [],
+  choices: [],
 };
 
 export const OneCourse = Template.bind({});
 OneCourse.args = {
   ...storyDefaults,
-  courses: storyDefaults.courses?.slice(0, 1),
+  choices: storyDefaults.choices?.slice(0, 1),
 };
 
 export const SomeCourses = Template.bind({});
@@ -87,22 +82,22 @@ SomeCourses.args = {
 export const CourseSelected = Template.bind({});
 CourseSelected.args = {
   ...storyDefaults,
-  selectedCourseId: '4',
+  selectedId: '4',
 };
 
 export const OnCoursePageOneCourse = Template.bind({});
 OnCoursePageOneCourse.args = {
   ...storyDefaults,
-  courses: storyDefaults.courses?.slice(0, 1),
+  choices: storyDefaults.choices?.slice(0, 1),
   onCoursePage: true,
-  selectedCourseId: '1',
+  selectedId: '1',
 };
 
 export const OnCoursePage = Template.bind({});
 OnCoursePage.args = {
   ...storyDefaults,
   onCoursePage: true,
-  selectedCourseId: '4',
+  selectedId: '4',
 };
 
 // error case, shouldn't happen

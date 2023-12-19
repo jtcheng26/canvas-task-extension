@@ -19,7 +19,6 @@ import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';
 import { THEME_COLOR } from '../../constants';
-import useCourseColors from '../../hooks/useCourseColors';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -347,14 +346,13 @@ export default function TaskList({
 
   const { data: options } = useOptions();
 
-  const { data: colors } = useCourseColors();
   const iconColor = useMemo(() => {
-    if (selectedCourseId && colors && selectedCourseId in colors)
-      return colors[selectedCourseId];
+    if (selectedCourseId && selectedCourseId in courseStore.state)
+      return courseStore.state[selectedCourseId].color;
     if (options?.color_tabs) return options?.theme_color || THEME_COLOR;
     if (darkMode) return '#6c757c';
     return 'var(--ic-brand-font-color-dark)';
-  }, [options, selectedCourseId, colors]);
+  }, [options, selectedCourseId, courseStore]);
 
   if (skeleton)
     return (
