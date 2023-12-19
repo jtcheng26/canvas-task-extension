@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AssignmentDefaults, OptionsDefaults } from '../../constants';
 import useOptions from '../../hooks/useOptions';
@@ -14,8 +14,8 @@ import RecurCheckbox from './components/RecurCheckbox';
 import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
 import dashCourses from '../../utils/dashCourses';
-import { CourseStoreContext } from '../../contexts/contexts';
 import { coursesToChoices } from '../course-dropdown/CourseDropdown';
+import useCourseStore from '../../hooks/useCourseStore';
 
 type FormContainerProps = {
   visible?: boolean;
@@ -75,7 +75,7 @@ export default function TaskForm({
   selectedCourse,
   visible = false,
 }: Props): JSX.Element {
-  const courseStore = useContext(CourseStoreContext);
+  const courseStore = useCourseStore();
   const [title, setTitle] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
@@ -94,8 +94,6 @@ export default function TaskForm({
     }
     return Object.keys(courseStore.state).filter((c) => c !== '' && c !== '0');
   }, [courseStore.state, options]);
-
-  console.log(coursesWithoutCustom);
 
   const titleLabel = 'Title';
   const dateLabel = 'Due Date';

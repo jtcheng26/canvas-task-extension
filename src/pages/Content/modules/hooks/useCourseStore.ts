@@ -1,6 +1,7 @@
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Course } from '../types';
 import useStore from './useStore';
+import { CourseStoreContext } from '../contexts/contexts';
 
 // call the callback function whenever course colors change
 function watchDashboardColors(callback: (id: string, color: string) => void) {
@@ -51,7 +52,7 @@ export interface CourseStoreInterface {
   updateCourseColor: (id: string, color: string) => void;
 }
 
-export default function useCourseStore(
+export function useNewCourseStore(
   courses: Course[] = []
 ): CourseStoreInterface {
   const initial: Record<string, Course> = {};
@@ -75,4 +76,8 @@ export default function useCourseStore(
     addCourse,
     updateCourseColor,
   };
+}
+
+export default function useCourseStore(): CourseStoreInterface {
+  return useContext(CourseStoreContext);
 }

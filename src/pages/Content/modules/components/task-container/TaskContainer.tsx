@@ -11,7 +11,7 @@ import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
 import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
-import useCourseStore from '../../hooks/useCourseStore';
+import { useNewCourseStore } from '../../hooks/useCourseStore';
 import { coursesToChoices } from '../course-dropdown/CourseDropdown';
 
 export interface TaskContainerProps {
@@ -39,7 +39,7 @@ export default function TaskContainer({
   startDate,
   endDate,
 }: TaskContainerProps): JSX.Element {
-  const courseStore = useCourseStore(courseData);
+  const courseStore = useNewCourseStore(courseData);
   const courseList = Object.values(courseStore.state);
   const [selectedCourseId, setSelectedCourseId] = useState<string>(
     courseList && courseId ? courseId : ''

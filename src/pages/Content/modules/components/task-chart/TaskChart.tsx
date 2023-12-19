@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart, { ChartData } from '../radial-bar-chart';
 import BeatLoader from '../spinners';
@@ -7,7 +7,7 @@ import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
 import { OptionsDefaults } from '../../constants';
-import { CourseStoreContext } from '../../contexts/contexts';
+import useCourseStore from '../../hooks/useCourseStore';
 
 /*
   Renders progress chart
@@ -74,7 +74,7 @@ export default function TaskChart({
   themeColor = OptionsDefaults.theme_color,
   weekKey = '',
 }: TaskChartProps): JSX.Element {
-  const courseStore = useContext(CourseStoreContext);
+  const courseStore = useCourseStore();
   /* useMemo so it doesn't animate the bars when switching courses. */
   const [chartData, setChartData] = useState(
     useChartData(

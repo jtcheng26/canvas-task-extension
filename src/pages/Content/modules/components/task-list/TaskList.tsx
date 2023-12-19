@@ -14,11 +14,12 @@ import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
-import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
+import { DarkContext } from '../../contexts/contexts';
 import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';
 import { THEME_COLOR } from '../../constants';
+import useCourseStore from '../../hooks/useCourseStore';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -84,7 +85,7 @@ export default function TaskList({
   skeleton,
   weekKey,
 }: TaskListProps): JSX.Element {
-  const courseStore = useContext(CourseStoreContext);
+  const courseStore = useCourseStore();
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);

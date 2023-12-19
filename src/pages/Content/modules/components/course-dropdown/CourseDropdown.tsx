@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import styled from 'styled-components';
-import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
+import { DarkContext } from '../../contexts/contexts';
 import { Direction } from '../../types';
 import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
