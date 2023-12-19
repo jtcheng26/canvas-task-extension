@@ -64,7 +64,7 @@ function ContentLoader({
   }, []);
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isSuccess && !loaded) {
       const loadTime = Date.now() - animationStart;
       console.log('Tasks for Canvas: ' + loadTime / 1000 + 's load');
       if (loadTime < MIN_LOAD_TIME) {
@@ -77,36 +77,31 @@ function ContentLoader({
       } else {
         onLoad(data as FinalAssignment[]);
       }
-    } else {
-      setAnimationStart(Date.now());
-      setLoaded(false);
     }
-  }, [isSuccess]);
+  }, [isSuccess, loaded]);
+
+  useEffect(() => {
+    setLoaded(false);
+    setAnimationStart(Date.now());
+  }, [startDate, endDate]);
 
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
 
+  if (isError) return <h1>{failed}</h1>;
+  if (!assignmentData || !courseData)
+    return <Skeleton dark={options.dark_mode} />;
   return (
-    <>
-      {!isSuccess && !isError && !assignmentData && (
-        <Skeleton dark={options.dark_mode} />
-      )}
-      {assignmentData && courseData ? (
-        <TaskContainer
-          announcements={assignmentData.announcements}
-          assignments={assignmentData.assignments}
-          courseData={courseData}
-          courseId={onCourse}
-          endDate={endDate}
-          loading={!loaded}
-          options={options}
-          startDate={startDate}
-        />
-      ) : (
-        ''
-      )}
-      {isError && <h1>{failed}</h1>}
-    </>
+    <TaskContainer
+      announcements={assignmentData.announcements}
+      assignments={assignmentData.assignments}
+      courseData={courseData}
+      courseId={onCourse}
+      endDate={endDate}
+      loading={!loaded}
+      options={options}
+      startDate={startDate}
+    />
   );
 }
 

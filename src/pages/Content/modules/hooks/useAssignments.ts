@@ -5,18 +5,15 @@ import {
   Options,
   PlannerAssignment,
 } from '../types';
-import { useQuery, UseQueryResult } from 'react-query';
 import dashCourses from '../utils/dashCourses';
 import onCoursePage from '../utils/onCoursePage';
-import useCourseNames from './useCourseNames';
-import useCourseColors from './useCourseColors';
 import baseURL from '../utils/baseURL';
 import { DemoAssignments } from '../tests/demo';
-import { AssignmentDefaults, OptionsDefaults } from '../constants';
-import useCoursePositions from './useCoursePositions';
+import { AssignmentDefaults } from '../constants';
 import isDemo from '../utils/isDemo';
 import JSONBigInt from 'json-bigint';
-import useNeedsGrading from './useNeedsGrading';
+import loadNeedsGrading from './useNeedsGrading';
+import { useEffect, useState } from 'react';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -291,36 +288,37 @@ async function processAssignments(
   );
 }
 
+interface UseAssignmentsHookInterface {
+  data: FinalAssignment[] | null;
+  isError: boolean;
+  isSuccess: boolean;
+}
+
 export default function useAssignments(
   startDate: Date,
   endDate: Date,
   options: Options
-): UseQueryResult<FinalAssignment[]> {
-  const { data: colors } = useCourseColors(
-    options.theme_color !== OptionsDefaults.theme_color
-      ? options.theme_color
-      : undefined
-  );
-  const { data: names } = useCourseNames();
-  const { data: positions } = useCoursePositions();
-  const { data: needsGradingAssignments } = useNeedsGrading(endDate, options);
-  return useQuery(
-    ['names', startDate, endDate],
-    async () => {
-      return needsGradingAssignments?.concat(
-        await processAssignments(
-          startDate,
-          endDate,
-          options,
-          colors as Record<string, string>,
-          names as Record<string, string>,
-          positions as Record<string, number>
-        )
-      );
-    },
-    {
-      staleTime: Infinity,
-      enabled: !!colors && !!names && !!needsGradingAssignments,
-    }
-  );
+): UseAssignmentsHookInterface {
+  const [data, setData] = useState<FinalAssignment[] | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  useEffect(() => {
+    setIsSuccess(false);
+    setIsError(false);
+    Promise.all([
+      loadNeedsGrading(endDate, options),
+      processAssignments(startDate, endDate, options),
+    ])
+      .then((res) => {
+        setData(res[0].concat(res[1]));
+        setIsSuccess(true);
+        setIsError(false);
+      })
+      .catch((err) => {
+        console.error(err);
+        setIsError(true);
+        setIsSuccess(false);
+      });
+  }, [startDate, endDate]);
+  return { data, isError, isSuccess };
 }

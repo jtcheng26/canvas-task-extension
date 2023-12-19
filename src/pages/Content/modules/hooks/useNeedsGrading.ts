@@ -1,10 +1,6 @@
 import { AssignmentType, FinalAssignment, Options } from '../types';
-import { useQuery, UseQueryResult } from 'react-query';
-import useCourseNames from './useCourseNames';
-import useCourseColors from './useCourseColors';
 import baseURL from '../utils/baseURL';
-import { AssignmentDefaults, OptionsDefaults } from '../constants';
-import useCoursePositions from './useCoursePositions';
+import { AssignmentDefaults } from '../constants';
 import isDemo from '../utils/isDemo';
 import { getPaginatedRequest, processAssignmentList } from './useAssignments';
 import { TodoAssignment, TodoResponse } from '../types/assignment';
@@ -141,33 +137,10 @@ async function processAssignments(
 }
 
 // only respects end date: assignments due after will not be included, but all assignments due before that need grading are included.
-export default function useNeedsGrading(
-  //   startDate: Date,
+export default async function loadNeedsGrading(
   endDate: Date,
   options: Options
-): UseQueryResult<FinalAssignment[]> {
-  const { data: colors } = useCourseColors(
-    options.theme_color !== OptionsDefaults.theme_color
-      ? options.theme_color
-      : undefined
-  );
-  const { data: names } = useCourseNames();
-  const { data: positions } = useCoursePositions();
+): Promise<FinalAssignment[]> {
   const startDate = new Date('2000-01-01');
-  return useQuery(
-    ['names', startDate, endDate],
-    () =>
-      processAssignments(
-        startDate,
-        endDate,
-        options,
-        colors as Record<string, string>,
-        names as Record<string, string>,
-        positions as Record<string, number>
-      ),
-    {
-      staleTime: Infinity,
-      enabled: !!colors && !!names,
-    }
-  );
+  return await processAssignments(startDate, endDate, options);
 }

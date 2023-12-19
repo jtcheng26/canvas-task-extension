@@ -100,10 +100,6 @@ export default function TaskChart({
     );
   }
 
-  function isEmpty(a: ChartData) {
-    return a.bars.length === 0 || (a.bars.length === 1 && a.bars[0].max === 0);
-  }
-
   useEffect(() => {
     // if assignments is same but weekkey different just change currkey
     // else update assignments
@@ -115,14 +111,10 @@ export default function TaskChart({
       colorOverride || themeColor,
       currKey
     );
+    const isSame = compareData(newData, chartData);
     if (weekKey !== currKey) setCurrKey(weekKey);
-    else if (
-      (!loading &&
-        isEmpty(chartData) &&
-        isEmpty(newData) &&
-        chartData.key !== newData.key) ||
-      !compareData(newData, chartData)
-    ) {
+    else if ((!loading && chartData.key !== newData.key) || !isSame) {
+      console.log(loading, chartData, newData);
       setChartData(newData);
     }
   }, [assignments, courses, courseStore, loading, currKey, weekKey]);
