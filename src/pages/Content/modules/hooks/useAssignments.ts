@@ -235,11 +235,11 @@ export default function useAssignments(
     setIsSuccess(false);
     setIsError(false);
     Promise.all([
-      loadNeedsGrading(endDate, options),
+      // loadNeedsGrading(endDate, options),
       processAssignments(startDate, endDate, options),
     ])
       .then((res) => {
-        setData(res[0].concat(res[1]));
+        setData(res[0]);
         setIsSuccess(true);
         setIsError(false);
       })

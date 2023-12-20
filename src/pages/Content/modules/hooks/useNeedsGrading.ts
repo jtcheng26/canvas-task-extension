@@ -131,5 +131,5 @@ export default async function loadNeedsGrading(
   options: Options
 ): Promise<FinalAssignment[]> {
   const startDate = new Date('2000-01-01');
-  return await processAssignments(startDate, endDate, options);
+  return isDemo() ? [] : await processAssignments(startDate, endDate, options);
 }

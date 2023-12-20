@@ -54,10 +54,12 @@ export function useExperiments(): ExperimentsHubInterface {
   >([]);
 
   useEffect(() => {
-    if (!userId) (async () => setUserId(await getClientId()))();
-    if (!experimentConfigs.length)
-      (async () => setExperimentConfigs(await getExperimentConfigs()))();
-  }, [userId, experimentConfigs]);
+    if (isDemo()) return;
+    (async () => {
+      setExperimentConfigs(await getExperimentConfigs());
+      setUserId(await getClientId());
+    })();
+  }, []);
 
   return { configs: experimentConfigs, userId };
 }
