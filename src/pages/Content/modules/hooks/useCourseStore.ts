@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import { Course } from '../types';
-import useStore from './useStore';
+import { useObjectStore } from './useStore';
 import { CourseStoreContext } from '../contexts/contexts';
 
 // call the callback function whenever course colors change
@@ -28,7 +28,6 @@ function watchDashboardColors(callback: (id: string, color: string) => void) {
         const color = coloredHeader[0].style.backgroundColor;
         const url = courseLink[0].href.split('/');
         const course_id = url.pop() || url.pop(); // handle trailing slashes in URL
-        console.log(course_id, color);
         callback(course_id as string, color);
       }
     });
@@ -57,12 +56,12 @@ export function useNewCourseStore(
 ): CourseStoreInterface {
   const initial: Record<string, Course> = {};
   courses.forEach((course) => (initial[course.id] = course));
-  const [state, updateKey] = useStore<Course>(initial);
+  const { state, update } = useObjectStore<Course>(initial);
   function addCourse(course: Course) {
-    updateKey([course.id], course);
+    update([course.id], course);
   }
   function updateCourseColor(id: string, color: string) {
-    if (id in state) updateKey([id, 'color'], color);
+    if (id in state) update([id, 'color'], color);
   }
 
   useEffect(() => {

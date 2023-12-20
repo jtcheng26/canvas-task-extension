@@ -82,7 +82,7 @@ export default function TaskForm({
   );
   const [selectedTime, setSelectedTime] = useState('1439');
   const [recurrences, setRecurrences] = useState(1);
-  const { data: options } = useOptions();
+  const { state: options } = useOptions();
 
   const themeColor = options?.theme_color || OptionsDefaults.theme_color;
 

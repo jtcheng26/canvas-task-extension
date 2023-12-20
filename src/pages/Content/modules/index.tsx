@@ -1,20 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './components/App';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { Options } from './types';
 
 /*
   render app function
 */
 
-const queryClient = new QueryClient();
-
-export default function runApp(container: HTMLElement): void {
+export default function runApp(container: HTMLElement, data: Options): void {
   ReactDOM.render(
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
+      <App options={data} />
     </React.StrictMode>,
     container
   );

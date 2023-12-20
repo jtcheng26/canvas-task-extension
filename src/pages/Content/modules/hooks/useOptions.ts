@@ -1,7 +1,9 @@
-import { useQuery, UseQueryResult } from 'react-query';
+import { useContext } from 'react';
 import { OptionsDefaults } from '../constants';
 import { Options } from '../types';
 import isDarkMode from '../utils/isDarkMode';
+import { useConfigStore } from './useStore';
+import { OptionsContext } from '../contexts/contexts';
 
 const storedUserOptions = Object.keys(OptionsDefaults);
 
@@ -26,7 +28,17 @@ export async function getOptions(): Promise<Options> {
   });
 }
 
+export interface OptionsInterface {
+  state: Options;
+}
+
+export function useOptionsStore(arg?: Options): OptionsInterface {
+  const { state } = useConfigStore<Options>(arg || OptionsDefaults, true);
+
+  return { state };
+}
+
 /* Use cached options */
-export default function useOptions(): UseQueryResult<Options> {
-  return useQuery('options', () => getOptions(), { staleTime: Infinity });
+export default function useOptions(): OptionsInterface {
+  return useContext(OptionsContext);
 }

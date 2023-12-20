@@ -163,63 +163,6 @@ export function filterAssignmentTypes(
   );
 }
 
-/* Fill out the `color` attribute in the assignment object. */
-export function applyCourseColor(
-  colors: Record<string, string>,
-  assignments: FinalAssignment[]
-): FinalAssignment[] {
-  const applied = applyCourseValue('color', colors, assignments);
-  // apply theme color for courses without a custom color
-  return applied.map((a) => {
-    if (!(a.course_id in colors)) a.color = colors['0'];
-    return a;
-  });
-}
-
-/* Fill out the `course_name` attribute in the assignment object. */
-export function applyCourseName(
-  names: Record<string, string>,
-  assignments: FinalAssignment[]
-): FinalAssignment[] {
-  return applyCourseValue('course_name', names, assignments);
-}
-
-/* Fill out the `position` attribute in the assignment object. */
-export function applyCoursePositions(
-  positions: Record<string, number>,
-  assignments: FinalAssignment[]
-): FinalAssignment[] {
-  return applyCourseValue('position', positions, assignments);
-}
-
-/* 
-  Fill the `value` property of Assignment using the corresponding value to its course_id in `courseMap`.
-  For DRY-ness.
- */
-export function applyCourseValue(
-  value: keyof FinalAssignment,
-  courseMap: Record<string, string> | Record<string, number>,
-  assignments: FinalAssignment[]
-): FinalAssignment[] {
-  return assignments.map((assignment) => {
-    if (assignment.course_id in courseMap)
-      assignment[value] = courseMap[assignment.course_id] as never;
-    return assignment;
-  });
-}
-
-/* Set the course name of custom tasks with no course name to "Custom Task" */
-export function applyCustomTaskLabels(
-  assignments: FinalAssignment[]
-): FinalAssignment[] {
-  return assignments.map((assignment) => {
-    if (assignment.type === AssignmentType.NOTE && assignment.course_id === '0')
-      assignment.course_name = 'Custom Task';
-
-    return assignment;
-  });
-}
-
 export async function getAllAssignments(
   startDate: Date,
   endDate: Date
@@ -243,17 +186,14 @@ export function processAssignmentList(
   assignments: FinalAssignment[],
   startDate: Date,
   endDate: Date,
-  options: Options,
-  colors?: Record<string, string>,
-  names?: Record<string, string>,
-  positions?: Record<string, number>
+  options: Options
 ): FinalAssignment[] {
   assignments = filterAssignmentTypes(assignments);
   assignments = filterTimeBounds(startDate, endDate, assignments);
-  if (colors) assignments = applyCourseColor(colors, assignments);
-  if (names) assignments = applyCourseName(names, assignments);
-  if (positions) assignments = applyCoursePositions(positions, assignments);
-  assignments = applyCustomTaskLabels(assignments);
+  // if (colors) assignments = applyCourseColor(colors, assignments);
+  // if (names) assignments = applyCourseName(names, assignments);
+  // if (positions) assignments = applyCoursePositions(positions, assignments);
+  // assignments = applyCustomTaskLabels(assignments);
 
   const coursePageId = onCoursePage();
 
@@ -270,22 +210,11 @@ export function processAssignmentList(
 async function processAssignments(
   startDate: Date,
   endDate: Date,
-  options: Options,
-  colors?: Record<string, string>,
-  names?: Record<string, string>,
-  positions?: Record<string, number>
+  options: Options
 ): Promise<FinalAssignment[]> {
   /* modify this filter if announcements are used in the future */
   const assignments = await getAllAssignments(startDate, endDate);
-  return processAssignmentList(
-    assignments,
-    startDate,
-    endDate,
-    options,
-    colors,
-    names,
-    positions
-  );
+  return processAssignmentList(assignments, startDate, endDate, options);
 }
 
 interface UseAssignmentsHookInterface {

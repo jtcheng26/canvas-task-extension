@@ -1,8 +1,8 @@
-import { useQuery, UseQueryResult } from 'react-query';
 import { ExperimentConfig } from '../types';
 import { CLIENT_ID_LENGTH, EXPERIMENT_CONFIG_URL } from '../constants';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useContext } from 'react';
 import isDemo from '../utils/isDemo';
+import { ExperimentsContext } from '../contexts/contexts';
 
 function generateClientId(length: number): string {
   let num = '';
@@ -32,10 +32,6 @@ async function getClientId(): Promise<string> {
   });
 }
 
-export function useClientId(): UseQueryResult<string> {
-  return useQuery('client_id', () => getClientId(), { staleTime: Infinity });
-}
-
 async function getExperimentConfigs(): Promise<ExperimentConfig[]> {
   if (isDemo()) return [];
   try {
@@ -46,37 +42,52 @@ async function getExperimentConfigs(): Promise<ExperimentConfig[]> {
   }
 }
 
-function useExperimentConfigs(): UseQueryResult<ExperimentConfig[]> {
-  return useQuery('experiments', () => getExperimentConfigs(), {
-    staleTime: Infinity,
-  });
+export interface ExperimentsHubInterface {
+  configs: ExperimentConfig[];
+  userId: string;
 }
 
-export function useExperiment(
-  id: string
-): Record<string, ExperimentConfig | string | boolean | undefined> {
-  const { data: userId } = useClientId();
-  const { data: experimentConfigs } = useExperimentConfigs();
-
-  const [config, setConfig] = useState({} as ExperimentConfig);
+export function useExperiments(): ExperimentsHubInterface {
+  const [userId, setUserId] = useState<string>('');
+  const [experimentConfigs, setExperimentConfigs] = useState<
+    ExperimentConfig[]
+  >([]);
 
   useEffect(() => {
-    if (userId && experimentConfigs) {
-      const experiment = experimentConfigs.filter((e) => e.id === id);
-      if (experiment.length === 1) {
-        setConfig(experiment[0]);
-      }
-    }
+    if (!userId) (async () => setUserId(await getClientId()))();
+    if (!experimentConfigs.length)
+      (async () => setExperimentConfigs(await getExperimentConfigs()))();
   }, [userId, experimentConfigs]);
 
+  return { configs: experimentConfigs, userId };
+}
+
+export interface ExperimentInterface {
+  config: ExperimentConfig;
+  userId: string;
+  treated: boolean;
+}
+
+export function useExperiment(id: string): ExperimentInterface {
+  const exp = useContext(ExperimentsContext);
+  const [config, setConfig] = useState<ExperimentConfig>(
+    {} as ExperimentConfig
+  );
+  useEffect(() => {
+    const filtered = exp.configs.filter((e) => e.id == id);
+    if (filtered.length) setConfig(filtered[0]);
+  }, [exp.configs]);
   const treated = useMemo(() => {
-    if (userId && config) {
+    if (exp.userId && config) {
       if (new Date(config.start_time).valueOf() > Date.now()) return false;
       const rolloutSeed =
-        (parseInt(userId.slice(CLIENT_ID_LENGTH - 2)) + config.random_offset) %
+        (parseInt(exp.userId.slice(CLIENT_ID_LENGTH - 2)) +
+          config.random_offset) %
         100;
       const treatmentSeed =
-        (parseInt(userId.slice(CLIENT_ID_LENGTH - 4, CLIENT_ID_LENGTH - 2)) +
+        (parseInt(
+          exp.userId.slice(CLIENT_ID_LENGTH - 4, CLIENT_ID_LENGTH - 2)
+        ) +
           config.random_offset) %
         100;
       return (
@@ -84,7 +95,7 @@ export function useExperiment(
       );
     }
     return false;
-  }, [config, userId]);
+  }, [config, exp.userId]);
 
-  return { config, userId, treated };
+  return { config, userId: exp.userId, treated };
 }

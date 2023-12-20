@@ -118,22 +118,11 @@ export async function getAllTodos(): Promise<FinalAssignment[]> {
 async function processAssignments(
   startDate: Date,
   endDate: Date,
-  options: Options,
-  colors?: Record<string, string>,
-  names?: Record<string, string>,
-  positions?: Record<string, number>
+  options: Options
 ): Promise<FinalAssignment[]> {
   if (!options.show_needs_grading) return [];
   const assignments: FinalAssignment[] = await getAllTodos();
-  return processAssignmentList(
-    assignments,
-    startDate,
-    endDate,
-    options,
-    colors,
-    names,
-    positions
-  );
+  return processAssignmentList(assignments, startDate, endDate, options);
 }
 
 // only respects end date: assignments due after will not be included, but all assignments due before that need grading are included.

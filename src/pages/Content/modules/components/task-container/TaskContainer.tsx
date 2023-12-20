@@ -9,10 +9,15 @@ import markAssignment from './utils/markAssignment';
 import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
-import { CourseStoreContext, DarkContext } from '../../contexts/contexts';
+import {
+  CourseStoreContext,
+  DarkContext,
+  ExperimentsContext,
+} from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
 import { useNewCourseStore } from '../../hooks/useCourseStore';
 import { coursesToChoices } from '../course-dropdown/CourseDropdown';
+import { useExperiments } from '../../hooks/useExperiment';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -133,40 +138,44 @@ export default function TaskContainer({
     }
   }, [assignments, announcements, courseId]);
 
+  const exp = useExperiments();
+
   return (
     <DarkContext.Provider value={options.dark_mode}>
       <CourseStoreContext.Provider value={courseStore}>
-        <CourseDropdown
-          choices={coursesToChoices(courses, courseStore)}
-          onCoursePage={!!courseId}
-          selectedId={chosenCourseId}
-          setChoice={setSelectedCourseId}
-        />
-        <TaskChart
-          assignments={updatedAssignments}
-          colorOverride={
-            courseId ? courseStore.state[courses[0]].color : undefined
-          }
-          courses={courses}
-          loading={loading}
-          onCoursePage={!!courseId}
-          selectedCourseId={chosenCourseId}
-          setCourse={setSelectedCourseId}
-          showConfetti={options.show_confetti}
-          themeColor={themeColor}
-          weekKey={weekKey}
-        />
-        <TaskList
-          announcements={updatedAnnouncements}
-          assignments={updatedAssignments}
-          createAssignment={createNewAssignment}
-          loading={loading}
-          markAssignment={markAssignmentAs}
-          selectedCourseId={chosenCourseId}
-          showConfetti={options.show_confetti}
-          showDateHeadings={options.due_date_headings}
-          weekKey={weekKey}
-        />
+        <ExperimentsContext.Provider value={exp}>
+          <CourseDropdown
+            choices={coursesToChoices(courses, courseStore)}
+            onCoursePage={!!courseId}
+            selectedId={chosenCourseId}
+            setChoice={setSelectedCourseId}
+          />
+          <TaskChart
+            assignments={updatedAssignments}
+            colorOverride={
+              courseId ? courseStore.state[courses[0]].color : undefined
+            }
+            courses={courses}
+            loading={loading}
+            onCoursePage={!!courseId}
+            selectedCourseId={chosenCourseId}
+            setCourse={setSelectedCourseId}
+            showConfetti={options.show_confetti}
+            themeColor={themeColor}
+            weekKey={weekKey}
+          />
+          <TaskList
+            announcements={updatedAnnouncements}
+            assignments={updatedAssignments}
+            createAssignment={createNewAssignment}
+            loading={loading}
+            markAssignment={markAssignmentAs}
+            selectedCourseId={chosenCourseId}
+            showConfetti={options.show_confetti}
+            showDateHeadings={options.due_date_headings}
+            weekKey={weekKey}
+          />
+        </ExperimentsContext.Provider>
       </CourseStoreContext.Provider>
     </DarkContext.Provider>
   );

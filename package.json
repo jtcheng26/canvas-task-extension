@@ -35,7 +35,6 @@
     "react-dom": "^17.0.1",
     "react-dom-confetti": "^0.2.0",
     "react-move": "^6.5.0",
-    "react-query": "^3.19.2",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {

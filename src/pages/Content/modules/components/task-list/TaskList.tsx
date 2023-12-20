@@ -345,7 +345,7 @@ export default function TaskList({
 
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;
 
-  const { data: options } = useOptions();
+  const { state: options } = useOptions();
 
   const iconColor = useMemo(() => {
     if (selectedCourseId && selectedCourseId in courseStore.state)
