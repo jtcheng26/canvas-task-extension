@@ -45,7 +45,7 @@ export default function TaskContainer({
   endDate,
 }: TaskContainerProps): JSX.Element {
   const courseStore = useNewCourseStore(courseData);
-  const courseList = Object.values(courseStore.state);
+  const courseList = Object.keys(courseStore.state);
   const [selectedCourseId, setSelectedCourseId] = useState<string>(
     courseList && courseId ? courseId : ''
   );
@@ -63,18 +63,18 @@ export default function TaskContainer({
   const courses: string[] = useMemo(() => {
     if (courseList && courseId !== false)
       return courseId ? [courseId as string] : [];
+    // get only the courses with assignments
     const extracted = extractCourses(
       updatedAssignments.concat(updatedAnnouncements)
     );
+    // if showing all dashboard courses, add the courses with no assignments
     if (options.dash_courses && courseList) {
       const inExtracted = new Set();
       extracted.forEach((id) => inExtracted.add(id));
       const dash = dashCourses();
       return dash
         ? extracted.concat(
-            courseList
-              .filter((c) => dash.has(c.id) && !inExtracted.has(c.id))
-              .map((c) => c.id)
+            courseList.filter((c) => dash.has(c) && !inExtracted.has(c))
           )
         : extracted;
     }
