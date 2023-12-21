@@ -14,7 +14,6 @@ import RecurCheckbox from './components/RecurCheckbox';
 import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
 import dashCourses from '../../utils/dashCourses';
-import { coursesToChoices } from '../course-dropdown/CourseDropdown';
 import useCourseStore from '../../hooks/useCourseStore';
 
 type FormContainerProps = {
@@ -210,7 +209,7 @@ export default function TaskForm({
         <FormItem>
           <FormTitle>{courseLabel}</FormTitle>
           <CourseDropdown
-            choices={coursesToChoices(coursesWithoutCustom, courseStore)}
+            choices={courseStore.getCourseList(coursesWithoutCustom)}
             defaultColor={themeColor}
             defaultOption="None"
             instructureStyle

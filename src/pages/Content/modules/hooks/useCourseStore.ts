@@ -49,6 +49,7 @@ export interface CourseStoreInterface {
   state: Record<string, Course>;
   addCourse: (course: Course) => void;
   updateCourseColor: (id: string, color: string) => void;
+  getCourseList: (courses?: string[]) => Course[]; // return list of Course objects from subset of course ids (or return all if none specified)
 }
 
 export function useNewCourseStore(
@@ -63,6 +64,10 @@ export function useNewCourseStore(
   function updateCourseColor(id: string, color: string) {
     if (id in state) update([id, 'color'], color);
   }
+  function getCourseList(courses?: string[]): Course[] {
+    if (!courses) return Object.values(state);
+    return courses.map((c) => state[c]);
+  }
 
   useEffect(() => {
     // attach listeners here
@@ -74,6 +79,7 @@ export function useNewCourseStore(
     state,
     addCourse,
     updateCourseColor,
+    getCourseList,
   };
 }
 

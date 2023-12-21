@@ -6,7 +6,6 @@ import ArrowButton from '../arrow-button/ArrowButton';
 import CourseButton from '../course-button';
 import TextInput from '../task-form/components/TextInput';
 import { DarkProps } from '../../types/props';
-import { CourseStoreInterface } from '../../hooks/useCourseStore';
 
 interface CourseTitleProps {
   color?: string;
@@ -73,17 +72,6 @@ export interface CourseDropdownProps {
   defaultOption?: string;
   noDefault?: boolean;
   instructureStyle?: boolean;
-}
-
-export function coursesToChoices(
-  courses: string[],
-  store: CourseStoreInterface
-): DropdownChoice[] {
-  return courses.map((id) => ({
-    id: id,
-    name: store.state[id].name,
-    color: store.state[id].color,
-  }));
 }
 
 /*

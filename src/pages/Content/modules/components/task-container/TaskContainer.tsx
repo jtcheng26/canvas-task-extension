@@ -16,7 +16,6 @@ import {
 } from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
 import { useNewCourseStore } from '../../hooks/useCourseStore';
-import { coursesToChoices } from '../course-dropdown/CourseDropdown';
 import { useExperiments } from '../../hooks/useExperiment';
 
 export interface TaskContainerProps {
@@ -145,7 +144,7 @@ export default function TaskContainer({
       <CourseStoreContext.Provider value={courseStore}>
         <ExperimentsContext.Provider value={exp}>
           <CourseDropdown
-            choices={coursesToChoices(courses, courseStore)}
+            choices={courseStore.getCourseList(courses)}
             onCoursePage={!!courseId}
             selectedId={chosenCourseId}
             setChoice={setSelectedCourseId}
