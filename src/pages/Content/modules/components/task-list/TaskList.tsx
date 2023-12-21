@@ -86,6 +86,8 @@ export default function TaskList({
   weekKey,
 }: TaskListProps): JSX.Element {
   const courseStore = useCourseStore();
+  const darkMode = useContext(DarkContext);
+  const { state: options } = useOptions();
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
@@ -341,11 +343,7 @@ export default function TaskList({
     return typeof a === 'string' ? a + '-' + weekKey : a.id;
   }
 
-  const darkMode = useContext(DarkContext);
-
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;
-
-  const { state: options } = useOptions();
 
   const iconColor = useMemo(() => {
     if (selectedCourseId && selectedCourseId in courseStore.state)

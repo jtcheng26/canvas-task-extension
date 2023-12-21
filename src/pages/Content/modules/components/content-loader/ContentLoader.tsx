@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import TaskContainer from '../task-container';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
 import useAssignments from '../../hooks/useAssignments';
@@ -33,7 +33,7 @@ function ContentLoader({
     isSuccess, // "isLoading"
   } = useAssignments(startDate, endDate, options);
   const { data: courseData } = useCourses();
-  const [animationStart, setAnimationStart] = useState(0); // for counting load time
+  const animationStart = useRef(0); // for counting load time
   const MIN_LOAD_TIME = 350; // delay between load and render so animations have time to play
 
   function filterAnnouncements(
@@ -49,9 +49,9 @@ function ContentLoader({
 
   useEffect(() => {
     if (!isSuccess) {
-      setAnimationStart(Date.now());
+      animationStart.current = Date.now();
     } else {
-      const loadTime = Date.now() - animationStart;
+      const loadTime = Date.now() - animationStart.current;
       console.log('Tasks for Canvas: ' + loadTime / 1000 + 's load');
       // optional delay if loaded too fast
       if (loadTime < MIN_LOAD_TIME) {
