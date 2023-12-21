@@ -13,6 +13,7 @@ import { AssignmentDefaults } from '../constants';
 import isDemo from '../utils/isDemo';
 import JSONBigInt from 'json-bigint';
 import { useEffect, useState } from 'react';
+import loadNeedsGrading from './useNeedsGrading';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -189,16 +190,14 @@ export function processAssignmentList(
 ): FinalAssignment[] {
   assignments = filterAssignmentTypes(assignments);
   assignments = filterTimeBounds(startDate, endDate, assignments);
-  // if (colors) assignments = applyCourseColor(colors, assignments);
-  // if (names) assignments = applyCourseName(names, assignments);
-  // if (positions) assignments = applyCoursePositions(positions, assignments);
-  // assignments = applyCustomTaskLabels(assignments);
 
   const coursePageId = onCoursePage();
 
   if (coursePageId !== false) {
+    // if on course page, only that course's assignments are shown
     assignments = filterCourses([coursePageId], assignments);
   } else {
+    // if dash_courses set, only show assignments from courses on dashboard
     const dash = dashCourses();
     if (options.dash_courses && dash)
       assignments = filterCourses(Array.from(dash).concat(['0']), assignments);
@@ -234,11 +233,11 @@ export default function useAssignments(
     setIsSuccess(false);
     setIsError(false);
     Promise.all([
-      // loadNeedsGrading(endDate, options),
+      loadNeedsGrading(endDate, options),
       processAssignments(startDate, endDate, options),
     ])
-      .then((res) => {
-        setData(res[0]);
+      .then((res: FinalAssignment[][]) => {
+        setData(Array.prototype.concat(...res)); // merge all lists of assignments together
         setIsSuccess(true);
         setIsError(false);
       })
