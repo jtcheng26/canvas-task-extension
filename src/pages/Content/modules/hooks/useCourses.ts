@@ -40,8 +40,10 @@ async function getCourseColors(
 }
 
 /* Apply user-chosen course positions. */
-async function applyCoursePositions(courses: Course[]): Promise<Course[]> {
-  const positions = await getCoursePositions();
+function applyCoursePositions(
+  courses: Course[],
+  positions: Record<string, number>
+): Course[] {
   courses.forEach((course: Course) => {
     course.position = course.id in positions ? positions[course.id] : 0;
   });
@@ -49,11 +51,11 @@ async function applyCoursePositions(courses: Course[]): Promise<Course[]> {
 }
 
 /* Apply the `color` property to each course. */
-async function applyColor(
+function applyColor(
   courses: Course[],
+  colors: Record<string, string>,
   defaultColor?: string
-): Promise<Course[]> {
-  const colors = await getCourseColors(defaultColor);
+): Course[] {
   courses.forEach((course) => {
     course.color =
       course.id in colors ? colors[course.id] : defaultColor || THEME_COLOR;
@@ -62,7 +64,7 @@ async function applyColor(
 }
 
 /* Fetch user-chosen course names. */
-async function applyCourseNames(courses: Course[]): Promise<Course[]> {
+function applyCourseNames(courses: Course[]): Course[] {
   courses.forEach((course: Course) => {
     course.name = course.original_name
       ? (course.name as string)
@@ -75,7 +77,11 @@ async function applyCourseNames(courses: Course[]): Promise<Course[]> {
 export async function getCourses(): Promise<Course[]> {
   if (isDemo()) return DemoCourses;
 
-  const { data } = await axios.get(`${baseURL()}/api/v1/courses?per_page=200`);
+  const [res, colors, positions] = await Promise.all([
+    axios.get(`${baseURL()}/api/v1/courses?per_page=200`),
+    getCourseColors(),
+    getCoursePositions(),
+  ]);
 
   const CustomCourse: Course = {
     id: '0',
@@ -85,18 +91,16 @@ export async function getCourses(): Promise<Course[]> {
     course_code: 'Custom Task',
   };
 
-  const courses = data
+  const courses = res.data
     .filter((course: Course) => !course.access_restricted_by_date)
     .map((course: Course) => {
       course.id = course.id.toString();
       return course;
     });
 
-  await Promise.all([
-    applyColor(courses),
-    applyCourseNames(courses),
-    applyCoursePositions(courses),
-  ]);
+  applyColor(courses, colors);
+  applyCourseNames(courses);
+  applyCoursePositions(courses, positions);
 
   return [CustomCourse].concat(courses);
 }
@@ -109,27 +113,20 @@ interface UseCoursesHookInterface {
 
 /* Use cached course data */
 export default function useCourses(): UseCoursesHookInterface {
-  const [data, setData] = useState<Course[] | null>(null);
-  const [isError, setIsError] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [state, setState] = useState<UseCoursesHookInterface>({
+    data: null,
+    isError: false,
+    isSuccess: false,
+  });
   useEffect(() => {
-    setIsSuccess(false);
-    setIsError(false);
     getCourses()
       .then((res) => {
-        setData(res);
-        setIsSuccess(true);
-        setIsError(false);
+        setState({ data: res, isSuccess: true, isError: false });
       })
       .catch((err) => {
         console.error(err);
-        setIsError(true);
-        setIsSuccess(false);
+        setState({ data: null, isSuccess: false, isError: true });
       });
   }, []);
-  return {
-    data,
-    isError,
-    isSuccess,
-  };
+  return state;
 }

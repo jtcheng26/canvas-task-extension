@@ -18,7 +18,10 @@ interface AppProps {
 
 export default function App({ options }: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
-  const [clickable, setClickable] = useState(false);
+  const [clickableState, setClickableState] = useState({
+    clickable: false,
+    firstLoad: true,
+  });
   const optionsStore = useOptionsStore(options);
   const { start, end } = useMemo(() => {
     return getPeriod(
@@ -41,14 +44,14 @@ export default function App({ options }: AppProps): JSX.Element {
     only allow prev/next buttons to be clicked once content is loaded
   */
   function loadedCallback() {
-    setClickable(true);
+    setClickableState({ clickable: true, firstLoad: false });
   }
   function onPrevClick() {
-    setClickable(false);
+    setClickableState({ clickable: false, firstLoad: false });
     incrementDelta(-1);
   }
   function onNextClick() {
-    setClickable(false);
+    setClickableState({ clickable: false, firstLoad: false });
     incrementDelta(1);
   }
   // options will always be available to children
@@ -56,7 +59,7 @@ export default function App({ options }: AppProps): JSX.Element {
     <AppContainer id="tfc-wall-sina">
       <OptionsContext.Provider value={optionsStore}>
         <Header
-          clickable={clickable}
+          clickable={clickableState.clickable}
           dark={options.dark_mode}
           onNextClick={onNextClick}
           onPrevClick={onPrevClick}
@@ -64,7 +67,9 @@ export default function App({ options }: AppProps): JSX.Element {
           weekStart={start}
         />
         <ContentLoader
+          clickable={clickableState.clickable}
           endDate={end}
+          firstLoad={clickableState.firstLoad}
           loadedCallback={loadedCallback}
           options={options}
           startDate={start}

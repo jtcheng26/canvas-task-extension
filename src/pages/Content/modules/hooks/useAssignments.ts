@@ -226,26 +226,37 @@ export default function useAssignments(
   endDate: Date,
   options: Options
 ): UseAssignmentsHookInterface {
-  const [data, setData] = useState<FinalAssignment[] | null>(null);
-  const [isError, setIsError] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [state, setState] = useState<UseAssignmentsHookInterface>({
+    data: null,
+    isError: false,
+    isSuccess: false,
+  });
   useEffect(() => {
-    setIsSuccess(false);
-    setIsError(false);
+    setState({
+      data: state.data,
+      isError: false,
+      isSuccess: false,
+    });
     Promise.all([
       loadNeedsGrading(endDate, options),
       processAssignments(startDate, endDate, options),
     ])
       .then((res: FinalAssignment[][]) => {
-        setData(Array.prototype.concat(...res)); // merge all lists of assignments together
-        setIsSuccess(true);
-        setIsError(false);
+        // merge all lists of assignments together
+        setState({
+          data: Array.prototype.concat(...res),
+          isSuccess: true,
+          isError: false,
+        });
       })
       .catch((err) => {
         console.error(err);
-        setIsError(true);
-        setIsSuccess(false);
+        setState({
+          data: state.data,
+          isError: true,
+          isSuccess: false,
+        });
       });
   }, [startDate, endDate]);
-  return { data, isError, isSuccess };
+  return state;
 }

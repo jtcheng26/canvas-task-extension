@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import RadialBarChart, { ChartData } from '../radial-bar-chart';
+import RadialBarChart from '../radial-bar-chart';
 import BeatLoader from '../spinners';
 import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
@@ -86,20 +86,6 @@ export default function TaskChart({
     )
   );
 
-  const [currKey, setCurrKey] = useState(weekKey);
-  function compareData(a: ChartData, b: ChartData) {
-    if (a.bars.length !== b.bars.length) return false;
-    return a.bars.reduce(
-      (prev, curr, i) =>
-        prev &&
-        b.bars[i].color == curr.color &&
-        b.bars[i].id === curr.id &&
-        b.bars[i].max === curr.max &&
-        b.bars[i].value === curr.value,
-      true
-    );
-  }
-
   useEffect(() => {
     // if assignments is same but weekkey different just change currkey
     // else update assignments
@@ -109,13 +95,10 @@ export default function TaskChart({
       courses,
       courseStore,
       colorOverride || themeColor,
-      currKey
+      weekKey
     );
-    const isSame = compareData(newData, chartData);
-    if (weekKey !== currKey) setCurrKey(weekKey);
-    else if ((!loading && chartData.key !== newData.key) || !isSame)
-      setChartData(newData);
-  }, [assignments, courses, courseStore, loading, currKey, weekKey]);
+    if (!loading && chartData.key !== newData.key) setChartData(newData);
+  }, [assignments, courses, courseStore, loading, weekKey]);
 
   const [done, total, color] = useMemo(
     () => useSelectChartData(selectedCourseId, chartData),
@@ -179,7 +162,6 @@ export default function TaskChart({
         ''
       )}
       <RadialBarChart
-        // bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
         onSelect={handleClick}
         selectedBar={colorOverride ? '' : selectedCourseId}
