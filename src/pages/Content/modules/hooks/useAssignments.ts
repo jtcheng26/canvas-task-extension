@@ -12,7 +12,6 @@ import { DemoAssignments } from '../tests/demo';
 import { AssignmentDefaults } from '../constants';
 import isDemo from '../utils/isDemo';
 import JSONBigInt from 'json-bigint';
-import loadNeedsGrading from './useNeedsGrading';
 import { useEffect, useState } from 'react';
 
 const parseLinkHeader = (link: string) => {
