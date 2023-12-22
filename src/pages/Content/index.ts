@@ -34,7 +34,7 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
     (document.getElementById('right-side') as HTMLElement).className +=
       ' hidden-sidebar';
   }
-  runApp(newContainer);
+  runApp(newContainer, data);
 }
 
 async function runAppInChrome(container: HTMLElement) {

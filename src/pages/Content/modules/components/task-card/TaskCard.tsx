@@ -5,7 +5,7 @@ import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
 import fmtDate from './utils/fmtDate';
 import { DarkProps } from '../../types/props';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 
 export interface AnimatedProps {
   static?: boolean;

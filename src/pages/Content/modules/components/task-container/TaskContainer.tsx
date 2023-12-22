@@ -9,15 +9,21 @@ import markAssignment from './utils/markAssignment';
 import deleteAssignment from './utils/deleteAssignment';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
-import { DarkContext } from '../../contexts/darkContext';
+import {
+  CourseStoreContext,
+  DarkContext,
+  ExperimentsContext,
+} from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
+import { useNewCourseStore } from '../../hooks/useCourseStore';
+import { useExperiments } from '../../hooks/useExperiment';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
   announcements: FinalAssignment[];
   loading?: boolean;
   courseId?: string | false;
-  courseList?: Course[]; // all courses, for corner case when on course page w/ no assignments
+  courseData: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
   startDate?: Date;
   endDate?: Date;
@@ -31,12 +37,14 @@ export default function TaskContainer({
   announcements,
   assignments,
   courseId,
-  courseList,
+  courseData,
   loading,
   options,
   startDate,
   endDate,
 }: TaskContainerProps): JSX.Element {
+  const courseStore = useNewCourseStore(courseData);
+  const courseList = Object.keys(courseStore.state);
   const [selectedCourseId, setSelectedCourseId] = useState<string>(
     courseList && courseId ? courseId : ''
   );
@@ -51,19 +59,21 @@ export default function TaskContainer({
   const [updatedAnnouncements, setUpdatedAnnouncements] =
     useState<FinalAssignment[]>(announcements);
 
-  const courses = useMemo(() => {
+  const courses: string[] = useMemo(() => {
     if (courseList && courseId !== false)
-      return courseList.filter((c) => c.id === courseId);
+      return courseId ? [courseId as string] : [];
+    // get only the courses with assignments
     const extracted = extractCourses(
       updatedAssignments.concat(updatedAnnouncements)
     );
+    // if showing all dashboard courses, add the courses with no assignments
     if (options.dash_courses && courseList) {
       const inExtracted = new Set();
-      extracted.forEach((x) => inExtracted.add(x.id));
+      extracted.forEach((id) => inExtracted.add(id));
       const dash = dashCourses();
       return dash
         ? extracted.concat(
-            courseList.filter((c) => dash.has(c.id) && !inExtracted.has(c.id))
+            courseList.filter((c) => dash.has(c) && !inExtracted.has(c))
           )
         : extracted;
     }
@@ -127,37 +137,45 @@ export default function TaskContainer({
     }
   }, [assignments, announcements, courseId]);
 
+  const exp = useExperiments();
+
   return (
     <DarkContext.Provider value={options.dark_mode}>
-      <CourseDropdown
-        courses={courses}
-        onCoursePage={!!courseId}
-        selectedCourseId={chosenCourseId}
-        setCourse={setSelectedCourseId}
-      />
-      <TaskChart
-        assignments={updatedAssignments}
-        colorOverride={courseId ? courses[0].color : undefined}
-        courses={courses}
-        loading={loading}
-        onCoursePage={!!courseId}
-        selectedCourseId={chosenCourseId}
-        setCourse={setSelectedCourseId}
-        showConfetti={options.show_confetti}
-        themeColor={themeColor}
-        weekKey={weekKey}
-      />
-      <TaskList
-        announcements={updatedAnnouncements}
-        assignments={updatedAssignments}
-        createAssignment={createNewAssignment}
-        loading={loading}
-        markAssignment={markAssignmentAs}
-        selectedCourseId={chosenCourseId}
-        showConfetti={options.show_confetti}
-        showDateHeadings={options.due_date_headings}
-        weekKey={weekKey}
-      />
+      <CourseStoreContext.Provider value={courseStore}>
+        <ExperimentsContext.Provider value={exp}>
+          <CourseDropdown
+            choices={courseStore.getCourseList(courses)}
+            onCoursePage={!!courseId}
+            selectedId={chosenCourseId}
+            setChoice={setSelectedCourseId}
+          />
+          <TaskChart
+            assignments={updatedAssignments}
+            colorOverride={
+              courseId ? courseStore.state[courses[0]].color : undefined
+            }
+            courses={courses}
+            loading={loading}
+            onCoursePage={!!courseId}
+            selectedCourseId={chosenCourseId}
+            setCourse={setSelectedCourseId}
+            showConfetti={options.show_confetti}
+            themeColor={themeColor}
+            weekKey={weekKey}
+          />
+          <TaskList
+            announcements={updatedAnnouncements}
+            assignments={updatedAssignments}
+            createAssignment={createNewAssignment}
+            loading={loading}
+            markAssignment={markAssignmentAs}
+            selectedCourseId={chosenCourseId}
+            showConfetti={options.show_confetti}
+            showDateHeadings={options.due_date_headings}
+            weekKey={weekKey}
+          />
+        </ExperimentsContext.Provider>
+      </CourseStoreContext.Provider>
     </DarkContext.Provider>
   );
 }

@@ -1,22 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import TaskContainer from '../task-container';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
-import CompareMonthDate from './utils/compareMonthDate';
 import useAssignments from '../../hooks/useAssignments';
 import Skeleton from '../skeleton';
 import onCoursePage from '../../utils/onCoursePage';
 import useCourses from '../../hooks/useCourses';
 
 interface ContentLoaderProps {
+  clickable: boolean;
+  firstLoad: boolean;
   options: Options;
   startDate: Date;
   endDate: Date;
   loadedCallback: () => void;
-}
-
-interface AssignmentData {
-  assignments: FinalAssignment[];
-  announcements: FinalAssignment[];
 }
 
 /*
@@ -24,24 +20,21 @@ interface AssignmentData {
 */
 
 function ContentLoader({
+  clickable,
+  firstLoad,
   options,
   startDate,
   endDate,
   loadedCallback,
 }: ContentLoaderProps): JSX.Element {
-  const [assignmentData, setAssignmentData] = useState<AssignmentData | null>();
-  const { data, isError, isSuccess } = useAssignments(
-    startDate,
-    endDate,
-    options
-  );
-
+  const {
+    data: plannerData,
+    isError,
+    isSuccess, // "isLoading"
+  } = useAssignments(startDate, endDate, options);
   const { data: courseData } = useCourses();
-
-  const MIN_LOAD_TIME = 350; // keep waiting for animation if data loads too fast
-  const [animationStart, setAnimationStart] = useState(0);
-
-  const [loaded, setLoaded] = useState(false);
+  const animationStart = useRef(0); // for counting load time
+  const MIN_LOAD_TIME = 350; // delay between load and render so animations have time to play
 
   function filterAnnouncements(
     data: FinalAssignment[],
@@ -54,59 +47,55 @@ function ContentLoader({
     );
   }
 
-  const onLoad = useCallback((data: FinalAssignment[]) => {
-    setLoaded(true);
-    setAssignmentData({
-      assignments: filterAnnouncements(data, false),
-      announcements: filterAnnouncements(data, true),
-    });
-    loadedCallback();
-  }, []);
-
   useEffect(() => {
-    if (isSuccess) {
-      const loadTime = Date.now() - animationStart;
+    if (!isSuccess) {
+      animationStart.current = Date.now();
+    } else {
+      const loadTime = Date.now() - animationStart.current;
       console.log('Tasks for Canvas: ' + loadTime / 1000 + 's load');
+      // optional delay if loaded too fast
       if (loadTime < MIN_LOAD_TIME) {
         const to = setTimeout(() => {
-          onLoad(data as FinalAssignment[]);
+          loadedCallback();
         }, Math.max(20, MIN_LOAD_TIME - loadTime));
         return () => {
           clearTimeout(to);
         };
       } else {
-        onLoad(data as FinalAssignment[]);
+        loadedCallback();
       }
-    } else {
-      setAnimationStart(Date.now());
-      setLoaded(false);
     }
   }, [isSuccess]);
 
+  const assignmentData = useMemo(
+    () =>
+      plannerData
+        ? {
+            assignments: filterAnnouncements(plannerData, false),
+            announcements: filterAnnouncements(plannerData, true),
+          }
+        : null,
+    [plannerData]
+  );
+
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
+  const loaded = clickable;
 
+  if (isError) return <h1>{failed}</h1>;
+  if (!assignmentData || !courseData)
+    return <Skeleton dark={options.dark_mode} />;
   return (
-    <>
-      {!isSuccess && !isError && !assignmentData && (
-        <Skeleton dark={options.dark_mode} />
-      )}
-      {assignmentData ? (
-        <TaskContainer
-          announcements={assignmentData.announcements}
-          assignments={assignmentData.assignments}
-          courseId={onCourse}
-          courseList={courseData}
-          endDate={endDate}
-          loading={!loaded}
-          options={options}
-          startDate={startDate}
-        />
-      ) : (
-        ''
-      )}
-      {isError && <h1>{failed}</h1>}
-    </>
+    <TaskContainer
+      announcements={assignmentData.announcements}
+      assignments={assignmentData.assignments}
+      courseData={courseData}
+      courseId={onCourse}
+      endDate={endDate}
+      loading={!firstLoad && !loaded} // on first load, show immediately (no min delay)
+      options={options}
+      startDate={startDate}
+    />
   );
 }
 
@@ -117,10 +106,7 @@ function compareProps(
   prevProps: ContentLoaderProps,
   nextProps: ContentLoaderProps
 ) {
-  return (
-    CompareMonthDate(prevProps.startDate, nextProps.startDate) &&
-    CompareMonthDate(prevProps.endDate, nextProps.endDate)
-  );
+  return prevProps.clickable == nextProps.clickable;
 }
 
 export default React.memo(ContentLoader, compareProps);

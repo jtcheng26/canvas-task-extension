@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
 import { fmtDateSince } from './utils/fmtDate';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import {
   TaskDetailsText,
   TaskInfo,

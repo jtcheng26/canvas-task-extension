@@ -1,10 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AssignmentDefaults, OptionsDefaults } from '../../constants';
-import useCourseColors from '../../hooks/useCourseColors';
-import useCourseNames from '../../hooks/useCourseNames';
-import useCoursePositions from '../../hooks/useCoursePositions';
-import useCourses from '../../hooks/useCourses';
 import useOptions from '../../hooks/useOptions';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
@@ -18,6 +14,7 @@ import RecurCheckbox from './components/RecurCheckbox';
 import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
 import dashCourses from '../../utils/dashCourses';
+import useCourseStore from '../../hooks/useCourseStore';
 
 type FormContainerProps = {
   visible?: boolean;
@@ -77,31 +74,25 @@ export default function TaskForm({
   selectedCourse,
   visible = false,
 }: Props): JSX.Element {
+  const courseStore = useCourseStore();
   const [title, setTitle] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
   const [selectedTime, setSelectedTime] = useState('1439');
   const [recurrences, setRecurrences] = useState(1);
-  const { data: courses } = useCourses();
-  const { data: courseMap } = useCourseNames();
-  const { data: colors } = useCourseColors();
-  const { data: positions } = useCoursePositions();
-  const { data: options } = useOptions();
+  const { state: options } = useOptions();
 
   const themeColor = options?.theme_color || OptionsDefaults.theme_color;
 
   const coursesWithoutCustom = useMemo(() => {
-    if (courses) {
-      if (options?.dash_courses) {
-        const dash = dashCourses();
-        if (dash) return courses.filter((c) => dash.has(c.id));
-      }
-      return courses.filter((c) => c.id !== '' && c.id !== '0');
+    if (options?.dash_courses) {
+      const dash = dashCourses();
+      if (dash)
+        return Object.keys(courseStore.state).filter((c) => dash.has(c));
     }
-
-    return [];
-  }, [courses, options]);
+    return Object.keys(courseStore.state).filter((c) => c !== '' && c !== '0');
+  }, [courseStore.state, options]);
 
   const titleLabel = 'Title';
   const dateLabel = 'Due Date';
@@ -139,16 +130,16 @@ export default function TaskForm({
           ? AssignmentDefaults.course_id
           : selectedCourseId;
       assignment.course_name =
-        courseMap && selectedCourseId in courseMap
-          ? courseMap[selectedCourseId]
+        selectedCourseId in courseStore.state
+          ? courseStore.state[selectedCourseId].name
           : 'Custom Task';
       assignment.color =
-        colors && selectedCourseId in colors
-          ? colors[selectedCourseId]
+        selectedCourseId in courseStore.state
+          ? courseStore.state[selectedCourseId].color
           : themeColor;
       assignment.position =
-        positions && selectedCourseId in positions
-          ? positions[selectedCourseId]
+        selectedCourseId in courseStore.state
+          ? courseStore.state[selectedCourseId].position
           : AssignmentDefaults.position;
       assignment.type = AssignmentType.NOTE;
       assignment.id = '' + Math.floor(1000000 * Math.random());
@@ -218,13 +209,13 @@ export default function TaskForm({
         <FormItem>
           <FormTitle>{courseLabel}</FormTitle>
           <CourseDropdown
-            courses={coursesWithoutCustom}
+            choices={courseStore.getCourseList(coursesWithoutCustom)}
             defaultColor={themeColor}
             defaultOption="None"
             instructureStyle
             onCoursePage={selectedCourse !== '0' && !!selectedCourse}
-            selectedCourseId={selectedCourseId}
-            setCourse={setSelectedCourseId}
+            selectedId={selectedCourseId}
+            setChoice={setSelectedCourseId}
           />
         </FormItem>
         <FormItem>

@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Course } from '../../../types';
 import CourseDropdown from '../../course-dropdown';
+import { DropdownChoice } from '../../course-dropdown/CourseDropdown';
 
 type CheckProps = {
   checked?: boolean;
@@ -70,12 +70,11 @@ export default function RecurCheckbox({
   const repeatWarningText =
     'Note that repeating tasks can only be deleted individually.';
   const RECUR_MAX = 10;
-  const recurOptions: Course[] = [];
+  const recurOptions: DropdownChoice[] = [];
   for (let i = 2; i <= RECUR_MAX; i++) {
     recurOptions.push({
       id: i + '',
       name: i + ' Weeks',
-      position: i,
       color: dark ? 'var(--tfc-dark-mode-text-primary)' : '#2d3b45',
     });
   }
@@ -112,14 +111,14 @@ export default function RecurCheckbox({
           <Row>
             {numberOfWeeksText}
             <CourseDropdown
-              courses={recurOptions}
+              choices={recurOptions}
               defaultColor={color}
               instructureStyle
               maxHeight={150}
               noDefault
               onCoursePage={false}
-              selectedCourseId={recurrences + ''}
-              setCourse={chooseRecurrences}
+              selectedId={recurrences + ''}
+              setChoice={chooseRecurrences}
               zIndex={25}
             />
           </Row>

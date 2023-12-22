@@ -14,12 +14,12 @@ import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';
 import { THEME_COLOR } from '../../constants';
-import useCourseColors from '../../hooks/useCourseColors';
+import useCourseStore from '../../hooks/useCourseStore';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -85,6 +85,9 @@ export default function TaskList({
   skeleton,
   weekKey,
 }: TaskListProps): JSX.Element {
+  const courseStore = useCourseStore();
+  const darkMode = useContext(DarkContext);
+  const { state: options } = useOptions();
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
@@ -226,12 +229,12 @@ export default function TaskList({
   const assignmentToTaskCard = (
     tab: TaskTypeTab,
     { key, data: assignment, state }: TaskCardTransitionProps
-  ) =>
-    tab !== 'Announcements' ? (
+  ) => {
+    return tab !== 'Announcements' ? (
       <TaskCard
-        color={assignment.color}
+        color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
-        course_name={assignment.course_name}
+        course_name={courseStore.state[assignment.course_id].name}
         due_at={assignment.due_at}
         graded={assignment.graded}
         graded_at={assignment.graded_at}
@@ -258,9 +261,9 @@ export default function TaskList({
       />
     ) : (
       <AnnouncementCard
-        color={assignment.color}
+        color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
-        course_name={assignment.course_name}
+        course_name={courseStore.state[assignment.course_id].name}
         due_at={assignment.due_at}
         html_url={assignment.html_url}
         key={key}
@@ -275,6 +278,7 @@ export default function TaskList({
         type={assignment.type}
       />
     );
+  };
 
   interface HeadingTransitionProps {
     key: string;
@@ -339,20 +343,15 @@ export default function TaskList({
     return typeof a === 'string' ? a + '-' + weekKey : a.id;
   }
 
-  const darkMode = useContext(DarkContext);
-
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;
 
-  const { data: options } = useOptions();
-
-  const { data: colors } = useCourseColors();
   const iconColor = useMemo(() => {
-    if (selectedCourseId && colors && selectedCourseId in colors)
-      return colors[selectedCourseId];
+    if (selectedCourseId && selectedCourseId in courseStore.state)
+      return courseStore.state[selectedCourseId].color;
     if (options?.color_tabs) return options?.theme_color || THEME_COLOR;
     if (darkMode) return '#6c757c';
     return 'var(--ic-brand-font-color-dark)';
-  }, [options, selectedCourseId, colors]);
+  }, [options, selectedCourseId, courseStore]);
 
   if (skeleton)
     return (
