@@ -6,7 +6,7 @@ import { ExperimentsContext } from '../contexts/contexts';
 
 function generateClientId(length: number): string {
   let num = '';
-  let seed = Math.random();
+  let seed = window.crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000;
   for (let i = 0; i < length; i++) {
     seed = (seed - Math.floor(seed)) * 10;
     num += Math.floor(seed);
