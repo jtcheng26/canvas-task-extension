@@ -110,10 +110,7 @@ export default function TaskChart({
       colorOverride || themeColor,
       weekKey
     );
-    if (
-      (!loading && chartData.key !== newData.key) ||
-      (chartData.key === newData.key && !compareData(chartData, newData))
-    )
+    if (chartData.key !== newData.key || !compareData(chartData, newData))
       setChartData(newData);
   }, [assignments, courses, courseStore, loading, weekKey]);
 

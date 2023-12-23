@@ -80,21 +80,48 @@ function ContentLoader({
 
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
-  const loaded = clickable;
+  const isLoading = !firstLoad && !clickable;
+
+  // so props are "frozen" while loading and update in sync when done loading
+  const prevData = useRef({
+    courses: courseData,
+    assignments: assignmentData ? assignmentData.assignments : [],
+    announcements: assignmentData ? assignmentData.announcements : [],
+    startDate: startDate,
+    endDate: endDate,
+  });
+
+  useEffect(() => {
+    if (!isLoading) {
+      prevData.current = {
+        courses: courseData,
+        assignments: assignmentData ? assignmentData.assignments : [],
+        announcements: assignmentData ? assignmentData.announcements : [],
+        startDate: startDate,
+        endDate: endDate,
+      };
+    }
+  }, [isLoading, assignmentData, courseData, startDate, endDate]);
 
   if (isError) return <h1>{failed}</h1>;
   if (!assignmentData || !courseData)
     return <Skeleton dark={options.dark_mode} />;
   return (
     <TaskContainer
-      announcements={assignmentData.announcements}
-      assignments={assignmentData.assignments}
+      announcements={
+        isLoading
+          ? prevData.current.announcements
+          : assignmentData.announcements
+      }
+      assignments={
+        isLoading ? prevData.current.assignments : assignmentData.assignments
+      }
       courseData={courseData}
       courseId={onCourse}
-      endDate={endDate}
-      loading={!firstLoad && !loaded} // on first load, show immediately (no min delay)
+      endDate={isLoading ? prevData.current.endDate : endDate}
+      loading={isLoading} // on first load, show immediately (no min delay)
       options={options}
-      startDate={startDate}
+      startDate={isLoading ? prevData.current.startDate : startDate}
     />
   );
 }
