@@ -15,6 +15,22 @@ async function getMissingAssignmentsRequest(
   return await getPaginatedRequest<MissingAssignment>(initialURL, allPages);
 }
 
+function parseAssignmentType(assignment: MissingAssignment) {
+  if (
+    assignment.is_quiz_assignment ||
+    assignment.quiz_id ||
+    assignment.original_quiz_id ||
+    assignment.submission_types.includes('online_quiz')
+  )
+    return AssignmentType.QUIZ;
+  if (
+    'discussion_topic' in assignment ||
+    assignment.submission_types.includes('discussion_topic')
+  )
+    return AssignmentType.DISCUSSION;
+  return AssignmentType.ASSIGNMENT;
+}
+
 /* Merge api objects into Assignment objects. */
 function convertMissingAssignments(
   assignments: MissingAssignment[]
@@ -24,7 +40,7 @@ function convertMissingAssignments(
       html_url: assignment.html_url,
       type: assignment.planner_override
         ? (assignment.planner_override.plannable_type as AssignmentType)
-        : AssignmentType.ASSIGNMENT,
+        : parseAssignmentType(assignment),
       id: assignment.id.toString(),
       plannable_id: (assignment.planner_override
         ? assignment.planner_override.plannable_id

@@ -37,7 +37,6 @@ export function useNewAssignmentStore(
       {}
     );
     setAssignmentList(Object.keys(res));
-    console.log('create', res);
   }
   function updateAssignment(
     assignment: FinalAssignment,
@@ -50,7 +49,6 @@ export function useNewAssignmentStore(
     }
     const res = updateStore([assignment.id], assignment);
     setAssignmentList(Object.keys(res)); // force re-render
-    console.log('update', res);
   }
   function deleteAssignment(assignment: FinalAssignment | string) {
     const res = deleteEntry([
@@ -59,7 +57,6 @@ export function useNewAssignmentStore(
         : assignment.id,
     ]);
     setAssignmentList(Object.keys(res));
-    console.log('delete', res);
   }
   function getAssignmentList(assignments?: string[]): FinalAssignment[] {
     if (!assignments) return Object.values(state);
