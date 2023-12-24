@@ -16,6 +16,7 @@ type Options = {
   theme_color: string;
   dark_mode: boolean;
   show_needs_grading: boolean;
+  show_long_overdue: boolean;
 };
 
 export default Options;

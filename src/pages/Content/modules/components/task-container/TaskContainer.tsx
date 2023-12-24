@@ -76,27 +76,6 @@ function TaskContainer({
     [updatedAssignments]
   );
 
-  const courses: string[] = useMemo(() => {
-    if (courseList && courseId !== false)
-      return courseId ? [courseId as string] : [];
-    // get only the courses with assignments
-    const extracted = extractCourses(
-      updatedAssignments.concat(updatedAnnouncements)
-    );
-    // if showing all dashboard courses, add the courses with no assignments
-    if (options.dash_courses && courseList) {
-      const inExtracted = new Set();
-      extracted.forEach((id) => inExtracted.add(id));
-      const dash = dashCourses();
-      return dash
-        ? extracted.concat(
-            courseList.filter((c) => dash.has(c) && !inExtracted.has(c))
-          )
-        : extracted;
-    }
-    return extracted;
-  }, [updatedAssignments, updatedAnnouncements, courseId, courseList]);
-
   function markAssignmentAs(id: string, status: AssignmentStatus) {
     if (assignmentStore.state[id].type === AssignmentType.ANNOUNCEMENT)
       announcementStore.updateAssignment(assignmentStore.state[id], status);
@@ -118,6 +97,39 @@ function TaskContainer({
     }
   }
 
+  // only assignments in bounds (not rolled over from past weeks) unless needs grading (instructor)
+  const chartAssignments = useMemo(() => {
+    if (!startDate || !endDate) return updatedAssignments;
+    return updatedAssignments.filter((assignment) => {
+      if (assignment.needs_grading_count) return true;
+      const due_date = new Date(assignment.due_at);
+      return (
+        due_date.valueOf() >= startDate.valueOf() &&
+        due_date.valueOf() < endDate.valueOf()
+      );
+    });
+  }, [updatedAssignments]);
+
+  // only courses in chart can be filtered by and shown in dropdown
+  const chartCourses: string[] = useMemo(() => {
+    if (courseList && courseId !== false)
+      return courseId ? [courseId as string] : [];
+    // get only the courses with assignments
+    const extracted = extractCourses(chartAssignments);
+    // if showing all dashboard courses, add the courses with no assignments
+    if (options.dash_courses && courseList) {
+      const inExtracted = new Set();
+      extracted.forEach((id) => inExtracted.add(id));
+      const dash = dashCourses();
+      return dash
+        ? extracted.concat(
+            courseList.filter((c) => dash.has(c) && !inExtracted.has(c))
+          )
+        : extracted;
+    }
+    return extracted;
+  }, [chartAssignments, courseId, courseList]);
+
   // Don't let user switch courses when on a course page
   const chosenCourseId = courseId ? courseId : selectedCourseId;
 
@@ -128,17 +140,17 @@ function TaskContainer({
       <CourseStoreContext.Provider value={courseStore}>
         <ExperimentsContext.Provider value={exp}>
           <CourseDropdown
-            choices={courseStore.getCourseList(courses)}
+            choices={courseStore.getCourseList(chartCourses)}
             onCoursePage={!!courseId}
             selectedId={chosenCourseId}
             setChoice={setSelectedCourseId}
           />
           <TaskChart
-            assignments={updatedAssignments}
+            assignments={chartAssignments}
             colorOverride={
-              courseId ? courseStore.state[courses[0]].color : undefined
+              courseId ? courseStore.state[chartCourses[0]].color : undefined
             }
-            courses={courses}
+            courses={chartCourses}
             loading={loading}
             onCoursePage={!!courseId}
             selectedCourseId={chosenCourseId}
