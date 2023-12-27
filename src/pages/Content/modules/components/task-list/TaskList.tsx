@@ -353,6 +353,11 @@ export default function TaskList({
     return 'var(--ic-brand-font-color-dark)';
   }, [options, selectedCourseId, courseStore]);
 
+  const hideUnfinishedList: boolean =
+    unfinishedList.length === 0 && !!allGradingList.length;
+
+  console.log(unfinishedList, allGradingList);
+
   if (skeleton)
     return (
       <ListWrapper>
@@ -368,11 +373,16 @@ export default function TaskList({
     <ListWrapper>
       <IconSubTabs
         activeColor={iconColor}
+        assignmentsEmpty={unfinishedList.length === 0}
         dark={darkMode}
         gradebook={!!allGradingList.length}
         notifs={numNotifs}
         setTaskListState={setCurrentTab}
-        taskListState={currentTab}
+        taskListState={
+          hideUnfinishedList && currentTab === 'Unfinished'
+            ? 'NeedsGrading'
+            : currentTab
+        }
       />
       {showConfetti && (
         <ConfettiWrapper>
@@ -400,7 +410,7 @@ export default function TaskList({
           {announcementList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      <HideDiv visible={currentTab === 'Unfinished'}>
+      <HideDiv visible={currentTab === 'Unfinished' && !hideUnfinishedList}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : unfinishedList}
@@ -419,7 +429,12 @@ export default function TaskList({
           )}
         </ListContainer>
       </HideDiv>
-      <HideDiv visible={currentTab === 'NeedsGrading'}>
+      <HideDiv
+        visible={
+          currentTab === 'NeedsGrading' ||
+          (currentTab === 'Unfinished' && hideUnfinishedList)
+        }
+      >
         <ListContainer>
           <NodeGroup
             data={loading ? [] : gradingList}

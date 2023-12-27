@@ -33,7 +33,10 @@ export interface OptionsInterface {
   update: (key: string, value: unknown) => Options;
 }
 
-export function useOptionsStore(arg?: Options): OptionsInterface {
+export function useOptionsStore(
+  arg?: Options,
+  onUpdateCallback?: () => void
+): OptionsInterface {
   const { state, update } = useConfigStore<Options>(
     arg || OptionsDefaults,
     true
@@ -42,7 +45,15 @@ export function useOptionsStore(arg?: Options): OptionsInterface {
     return update([key], value, true);
   }
   useEffect(() => {
-    // TODO: add observers here
+    // add observers here
+    chrome.storage.onChanged.addListener((changes) => {
+      for (const [key, { newValue }] of Object.entries(changes)) {
+        if (storedUserOptions.includes(key)) {
+          update([key], newValue, false);
+          if (onUpdateCallback) onUpdateCallback();
+        }
+      }
+    });
   }, []);
 
   return { state, update: updateKey };

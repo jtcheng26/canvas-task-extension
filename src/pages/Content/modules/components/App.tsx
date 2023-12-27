@@ -22,17 +22,19 @@ export default function App({ options }: AppProps): JSX.Element {
     clickable: false,
     firstLoad: true,
   });
-  const optionsStore = useOptionsStore(options);
+  const optionsStore = useOptionsStore(options, () =>
+    setClickableState({ clickable: false, firstLoad: false })
+  );
   const { start, end } = useMemo(() => {
     return getPeriod(
-      options.period,
-      options.start_date,
-      options.start_hour,
-      options.start_minutes,
+      optionsStore.state.period,
+      optionsStore.state.start_date,
+      optionsStore.state.start_hour,
+      optionsStore.state.start_minutes,
       delta,
-      options.rolling_period
+      optionsStore.state.rolling_period
     );
-  }, [options, delta]);
+  }, [optionsStore.state, delta]);
 
   /*
     when prev/next buttons clicked
@@ -71,7 +73,7 @@ export default function App({ options }: AppProps): JSX.Element {
           endDate={end}
           firstLoad={clickableState.firstLoad}
           loadedCallback={loadedCallback}
-          options={options}
+          options={optionsStore.state}
           startDate={start}
         />
       </OptionsContext.Provider>

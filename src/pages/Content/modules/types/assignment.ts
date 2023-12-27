@@ -45,7 +45,7 @@ export interface TodoAssignment {
   name: string;
   course_id: string;
   points_possible?: number;
-  is_quiz_assignment?: number;
+  is_quiz_assignment?: boolean;
 }
 
 interface TodoResponse {
