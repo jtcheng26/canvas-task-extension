@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { OptionsDefaults } from '../constants';
 import { Options } from '../types';
 import isDarkMode from '../utils/isDarkMode';
@@ -30,12 +30,22 @@ export async function getOptions(): Promise<Options> {
 
 export interface OptionsInterface {
   state: Options;
+  update: (key: string, value: unknown) => Options;
 }
 
 export function useOptionsStore(arg?: Options): OptionsInterface {
-  const { state } = useConfigStore<Options>(arg || OptionsDefaults, true);
+  const { state, update } = useConfigStore<Options>(
+    arg || OptionsDefaults,
+    true
+  );
+  function updateKey(key: string, value: unknown) {
+    return update([key], value, true);
+  }
+  useEffect(() => {
+    // TODO: add observers here
+  }, []);
 
-  return { state };
+  return { state, update: updateKey };
 }
 
 /* Use cached options */

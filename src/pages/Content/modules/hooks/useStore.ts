@@ -72,7 +72,8 @@ export function useObjectStore<Type>(
 
 type ConfigStoreUpdateFunction<Type> = (
   root: string[], // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  value: any
+  value: any,
+  write?: boolean
 ) => Type;
 
 // Unique key-value store (i.e. configs) instead of object instance store
@@ -92,11 +93,11 @@ export function useConfigStore<Type extends Record<string, unknown>>(
   let cached = state;
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function updateKey(root: string[], value: any) {
+  function updateKey(root: string[], value: any, write = true) {
     const newState = update(cached, makeSpec<Type>(root, value));
     cached = newState;
     updateState(cached);
-    if (sync) {
+    if (sync && write) {
       const obj = syncKey ? { syncKey: cached } : cached;
       chrome.storage.sync.set(obj);
     }

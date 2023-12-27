@@ -6,7 +6,9 @@ import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
 import MissingAssignmentsSample from '../../tests/data/api/missing_submissions.json';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 
-type MissingAssignment = typeof MissingAssignmentsSample[0];
+// because eslint doesn't like when this is one liner
+const MissingAssignment = MissingAssignmentsSample[0];
+type MissingAssignment = typeof MissingAssignment;
 
 async function getMissingAssignmentsRequest(
   allPages = true
