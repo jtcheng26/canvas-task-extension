@@ -13,7 +13,8 @@ import { AssignmentDefaults } from '../constants';
 import isDemo from '../utils/isDemo';
 import JSONBigInt from 'json-bigint';
 import { useEffect, useState } from 'react';
-import loadNeedsGrading from './useNeedsGrading';
+import loadNeedsGrading from './utils/loadNeedsGrading';
+import loadMissingAssignments from './utils/loadMissingAssignments';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -239,6 +240,7 @@ export default function useAssignments(
     });
     Promise.all([
       loadNeedsGrading(endDate, options),
+      loadMissingAssignments(endDate, options),
       processAssignments(startDate, endDate, options),
     ])
       .then((res: FinalAssignment[][]) => {

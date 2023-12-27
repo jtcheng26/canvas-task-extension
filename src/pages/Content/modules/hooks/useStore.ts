@@ -5,11 +5,15 @@ type StoreUpdateFunction<Type> = (
   root: string[], // eslint-disable-next-line @typescript-eslint/no-explicit-any
   value: any
 ) => Record<string, Type>;
+type StoreDeleteFunction<Type> = (root: string[]) => Record<string, Type>;
+type StoreInitFunction<Type> = (arg: Record<string, Type>) => void;
 type StoreState<Type> = { [key: string]: Type };
 
 export interface StoreInterface<Type> {
   state: StoreState<Type>;
   update: StoreUpdateFunction<Type>;
+  delete: StoreDeleteFunction<Type>;
+  initialize: StoreInitFunction<Type>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -42,7 +46,28 @@ export function useObjectStore<Type>(
     return cached;
   }
 
-  return { state, update: updateKey };
+  // for now, only deletes one root-level key from the passed argument
+  function deleteKey(root: string[]) {
+    const newState = update(cached, { $unset: [root[0]] } as Spec<
+      Record<string, Type>,
+      never
+    >);
+    cached = newState;
+    updateState(cached);
+    return cached;
+  }
+
+  function initializeState(arg: Record<string, Type>) {
+    cached = arg;
+    updateState(arg);
+  }
+
+  return {
+    state,
+    update: updateKey,
+    delete: deleteKey,
+    initialize: initializeState,
+  };
 }
 
 type ConfigStoreUpdateFunction<Type> = (

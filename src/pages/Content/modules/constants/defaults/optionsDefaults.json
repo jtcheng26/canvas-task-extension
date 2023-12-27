@@ -13,5 +13,6 @@
   "show_confetti": true,
   "theme_color": "var(--ic-brand-global-nav-bgd)",
   "dark_mode": false,
-  "show_needs_grading": false
+  "show_needs_grading": false,
+  "show_long_overdue": false
 }

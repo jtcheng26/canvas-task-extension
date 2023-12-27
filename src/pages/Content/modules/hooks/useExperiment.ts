@@ -4,13 +4,21 @@ import { useEffect, useState, useMemo, useContext } from 'react';
 import isDemo from '../utils/isDemo';
 import { ExperimentsContext } from '../contexts/contexts';
 
+// cryptographically secure random number of length N
+// https://codeql.github.com/codeql-query-help/javascript/js-biased-cryptographic-random/
 function generateClientId(length: number): string {
   let num = '';
-  let seed = window.crypto.getRandomValues(new Uint32Array(1))[0] / 0x100000000;
-  for (let i = 0; i < length; i++) {
-    seed = (seed - Math.floor(seed)) * 10;
-    num += Math.floor(seed);
+  let i = 0;
+  while (num.length < length) {
+    i += 1;
+    if (i > 100) break; // failsafe to not hang everything in case something breaks
+    const byte = window.crypto.getRandomValues(new Uint8Array(1))[0];
+    if (byte >= 250) {
+      continue;
+    }
+    num += (byte % 10).toString();
   }
+
   return num;
 }
 

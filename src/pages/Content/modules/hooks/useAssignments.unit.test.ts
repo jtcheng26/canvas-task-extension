@@ -55,7 +55,6 @@ describe('getAllAssignment', () => {
     );
     expect(assignments[0].submitted).toBe(AssignmentDefaults.submitted);
     expect(assignments[0].graded).toBe(AssignmentDefaults.graded);
-    expect(assignments[0].color).toBe(AssignmentDefaults.color);
   });
   it('filters to assignment types', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: plannerRes, headers: {} });

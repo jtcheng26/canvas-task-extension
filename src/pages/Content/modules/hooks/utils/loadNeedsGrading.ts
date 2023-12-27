@@ -1,10 +1,10 @@
-import { AssignmentType, FinalAssignment, Options } from '../types';
-import baseURL from '../utils/baseURL';
-import { AssignmentDefaults } from '../constants';
-import isDemo from '../utils/isDemo';
-import { getPaginatedRequest, processAssignmentList } from './useAssignments';
-import { TodoAssignment, TodoResponse } from '../types/assignment';
-import apiReq from '../utils/apiReq';
+import { AssignmentType, FinalAssignment, Options } from '../../types';
+import baseURL from '../../utils/baseURL';
+import { AssignmentDefaults } from '../../constants';
+import isDemo from '../../utils/isDemo';
+import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
+import { TodoAssignment, TodoResponse } from '../../types/assignment';
+import apiReq from '../../utils/apiReq';
 
 interface NeedsGradingCount {
   id: string;
@@ -103,7 +103,6 @@ export function convertTodoAssignments(
 export async function getAllTodos(): Promise<FinalAssignment[]> {
   const data = isDemo() ? [] : await getAllTodoRequest();
   const assignments = convertTodoAssignments(data as TodoResponse[]);
-  // if (!assignments.length) return [];
   const counts = await queryNeedsGradingCounts(assignments.map((a) => a.id));
   return assignments.map(
     (a) =>

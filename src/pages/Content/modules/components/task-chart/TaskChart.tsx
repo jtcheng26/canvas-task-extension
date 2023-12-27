@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import RadialBarChart from '../radial-bar-chart';
+import RadialBarChart, { ChartData } from '../radial-bar-chart';
 import BeatLoader from '../spinners';
 import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
@@ -86,6 +86,19 @@ export default function TaskChart({
     )
   );
 
+  function compareData(a: ChartData, b: ChartData) {
+    if (a.bars.length !== b.bars.length) return false;
+    return a.bars.reduce(
+      (prev, curr, i) =>
+        prev &&
+        b.bars[i].color === curr.color &&
+        b.bars[i].id === curr.id &&
+        b.bars[i].max === curr.max &&
+        b.bars[i].value === curr.value,
+      true
+    );
+  }
+
   useEffect(() => {
     // if assignments is same but weekkey different just change currkey
     // else update assignments
@@ -97,7 +110,8 @@ export default function TaskChart({
       colorOverride || themeColor,
       weekKey
     );
-    if (!loading && chartData.key !== newData.key) setChartData(newData);
+    if (chartData.key !== newData.key || !compareData(chartData, newData))
+      setChartData(newData);
   }, [assignments, courses, courseStore, loading, weekKey]);
 
   const [done, total, color] = useMemo(

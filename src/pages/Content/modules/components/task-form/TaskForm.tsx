@@ -129,18 +129,6 @@ export default function TaskForm({
         selectedCourseId === ''
           ? AssignmentDefaults.course_id
           : selectedCourseId;
-      assignment.course_name =
-        selectedCourseId in courseStore.state
-          ? courseStore.state[selectedCourseId].name
-          : 'Custom Task';
-      assignment.color =
-        selectedCourseId in courseStore.state
-          ? courseStore.state[selectedCourseId].color
-          : themeColor;
-      assignment.position =
-        selectedCourseId in courseStore.state
-          ? courseStore.state[selectedCourseId].position
-          : AssignmentDefaults.position;
       assignment.type = AssignmentType.NOTE;
       assignment.id = '' + Math.floor(1000000 * Math.random());
 

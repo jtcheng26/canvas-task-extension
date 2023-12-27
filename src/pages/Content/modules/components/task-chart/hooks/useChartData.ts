@@ -23,13 +23,11 @@ export default function useChartData(
       tempAssignments.push({
         ...AssignmentDefaults,
         course_id: c,
-        position: courseStore.state[c].position,
         name: EMPTY_COURSE_ID,
-        color: courseStore.state[c].color,
       });
     }
   });
-  const sortedAssignments = sortByPosition(tempAssignments);
+  const sortedAssignments = sortByPosition(tempAssignments, courseStore);
   const data: ChartData = {
     bars: sortedAssignments.reduce((a: Bar[], b: FinalAssignment) => {
       if (b.name === EMPTY_COURSE_ID) {
@@ -37,7 +35,7 @@ export default function useChartData(
           id: b.course_id,
           value: 0,
           max: 0,
-          color: courseStore.state[b.course_id].color || b.color,
+          color: courseStore.state[b.course_id].color,
         });
         return a;
       }
@@ -47,7 +45,7 @@ export default function useChartData(
           id: b.course_id,
           value: 0,
           max: 0,
-          color: courseStore.state[b.course_id].color || b.color || '#000000',
+          color: courseStore.state[b.course_id].color || '#000000',
         });
       }
 

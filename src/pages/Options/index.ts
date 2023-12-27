@@ -193,6 +193,7 @@ const booleanOptions: Record<string, string> = {
   'custom-theme-color': 'theme_color',
   'show-needs-grading': 'show_needs_grading',
   'color-tabs': 'color_tabs',
+  'long-overdue': 'show_long_overdue',
 };
 
 function setBooleanOption(key: string, checked: boolean) {
@@ -321,6 +322,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
     options.theme_color !== 'var(--ic-brand-global-nav-bgd)'
   );
   setCheckbox('color-tabs', options.color_tabs);
+  setCheckbox('long-overdue', options.show_long_overdue);
   setThemeColor(
     options.theme_color !== OptionsDefaults.theme_color
       ? options.theme_color
