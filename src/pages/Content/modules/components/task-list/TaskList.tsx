@@ -356,8 +356,6 @@ export default function TaskList({
   const hideUnfinishedList: boolean =
     unfinishedList.length === 0 && options.show_needs_grading;
 
-  console.log(unfinishedList, allGradingList);
-
   if (skeleton)
     return (
       <ListWrapper>

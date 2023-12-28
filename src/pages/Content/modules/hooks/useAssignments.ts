@@ -113,13 +113,19 @@ export function convertPlannerAssignments(
       // custom task with details
       if (
         parsed.length >= 2 &&
-        parsed[0] === 'Created using Tasks for Canvas'
+        parsed[0].trim() === 'Created using Tasks for Canvas'
       ) {
-        if (parsed[1] === 'Instructor Note') {
+        if (parsed[1].trim() === 'Instructor Note') {
           converted.needs_grading_count = 1;
           converted.total_submissions = 1;
         }
-        if (parsed.length === 3) converted.html_url = parsed[2];
+        // in case the user added other details after
+        try {
+          if (parsed.length >= 3)
+            converted.html_url = parsed[2].split(' ')[0].trim();
+        } catch {
+          converted.html_url = '/';
+        }
       }
     }
 
