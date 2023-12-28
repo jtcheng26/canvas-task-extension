@@ -4,13 +4,23 @@ import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
 import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
 import { TodoAssignment, TodoResponse } from '../../types/assignment';
-import apiReq from '../../utils/apiReq';
+import graphqlReq from './gqlReq';
 import { DemoNeedsGrading, DemoTeacherAssignments } from '../../tests/demo';
 
 export interface NeedsGradingCount {
   id: string;
   needs_grading: number;
   total: number;
+}
+
+interface GQLResponse {
+  [key: string]: {
+    submissionsConnection?: {
+      nodes: {
+        gradingStatus: string;
+      }[];
+    };
+  };
 }
 
 async function queryNeedsGradingCounts(
@@ -29,16 +39,8 @@ async function queryNeedsGradingCounts(
 
   const queries = ids.map((id, idx) => newQuery(id, idx));
 
-  const data = {
-    query: `query MyQuery {
-      ${queries.reduce((prev, curr) => prev + '\n' + curr, '')}
-    }`,
-  };
-
   try {
-    const resp = await apiReq('/graphql', JSON.stringify(data), 'post');
-    if ('errors' in resp.data || resp.status / 100 != 2) return {};
-    const counts = resp.data.data;
+    const counts = await graphqlReq<GQLResponse>(queries);
 
     const keys = Object.keys(counts);
 

@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
-import { AssignmentType } from '../../types';
+import { AssignmentType, FinalAssignment } from '../../types';
 import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
 import { CheckIcon } from '../../icons';
-import fmtDate from './utils/fmtDate';
+import fmtDate, { fmtDateSince } from './utils/fmtDate';
 import { DarkProps } from '../../types/props';
 import { DarkContext } from '../../contexts/contexts';
 
@@ -147,18 +147,10 @@ export const TaskContainer = styled.div.attrs(
         : 'canvas-tasks-skeleton-pulse 1s 0.5s infinite linear both'};
   `;
 export interface TaskProps {
-  name?: string;
-  type?: AssignmentType;
-  html_url?: string;
-  due_at?: string;
-  points_possible?: number;
+  assignment?: FinalAssignment;
   complete?: boolean;
-  submitted?: boolean;
-  graded_at?: string;
   color?: string;
-  graded?: boolean;
   course_name?: string;
-  needs_grading_count?: number;
   markComplete?: () => void;
   markDeleted?: () => void;
   skeleton?: boolean;
@@ -174,54 +166,58 @@ export interface TransitionState {
 */
 
 export default function TaskCard({
-  name = AssignmentDefaults.name,
-  type = AssignmentDefaults.type,
-  html_url = AssignmentDefaults.html_url,
-  due_at = AssignmentDefaults.due_at,
-  points_possible,
-  course_name,
+  assignment = AssignmentDefaults,
+
   complete = AssignmentDefaults.marked_complete,
-  graded,
-  graded_at,
+  course_name,
   color,
-  submitted,
-  needs_grading_count,
+
   markComplete,
   markDeleted,
   skeleton,
   transitionState,
 }: TaskProps): JSX.Element {
-  const [due_date, due_time] = fmtDate(due_at);
-  const [graded_date, graded_time] = fmtDate(
-    graded_at ? graded_at : new Date().toISOString()
+  const [due_date, due_time] = fmtDate(assignment.due_at);
+  const gradedSince = fmtDateSince(
+    assignment.graded_at ? assignment.graded_at : new Date().toISOString()
   );
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
-    window.location.href = html_url;
+    window.location.href = assignment.html_url;
   }
-  const is_instructor = needs_grading_count && type !== AssignmentType.NOTE;
-  const icon = ASSIGNMENT_ICON[is_instructor ? 'ungraded' : type];
+  const is_instructor =
+    assignment.needs_grading_count && assignment.type !== AssignmentType.NOTE;
+  const icon = ASSIGNMENT_ICON[is_instructor ? 'ungraded' : assignment.type];
 
   const due = 'Due';
   const submittedText =
-    !submitted && complete ? 'Unsubmitted' : points_possible ? 'Submitted' : '';
+    !assignment.submitted && complete
+      ? 'Unsubmitted'
+      : assignment.points_possible
+      ? 'Submitted'
+      : '';
   const dueText = ` ${due_date} at ${due_time}`;
   const gradedAtText =
-    !graded || !graded_at ? '' : ` ${graded_date} at ${graded_time}`;
-  const pointsPlural = !points_possible
+    !assignment.graded || !assignment.graded_at
+      ? ''
+      : assignment.grade === 'Excused'
+      ? ' Excused'
+      : ` ${assignment.score}/${assignment.points_possible} points`;
+  const pointsPlural = !assignment.points_possible
     ? ''
-    : points_possible > 1
+    : assignment.points_possible > 1
     ? 'points'
     : 'point';
-  const pointsText = points_possible
-    ? ` \xa0|\xa0 ${points_possible} ${pointsPlural}`
+  const pointsText = assignment.points_possible
+    ? ` \xa0|\xa0 ${assignment.points_possible} ${pointsPlural}`
     : '';
   const needsGradingText = is_instructor
-    ? `${needs_grading_count} ungraded`
+    ? `${assignment.needs_grading_count} ungraded`
     : '';
-  const gradedText = points_possible
-    ? ` ${!graded ? ' Waiting for grade' : ' Graded'}`
-    : ' Completed';
+  const gradedText =
+    assignment.submitted || assignment.graded
+      ? ` ${!assignment.graded ? ' Waiting for grade' : ' Graded: '}`
+      : ' Completed';
   function markAssignmentAsComplete() {
     if (markComplete) {
       markComplete();
@@ -263,7 +259,7 @@ export default function TaskCard({
           ) : (
             ''
           )}
-          {!skeleton && complete && type === AssignmentType.NOTE ? (
+          {!skeleton && complete && assignment.type === AssignmentType.NOTE ? (
             <CheckIcon
               checkStyle="X"
               dark={darkMode}
@@ -273,8 +269,8 @@ export default function TaskCard({
             ''
           )}
         </TaskTop>
-        <TaskLink dark={darkMode} href={html_url}>
-          {!skeleton ? name : <SkeletonTitle dark={darkMode} />}
+        <TaskLink dark={darkMode} href={assignment.html_url}>
+          {!skeleton ? assignment.name : <SkeletonTitle dark={darkMode} />}
         </TaskLink>
         <TaskDetailsText>
           {skeleton ? (
@@ -294,7 +290,7 @@ export default function TaskCard({
             </>
           ) : (
             <>
-              {!graded && points_possible ? (
+              {!assignment.graded && assignment.points_possible ? (
                 <>
                   <strong>{submittedText}</strong>
                   {' \xa0|\xa0 '}
@@ -302,8 +298,9 @@ export default function TaskCard({
               ) : (
                 ''
               )}
-              <strong>{gradedText}</strong>
-              {gradedAtText}
+              {!assignment.graded ? <strong>{gradedText}</strong> : gradedText}
+              <strong>{gradedAtText}</strong>
+              {gradedAtText ? ' | ' + gradedSince : ''}
             </>
           )}
         </TaskDetailsText>

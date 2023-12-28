@@ -4,8 +4,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import TaskCard from '../TaskCard';
-import { AssignmentType } from '../../../types';
-import { AssignmentDefaults } from '../../../constants';
+import { AssignmentType, FinalAssignment } from '../../../types';
 
 export default {
   title: 'Components/Task/Unfinished',
@@ -13,75 +12,96 @@ export default {
 } as ComponentMeta<typeof TaskCard>;
 
 const Template: ComponentStory<typeof TaskCard> = (args) => (
-  <TaskCard {...args} />
+  <TaskCard
+    {...args}
+    color="#ab3c7d"
+    complete={false}
+    course_name="Course name"
+  />
 );
 
-const storyDefaults = {
+const storyDefaults: FinalAssignment = {
   name: 'Assignment name',
   type: AssignmentType.ASSIGNMENT,
   html_url: '/',
   due_at: '2022-01-01Z00:00:00',
-  course_name: 'Course name',
   points_possible: 10,
-  complete: false,
   graded: false,
   graded_at: '',
-  color: '#ab3c7d',
   submitted: false,
-  skeleton: false,
   needs_grading_count: 0,
+  course_id: '0',
+  id: '1',
+  plannable_id: '1',
+  score: 0,
+  marked_complete: false,
 };
 
 export const Assignment = Template.bind({});
 Assignment.args = {
-  ...storyDefaults,
+  assignment: storyDefaults,
 };
 
 export const NeedsGrading = Template.bind({});
 NeedsGrading.args = {
-  ...storyDefaults,
-  needs_grading_count: 4,
+  assignment: {
+    ...storyDefaults,
+    needs_grading_count: 4,
+  },
 };
 
 export const Discussion = Template.bind({});
 Discussion.args = {
-  ...storyDefaults,
-  type: AssignmentType.DISCUSSION,
+  assignment: {
+    ...storyDefaults,
+    type: AssignmentType.DISCUSSION,
+  },
 };
 
 export const Quiz = Template.bind({});
 Quiz.args = {
-  ...storyDefaults,
-  type: AssignmentType.QUIZ,
+  assignment: {
+    ...storyDefaults,
+    type: AssignmentType.QUIZ,
+  },
 };
 
 export const Note = Template.bind({});
 Note.args = {
-  ...storyDefaults,
-  type: AssignmentType.NOTE,
+  assignment: {
+    ...storyDefaults,
+    type: AssignmentType.NOTE,
+  },
 };
 
 export const Skeleton = Template.bind({});
 Skeleton.args = {
-  html_url: '/',
+  assignment: {
+    ...storyDefaults,
+    html_url: '/',
+  },
   skeleton: true,
 };
 
 export const Default = Template.bind({});
 Default.args = {
-  ...AssignmentDefaults,
+  assignment: storyDefaults,
   skeleton: false,
 };
 
 // point not points
 export const OnePoint = Template.bind({});
 OnePoint.args = {
-  ...storyDefaults,
-  points_possible: 1,
+  assignment: {
+    ...storyDefaults,
+    points_possible: 1,
+  },
 };
 
 export const NoPoints = Template.bind({});
 NoPoints.args = {
-  ...storyDefaults,
-  points_possible: 0,
+  assignment: {
+    ...storyDefaults,
+    points_possible: 0,
+  },
 };

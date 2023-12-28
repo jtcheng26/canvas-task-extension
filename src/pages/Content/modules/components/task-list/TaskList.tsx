@@ -257,13 +257,10 @@ export default function TaskList({
   ) => {
     return tab !== 'Announcements' ? (
       <TaskCard
+        assignment={assignment}
         color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
         course_name={courseStore.state[assignment.course_id].name}
-        due_at={assignment.due_at}
-        graded={assignment.graded}
-        graded_at={assignment.graded_at}
-        html_url={assignment.html_url}
         key={key}
         markComplete={markAssignmentFunc(
           assignment.id,
@@ -277,20 +274,14 @@ export default function TaskList({
           AssignmentStatus.DELETED,
           markAssignment
         )}
-        name={assignment.name}
-        needs_grading_count={assignment.needs_grading_count}
-        points_possible={assignment.points_possible}
-        submitted={assignment.submitted}
         transitionState={state}
-        type={assignment.type}
       />
     ) : (
       <AnnouncementCard
+        assignment={assignment}
         color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
         course_name={courseStore.state[assignment.course_id].name}
-        due_at={assignment.due_at}
-        html_url={assignment.html_url}
         key={key}
         markComplete={markAssignmentFunc(
           assignment.id,
@@ -298,9 +289,7 @@ export default function TaskList({
           AssignmentStatus.SEEN,
           markAssignment
         )}
-        name={assignment.name}
         transitionState={state}
-        type={assignment.type}
       />
     );
   };

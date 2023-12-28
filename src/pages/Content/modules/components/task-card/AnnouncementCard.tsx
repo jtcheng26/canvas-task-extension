@@ -22,10 +22,7 @@ import {
 */
 
 export default function AnnouncementCard({
-  name = AssignmentDefaults.name,
-  type = AssignmentDefaults.type,
-  html_url = AssignmentDefaults.html_url,
-  due_at = AssignmentDefaults.due_at,
+  assignment = AssignmentDefaults,
   course_name,
   complete = AssignmentDefaults.marked_complete,
   color,
@@ -34,12 +31,12 @@ export default function AnnouncementCard({
   transitionState,
 }: TaskProps): JSX.Element {
   if (complete) color = color + '99';
-  const posted_ago = fmtDateSince(due_at);
+  const posted_ago = fmtDateSince(assignment.due_at);
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
-    window.location.href = html_url;
+    window.location.href = assignment.html_url;
   }
-  const icon = ASSIGNMENT_ICON[type];
+  const icon = ASSIGNMENT_ICON[assignment.type];
 
   const dueText = `${posted_ago}`;
   function markAssignmentAsComplete() {
@@ -79,7 +76,11 @@ export default function AnnouncementCard({
             ''
           )}
         </TaskTop>
-        <TaskLink dark={darkMode} href={html_url} opacity={complete ? 0.5 : 1}>
+        <TaskLink
+          dark={darkMode}
+          href={assignment.html_url}
+          opacity={complete ? 0.5 : 1}
+        >
           {!skeleton ? name : <SkeletonTitle dark={darkMode} />}
         </TaskLink>
         <TaskDetailsText opacity={complete ? 0.5 : 1}>

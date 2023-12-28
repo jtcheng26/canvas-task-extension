@@ -15,6 +15,7 @@ import JSONBigInt from 'json-bigint';
 import { useEffect, useState } from 'react';
 import loadNeedsGrading from './utils/loadNeedsGrading';
 import loadMissingAssignments from './utils/loadMissingAssignments';
+import { queryGraded } from './utils/loadGraded';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -74,7 +75,9 @@ export function convertPlannerAssignments(
       html_url:
         assignment.html_url || assignment.plannable.linked_object_html_url,
       type: assignment.plannable_type,
-      id: assignment.plannable_id.toString(),
+      id: assignment.plannable.assignment_id // for quizzes, use this id to query graphql
+        ? assignment.plannable.assignment_id.toString()
+        : assignment.plannable_id.toString(),
       plannable_id: assignment.plannable_id.toString(), // just in case it changes in the future
       override_id: assignment.planner_override?.id.toString(),
       course_id: (
@@ -243,7 +246,24 @@ async function processAssignments(
 ): Promise<FinalAssignment[]> {
   /* modify this filter if announcements are used in the future */
   const assignments = await getAllAssignments(startDate, endDate, options);
-  return processAssignmentList(assignments, startDate, endDate, options);
+  const filtered = processAssignmentList(
+    assignments,
+    startDate,
+    endDate,
+    options
+  );
+  const gradeRecords = await queryGraded(
+    filtered.filter((a) => a.graded).map((a) => a.id)
+  );
+  // zero points does not count as graded
+  return filtered.map((a) => {
+    if (!(a.id in gradeRecords)) return a;
+    a.graded =
+      a.graded && (a.points_possible === 0 || gradeRecords[a.id].score > 0);
+    a.score = gradeRecords[a.id].score;
+    a.grade = gradeRecords[a.id].grade;
+    return a;
+  });
 }
 
 interface UseAssignmentsHookInterface {
