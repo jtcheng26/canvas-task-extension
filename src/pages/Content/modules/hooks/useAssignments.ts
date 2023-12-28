@@ -105,6 +105,24 @@ export function convertPlannerAssignments(
           assignment.plannable.read_state === 'read'),
     };
 
+    if (
+      assignment.plannable_type === AssignmentType.NOTE &&
+      assignment.plannable.details
+    ) {
+      const parsed = assignment.plannable.details.split('\n');
+      // custom task with details
+      if (
+        parsed.length >= 2 &&
+        parsed[0] === 'Created using Tasks for Canvas'
+      ) {
+        if (parsed[1] === 'Instructor Note') {
+          converted.needs_grading_count = 1;
+          converted.total_submissions = 1;
+        }
+        if (parsed.length === 3) converted.html_url = parsed[2];
+      }
+    }
+
     const full: FinalAssignment = {
       ...AssignmentDefaults,
     };

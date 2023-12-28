@@ -198,7 +198,7 @@ export default function TaskList({
       return () => {
         console.log('Failed to mark as complete');
       };
-    else if (tab === 'Unfinished') {
+    else if (tab === 'Unfinished' || tab === 'NeedsGrading') {
       return () => {
         setTimeout(() => {
           setConfetti(true);
@@ -354,7 +354,7 @@ export default function TaskList({
   }, [options, selectedCourseId, courseStore]);
 
   const hideUnfinishedList: boolean =
-    unfinishedList.length === 0 && !!allGradingList.length;
+    unfinishedList.length === 0 && options.show_needs_grading;
 
   console.log(unfinishedList, allGradingList);
 
@@ -375,7 +375,7 @@ export default function TaskList({
         activeColor={iconColor}
         assignmentsEmpty={unfinishedList.length === 0}
         dark={darkMode}
-        gradebook={!!allGradingList.length}
+        gradebook={options.show_needs_grading}
         notifs={numNotifs}
         setTaskListState={setCurrentTab}
         taskListState={
@@ -445,7 +445,13 @@ export default function TaskList({
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('NeedsGrading'))}</>}
           </NodeGroup>
-          {gradingList.length === 0 && <span>{noneText}</span>}
+          {(allList['NeedsGrading'].length <= 4 || viewingMore) && (
+            <CreateTaskCard
+              grading
+              onSubmit={createAssignment}
+              selectedCourse={selectedCourseId}
+            />
+          )}
         </ListContainer>
       </HideDiv>
 

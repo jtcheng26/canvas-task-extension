@@ -57,11 +57,13 @@ const TaskTitle = styled.div`
 interface TaskProps {
   onSubmit?: (assignment: FinalAssignment | FinalAssignment[]) => void;
   selectedCourse?: string;
+  grading?: boolean; // whether this show up in the instructor tab
 }
 
 export default function CreateTaskCard({
   onSubmit,
   selectedCourse,
+  grading = false,
 }: TaskProps): JSX.Element {
   const darkMode = useContext(DarkContext);
   const [formVisible, setFormVisible] = useState(false);
@@ -91,6 +93,7 @@ export default function CreateTaskCard({
       {formVisible && (
         <TaskForm
           close={closeForm}
+          grading={grading}
           onSubmit={onSubmit}
           selectedCourse={selectedCourse}
           visible={formVisible}

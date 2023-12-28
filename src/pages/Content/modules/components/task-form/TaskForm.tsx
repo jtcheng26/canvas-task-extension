@@ -63,6 +63,7 @@ const ErrorMessage = styled.div`
 
 type Props = {
   close: () => void;
+  grading: boolean;
   onSubmit?: (assignment: FinalAssignment | FinalAssignment[]) => void;
   selectedCourse?: string;
   visible?: boolean;
@@ -70,12 +71,14 @@ type Props = {
 
 export default function TaskForm({
   close,
+  grading,
   onSubmit,
   selectedCourse,
   visible = false,
 }: Props): JSX.Element {
   const courseStore = useCourseStore();
   const [title, setTitle] = useState('');
+  const [link, setLink] = useState('');
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
@@ -96,6 +99,7 @@ export default function TaskForm({
 
   const titleLabel = 'Title';
   const dateLabel = 'Due Date';
+  const linkLabel = 'URL (optional)';
   const courseLabel = 'Course (optional)';
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -131,11 +135,16 @@ export default function TaskForm({
           : selectedCourseId;
       assignment.type = AssignmentType.NOTE;
       assignment.id = '' + Math.floor(1000000 * Math.random());
+      assignment.needs_grading_count = grading ? 1 : 0;
+      assignment.total_submissions = grading ? 1 : 0;
+      assignment.html_url = link.trim();
 
       const res = await createCustomTask(
         title,
         assignment.due_at,
-        assignment.course_id
+        assignment.course_id,
+        grading,
+        link.trim()
       );
       if (!res && !isDemo()) {
         setErrorMessage(
@@ -184,6 +193,15 @@ export default function TaskForm({
             dark={darkMode}
             selected={selectedTime}
             setSelected={setSelectedTime}
+          />
+        </FormItem>
+        <FormItem>
+          <FormTitle>{linkLabel}</FormTitle>
+          <TextInput
+            color={themeColor}
+            dark={darkMode}
+            onChange={setLink}
+            value={link}
           />
         </FormItem>
         <FormItem>
