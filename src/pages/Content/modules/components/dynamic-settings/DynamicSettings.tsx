@@ -32,12 +32,19 @@ const CheckboxSection = styled.div`
 `;
 
 const InfoSection = styled.div`
-  margin-top: 40px;
+  margin-top: 1.5rem;
   display: flex;
   flex-direction: column;
   > * + * {
     margin-top: 0.75rem;
   }
+`;
+
+const Header = styled.h2`
+  font-weight: bold;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  margin-bottom: 0.5rem;
 `;
 
 type Props = {
@@ -59,6 +66,7 @@ export default function DynamicSettings({ options }: Props): JSX.Element {
       optionsStore.update(key, flipped ? !value : value);
   }
 
+  const TitleText = '⚙️ Extension Settings';
   const InfoText1 = 'Click the';
   const InfoText2 = 'icon on the sidebar to update these settings later.';
   const InfoText3 =
@@ -67,6 +75,7 @@ export default function DynamicSettings({ options }: Props): JSX.Element {
   return (
     <OptionsContext.Provider value={optionsStore}>
       <SettingsWrapper>
+        <Header>{TitleText}</Header>
         <ModeSelector
           modes={[
             {
