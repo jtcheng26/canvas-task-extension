@@ -45,6 +45,18 @@ function watchDashboardColors(callback: (id: string, color: string) => void) {
   return observer;
 }
 
+// call the callback function whenever the user changes their `theme_color` in options
+function watchOptionsThemeColor(callback: (id: string, color: string) => void) {
+  const listener = (changes: {
+    [key: string]: chrome.storage.StorageChange;
+  }) => {
+    if ('theme_color' in changes)
+      callback('0', changes['theme_color'].newValue);
+  };
+  chrome.storage.onChanged.addListener(listener);
+  return listener;
+}
+
 export interface CourseStoreInterface {
   state: Record<string, Course>;
   addCourse: (course: Course) => void;
@@ -67,7 +79,6 @@ export function useNewCourseStore(
   }
   const updateCourseColor = useCallback(
     (id: string, color: string) => {
-      console.log('update', id, color, state);
       if (id in state) update([id, 'color'], color);
     },
     [state]
@@ -83,7 +94,13 @@ export function useNewCourseStore(
   useEffect(() => {
     // attach listeners here
     const observers = [watchDashboardColors(updateCourseColor)];
-    return () => observers.forEach((observer) => observer.disconnect());
+    const chromeStorageListeners = [watchOptionsThemeColor(updateCourseColor)];
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+      chromeStorageListeners.forEach((listener) =>
+        chrome.storage.onChanged.removeListener(listener)
+      );
+    };
   }, [updateCourseColor]);
 
   return {

@@ -31,7 +31,7 @@ function ContentLoader({
     isError,
     isSuccess, // "isLoading"
   } = useAssignments(startDate, endDate, options);
-  const { data: courseData } = useCourses();
+  const { data: courseData } = useCourses(options.theme_color);
   const animationStart = useRef(0); // for counting load time
   const MIN_LOAD_TIME = 350; // delay between load and render so animations have time to play
 
