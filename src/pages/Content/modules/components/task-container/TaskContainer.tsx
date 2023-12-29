@@ -50,9 +50,16 @@ function TaskContainer({
   */
   const assignmentStore = useNewAssignmentStore(assignments);
   const announcementStore = useNewAssignmentStore(announcements);
+  const [delayLoad, setDelayLoad] = useState(false); // assignmentStore updates one tick after loading for TaskList, so this makes it consistent
+  useEffect(() => {
+    if (loading) setDelayLoad(true);
+  }, [loading]);
 
-  useEffect(() => assignmentStore.newPage(assignments), [assignments]);
+  useEffect(() => {
+    assignmentStore.newPage(assignments);
+  }, [assignments]);
   useEffect(() => announcementStore.newPage(announcements), [announcements]);
+  useEffect(() => courseStore.newPage(courseData), [courseData]);
 
   const [selectedCourseId, setSelectedCourseId] = useState<string>(
     courseList && courseId ? courseId : ''
@@ -60,6 +67,7 @@ function TaskContainer({
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
 
   const updatedAssignments = useMemo(() => {
+    setDelayLoad(false);
     if (courseId)
       return filterCourses([courseId], Object.values(assignmentStore.state));
     return Object.values(assignmentStore.state);
@@ -163,7 +171,7 @@ function TaskContainer({
             announcements={updatedAnnouncements}
             assignments={updatedAssignments}
             createAssignment={createNewAssignment}
-            loading={loading}
+            loading={loading || delayLoad}
             markAssignment={markAssignmentAs}
             selectedCourseId={chosenCourseId}
             showConfetti={options.show_confetti}

@@ -26,6 +26,7 @@ export default function App({ options }: AppProps): JSX.Element {
     setClickableState({ clickable: false, firstLoad: false })
   );
   const { start, end } = useMemo(() => {
+    setClickableState({ clickable: false, firstLoad: false });
     return getPeriod(
       optionsStore.state.period,
       optionsStore.state.start_date,

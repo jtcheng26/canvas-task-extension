@@ -1,4 +1,9 @@
-import { AssignmentType, FinalAssignment, Options } from '../../types';
+import {
+  ArrayElement,
+  AssignmentType,
+  FinalAssignment,
+  Options,
+} from '../../types';
 import baseURL from '../../utils/baseURL';
 import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
@@ -6,9 +11,7 @@ import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
 import MissingAssignmentsSample from '../../tests/data/api/missing_submissions.json';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 
-// because eslint doesn't like when this is one liner
-const MissingAssignment = MissingAssignmentsSample[0];
-type MissingAssignment = typeof MissingAssignment;
+type MissingAssignment = ArrayElement<typeof MissingAssignmentsSample>;
 
 async function getMissingAssignmentsRequest(
   allPages = true

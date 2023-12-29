@@ -83,7 +83,6 @@ export default function TaskList({
   showDateHeadings,
   showConfetti = true,
   skeleton,
-  weekKey,
 }: TaskListProps): JSX.Element {
   const courseStore = useCourseStore();
   const darkMode = useContext(DarkContext);
@@ -340,7 +339,7 @@ export default function TaskList({
     };
   }
   function keyAccess(a: FinalAssignment | string) {
-    return typeof a === 'string' ? a + '-' + weekKey : a.id;
+    return typeof a === 'string' ? a : a.id;
   }
 
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;

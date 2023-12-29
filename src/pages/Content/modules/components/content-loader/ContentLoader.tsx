@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import TaskContainer from '../task-container';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
 import useAssignments from '../../hooks/useAssignments';
-import Skeleton from '../skeleton';
 import onCoursePage from '../../utils/onCoursePage';
 import useCourses from '../../hooks/useCourses';
 
@@ -67,16 +66,23 @@ function ContentLoader({
     }
   }, [isSuccess]);
 
-  const assignmentData = useMemo(
-    () =>
-      plannerData
-        ? {
-            assignments: filterAnnouncements(plannerData, false),
-            announcements: filterAnnouncements(plannerData, true),
-          }
-        : null,
-    [plannerData]
-  );
+  const assignmentData = useMemo(() => {
+    /* IMPORTANT: validates all `course_id` in assignments. This is the first point where both assignment and course data are synchronized. */
+    if (!(plannerData && courseData))
+      return { assignments: [], announcements: [] };
+    const map = new Set<string>();
+    courseData.forEach((c) => map.add(c.id));
+    return {
+      assignments: filterAnnouncements(plannerData, false).map((a) => {
+        if (!map.has(a.course_id)) a.course_id = '0';
+        return a;
+      }),
+      announcements: filterAnnouncements(plannerData, true).map((a) => {
+        if (!map.has(a.course_id)) a.course_id = '0';
+        return a;
+      }),
+    };
+  }, [plannerData, courseData]);
 
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
@@ -104,8 +110,6 @@ function ContentLoader({
   }, [isLoading, assignmentData, courseData, startDate, endDate]);
 
   if (isError) return <h1>{failed}</h1>;
-  if (!assignmentData || !courseData)
-    return <Skeleton dark={options.dark_mode} />;
   return (
     <TaskContainer
       announcements={
@@ -116,7 +120,7 @@ function ContentLoader({
       assignments={
         isLoading ? prevData.current.assignments : assignmentData.assignments
       }
-      courseData={courseData}
+      courseData={courseData || []}
       courseId={onCourse}
       endDate={isLoading ? prevData.current.endDate : endDate}
       loading={isLoading} // on first load, show immediately (no min delay)
