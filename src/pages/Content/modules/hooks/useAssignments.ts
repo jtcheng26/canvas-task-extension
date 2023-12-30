@@ -123,8 +123,11 @@ export function convertPlannerAssignments(
         try {
           if (parsed.length >= 3)
             converted.html_url = parsed[2].split(' ')[0].trim();
+          if (parsed.length >= 4)
+            converted.course_id = parsed[3].split(' ')[0].trim();
         } catch {
           converted.html_url = '/';
+          converted.course_id = '0';
         }
       }
     }
