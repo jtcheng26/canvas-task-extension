@@ -181,12 +181,6 @@ export default function TaskList({
     setViewingMore(!viewingMore);
   }
 
-  const viewMoreText = !viewingMore
-    ? `View ${allList[currentTab].length - 4} more`
-    : 'View less';
-
-  const noneText = 'None';
-
   function markAssignmentFunc(
     id: string,
     tab: TaskTypeTab,
@@ -355,6 +349,17 @@ export default function TaskList({
   const hideUnfinishedList: boolean =
     unfinishedList.length === 0 && options.show_needs_grading;
 
+  const visibleTab =
+    currentTab === 'Unfinished' && hideUnfinishedList
+      ? 'NeedsGrading'
+      : currentTab;
+
+  const viewMoreText = !viewingMore
+    ? `View ${allList[visibleTab].length - 4} more`
+    : 'View less';
+
+  const noneText = 'None';
+
   if (skeleton)
     return (
       <ListWrapper>
@@ -375,11 +380,7 @@ export default function TaskList({
         gradebook={options.show_needs_grading}
         notifs={numNotifs}
         setTaskListState={setCurrentTab}
-        taskListState={
-          hideUnfinishedList && currentTab === 'Unfinished'
-            ? 'NeedsGrading'
-            : currentTab
-        }
+        taskListState={visibleTab}
       />
       {showConfetti && (
         <ConfettiWrapper>
@@ -393,7 +394,7 @@ export default function TaskList({
           />
         </ConfettiWrapper>
       )}
-      <HideDiv visible={currentTab === 'Announcements'}>
+      <HideDiv visible={visibleTab === 'Announcements'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : announcementList}
@@ -407,7 +408,7 @@ export default function TaskList({
           {announcementList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      <HideDiv visible={currentTab === 'Unfinished' && !hideUnfinishedList}>
+      <HideDiv visible={visibleTab === 'Unfinished' && !hideUnfinishedList}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : unfinishedList}
@@ -426,12 +427,7 @@ export default function TaskList({
           )}
         </ListContainer>
       </HideDiv>
-      <HideDiv
-        visible={
-          currentTab === 'NeedsGrading' ||
-          (currentTab === 'Unfinished' && hideUnfinishedList)
-        }
-      >
+      <HideDiv visible={visibleTab === 'NeedsGrading'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : gradingList}
@@ -452,7 +448,7 @@ export default function TaskList({
         </ListContainer>
       </HideDiv>
 
-      <HideDiv visible={currentTab === 'Completed'}>
+      <HideDiv visible={visibleTab === 'Completed'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : completedList}
@@ -466,7 +462,7 @@ export default function TaskList({
           {completedList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      {allList[currentTab].length > 4 && (
+      {allList[visibleTab].length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>
