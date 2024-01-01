@@ -67,11 +67,12 @@ function TaskContainer({
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
 
   const updatedAssignments = useMemo(() => {
+    if (!startDate || !endDate) return [];
     setDelayLoad(false);
-    if (courseId)
-      return filterCourses([courseId], Object.values(assignmentStore.state));
-    return Object.values(assignmentStore.state);
-  }, [assignmentStore.assignmentList, courseId]);
+    let res = Object.values(assignmentStore.state);
+    if (courseId) res = filterCourses([courseId], res);
+    return filterTimeBounds(startDate, endDate, res);
+  }, [assignmentStore.assignmentList, startDate, endDate, courseId]);
   const updatedAnnouncements = useMemo(() => {
     if (courseId)
       return filterCourses([courseId], Object.values(announcementStore.state));
@@ -93,16 +94,9 @@ function TaskContainer({
   async function createNewAssignment(
     assignment: FinalAssignment | FinalAssignment[]
   ) {
-    if (startDate && endDate) {
-      const withinBounds = filterTimeBounds(
-        startDate,
-        endDate,
-        Array.isArray(assignment) ? assignment : [assignment]
-      );
-      if (withinBounds.length) {
-        assignmentStore.createAssignment(withinBounds);
-      }
-    }
+    assignmentStore.createAssignment(
+      Array.isArray(assignment) ? assignment : [assignment]
+    );
   }
 
   // only assignments in bounds (not rolled over from past weeks) unless needs grading (instructor)

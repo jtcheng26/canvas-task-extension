@@ -70,6 +70,59 @@ export interface TaskListProps {
   weekKey: string; // unique key value for same headings between different weeks
 }
 
+function startTransition() {
+  return {
+    height: 0,
+    opacity: 0,
+  };
+}
+function enterTransition() {
+  return {
+    height: [65],
+    opacity: [1],
+    timing: { duration: 500, ease: easeQuadInOut },
+  };
+}
+function leaveTransition() {
+  return {
+    height: [0],
+    opacity: [0],
+    timing: { duration: 300, ease: easeQuadInOut },
+  };
+}
+
+// some animations become "updates" instead of "enters" when switching tabs during them
+function updateTransition() {
+  return {
+    height: [65],
+    opacity: [1],
+    timing: { duration: 500, ease: easeQuadInOut },
+  };
+}
+
+function processRenderList(
+  assignments: FinalAssignment[],
+  tab: TaskTypeTab,
+  selectedCourseId: string,
+  viewingMore: boolean,
+  showDateHeadings: boolean
+) {
+  const selected = useSelectedCourse(selectedCourseId, assignments);
+  const filtered = filterByTab(tab, selected);
+  const sorted = sortByTab(tab, filtered);
+  const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
+  const headings = useHeadings(tab, renderedTasks);
+  const allRendered = Object.keys(headings).reduce<
+    (FinalAssignment | string)[]
+  >((prev, curr) => {
+    let nxt = prev;
+    if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
+    nxt = nxt.concat(headings[curr]);
+    return nxt;
+  }, []);
+  return [allRendered, sorted as FinalAssignment[]];
+}
+
 /*
   Renders all unfinished assignments
 */
@@ -83,6 +136,7 @@ export default function TaskList({
   showDateHeadings,
   showConfetti = true,
   skeleton,
+  weekKey,
 }: TaskListProps): JSX.Element {
   const courseStore = useCourseStore();
   const darkMode = useContext(DarkContext);
@@ -90,28 +144,6 @@ export default function TaskList({
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
-  function processRenderList(
-    assignments: FinalAssignment[],
-    tab: TaskTypeTab,
-    selectedCourseId: string,
-    viewingMore: boolean,
-    showDateHeadings: boolean
-  ) {
-    const selected = useSelectedCourse(selectedCourseId, assignments);
-    const filtered = filterByTab(tab, selected);
-    const sorted = sortByTab(tab, filtered);
-    const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
-    const headings = useHeadings(tab, renderedTasks);
-    const allRendered = Object.keys(headings).reduce<
-      (FinalAssignment | string)[]
-    >((prev, curr) => {
-      let nxt = prev;
-      if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
-      nxt = nxt.concat(headings[curr]);
-      return nxt;
-    }, []);
-    return [allRendered, sorted as FinalAssignment[]];
-  }
 
   const [unfinishedList, allUnfinishedList] = useMemo(
     () =>
@@ -312,28 +344,8 @@ export default function TaskList({
     };
   }
 
-  function startTransition() {
-    return {
-      height: 0,
-      opacity: 0,
-    };
-  }
-  function enterTransition() {
-    return {
-      height: [65],
-      opacity: [1],
-      timing: { duration: 500, ease: easeQuadInOut },
-    };
-  }
-  function leaveTransition() {
-    return {
-      height: [0],
-      opacity: [0],
-      timing: { duration: 300, ease: easeQuadInOut },
-    };
-  }
   function keyAccess(a: FinalAssignment | string) {
-    return typeof a === 'string' ? a : a.id;
+    return typeof a === 'string' ? a + '-' + weekKey : a.id + '-' + weekKey;
   }
 
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;
@@ -402,13 +414,14 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Announcements'))}</>}
           </NodeGroup>
           {announcementList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      <HideDiv visible={visibleTab === 'Unfinished' && !hideUnfinishedList}>
+      <HideDiv visible={visibleTab === 'Unfinished'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : unfinishedList}
@@ -416,6 +429,7 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Unfinished'))}</>}
           </NodeGroup>
@@ -435,6 +449,7 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('NeedsGrading'))}</>}
           </NodeGroup>
@@ -456,6 +471,7 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Completed'))}</>}
           </NodeGroup>
