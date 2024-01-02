@@ -67,7 +67,6 @@ export function useNewAssignmentStore(
     assignments.forEach((assignment) => (temp[assignment.id] = assignment));
     initialize(temp);
     setAssignmentList(Object.keys(temp));
-    console.log(temp);
   }
 
   return {

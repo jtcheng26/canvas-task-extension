@@ -6,6 +6,7 @@ import { CheckIcon } from '../../icons';
 import fmtDate, { fmtDateSince } from './utils/fmtDate';
 import { DarkProps } from '../../types/props';
 import { DarkContext } from '../../contexts/contexts';
+import assignmentHasGrade from '../../utils/assignmentHasGrade';
 
 export interface AnimatedProps {
   static?: boolean;
@@ -167,11 +168,9 @@ export interface TransitionState {
 
 export default function TaskCard({
   assignment = AssignmentDefaults,
-
   complete = AssignmentDefaults.marked_complete,
   course_name,
   color,
-
   markComplete,
   markDeleted,
   skeleton,
@@ -185,6 +184,8 @@ export default function TaskCard({
     e.preventDefault();
     window.location.href = assignment.html_url;
   }
+  // if on completed tab, display grade even if it would normally be considered "ungraded" (i.e. 0-point grade)
+  const display_grade = complete && assignmentHasGrade(assignment);
   const is_instructor =
     assignment.needs_grading_count && assignment.type !== AssignmentType.NOTE;
   const icon = ASSIGNMENT_ICON[is_instructor ? 'ungraded' : assignment.type];
@@ -197,12 +198,11 @@ export default function TaskCard({
       ? 'Submitted'
       : '';
   const dueText = ` ${due_date} at ${due_time}`;
-  const gradedAtText =
-    !assignment.graded || !assignment.graded_at
-      ? ''
-      : assignment.grade === 'Excused'
-      ? ' Excused'
-      : ` ${assignment.score}/${assignment.points_possible} points`;
+  const gradedAtText = !display_grade
+    ? ''
+    : assignment.grade === 'Excused'
+    ? ' Excused'
+    : ` ${assignment.score}/${assignment.points_possible} points`;
   const pointsPlural = !assignment.points_possible
     ? ''
     : assignment.points_possible > 1
@@ -215,8 +215,8 @@ export default function TaskCard({
     ? `${assignment.needs_grading_count} ungraded`
     : '';
   const gradedText =
-    assignment.submitted || assignment.graded
-      ? ` ${!assignment.graded ? ' Waiting for grade' : ' Graded: '}`
+    assignment.submitted || display_grade
+      ? ` ${!display_grade ? ' Waiting for grade' : ' Graded: '}`
       : ' Completed';
   function markAssignmentAsComplete() {
     if (markComplete) {
@@ -290,7 +290,7 @@ export default function TaskCard({
             </>
           ) : (
             <>
-              {!assignment.graded && assignment.points_possible ? (
+              {!display_grade && assignment.points_possible ? (
                 <>
                   <strong>{submittedText}</strong>
                   {' \xa0|\xa0 '}
@@ -298,7 +298,7 @@ export default function TaskCard({
               ) : (
                 ''
               )}
-              {!assignment.graded ? <strong>{gradedText}</strong> : gradedText}
+              {!display_grade ? <strong>{gradedText}</strong> : gradedText}
               <strong>{gradedAtText}</strong>
               {gradedAtText ? ' | ' + gradedSince : ''}
             </>

@@ -1,4 +1,5 @@
 import { FinalAssignment } from '../../../types';
+import assignmentHasGrade from '../../../utils/assignmentHasGrade';
 import assignmentIsDone from '../../../utils/assignmentIsDone';
 import { TaskTypeTab } from './useHeadings';
 
@@ -11,24 +12,27 @@ export function sortByGraded(
   assignments: FinalAssignment[]
 ): FinalAssignment[] {
   return assignments.sort((a, b) => {
-    if (a.graded == b.graded) return compareISODates(b.due_at, a.due_at);
-    return (a.graded ? 1 : -1) - (b.graded ? 1 : -1);
+    const ag = assignmentHasGrade(a);
+    const bg = assignmentHasGrade(b);
+    if (ag === bg) return compareISODates(b.due_at, a.due_at); // new before old
+    return (ag ? -1 : 1) - (bg ? -1 : 1); // graded before ungraded
   });
 }
 
 export function sortByRead(assignments: FinalAssignment[]): FinalAssignment[] {
   return assignments.sort((a, b) => {
     if (a.marked_complete == b.marked_complete)
-      return compareISODates(b.due_at, a.due_at);
-    return (a.marked_complete ? 1 : -1) - (b.marked_complete ? 1 : -1);
+      return compareISODates(b.due_at, a.due_at); // new before old
+    return (a.marked_complete ? 1 : -1) - (b.marked_complete ? 1 : -1); // incomplete before complete
   });
 }
 
 export function sortByDate(assignments: FinalAssignment[]): FinalAssignment[] {
   return assignments.sort((a, b) => {
+    // needs grading before not needs grading
     if (a.needs_grading_count && !b.needs_grading_count) return 1;
     else if (!a.needs_grading_count && b.needs_grading_count) return -1;
-    return compareISODates(a.due_at, b.due_at);
+    return compareISODates(a.due_at, b.due_at); // old before new
   });
 }
 
