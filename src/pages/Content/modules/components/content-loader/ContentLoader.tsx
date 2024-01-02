@@ -4,6 +4,8 @@ import { AssignmentType, FinalAssignment, Options } from '../../types';
 import useAssignments from '../../hooks/useAssignments';
 import onCoursePage from '../../utils/onCoursePage';
 import useCourses from '../../hooks/useCourses';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorRender from '../error/ErrorRender';
 
 interface ContentLoaderProps {
   clickable: boolean;
@@ -111,22 +113,24 @@ function ContentLoader({
 
   if (isError) return <h1>{failed}</h1>;
   return (
-    <TaskContainer
-      announcements={
-        isLoading
-          ? prevData.current.announcements
-          : assignmentData.announcements
-      }
-      assignments={
-        isLoading ? prevData.current.assignments : assignmentData.assignments
-      }
-      courseData={courseData || []}
-      courseId={onCourse}
-      endDate={isLoading ? prevData.current.endDate : endDate}
-      loading={isLoading} // on first load, show immediately (no min delay)
-      options={options}
-      startDate={isLoading ? prevData.current.startDate : startDate}
-    />
+    <ErrorBoundary fallbackRender={ErrorRender}>
+      <TaskContainer
+        announcements={
+          isLoading
+            ? prevData.current.announcements
+            : assignmentData.announcements
+        }
+        assignments={
+          isLoading ? prevData.current.assignments : assignmentData.assignments
+        }
+        courseData={(isLoading ? prevData.current.courses : courseData) || []}
+        courseId={onCourse}
+        endDate={isLoading ? prevData.current.endDate : endDate}
+        loading={isLoading} // on first load, show immediately (no min delay)
+        options={options}
+        startDate={isLoading ? prevData.current.startDate : startDate}
+      />
+    </ErrorBoundary>
   );
 }
 

@@ -115,7 +115,7 @@ function TaskContainer({
   // only courses in chart can be filtered by and shown in dropdown
   const chartCourses: string[] = useMemo(() => {
     if (courseList && courseId !== false)
-      return courseId ? [courseId as string] : [];
+      return courseId ? courseList.filter((c) => c === courseId) : [];
     // get only the courses with assignments
     const extracted = extractCourses(chartAssignments);
     // if showing all dashboard courses, add the courses with no assignments
@@ -150,7 +150,9 @@ function TaskContainer({
           <TaskChart
             assignments={chartAssignments}
             colorOverride={
-              courseId ? courseStore.state[chartCourses[0]].color : undefined
+              courseId && chartCourses[0] in courseStore.state
+                ? courseStore.state[chartCourses[0]].color
+                : undefined
             }
             courses={chartCourses}
             loading={loading}

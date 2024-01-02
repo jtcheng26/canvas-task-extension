@@ -99,9 +99,18 @@ export default function CourseDropdown({
     setHovering(false);
   }
 
-  const selectedChoice = selectedId
-    ? choices.filter((choice) => choice.id == selectedId)[0]
-    : choices[0];
+  const selectedChoice = (() => {
+    if (selectedId) {
+      const filtered = choices.filter((choice) => choice.id == selectedId);
+      if (filtered.length) return filtered[0];
+    }
+    if (choices.length === 0)
+      return {
+        name: 'All Courses',
+        color: defaultColor || '#000000',
+      };
+    return choices[0];
+  })();
 
   const name = selectedId
     ? selectedChoice.name

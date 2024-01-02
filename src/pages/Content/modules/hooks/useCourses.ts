@@ -5,6 +5,7 @@ import { Course } from '../types';
 import baseURL from '../utils/baseURL';
 import isDemo from '../utils/isDemo';
 import { useEffect, useState } from 'react';
+import { getPaginatedRequest } from './useAssignments';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<Record<string, number>> {
@@ -78,7 +79,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
   if (isDemo()) return DemoCourses;
 
   const [res, colors, positions] = await Promise.all([
-    axios.get(`${baseURL()}/api/v1/courses?per_page=200`),
+    getPaginatedRequest<Course>(`${baseURL()}/api/v1/courses?per_page=200`),
     getCourseColors(),
     getCoursePositions(),
   ]);
@@ -91,7 +92,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
     course_code: 'Custom Task',
   };
 
-  const courses = res.data
+  const courses = res
     .filter((course: Course) => !course.access_restricted_by_date)
     .map((course: Course) => {
       course.id = course.id.toString();
