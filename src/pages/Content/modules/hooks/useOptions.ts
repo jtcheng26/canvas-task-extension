@@ -46,14 +46,20 @@ export function useOptionsStore(
   }
   useEffect(() => {
     // add observers here
-    chrome.storage.onChanged.addListener((changes) => {
+    const storageListener = (changes: {
+      [key: string]: chrome.storage.StorageChange;
+    }) => {
       for (const [key, { oldValue, newValue }] of Object.entries(changes)) {
         if (storedUserOptions.includes(key) && oldValue !== newValue) {
           update([key], newValue, false);
           if (onUpdateCallback) onUpdateCallback();
         }
       }
-    });
+    };
+    chrome.storage.onChanged.addListener(storageListener);
+    return () => {
+      chrome.storage.onChanged.removeListener(storageListener);
+    };
   }, []);
 
   return { state, update: updateKey };
