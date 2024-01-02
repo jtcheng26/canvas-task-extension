@@ -24,8 +24,8 @@ export interface TaskContainerProps {
   courseId?: string | false;
   courseData: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 /*
@@ -67,7 +67,6 @@ function TaskContainer({
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
 
   const updatedAssignments = useMemo(() => {
-    if (!startDate || !endDate) return [];
     setDelayLoad(false);
     let res = Object.values(assignmentStore.state);
     if (courseId) res = filterCourses([courseId], res);
@@ -80,10 +79,7 @@ function TaskContainer({
   }, [announcementStore.assignmentList, courseId]);
 
   // force the chart to update each week, but make sure the key updates in sync with assignments
-  const weekKey = useMemo(
-    () => startDate?.toISOString() || '1',
-    [updatedAssignments]
-  );
+  const weekKey = useMemo(() => startDate.toISOString(), [updatedAssignments]);
 
   function markAssignmentAs(id: string, status: AssignmentStatus) {
     if (assignmentStore.state[id].type === AssignmentType.ANNOUNCEMENT)
@@ -101,7 +97,6 @@ function TaskContainer({
 
   // only assignments in bounds (not rolled over from past weeks) unless needs grading (instructor)
   const chartAssignments = useMemo(() => {
-    if (!startDate || !endDate) return updatedAssignments;
     return updatedAssignments.filter((assignment) => {
       if (assignment.needs_grading_count) return true;
       const due_date = new Date(assignment.due_at);

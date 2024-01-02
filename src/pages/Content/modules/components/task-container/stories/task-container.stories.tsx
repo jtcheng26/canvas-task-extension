@@ -18,6 +18,8 @@ const storyDefaults: TaskContainerProps = {
   courseData: [],
   loading: false,
   options: OptionsDefaults,
+  startDate: new Date(),
+  endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
 };
 
 const Template: ComponentStory<typeof TaskContainer> = function ({
@@ -27,6 +29,8 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
   courseData = [],
   loading,
   options,
+  startDate,
+  endDate,
 }: TaskContainerProps) {
   function func() {
     console.log('click');
@@ -57,8 +61,10 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
         assignments={assignments}
         courseData={courseData}
         courseId={courseId}
+        endDate={endDate}
         loading={loading}
         options={options}
+        startDate={startDate}
       />
     </div>
   );
