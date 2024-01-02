@@ -24,8 +24,8 @@ export interface TaskContainerProps {
   courseId?: string | false;
   courseData: Course[]; // all courses, for corner case when on course page w/ no assignments
   options: Options;
-  startDate?: Date;
-  endDate?: Date;
+  startDate: Date;
+  endDate: Date;
 }
 
 /*
@@ -50,9 +50,16 @@ function TaskContainer({
   */
   const assignmentStore = useNewAssignmentStore(assignments);
   const announcementStore = useNewAssignmentStore(announcements);
+  const [delayLoad, setDelayLoad] = useState(false); // assignmentStore updates one tick after loading for TaskList, so this makes it consistent
+  useEffect(() => {
+    if (loading) setDelayLoad(true);
+  }, [loading]);
 
-  useEffect(() => assignmentStore.newPage(assignments), [assignments]);
+  useEffect(() => {
+    assignmentStore.newPage(assignments);
+  }, [assignments]);
   useEffect(() => announcementStore.newPage(announcements), [announcements]);
+  useEffect(() => courseStore.newPage(courseData), [courseData]);
 
   const [selectedCourseId, setSelectedCourseId] = useState<string>(
     courseList && courseId ? courseId : ''
@@ -60,10 +67,11 @@ function TaskContainer({
   const themeColor = options.theme_color || OptionsDefaults.theme_color;
 
   const updatedAssignments = useMemo(() => {
-    if (courseId)
-      return filterCourses([courseId], Object.values(assignmentStore.state));
-    return Object.values(assignmentStore.state);
-  }, [assignmentStore.assignmentList, courseId]);
+    setDelayLoad(false);
+    let res = Object.values(assignmentStore.state);
+    if (courseId) res = filterCourses([courseId], res);
+    return filterTimeBounds(startDate, endDate, res);
+  }, [assignmentStore.assignmentList, startDate, endDate, courseId]);
   const updatedAnnouncements = useMemo(() => {
     if (courseId)
       return filterCourses([courseId], Object.values(announcementStore.state));
@@ -71,10 +79,7 @@ function TaskContainer({
   }, [announcementStore.assignmentList, courseId]);
 
   // force the chart to update each week, but make sure the key updates in sync with assignments
-  const weekKey = useMemo(
-    () => startDate?.toISOString() || '1',
-    [updatedAssignments]
-  );
+  const weekKey = useMemo(() => startDate.toISOString(), [updatedAssignments]);
 
   function markAssignmentAs(id: string, status: AssignmentStatus) {
     if (assignmentStore.state[id].type === AssignmentType.ANNOUNCEMENT)
@@ -85,21 +90,13 @@ function TaskContainer({
   async function createNewAssignment(
     assignment: FinalAssignment | FinalAssignment[]
   ) {
-    if (startDate && endDate) {
-      const withinBounds = filterTimeBounds(
-        startDate,
-        endDate,
-        Array.isArray(assignment) ? assignment : [assignment]
-      );
-      if (withinBounds.length) {
-        assignmentStore.createAssignment(withinBounds);
-      }
-    }
+    assignmentStore.createAssignment(
+      Array.isArray(assignment) ? assignment : [assignment]
+    );
   }
 
   // only assignments in bounds (not rolled over from past weeks) unless needs grading (instructor)
   const chartAssignments = useMemo(() => {
-    if (!startDate || !endDate) return updatedAssignments;
     return updatedAssignments.filter((assignment) => {
       if (assignment.needs_grading_count) return true;
       const due_date = new Date(assignment.due_at);
@@ -113,7 +110,7 @@ function TaskContainer({
   // only courses in chart can be filtered by and shown in dropdown
   const chartCourses: string[] = useMemo(() => {
     if (courseList && courseId !== false)
-      return courseId ? [courseId as string] : [];
+      return courseId ? courseList.filter((c) => c === courseId) : [];
     // get only the courses with assignments
     const extracted = extractCourses(chartAssignments);
     // if showing all dashboard courses, add the courses with no assignments
@@ -148,7 +145,9 @@ function TaskContainer({
           <TaskChart
             assignments={chartAssignments}
             colorOverride={
-              courseId ? courseStore.state[chartCourses[0]].color : undefined
+              courseId && chartCourses[0] in courseStore.state
+                ? courseStore.state[chartCourses[0]].color
+                : undefined
             }
             courses={chartCourses}
             loading={loading}
@@ -163,7 +162,7 @@ function TaskContainer({
             announcements={updatedAnnouncements}
             assignments={updatedAssignments}
             createAssignment={createNewAssignment}
-            loading={loading}
+            loading={loading || delayLoad}
             markAssignment={markAssignmentAs}
             selectedCourseId={chosenCourseId}
             showConfetti={options.show_confetti}

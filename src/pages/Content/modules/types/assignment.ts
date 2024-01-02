@@ -26,6 +26,7 @@ interface PlannerAssignment {
   plannable: {
     id: string;
     title: string;
+    details?: string;
     due_at?: string;
     todo_date?: string; // for custom planner notes
     points_possible?: number;
@@ -45,7 +46,7 @@ export interface TodoAssignment {
   name: string;
   course_id: string;
   points_possible?: number;
-  is_quiz_assignment?: number;
+  is_quiz_assignment?: boolean;
 }
 
 interface TodoResponse {

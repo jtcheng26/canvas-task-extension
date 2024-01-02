@@ -1,4 +1,6 @@
+import { NeedsGradingCount } from '../hooks/utils/loadNeedsGrading';
 import { Course, AssignmentType, PlannerAssignment } from '../types';
+import { TodoResponse } from '../types/assignment';
 
 /*
   Pretty demo assignments
@@ -356,4 +358,87 @@ const DemoNames: Record<string, string> = {
   4: 'Biology - McCoy',
 };
 
-export { DemoAssignments, DemoCourses, DemoColors, DemoNames, DemoPositions };
+const DemoTeacherAssignments: TodoResponse[] = [
+  {
+    assignment: {
+      html_url: '#',
+      name: 'Worksheet 6.4',
+      id: '10',
+      due_at: days[0],
+      points_possible: 10,
+      course_id: '1',
+      needs_grading_count: 0,
+    },
+    needs_grading_count: 0,
+  },
+  {
+    assignment: {
+      html_url: '#',
+      name: 'Civil War Quiz',
+      id: '20',
+      due_at: days[2],
+      points_possible: 15,
+      course_id: '3',
+      is_quiz_assignment: true,
+      needs_grading_count: 3,
+    },
+    needs_grading_count: 3,
+  },
+  {
+    assignment: {
+      html_url: '#',
+      name: 'Nitrogen Cycle Worksheet',
+      id: '21',
+      due_at: days[3],
+      points_possible: 10,
+      course_id: '4',
+      needs_grading_count: 10,
+    },
+    needs_grading_count: 10,
+  },
+  {
+    assignment: {
+      html_url: '#',
+      name: 'Hamlet Essay',
+      id: '13',
+      due_at: days[4],
+      points_possible: 50,
+      course_id: '2',
+      needs_grading_count: 20,
+    },
+    needs_grading_count: 20,
+  },
+];
+
+const DemoNeedsGrading: Record<string, NeedsGradingCount> = {
+  '13': {
+    id: '13',
+    needs_grading: 20,
+    total: 28,
+  },
+  '21': {
+    id: '21',
+    needs_grading: 10,
+    total: 12,
+  },
+  '20': {
+    id: '20',
+    needs_grading: 3,
+    total: 20,
+  },
+  '10': {
+    id: '10',
+    needs_grading: 0,
+    total: 5,
+  },
+};
+
+export {
+  DemoAssignments,
+  DemoCourses,
+  DemoColors,
+  DemoNames,
+  DemoPositions,
+  DemoNeedsGrading,
+  DemoTeacherAssignments,
+};

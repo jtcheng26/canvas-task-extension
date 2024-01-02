@@ -5,6 +5,7 @@ import { Course } from '../types';
 import baseURL from '../utils/baseURL';
 import isDemo from '../utils/isDemo';
 import { useEffect, useState } from 'react';
+import { getPaginatedRequest } from './useAssignments';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<Record<string, number>> {
@@ -74,24 +75,24 @@ function applyCourseNames(courses: Course[]): Course[] {
 }
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
-export async function getCourses(): Promise<Course[]> {
+export async function getCourses(defaultColor?: string): Promise<Course[]> {
   if (isDemo()) return DemoCourses;
 
   const [res, colors, positions] = await Promise.all([
-    axios.get(`${baseURL()}/api/v1/courses?per_page=200`),
+    getPaginatedRequest<Course>(`${baseURL()}/api/v1/courses?per_page=200`),
     getCourseColors(),
     getCoursePositions(),
   ]);
 
   const CustomCourse: Course = {
     id: '0',
-    color: THEME_COLOR,
+    color: defaultColor || THEME_COLOR,
     position: 0,
     name: 'Custom Task',
     course_code: 'Custom Task',
   };
 
-  const courses = res.data
+  const courses = res
     .filter((course: Course) => !course.access_restricted_by_date)
     .map((course: Course) => {
       course.id = course.id.toString();
@@ -112,14 +113,16 @@ interface UseCoursesHookInterface {
 }
 
 /* Use cached course data */
-export default function useCourses(): UseCoursesHookInterface {
+export default function useCourses(
+  defaultColor?: string
+): UseCoursesHookInterface {
   const [state, setState] = useState<UseCoursesHookInterface>({
     data: null,
     isError: false,
     isSuccess: false,
   });
   useEffect(() => {
-    getCourses()
+    getCourses(defaultColor)
       .then((res) => {
         setState({ data: res, isSuccess: true, isError: false });
       })

@@ -2,9 +2,10 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import TaskContainer from '../task-container';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
 import useAssignments from '../../hooks/useAssignments';
-import Skeleton from '../skeleton';
 import onCoursePage from '../../utils/onCoursePage';
 import useCourses from '../../hooks/useCourses';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorRender from '../error/ErrorRender';
 
 interface ContentLoaderProps {
   clickable: boolean;
@@ -32,7 +33,7 @@ function ContentLoader({
     isError,
     isSuccess, // "isLoading"
   } = useAssignments(startDate, endDate, options);
-  const { data: courseData } = useCourses();
+  const { data: courseData } = useCourses(options.theme_color);
   const animationStart = useRef(0); // for counting load time
   const MIN_LOAD_TIME = 350; // delay between load and render so animations have time to play
 
@@ -67,16 +68,23 @@ function ContentLoader({
     }
   }, [isSuccess]);
 
-  const assignmentData = useMemo(
-    () =>
-      plannerData
-        ? {
-            assignments: filterAnnouncements(plannerData, false),
-            announcements: filterAnnouncements(plannerData, true),
-          }
-        : null,
-    [plannerData]
-  );
+  const assignmentData = useMemo(() => {
+    /* IMPORTANT: validates all `course_id` in assignments. This is the first point where both assignment and course data are synchronized. */
+    if (!(plannerData && courseData))
+      return { assignments: [], announcements: [] };
+    const map = new Set<string>();
+    courseData.forEach((c) => map.add(c.id));
+    return {
+      assignments: filterAnnouncements(plannerData, false).map((a) => {
+        if (!map.has(a.course_id)) a.course_id = '0';
+        return a;
+      }),
+      announcements: filterAnnouncements(plannerData, true).map((a) => {
+        if (!map.has(a.course_id)) a.course_id = '0';
+        return a;
+      }),
+    };
+  }, [plannerData, courseData]);
 
   const failed = 'Failed to load';
   const onCourse = onCoursePage();
@@ -104,25 +112,25 @@ function ContentLoader({
   }, [isLoading, assignmentData, courseData, startDate, endDate]);
 
   if (isError) return <h1>{failed}</h1>;
-  if (!assignmentData || !courseData)
-    return <Skeleton dark={options.dark_mode} />;
   return (
-    <TaskContainer
-      announcements={
-        isLoading
-          ? prevData.current.announcements
-          : assignmentData.announcements
-      }
-      assignments={
-        isLoading ? prevData.current.assignments : assignmentData.assignments
-      }
-      courseData={courseData}
-      courseId={onCourse}
-      endDate={isLoading ? prevData.current.endDate : endDate}
-      loading={isLoading} // on first load, show immediately (no min delay)
-      options={options}
-      startDate={isLoading ? prevData.current.startDate : startDate}
-    />
+    <ErrorBoundary fallbackRender={ErrorRender}>
+      <TaskContainer
+        announcements={
+          isLoading
+            ? prevData.current.announcements
+            : assignmentData.announcements
+        }
+        assignments={
+          isLoading ? prevData.current.assignments : assignmentData.assignments
+        }
+        courseData={(isLoading ? prevData.current.courses : courseData) || []}
+        courseId={onCourse}
+        endDate={isLoading ? prevData.current.endDate : endDate}
+        loading={isLoading} // on first load, show immediately (no min delay)
+        options={options}
+        startDate={isLoading ? prevData.current.startDate : startDate}
+      />
+    </ErrorBoundary>
   );
 }
 

@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import { OptionsDefaults } from '../constants';
 import { Options } from '../types';
 import isDarkMode from '../utils/isDarkMode';
@@ -30,12 +30,33 @@ export async function getOptions(): Promise<Options> {
 
 export interface OptionsInterface {
   state: Options;
+  update: (key: string, value: unknown) => Options;
 }
 
-export function useOptionsStore(arg?: Options): OptionsInterface {
-  const { state } = useConfigStore<Options>(arg || OptionsDefaults, true);
+export function useOptionsStore(
+  arg?: Options,
+  onUpdateCallback?: () => void
+): OptionsInterface {
+  const { state, update } = useConfigStore<Options>(
+    arg || OptionsDefaults,
+    true
+  );
+  function updateKey(key: string, value: unknown) {
+    return update([key], value, true);
+  }
+  useEffect(() => {
+    // add observers here
+    chrome.storage.onChanged.addListener((changes) => {
+      for (const [key, { oldValue, newValue }] of Object.entries(changes)) {
+        if (storedUserOptions.includes(key) && oldValue !== newValue) {
+          update([key], newValue, false);
+          if (onUpdateCallback) onUpdateCallback();
+        }
+      }
+    });
+  }, []);
 
-  return { state };
+  return { state, update: updateKey };
 }
 
 /* Use cached options */

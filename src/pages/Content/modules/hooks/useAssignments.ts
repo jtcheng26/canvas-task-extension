@@ -105,6 +105,33 @@ export function convertPlannerAssignments(
           assignment.plannable.read_state === 'read'),
     };
 
+    if (
+      assignment.plannable_type === AssignmentType.NOTE &&
+      assignment.plannable.details
+    ) {
+      const parsed = assignment.plannable.details.split('\n');
+      // custom task with details
+      if (
+        parsed.length >= 2 &&
+        parsed[0].trim() === 'Created using Tasks for Canvas'
+      ) {
+        if (parsed[1].trim() === 'Instructor Note') {
+          converted.needs_grading_count = 1;
+          converted.total_submissions = 1;
+        }
+        // in case the user added other details after
+        try {
+          if (parsed.length >= 3)
+            converted.html_url = parsed[2].split(' ')[0].trim();
+          if (parsed.length >= 4)
+            converted.course_id = parsed[3].split(' ')[0].trim();
+        } catch {
+          converted.html_url = '/';
+          converted.course_id = '0';
+        }
+      }
+    }
+
     const full: FinalAssignment = {
       ...AssignmentDefaults,
     };
@@ -166,7 +193,8 @@ export function filterAssignmentTypes(
 
 export async function getAllAssignments(
   startDate: Date,
-  endDate: Date
+  endDate: Date,
+  options: Options
 ): Promise<FinalAssignment[]> {
   /* Expand bounds by 1 day to account for possible time zone differences with api. */
   const st = new Date(startDate);
@@ -177,7 +205,9 @@ export async function getAllAssignments(
   const startStr = st.toISOString().split('T')[0];
   const endStr = en.toISOString().split('T')[0];
   const data = isDemo()
-    ? DemoAssignments
+    ? options.show_needs_grading
+      ? []
+      : DemoAssignments
     : await getAllAssignmentsRequest(startStr, endStr);
 
   return convertPlannerAssignments(data as PlannerAssignment[]);
@@ -212,7 +242,7 @@ async function processAssignments(
   options: Options
 ): Promise<FinalAssignment[]> {
   /* modify this filter if announcements are used in the future */
-  const assignments = await getAllAssignments(startDate, endDate);
+  const assignments = await getAllAssignments(startDate, endDate, options);
   return processAssignmentList(assignments, startDate, endDate, options);
 }
 

@@ -5,8 +5,9 @@ import isDemo from '../../utils/isDemo';
 import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
 import { TodoAssignment, TodoResponse } from '../../types/assignment';
 import apiReq from '../../utils/apiReq';
+import { DemoNeedsGrading, DemoTeacherAssignments } from '../../tests/demo';
 
-interface NeedsGradingCount {
+export interface NeedsGradingCount {
   id: string;
   needs_grading: number;
   total: number;
@@ -101,9 +102,11 @@ export function convertTodoAssignments(
 }
 
 export async function getAllTodos(): Promise<FinalAssignment[]> {
-  const data = isDemo() ? [] : await getAllTodoRequest();
+  const data = isDemo() ? DemoTeacherAssignments : await getAllTodoRequest();
   const assignments = convertTodoAssignments(data as TodoResponse[]);
-  const counts = await queryNeedsGradingCounts(assignments.map((a) => a.id));
+  const counts = isDemo()
+    ? DemoNeedsGrading
+    : await queryNeedsGradingCounts(assignments.map((a) => a.id));
   return assignments.map(
     (a) =>
       ({
@@ -130,5 +133,5 @@ export default async function loadNeedsGrading(
   options: Options
 ): Promise<FinalAssignment[]> {
   const startDate = new Date('2000-01-01');
-  return isDemo() ? [] : await processAssignments(startDate, endDate, options);
+  return await processAssignments(startDate, endDate, options);
 }

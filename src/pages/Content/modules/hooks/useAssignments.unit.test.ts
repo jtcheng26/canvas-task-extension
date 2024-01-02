@@ -21,7 +21,7 @@ import beforeEndMinute from '../tests/data/assignment-list/due_at/beforeEndMinut
 import beforeStartDay from '../tests/data/assignment-list/due_at/beforeStartDay.json';
 import afterEndDay from '../tests/data/assignment-list/due_at/afterEndDay.json';
 import forEachTZ from '../tests/utils/forEachTZ';
-import { AssignmentDefaults } from '../constants';
+import { AssignmentDefaults, OptionsDefaults } from '../constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -32,7 +32,8 @@ describe('getAllAssignment', () => {
 
     const assignments = await getAllAssignments(
       new Date('2022-01-01'),
-      new Date('2022-01-01')
+      new Date('2022-01-01'),
+      OptionsDefaults
     );
     expect(assignments.length).toBe(plannerRes.length);
     expect(assignments[0].course_id).toBe(plannerRes[0].course_id.toString());
@@ -44,7 +45,8 @@ describe('getAllAssignment', () => {
 
     const assignments = await getAllAssignments(
       new Date('2022-01-01'),
-      new Date('2022-01-01')
+      new Date('2022-01-01'),
+      OptionsDefaults
     );
     // good values
     expect(assignments[0].name).toBe(plannerRes[0].plannable.title);
@@ -61,7 +63,8 @@ describe('getAllAssignment', () => {
 
     let assignments = await getAllAssignments(
       new Date('2022-01-01'),
-      new Date('2022-01-01')
+      new Date('2022-01-01'),
+      OptionsDefaults
     );
     assignments = filterAssignmentTypes(assignments);
     expect(assignments.length).toBe(5);

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { Course } from '../types';
 import { useObjectStore } from './useStore';
 import { CourseStoreContext } from '../contexts/contexts';
@@ -45,41 +45,70 @@ function watchDashboardColors(callback: (id: string, color: string) => void) {
   return observer;
 }
 
+// call the callback function whenever the user changes their `theme_color` in options
+function watchOptionsThemeColor(callback: (id: string, color: string) => void) {
+  const listener = (changes: {
+    [key: string]: chrome.storage.StorageChange;
+  }) => {
+    if ('theme_color' in changes)
+      callback('0', changes['theme_color'].newValue);
+  };
+  chrome.storage.onChanged.addListener(listener);
+  return listener;
+}
+
 export interface CourseStoreInterface {
   state: Record<string, Course>;
   addCourse: (course: Course) => void;
   updateCourseColor: (id: string, color: string) => void;
   getCourseList: (courses?: string[]) => Course[]; // return list of Course objects from subset of course ids (or return all if none specified)
+  newPage: (courses: Course[]) => void; // replace all state
 }
 
 export function useNewCourseStore(
   courses: Course[] = []
 ): CourseStoreInterface {
-  const initial: Record<string, Course> = {};
-  courses.forEach((course) => (initial[course.id] = course));
-  const { state, update } = useObjectStore<Course>(initial);
+  function toMap(list: Course[]) {
+    const map: Record<string, Course> = {};
+    list.forEach((course) => (map[course.id] = course));
+    return map;
+  }
+  const { state, update, initialize } = useObjectStore<Course>(toMap(courses));
   function addCourse(course: Course) {
     update([course.id], course);
   }
-  function updateCourseColor(id: string, color: string) {
-    if (id in state) update([id, 'color'], color);
-  }
+  const updateCourseColor = useCallback(
+    (id: string, color: string) => {
+      if (id in state) update([id, 'color'], color);
+    },
+    [state]
+  );
   function getCourseList(courses?: string[]): Course[] {
     if (!courses) return Object.values(state);
     return courses.map((c) => state[c]);
+  }
+  function newPage(courses: Course[]): void {
+    initialize(toMap(courses));
   }
 
   useEffect(() => {
     // attach listeners here
     const observers = [watchDashboardColors(updateCourseColor)];
-    return () => observers.forEach((observer) => observer.disconnect());
-  }, []);
+    const chromeStorageListeners = [watchOptionsThemeColor(updateCourseColor)];
+    return () => {
+      observers.forEach((observer) => observer.disconnect());
+      chromeStorageListeners.forEach((listener) =>
+        chrome.storage.onChanged.removeListener(listener)
+      );
+    };
+  }, [updateCourseColor]);
 
   return {
     state,
     addCourse,
     updateCourseColor,
     getCourseList,
+    newPage,
   };
 }
 

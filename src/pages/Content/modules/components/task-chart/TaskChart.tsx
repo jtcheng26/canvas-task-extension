@@ -76,15 +76,10 @@ export default function TaskChart({
 }: TaskChartProps): JSX.Element {
   const courseStore = useCourseStore();
   /* useMemo so it doesn't animate the bars when switching courses. */
-  const [chartData, setChartData] = useState(
-    useChartData(
-      assignments,
-      courses,
-      courseStore,
-      colorOverride || themeColor,
-      weekKey
-    )
-  );
+  const [chartData, setChartData] = useState<ChartData>({
+    bars: [{ id: '0', value: 0, max: 1, color: colorOverride || themeColor }],
+    key: '-1',
+  });
 
   function compareData(a: ChartData, b: ChartData) {
     if (a.bars.length !== b.bars.length) return false;
@@ -103,6 +98,7 @@ export default function TaskChart({
     // if assignments is same but weekkey different just change currkey
     // else update assignments
     // in order for everything to re-animate when weeks change, the key has to change at the same time as the data
+    if (loading) return;
     const newData = useChartData(
       assignments,
       courses,

@@ -1,4 +1,9 @@
-import { AssignmentType, FinalAssignment, Options } from '../../types';
+import {
+  ArrayElement,
+  AssignmentType,
+  FinalAssignment,
+  Options,
+} from '../../types';
 import baseURL from '../../utils/baseURL';
 import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
@@ -6,7 +11,7 @@ import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
 import MissingAssignmentsSample from '../../tests/data/api/missing_submissions.json';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 
-type MissingAssignment = typeof MissingAssignmentsSample[0];
+type MissingAssignment = ArrayElement<typeof MissingAssignmentsSample>;
 
 async function getMissingAssignmentsRequest(
   allPages = true
