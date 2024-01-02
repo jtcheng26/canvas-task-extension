@@ -118,6 +118,11 @@ export default function DynamicSettings({ options }: Props): JSX.Element {
             onClick={updater('sidebar', true)}
             text="Hide existing To Do sidebar"
           />
+          <Checkbox
+            checked={optionsStore.state.due_date_headings}
+            onClick={updater('due_date_headings', false)}
+            text="Divide assignments by due date"
+          />
         </CheckboxSection>
         <InfoSection>
           <span>

@@ -70,8 +70,8 @@ function TaskContainer({
     setDelayLoad(false);
     let res = Object.values(assignmentStore.state);
     if (courseId) res = filterCourses([courseId], res);
-    return filterTimeBounds(startDate, endDate, res);
-  }, [assignmentStore.assignmentList, startDate, endDate, courseId]);
+    return filterTimeBounds(startDate, endDate, res, true);
+  }, [assignmentStore.assignmentList, courseId]);
   const updatedAnnouncements = useMemo(() => {
     if (courseId)
       return filterCourses([courseId], Object.values(announcementStore.state));

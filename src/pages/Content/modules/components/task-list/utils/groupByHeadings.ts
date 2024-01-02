@@ -1,4 +1,5 @@
 import { FinalAssignment } from '../../../types';
+import assignmentHasGrade from '../../../utils/assignmentHasGrade';
 import getDaysLeft from './getDaysLeft';
 import { TaskTypeTab } from './useHeadings';
 
@@ -36,14 +37,14 @@ export function groupByStatusHeadings(
   currentTab: TaskTypeTab = 'Completed'
 ): Record<string, FinalAssignment[]> {
   const headings: Record<string, FinalAssignment[]> = {
-    Ungraded: [],
     Graded: [],
+    Ungraded: [],
     Unread: [],
     Seen: [],
   };
   if (currentTab === 'Completed') {
     assignments.forEach((a) => {
-      if (a.graded) headings['Graded'].push(a);
+      if (assignmentHasGrade(a)) headings['Graded'].push(a);
       else headings['Ungraded'].push(a);
     });
   } else if (currentTab === 'Announcements') {
