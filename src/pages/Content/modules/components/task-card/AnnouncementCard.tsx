@@ -81,7 +81,7 @@ export default function AnnouncementCard({
           href={assignment.html_url}
           opacity={complete ? 0.5 : 1}
         >
-          {!skeleton ? name : <SkeletonTitle dark={darkMode} />}
+          {!skeleton ? assignment.name : <SkeletonTitle dark={darkMode} />}
         </TaskLink>
         <TaskDetailsText opacity={complete ? 0.5 : 1}>
           {skeleton ? <SkeletonInfo dark={darkMode} /> : dueText}
