@@ -153,9 +153,11 @@ export function convertPlannerAssignments(
 export function filterTimeBounds(
   startDate: Date,
   endDate: Date,
-  assignments: FinalAssignment[]
+  assignments: FinalAssignment[],
+  excludeNeedsGrading?: boolean
 ): FinalAssignment[] {
   return assignments.filter((assignment) => {
+    if (excludeNeedsGrading && assignment.needs_grading_count) return true;
     const due_date = new Date(assignment.due_at);
     return (
       due_date.valueOf() >= startDate.valueOf() &&
