@@ -7,7 +7,11 @@ import {
 import baseURL from '../../utils/baseURL';
 import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
-import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
+import {
+  getPaginatedRequest,
+  mergePartial,
+  processAssignmentList,
+} from '../useAssignments';
 import MissingAssignmentsSample from '../../tests/data/api/missing_submissions.json';
 import assignmentIsDone from '../../utils/assignmentIsDone';
 
@@ -63,15 +67,7 @@ function convertMissingAssignments(
         assignment.planner_override?.dismissed,
     };
 
-    const full: FinalAssignment = {
-      ...AssignmentDefaults,
-    };
-
-    Object.keys(converted).forEach((k) => {
-      const prop = k as keyof FinalAssignment;
-      if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-        full[prop] = converted[prop] as never;
-    });
+    const full = mergePartial(converted, AssignmentDefaults);
 
     return full;
   });

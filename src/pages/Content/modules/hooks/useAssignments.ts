@@ -67,10 +67,54 @@ async function getAllAssignmentsRequest(
   return await getPaginatedRequest<PlannerAssignment>(initialURL, allPages);
 }
 
+function isValidDate(datestr: string): boolean {
+  const date = new Date(datestr);
+  return date.toString() !== 'Invalid Date' && !isNaN(date.valueOf());
+}
+
+const PlannerAssignmentDefaults: PlannerAssignment = {
+  id: '0',
+  course_id: '0',
+  plannable_id: '0', // required
+  plannable_type: AssignmentType.ASSIGNMENT,
+  planner_override: null, // remember to check properties if not null
+  plannable_date: undefined,
+  submissions: false, // remember to check properties if not false
+  plannable: {
+    assignment_id: '0', // use this for graphql requests
+    id: '0',
+    title: 'Untitled Assignment',
+    details: '',
+    due_at: '', // this or todo_date required
+    todo_date: '', // for custom planner notes
+    points_possible: 0,
+    course_id: '0', // for custom planner notes
+    linked_object_html_url: '', // for custom planner notes
+    read_state: '', // for announcements
+  },
+  html_url: '',
+};
+
+// Use default values from 'full', only filling in values from 'partial' that are not null/undefined
+export function mergePartial<T>(partial: Partial<T>, full: T): T {
+  const ret = {
+    ...full,
+  };
+  Object.keys(partial).forEach((k) => {
+    const prop = k as keyof T;
+    if (partial[prop] !== null && typeof partial[prop] !== 'undefined')
+      ret[prop] = partial[prop] as never;
+  });
+  return ret;
+}
+
 /* Merge api objects into Assignment objects. */
 export function convertPlannerAssignments(
   assignments: PlannerAssignment[]
 ): FinalAssignment[] {
+  assignments = assignments.map((assignment) =>
+    mergePartial<PlannerAssignment>(assignment, PlannerAssignmentDefaults)
+  );
   return assignments.map((assignment) => {
     const converted: Partial<FinalAssignment> = {
       html_url:
@@ -136,15 +180,11 @@ export function convertPlannerAssignments(
       }
     }
 
-    const full: FinalAssignment = {
-      ...AssignmentDefaults,
-    };
+    const full = mergePartial<FinalAssignment>(converted, AssignmentDefaults);
 
-    Object.keys(converted).forEach((k) => {
-      const prop = k as keyof FinalAssignment;
-      if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-        full[prop] = converted[prop] as never;
-    });
+    // critical properties
+    if (!isValidDate(full.due_at)) full.due_at = new Date().toISOString();
+    if (!full.course_id) full.course_id = '0';
 
     return full;
   });
@@ -242,7 +282,7 @@ export function processAssignmentList(
   return assignments;
 }
 
-async function processAssignments(
+async function loadAssignments(
   startDate: Date,
   endDate: Date,
   options: Options
@@ -294,7 +334,7 @@ export default function useAssignments(
     Promise.all([
       loadNeedsGrading(endDate, options),
       loadMissingAssignments(endDate, options),
-      processAssignments(startDate, endDate, options),
+      loadAssignments(startDate, endDate, options),
     ])
       .then((res: FinalAssignment[][]) => {
         // merge all lists of assignments together

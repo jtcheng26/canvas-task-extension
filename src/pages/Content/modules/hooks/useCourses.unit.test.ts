@@ -23,11 +23,11 @@ test('useCourses hook gets all the courses', async () => {
   mockedAxios.get.mockImplementation((url) => {
     switch (url) {
       case mockedBaseURLString + '/api/v1/users/self/dashboard_positions':
-        return Promise.resolve({ data: customPositions });
+        return Promise.resolve({ headers: {}, data: customPositions });
       case mockedBaseURLString + '/api/v1/users/self/colors':
-        return Promise.resolve({ data: customColors });
+        return Promise.resolve({ headers: {}, data: customColors });
       default:
-        return Promise.resolve({ data: active });
+        return Promise.resolve({ headers: {}, data: active });
     }
   });
 
@@ -39,11 +39,11 @@ test('useCourses hook filters date-restricted courses', async () => {
   mockedAxios.get.mockImplementation((url) => {
     switch (url) {
       case mockedBaseURLString + '/api/v1/users/self/dashboard_positions':
-        return Promise.resolve({ data: customPositions });
+        return Promise.resolve({ headers: {}, data: customPositions });
       case mockedBaseURLString + '/api/v1/users/self/colors':
-        return Promise.resolve({ data: customColors });
+        return Promise.resolve({ headers: {}, data: customColors });
       default:
-        return Promise.resolve({ data: activeAndRestricted });
+        return Promise.resolve({ headers: {}, data: activeAndRestricted });
     }
   });
 
@@ -61,11 +61,11 @@ test('useCourses hook works when all courses are restricted', async () => {
   mockedAxios.get.mockImplementation((url) => {
     switch (url) {
       case mockedBaseURLString + '/api/v1/users/self/dashboard_positions':
-        return Promise.resolve({ data: customPositions });
+        return Promise.resolve({ headers: {}, data: customPositions });
       case mockedBaseURLString + '/api/v1/users/self/colors':
-        return Promise.resolve({ data: customColors });
+        return Promise.resolve({ headers: {}, data: customColors });
       default:
-        return Promise.resolve({ data: restricted });
+        return Promise.resolve({ headers: {}, data: restricted });
     }
   });
 
@@ -88,11 +88,11 @@ test('useCourses hook applies course colors', async () => {
   mockedAxios.get.mockImplementation((url) => {
     switch (url) {
       case mockedBaseURLString + '/api/v1/users/self/dashboard_positions':
-        return Promise.resolve({ data: customPositions });
+        return Promise.resolve({ headers: {}, data: customPositions });
       case mockedBaseURLString + '/api/v1/users/self/colors':
-        return Promise.resolve({ data: colors });
+        return Promise.resolve({ headers: {}, data: colors });
       default:
-        return Promise.resolve({ data: activeAndRestricted });
+        return Promise.resolve({ headers: {}, data: activeAndRestricted });
     }
   });
 

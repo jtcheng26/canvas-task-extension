@@ -2,7 +2,11 @@ import { AssignmentType, FinalAssignment, Options } from '../../types';
 import baseURL from '../../utils/baseURL';
 import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
-import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
+import {
+  getPaginatedRequest,
+  mergePartial,
+  processAssignmentList,
+} from '../useAssignments';
 import { TodoAssignment, TodoResponse } from '../../types/assignment';
 import graphqlReq from './gqlReq';
 import { DemoNeedsGrading, DemoTeacherAssignments } from '../../tests/demo';
@@ -89,16 +93,7 @@ export function convertTodoAssignments(
         needs_grading_count: assignment.needs_grading_count,
       };
 
-      const full: FinalAssignment = {
-        ...AssignmentDefaults,
-      };
-
-      Object.keys(converted).forEach((k) => {
-        const prop = k as keyof FinalAssignment;
-        if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-          full[prop] = converted[prop] as never;
-      });
-
+      const full = mergePartial(converted, AssignmentDefaults);
       return full;
     });
 }
