@@ -60,6 +60,7 @@ async function getAllAssignmentsRequest(
   end: string,
   allPages = true
 ): Promise<PlannerAssignment[]> {
+  // assumption: this request will succeed, otherwise we should throw a fatal error and not load
   const initialURL = `${baseURL()}/api/v1/planner/items?start_date=${start}${
     end ? '&end_date=' + end : ''
   }&per_page=1000`;

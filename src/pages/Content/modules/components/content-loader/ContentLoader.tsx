@@ -76,11 +76,19 @@ function ContentLoader({
     courseData.forEach((c) => map.add(c.id));
     return {
       assignments: filterAnnouncements(plannerData, false).map((a) => {
-        if (!map.has(a.course_id)) a.course_id = '0';
+        if (!map.has(a.course_id))
+          return {
+            ...a,
+            course_id: '0',
+          };
         return a;
       }),
       announcements: filterAnnouncements(plannerData, true).map((a) => {
-        if (!map.has(a.course_id)) a.course_id = '0';
+        if (!map.has(a.course_id))
+          return {
+            ...a,
+            course_id: '0',
+          };
         return a;
       }),
     };
