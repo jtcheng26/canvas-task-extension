@@ -6,7 +6,7 @@ import { ExperimentsContext } from '../contexts/contexts';
 
 // cryptographically secure random number of length N
 // https://codeql.github.com/codeql-query-help/javascript/js-biased-cryptographic-random/
-function generateClientId(length: number): string {
+function generateRandomNumber(length: number): string {
   let num = '';
   let i = 0;
   while (num.length < length) {
@@ -31,7 +31,7 @@ async function getClientId(): Promise<string> {
     chrome.storage.sync.get(['client_id'], function (result) {
       let client_id = result['client_id'];
       if (!client_id) {
-        client_id = generateClientId(CLIENT_ID_LENGTH);
+        client_id = generateRandomNumber(CLIENT_ID_LENGTH);
         chrome.storage.sync.set({ client_id: client_id }, () => {
           resolve(client_id);
         });

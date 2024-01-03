@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import loadNeedsGrading from './utils/loadNeedsGrading';
 import loadMissingAssignments from './utils/loadMissingAssignments';
 import { queryGraded } from './utils/loadGraded';
+import assignmentIsDone from '../utils/assignmentIsDone';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -195,11 +196,19 @@ export function filterTimeBounds(
   startDate: Date,
   endDate: Date,
   assignments: FinalAssignment[],
-  excludeNeedsGrading?: boolean
+  excludeNeedsGrading?: boolean,
+  excludeLongOverdue?: boolean
 ): FinalAssignment[] {
   return assignments.filter((assignment) => {
     if (excludeNeedsGrading && assignment.needs_grading_count) return true;
     const due_date = new Date(assignment.due_at);
+    const now = new Date().valueOf();
+    if (
+      excludeLongOverdue &&
+      due_date.valueOf() < now &&
+      !assignmentIsDone(assignment)
+    )
+      return true;
     return (
       due_date.valueOf() >= startDate.valueOf() &&
       due_date.valueOf() < endDate.valueOf()

@@ -1,6 +1,7 @@
 import { NeedsGradingCount } from '../hooks/utils/loadNeedsGrading';
 import { Course, AssignmentType, PlannerAssignment } from '../types';
 import { TodoResponse } from '../types/assignment';
+import { MissingAssignment } from '../types/assignment';
 
 /*
   Pretty demo assignments
@@ -315,24 +316,28 @@ const DemoCourses: Course[] = [
     id: '1',
     color: '#8F3E97',
     name: 'Calculus 2 - Parisi',
+    course_code: 'Calculus 2 - Parisi',
     position: 0,
   },
   {
     id: '2',
     color: '#1770AB',
     name: 'English Literature - Russell',
+    course_code: 'English Literature - Russell',
     position: 1,
   },
   {
     id: '3',
     color: '#FF2717',
     name: 'US History - Jones',
+    course_code: 'US History - Jones',
     position: 2,
   },
   {
     id: '4',
     color: '#009606',
     name: 'Biology - McCoy',
+    course_code: 'Biology - McCoy',
     position: 3,
   },
 ];
@@ -433,8 +438,34 @@ const DemoNeedsGrading: Record<string, NeedsGradingCount> = {
   },
 };
 
+const DemoMissing: MissingAssignment[] = [
+  {
+    html_url: '',
+    planner_override: null,
+    id: 2000,
+    course_id: 1,
+    name: 'Missing Assignment',
+    due_at: new Date('2022-01-01').toISOString(),
+    points_possible: 20,
+  },
+  {
+    html_url: '',
+    planner_override: {
+      id: 10,
+      plannable_id: 1000,
+      plannable_type: AssignmentType.QUIZ,
+    },
+    id: 1000,
+    course_id: 2,
+    name: 'Overdue Quiz',
+    due_at: new Date('2022-01-01').toISOString(),
+    points_possible: 10,
+  },
+];
+
 export {
   DemoAssignments,
+  DemoMissing,
   DemoCourses,
   DemoColors,
   DemoNames,

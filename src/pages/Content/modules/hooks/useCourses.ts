@@ -76,16 +76,16 @@ function applyCourseNames(courses: Course[]): Course[] {
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
 export async function getCourses(defaultColor?: string): Promise<Course[]> {
-  if (isDemo()) return DemoCourses;
-
-  const [res, colors, positions] = await Promise.all([
-    getPaginatedRequest<Course>(
-      `${baseURL()}/api/v1/courses?per_page=200`,
-      true
-    ),
-    getCourseColors(),
-    getCoursePositions(),
-  ]);
+  const [res, colors, positions] = isDemo()
+    ? [DemoCourses, DemoColors, DemoPositions]
+    : await Promise.all([
+        getPaginatedRequest<Course>(
+          `${baseURL()}/api/v1/courses?per_page=200`,
+          true
+        ),
+        getCourseColors(),
+        getCoursePositions(),
+      ]);
 
   const CustomCourse: Course = {
     id: '0',

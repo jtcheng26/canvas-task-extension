@@ -55,6 +55,39 @@ interface TodoResponse {
   needs_grading_count?: number;
 }
 
+// JSON response from /api/v1/users/self/missing_submissions
+export interface MissingAssignment {
+  id: string | number;
+  html_url: string;
+  course_id: string | number;
+  name: string;
+  due_at?: string;
+  lock_at?: string;
+  points_possible?: number;
+  planner_override: {
+    id: string | number;
+    marked_complete?: boolean;
+    dismissed?: boolean;
+    plannable_type: AssignmentType;
+    plannable_id?: string | number;
+  } | null;
+  is_quiz_assignment?: boolean;
+  quiz_id?: string | number;
+  original_quiz_id?: string | number;
+  submission_types?: (
+    | 'discussion_topic'
+    | 'online_quiz'
+    | 'on_paper'
+    | 'none'
+    | 'external_tool'
+    | 'online_text_entry'
+    | 'online_url'
+    | 'online_upload'
+    | 'media_recording'
+    | 'student_annotation'
+  )[];
+}
+
 // Immutable object representation used in our code
 interface FinalAssignment {
   // color: string; // color assigned to course

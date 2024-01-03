@@ -71,12 +71,26 @@ async function getAllTodoRequest(allPages = true): Promise<TodoResponse[]> {
   return await getPaginatedRequest<TodoResponse>(initialURL, allPages);
 }
 
+const TodoResponseDefaults: TodoResponse = {
+  assignment: {
+    html_url: '#',
+    name: 'Untitled Instructor Task',
+    id: '0',
+    due_at: '',
+    points_possible: 50,
+    course_id: '0',
+    needs_grading_count: 1,
+  },
+  needs_grading_count: 1,
+};
+
 /* Merge api objects into Assignment objects. */
 export function convertTodoAssignments(
   assignments: TodoResponse[]
 ): FinalAssignment[] {
   return assignments
     .filter((a) => a.assignment && a.needs_grading_count)
+    .map((assignment) => mergePartial(assignment, TodoResponseDefaults))
     .map((a) => a.assignment as TodoAssignment)
     .map((assignment) => {
       const converted: Partial<FinalAssignment> = {
@@ -108,6 +122,8 @@ export async function getAllTodos(): Promise<FinalAssignment[]> {
     (a) =>
       ({
         ...a,
+        needs_grading_count:
+          a.id in counts ? counts[a.id].needs_grading : a.needs_grading_count,
         total_submissions:
           a.id in counts ? counts[a.id].total : a.needs_grading_count,
       } as FinalAssignment)
