@@ -79,7 +79,10 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
   if (isDemo()) return DemoCourses;
 
   const [res, colors, positions] = await Promise.all([
-    getPaginatedRequest<Course>(`${baseURL()}/api/v1/courses?per_page=200`),
+    getPaginatedRequest<Course>(
+      `${baseURL()}/api/v1/courses?per_page=200`,
+      true
+    ),
     getCourseColors(),
     getCoursePositions(),
   ]);
