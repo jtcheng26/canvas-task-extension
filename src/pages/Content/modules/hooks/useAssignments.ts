@@ -123,8 +123,8 @@ export function convertPlannerAssignments(
       type: assignment.plannable_type,
       id: assignment.plannable.assignment_id // for quizzes, use this id to query graphql
         ? assignment.plannable.assignment_id.toString()
-        : assignment.plannable_id.toString(),
-      plannable_id: assignment.plannable_id.toString(), // just in case it changes in the future
+        : assignment.plannable_id?.toString(),
+      plannable_id: assignment.plannable_id?.toString(), // just in case it changes in the future
       override_id: assignment.planner_override?.id.toString(),
       course_id: (
         assignment.course_id || assignment.plannable.course_id
@@ -135,18 +135,15 @@ export function convertPlannerAssignments(
         assignment.plannable.todo_date ||
         assignment.plannable_date,
       points_possible: assignment.plannable.points_possible,
-      submitted:
-        assignment.submissions !== false
-          ? assignment.submissions.submitted
-          : undefined,
-      graded:
-        assignment.submissions !== false
-          ? assignment.submissions.excused || assignment.submissions.graded
-          : undefined,
-      graded_at:
-        assignment.submissions !== false
-          ? assignment.submissions.posted_at
-          : undefined,
+      submitted: assignment.submissions
+        ? assignment.submissions.submitted
+        : undefined,
+      graded: assignment.submissions
+        ? assignment.submissions.excused || assignment.submissions.graded
+        : undefined,
+      graded_at: assignment.submissions
+        ? assignment.submissions.posted_at
+        : undefined,
       marked_complete:
         assignment.planner_override?.marked_complete ||
         assignment.planner_override?.dismissed ||
@@ -291,7 +288,7 @@ export function processAssignmentList(
   return assignments;
 }
 
-async function loadAssignments(
+export async function loadAssignments(
   startDate: Date,
   endDate: Date,
   options: Options
