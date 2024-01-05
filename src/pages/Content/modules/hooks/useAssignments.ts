@@ -319,6 +319,7 @@ interface UseAssignmentsHookInterface {
   data: FinalAssignment[] | null;
   isError: boolean;
   isSuccess: boolean;
+  errorMessage: string;
 }
 
 export default function useAssignments(
@@ -330,12 +331,14 @@ export default function useAssignments(
     data: null,
     isError: false,
     isSuccess: false,
+    errorMessage: '',
   });
   useEffect(() => {
     setState({
       data: state.data,
       isError: false,
       isSuccess: false,
+      errorMessage: '',
     });
     Promise.all([
       loadNeedsGrading(endDate, options),
@@ -348,6 +351,7 @@ export default function useAssignments(
           data: Array.prototype.concat(...res),
           isSuccess: true,
           isError: false,
+          errorMessage: '',
         });
       })
       .catch((err) => {
@@ -356,6 +360,7 @@ export default function useAssignments(
           data: state.data,
           isError: true,
           isSuccess: false,
+          errorMessage: err.message,
         });
       });
   }, [startDate, endDate]);

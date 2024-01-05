@@ -112,6 +112,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
 interface UseCoursesHookInterface {
   data: Course[] | null;
   isError: boolean;
+  errorMessage: string;
   isSuccess: boolean;
 }
 
@@ -123,15 +124,26 @@ export default function useCourses(
     data: null,
     isError: false,
     isSuccess: false,
+    errorMessage: '',
   });
   useEffect(() => {
     getCourses(defaultColor)
       .then((res) => {
-        setState({ data: res, isSuccess: true, isError: false });
+        setState({
+          data: res,
+          isSuccess: true,
+          isError: false,
+          errorMessage: '',
+        });
       })
       .catch((err) => {
         console.error(err);
-        setState({ data: null, isSuccess: false, isError: true });
+        setState({
+          data: null,
+          isSuccess: false,
+          isError: true,
+          errorMessage: err.message,
+        });
       });
   }, []);
   return state;

@@ -32,12 +32,15 @@ function ContentLoader({
 }: ContentLoaderProps): JSX.Element {
   const {
     data: plannerData,
-    isError,
-    isSuccess, // "isLoading"
+    isError: assignmentsError,
+    isSuccess,
+    errorMessage: assignmentsErrorMessage,
   } = useAssignments(startDate, endDate, options);
-  const { data: courseData, isError: coursesError } = useCourses(
-    options.theme_color
-  );
+  const {
+    data: courseData,
+    isError: coursesError,
+    errorMessage: coursesErrorMessage,
+  } = useCourses(options.theme_color);
   const animationStart = useRef(0); // for counting load time
 
   function filterAnnouncements(
@@ -97,7 +100,6 @@ function ContentLoader({
     };
   }, [plannerData, courseData]);
 
-  const failed = 'Failed to load';
   const onCourse = onCoursePage();
   const isLoading = !firstLoad && !clickable;
 
@@ -122,7 +124,20 @@ function ContentLoader({
     }
   }, [isLoading, assignmentData, courseData, startDate, endDate]);
 
-  if (isError || coursesError) return <h1 id="tfc-fail-load">{failed}</h1>;
+  if (assignmentsError)
+    return (
+      <ErrorRender
+        error={
+          new Error('Assignments Failed to load: ' + assignmentsErrorMessage)
+        }
+      />
+    );
+  if (coursesError)
+    return (
+      <ErrorRender
+        error={new Error('Courses failed to load: ' + coursesErrorMessage)}
+      />
+    );
   return (
     <ErrorBoundary fallbackRender={ErrorRender}>
       <TaskContainer
