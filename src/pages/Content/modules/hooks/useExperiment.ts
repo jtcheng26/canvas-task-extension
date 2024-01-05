@@ -3,6 +3,7 @@ import { CLIENT_ID_LENGTH, EXPERIMENT_CONFIG_URL } from '../constants';
 import { useEffect, useState, useMemo, useContext } from 'react';
 import isDemo from '../utils/isDemo';
 import { ExperimentsContext } from '../contexts/contexts';
+import axios from 'axios';
 
 // cryptographically secure random number of length N
 // https://codeql.github.com/codeql-query-help/javascript/js-biased-cryptographic-random/
@@ -43,8 +44,8 @@ async function getClientId(): Promise<string> {
 async function getExperimentConfigs(): Promise<ExperimentConfig[]> {
   if (isDemo()) return [];
   try {
-    const res = await fetch(EXPERIMENT_CONFIG_URL);
-    return (await res.json())['experiments'] as ExperimentConfig[];
+    const res = await axios.get(EXPERIMENT_CONFIG_URL);
+    return (await res.data.json())['experiments'] as ExperimentConfig[];
   } catch (err) {
     return [];
   }

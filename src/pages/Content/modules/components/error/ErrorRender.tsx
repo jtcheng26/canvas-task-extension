@@ -5,5 +5,9 @@ export default function ErrorRender({
   error,
   resetErrorBoundary,
 }: FallbackProps): JSX.Element {
-  return <div onClick={resetErrorBoundary}>{error.message}</div>;
+  return (
+    <div id="tfc-fail-load" onClick={resetErrorBoundary}>
+      {error.message}
+    </div>
+  );
 }

@@ -1,7 +1,7 @@
 import {
-  generateTestInstance,
-  numUniqueInstances,
   TestSpace,
+  generateTestSample,
+  numUniqueInstances,
 } from './utils/generate';
 import { PlannerAssignment } from '../types';
 import { loadAssignments } from '../hooks/useAssignments';
@@ -11,6 +11,7 @@ import axios from 'axios';
 import baseURL from '../utils/baseURL';
 import { mockAPI, mockedBaseURLString, urlMatches } from './utils/api';
 import { all_planner_tests } from './data/api/space';
+import { generateRandomNumberArray } from './utils/generate';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -20,14 +21,6 @@ const mockedBaseURL = baseURL as jest.MockedFunction<() => string>;
 beforeAll(() => {
   mockedBaseURL.mockReturnValue(mockedBaseURLString);
 });
-
-function generateTestSample<Type>(N: number, space: TestSpace<Type>): Type[] {
-  const data: Type[] = [];
-  for (let i = 0; i < N; i++) {
-    data.push(generateTestInstance<Type>(space));
-  }
-  return data;
-}
 
 describe('stress test fixtures', () => {
   it('Mocks api correctly', () => {
@@ -40,23 +33,51 @@ describe('stress test fixtures', () => {
   });
 
   it('Gets the correct number of possibilities for a test space', () => {
-    const n = numUniqueInstances(all_planner_tests);
-    expect(n).toBe(
-      2 *
-        3 *
-        2 *
-        7 *
-        (1 * 2 * 2 + 1 + 1) *
-        2 *
-        (3 * 3 * 3 * 1 * 1 * 3 * 1 * 1 + 1 + 1) *
-        (2 * 2 * 2 * 10 * 2 * 2 * 3 * 2 * 2 * 3) *
-        3
-    );
+    type SampleType = {
+      a: number;
+      b?: string;
+      c?: {
+        a?: string;
+        b: number | null;
+        c: {
+          a: string;
+        };
+      };
+    };
+
+    const SampleTypeTestSpace: TestSpace<SampleType> = {
+      a: [0, 1, 2],
+      b: ['a', 'b', 'c', undefined],
+      c: [
+        {
+          a: ['1', '2', '3', undefined],
+          b: [null, 1, 2, 3, 4],
+          c: [
+            {
+              a: ['0', '1'],
+            },
+            { a: ['2'] },
+          ],
+        },
+        {
+          a: [undefined],
+          b: [null],
+          c: [
+            {
+              a: ['0', '1', '2', '3', '4', '5', '6'],
+            },
+          ],
+        },
+        undefined,
+      ],
+    };
+    const n = numUniqueInstances(SampleTypeTestSpace);
+    expect(n).toBe(3 * 4 * (4 * 5 * (2 + 1) + 1 * 1 * 7 + 1));
   });
 });
 
 describe('loadAssignments', () => {
-  it('Passes randomized tests', () => {
+  it('Passes randomized tests', async () => {
     const tests = generateTestSample<PlannerAssignment>(
       1000,
       all_planner_tests
@@ -64,21 +85,26 @@ describe('loadAssignments', () => {
     const start_period = getWeekStart(new Date().valueOf());
     const end_period = getWeekEnd(new Date());
     tests.forEach(async (t) => {
-      mockAPI([t], mockedAxios);
+      const seed = generateRandomNumberArray(3);
+      mockAPI([t], seed, mockedAxios);
       try {
-        expect(
-          async () =>
-            await loadAssignments(start_period, end_period, OptionsDefaults)
-        ).not.toThrowError();
+        const res = await loadAssignments(
+          start_period,
+          end_period,
+          OptionsDefaults
+        );
+        expect(res).toBeTruthy();
       } catch (err) {
-        throw new Error(`Failing test:\n\n${JSON.stringify(t)}\n\n`, {
-          cause: err,
-        });
+        if (err instanceof Error)
+          err.message = `Failing test:\n\n${JSON.stringify(test)}\n\n${
+            err.message
+          }`;
+        throw err;
       }
     });
   });
 
-  it('Passes full randomized tests', () => {
+  it('Passes full randomized tests', async () => {
     for (let i = 0; i < 1000; i++) {
       const tests = generateTestSample<PlannerAssignment>(
         1000,
@@ -86,12 +112,15 @@ describe('loadAssignments', () => {
       );
       const start_period = getWeekStart(new Date().valueOf());
       const end_period = getWeekEnd(new Date());
-      mockAPI(tests, mockedAxios);
+      const seed = generateRandomNumberArray(3);
+      mockAPI(tests, seed, mockedAxios);
       try {
-        expect(
-          async () =>
-            await loadAssignments(start_period, end_period, OptionsDefaults)
-        ).not.toThrowError();
+        const res = await loadAssignments(
+          start_period,
+          end_period,
+          OptionsDefaults
+        );
+        expect(res).toBeTruthy();
       } catch (err) {
         if (err instanceof Error)
           err.message = `Failing test:\n\n${JSON.stringify(tests)}\n\n${

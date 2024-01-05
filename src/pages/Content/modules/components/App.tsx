@@ -14,9 +14,13 @@ const AppContainer = styled.div`
 
 interface AppProps {
   options: Options;
+  MIN_LOAD_TIME?: number; // for testing only
 }
 
-export default function App({ options }: AppProps): JSX.Element {
+export default function App({
+  options,
+  MIN_LOAD_TIME = 350,
+}: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
   const [clickableState, setClickableState] = useState({
     clickable: false,
@@ -70,6 +74,7 @@ export default function App({ options }: AppProps): JSX.Element {
           weekStart={start}
         />
         <ContentLoader
+          MIN_LOAD_TIME={MIN_LOAD_TIME}
           clickable={clickableState.clickable}
           endDate={end}
           firstLoad={clickableState.firstLoad}

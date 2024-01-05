@@ -22,6 +22,8 @@ export function numUniqueInstances<Type>(space: TestSpace<Type>): number {
 }
 
 export function generateTestInstance<Type>(space: TestSpace<Type>): Type {
+  if (typeof space === 'string' && space === 'gen_random_number')
+    return ('' + Math.floor(Math.random() * 100000)) as Type;
   if (typeof space !== 'object' || space === null) return space;
   const res: Partial<Type> = {};
   const spaceObj = space as {
@@ -33,4 +35,27 @@ export function generateTestInstance<Type>(space: TestSpace<Type>): Type {
     if (typeof entry !== 'undefined') res[key as keyof Type] = entry;
   });
   return res as Type;
+}
+
+export function generateTestSample<Type>(
+  N: number,
+  space: TestSpace<Type>
+): Type[] {
+  const data: Type[] = [];
+  for (let i = 0; i < N; i++) {
+    data.push(generateTestInstance<Type>(space));
+  }
+  return data;
+}
+
+export function generateRandomNumberArray(length: number): number[] {
+  const num: number[] = [];
+  let i = 0;
+  while (num.length < length) {
+    i += 1;
+    if (i > 1000) break; // failsafe to not hang everything in case something breaks
+    num.push(Math.floor(Math.random() * 100000));
+  }
+
+  return num;
 }

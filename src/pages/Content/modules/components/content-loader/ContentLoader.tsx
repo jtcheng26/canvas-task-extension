@@ -14,6 +14,7 @@ interface ContentLoaderProps {
   startDate: Date;
   endDate: Date;
   loadedCallback: () => void;
+  MIN_LOAD_TIME?: number; // delay between load and render so animations have time to play
 }
 
 /*
@@ -27,15 +28,17 @@ function ContentLoader({
   startDate,
   endDate,
   loadedCallback,
+  MIN_LOAD_TIME = 350,
 }: ContentLoaderProps): JSX.Element {
   const {
     data: plannerData,
     isError,
     isSuccess, // "isLoading"
   } = useAssignments(startDate, endDate, options);
-  const { data: courseData } = useCourses(options.theme_color);
+  const { data: courseData, isError: coursesError } = useCourses(
+    options.theme_color
+  );
   const animationStart = useRef(0); // for counting load time
-  const MIN_LOAD_TIME = 350; // delay between load and render so animations have time to play
 
   function filterAnnouncements(
     data: FinalAssignment[],
@@ -119,7 +122,7 @@ function ContentLoader({
     }
   }, [isLoading, assignmentData, courseData, startDate, endDate]);
 
-  if (isError) return <h1>{failed}</h1>;
+  if (isError || coursesError) return <h1 id="tfc-fail-load">{failed}</h1>;
   return (
     <ErrorBoundary fallbackRender={ErrorRender}>
       <TaskContainer
