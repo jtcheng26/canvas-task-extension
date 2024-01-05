@@ -1,9 +1,8 @@
 import { ExperimentConfig } from '../types';
-import { CLIENT_ID_LENGTH, EXPERIMENT_CONFIG_URL } from '../constants';
+import { CLIENT_ID_LENGTH } from '../constants';
 import { useEffect, useState, useMemo, useContext } from 'react';
 import isDemo from '../utils/isDemo';
 import { ExperimentsContext } from '../contexts/contexts';
-import axios from 'axios';
 
 // cryptographically secure random number of length N
 // https://codeql.github.com/codeql-query-help/javascript/js-biased-cryptographic-random/
