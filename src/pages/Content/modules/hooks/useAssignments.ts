@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import loadNeedsGrading from './utils/loadNeedsGrading';
 import loadMissingAssignments from './utils/loadMissingAssignments';
 import { queryGraded } from './utils/loadGraded';
+import assignmentIsDone from '../utils/assignmentIsDone';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -60,16 +61,61 @@ async function getAllAssignmentsRequest(
   end: string,
   allPages = true
 ): Promise<PlannerAssignment[]> {
+  // assumption: this request will succeed, otherwise we should throw a fatal error and not load
   const initialURL = `${baseURL()}/api/v1/planner/items?start_date=${start}${
     end ? '&end_date=' + end : ''
   }&per_page=1000`;
   return await getPaginatedRequest<PlannerAssignment>(initialURL, allPages);
 }
 
+function isValidDate(datestr: string): boolean {
+  const date = new Date(datestr);
+  return date.toString() !== 'Invalid Date' && !isNaN(date.valueOf());
+}
+
+const PlannerAssignmentDefaults: PlannerAssignment = {
+  id: '0',
+  course_id: '0',
+  plannable_id: '0', // required
+  plannable_type: AssignmentType.ASSIGNMENT,
+  planner_override: null, // remember to check properties if not null
+  plannable_date: undefined,
+  submissions: false, // remember to check properties if not false
+  plannable: {
+    assignment_id: '0', // use this for graphql requests
+    id: '0',
+    title: 'Untitled Assignment',
+    details: '',
+    due_at: '', // this or todo_date required
+    todo_date: '', // for custom planner notes
+    points_possible: 0,
+    course_id: '0', // for custom planner notes
+    linked_object_html_url: '', // for custom planner notes
+    read_state: '', // for announcements
+  },
+  html_url: '',
+};
+
+// Use default values from 'full', only filling in values from 'partial' that are not null/undefined
+export function mergePartial<T>(partial: Partial<T>, full: T): T {
+  const ret = {
+    ...full,
+  };
+  Object.keys(partial).forEach((k) => {
+    const prop = k as keyof T;
+    if (partial[prop] !== null && typeof partial[prop] !== 'undefined')
+      ret[prop] = partial[prop] as never;
+  });
+  return ret;
+}
+
 /* Merge api objects into Assignment objects. */
 export function convertPlannerAssignments(
   assignments: PlannerAssignment[]
 ): FinalAssignment[] {
+  assignments = assignments.map((assignment) =>
+    mergePartial<PlannerAssignment>(assignment, PlannerAssignmentDefaults)
+  );
   return assignments.map((assignment) => {
     const converted: Partial<FinalAssignment> = {
       html_url:
@@ -77,8 +123,8 @@ export function convertPlannerAssignments(
       type: assignment.plannable_type,
       id: assignment.plannable.assignment_id // for quizzes, use this id to query graphql
         ? assignment.plannable.assignment_id.toString()
-        : assignment.plannable_id.toString(),
-      plannable_id: assignment.plannable_id.toString(), // just in case it changes in the future
+        : assignment.plannable_id?.toString(),
+      plannable_id: assignment.plannable_id?.toString(), // just in case it changes in the future
       override_id: assignment.planner_override?.id.toString(),
       course_id: (
         assignment.course_id || assignment.plannable.course_id
@@ -89,18 +135,15 @@ export function convertPlannerAssignments(
         assignment.plannable.todo_date ||
         assignment.plannable_date,
       points_possible: assignment.plannable.points_possible,
-      submitted:
-        assignment.submissions !== false
-          ? assignment.submissions.submitted
-          : undefined,
-      graded:
-        assignment.submissions !== false
-          ? assignment.submissions.excused || assignment.submissions.graded
-          : undefined,
-      graded_at:
-        assignment.submissions !== false
-          ? assignment.submissions.posted_at
-          : undefined,
+      submitted: assignment.submissions
+        ? assignment.submissions.submitted
+        : undefined,
+      graded: assignment.submissions
+        ? assignment.submissions.excused || assignment.submissions.graded
+        : undefined,
+      graded_at: assignment.submissions
+        ? assignment.submissions.posted_at
+        : undefined,
       marked_complete:
         assignment.planner_override?.marked_complete ||
         assignment.planner_override?.dismissed ||
@@ -135,15 +178,11 @@ export function convertPlannerAssignments(
       }
     }
 
-    const full: FinalAssignment = {
-      ...AssignmentDefaults,
-    };
+    const full = mergePartial<FinalAssignment>(converted, AssignmentDefaults);
 
-    Object.keys(converted).forEach((k) => {
-      const prop = k as keyof FinalAssignment;
-      if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-        full[prop] = converted[prop] as never;
-    });
+    // critical properties
+    if (!isValidDate(full.due_at)) full.due_at = new Date().toISOString();
+    if (!full.course_id) full.course_id = '0';
 
     return full;
   });
@@ -154,11 +193,19 @@ export function filterTimeBounds(
   startDate: Date,
   endDate: Date,
   assignments: FinalAssignment[],
-  excludeNeedsGrading?: boolean
+  excludeNeedsGrading?: boolean,
+  excludeLongOverdue?: boolean
 ): FinalAssignment[] {
   return assignments.filter((assignment) => {
     if (excludeNeedsGrading && assignment.needs_grading_count) return true;
     const due_date = new Date(assignment.due_at);
+    const now = new Date().valueOf();
+    if (
+      excludeLongOverdue &&
+      due_date.valueOf() < now &&
+      !assignmentIsDone(assignment)
+    )
+      return true;
     return (
       due_date.valueOf() >= startDate.valueOf() &&
       due_date.valueOf() < endDate.valueOf()
@@ -241,7 +288,7 @@ export function processAssignmentList(
   return assignments;
 }
 
-async function processAssignments(
+export async function loadAssignments(
   startDate: Date,
   endDate: Date,
   options: Options
@@ -272,6 +319,7 @@ interface UseAssignmentsHookInterface {
   data: FinalAssignment[] | null;
   isError: boolean;
   isSuccess: boolean;
+  errorMessage: string;
 }
 
 export default function useAssignments(
@@ -283,17 +331,19 @@ export default function useAssignments(
     data: null,
     isError: false,
     isSuccess: false,
+    errorMessage: '',
   });
   useEffect(() => {
     setState({
       data: state.data,
       isError: false,
       isSuccess: false,
+      errorMessage: '',
     });
     Promise.all([
       loadNeedsGrading(endDate, options),
       loadMissingAssignments(endDate, options),
-      processAssignments(startDate, endDate, options),
+      loadAssignments(startDate, endDate, options),
     ])
       .then((res: FinalAssignment[][]) => {
         // merge all lists of assignments together
@@ -301,6 +351,7 @@ export default function useAssignments(
           data: Array.prototype.concat(...res),
           isSuccess: true,
           isError: false,
+          errorMessage: '',
         });
       })
       .catch((err) => {
@@ -309,6 +360,7 @@ export default function useAssignments(
           data: state.data,
           isError: true,
           isSuccess: false,
+          errorMessage: err.message,
         });
       });
   }, [startDate, endDate]);

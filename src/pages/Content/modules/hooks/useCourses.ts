@@ -76,13 +76,16 @@ function applyCourseNames(courses: Course[]): Course[] {
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
 export async function getCourses(defaultColor?: string): Promise<Course[]> {
-  if (isDemo()) return DemoCourses;
-
-  const [res, colors, positions] = await Promise.all([
-    getPaginatedRequest<Course>(`${baseURL()}/api/v1/courses?per_page=200`),
-    getCourseColors(),
-    getCoursePositions(),
-  ]);
+  const [res, colors, positions] = isDemo()
+    ? [DemoCourses, DemoColors, DemoPositions]
+    : await Promise.all([
+        getPaginatedRequest<Course>(
+          `${baseURL()}/api/v1/courses?per_page=200`,
+          true
+        ),
+        getCourseColors(),
+        getCoursePositions(),
+      ]);
 
   const CustomCourse: Course = {
     id: '0',
@@ -109,6 +112,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
 interface UseCoursesHookInterface {
   data: Course[] | null;
   isError: boolean;
+  errorMessage: string;
   isSuccess: boolean;
 }
 
@@ -120,15 +124,26 @@ export default function useCourses(
     data: null,
     isError: false,
     isSuccess: false,
+    errorMessage: '',
   });
   useEffect(() => {
     getCourses(defaultColor)
       .then((res) => {
-        setState({ data: res, isSuccess: true, isError: false });
+        setState({
+          data: res,
+          isSuccess: true,
+          isError: false,
+          errorMessage: '',
+        });
       })
       .catch((err) => {
         console.error(err);
-        setState({ data: null, isSuccess: false, isError: true });
+        setState({
+          data: null,
+          isSuccess: false,
+          isError: true,
+          errorMessage: err.message,
+        });
       });
   }, []);
   return state;

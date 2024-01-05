@@ -3,6 +3,7 @@ import {
   filterTimeBounds,
   getAllAssignments,
   filterAssignmentTypes,
+  mergePartial,
 } from './useAssignments';
 import { AssignmentType, FinalAssignment } from '../types';
 
@@ -208,6 +209,76 @@ describe('filterTimeBounds', () => {
       (res) => {
         expect(res.length).toBe(0);
       }
+    );
+  });
+});
+
+describe('mergePartial', () => {
+  it('returns a copy on the same object', () => {
+    const res = mergePartial(AssignmentDefaults, AssignmentDefaults);
+    Object.keys(AssignmentDefaults).forEach((k) =>
+      expect(res[k as keyof FinalAssignment]).toBe(
+        AssignmentDefaults[k as keyof FinalAssignment]
+      )
+    );
+    res.course_id = '12345';
+    expect(res.course_id).not.toBe(AssignmentDefaults.course_id);
+  });
+
+  it('keeps default values in a partial with undefined keys', () => {
+    const partial: Partial<FinalAssignment> = {
+      ...AssignmentDefaults,
+    };
+    delete partial.course_id;
+    delete partial.id;
+    delete partial.name;
+    const res = mergePartial(partial, AssignmentDefaults);
+    expect(res.course_id).toBe(AssignmentDefaults.course_id);
+    expect(res.id).toBe(AssignmentDefaults.id);
+    expect(res.name).toBe(AssignmentDefaults.name);
+    expect('course_id' in partial).toBe(false);
+    expect('id' in partial).toBe(false);
+    expect('name' in partial).toBe(false);
+  });
+
+  it('keeps new values', () => {
+    const partial: Partial<FinalAssignment> = {
+      ...AssignmentDefaults,
+      needs_grading_count: 1234,
+      name: 'Test name different from default',
+    };
+    const res = mergePartial(partial, AssignmentDefaults);
+    expect(partial.needs_grading_count).not.toBe(
+      AssignmentDefaults.needs_grading_count
+    );
+    expect(res.needs_grading_count).toBe(partial.needs_grading_count);
+    expect(partial.name).not.toBe(AssignmentDefaults.name);
+    expect(res.name).toBe(partial.name);
+  });
+
+  it('keeps new values and fills in default values', () => {
+    const partial: Partial<FinalAssignment> = {
+      ...AssignmentDefaults,
+      needs_grading_count: 1234,
+      name: 'Test name different from default',
+      marked_complete: !AssignmentDefaults.marked_complete,
+    };
+    delete partial.course_id;
+    delete partial.id;
+    const res = mergePartial(partial, AssignmentDefaults);
+    expect(res.course_id).toBe(AssignmentDefaults.course_id);
+    expect(res.id).toBe(AssignmentDefaults.id);
+    expect('course_id' in partial).toBe(false);
+    expect('id' in partial).toBe(false);
+    expect(res.name).toBe(partial.name);
+    expect(res.needs_grading_count).toBe(partial.needs_grading_count);
+    expect(res.marked_complete).toBe(partial.marked_complete);
+    expect(partial.name).not.toBe(AssignmentDefaults.name);
+    expect(partial.needs_grading_count).not.toBe(
+      AssignmentDefaults.needs_grading_count
+    );
+    expect(partial.marked_complete).not.toBe(
+      AssignmentDefaults.marked_complete
     );
   });
 });

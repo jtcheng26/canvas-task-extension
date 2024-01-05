@@ -1,17 +1,17 @@
-import {
-  ArrayElement,
-  AssignmentType,
-  FinalAssignment,
-  Options,
-} from '../../types';
+import { AssignmentType, FinalAssignment, Options } from '../../types';
 import baseURL from '../../utils/baseURL';
 import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
-import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
-import MissingAssignmentsSample from '../../tests/data/api/missing_submissions.json';
+import {
+  getPaginatedRequest,
+  mergePartial,
+  processAssignmentList,
+} from '../useAssignments';
 import assignmentIsDone from '../../utils/assignmentIsDone';
+import { DemoMissing } from '../../tests/demo';
+import { MissingAssignment } from '../../types/assignment';
 
-type MissingAssignment = ArrayElement<typeof MissingAssignmentsSample>;
+// export type MissingAssignment = ArrayElement<typeof MissingAssignmentsSample>;
 
 async function getMissingAssignmentsRequest(
   allPages = true
@@ -25,21 +25,36 @@ function parseAssignmentType(assignment: MissingAssignment) {
     assignment.is_quiz_assignment ||
     assignment.quiz_id ||
     assignment.original_quiz_id ||
-    assignment.submission_types.includes('online_quiz')
+    (assignment.submission_types &&
+      assignment.submission_types.includes('online_quiz'))
   )
     return AssignmentType.QUIZ;
   if (
     'discussion_topic' in assignment ||
-    assignment.submission_types.includes('discussion_topic')
+    (assignment.submission_types &&
+      assignment.submission_types.includes('discussion_topic'))
   )
     return AssignmentType.DISCUSSION;
   return AssignmentType.ASSIGNMENT;
 }
 
+const MissingAssignmentDefaults: MissingAssignment = {
+  html_url: '',
+  planner_override: null,
+  id: 0,
+  course_id: 0,
+  name: 'Untitled Missing Assignment',
+  due_at: '',
+  points_possible: 0,
+} as MissingAssignment;
+
 /* Merge api objects into Assignment objects. */
 function convertMissingAssignments(
   assignments: MissingAssignment[]
 ): FinalAssignment[] {
+  assignments = assignments.map((assignment) =>
+    mergePartial<MissingAssignment>(assignment, MissingAssignmentDefaults)
+  );
   return assignments.map((assignment) => {
     const converted: Partial<FinalAssignment> = {
       html_url: assignment.html_url,
@@ -47,7 +62,8 @@ function convertMissingAssignments(
         ? (assignment.planner_override.plannable_type as AssignmentType)
         : parseAssignmentType(assignment),
       id: assignment.id.toString(),
-      plannable_id: (assignment.planner_override
+      plannable_id: (assignment.planner_override &&
+      assignment.planner_override.plannable_id
         ? assignment.planner_override.plannable_id
         : assignment.id
       ).toString(), // just in case it changes in the future
@@ -63,15 +79,7 @@ function convertMissingAssignments(
         assignment.planner_override?.dismissed,
     };
 
-    const full: FinalAssignment = {
-      ...AssignmentDefaults,
-    };
-
-    Object.keys(converted).forEach((k) => {
-      const prop = k as keyof FinalAssignment;
-      if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-        full[prop] = converted[prop] as never;
-    });
+    const full = mergePartial(converted, AssignmentDefaults);
 
     return full;
   });
@@ -83,7 +91,7 @@ function filterCompleted(assignments: FinalAssignment[]) {
 }
 
 export async function getAllMissing(): Promise<FinalAssignment[]> {
-  const data = isDemo() ? [] : await getMissingAssignmentsRequest();
+  const data = isDemo() ? DemoMissing : await getMissingAssignmentsRequest();
   const assignments = filterCompleted(
     convertMissingAssignments(data as MissingAssignment[])
   );
@@ -106,5 +114,5 @@ export default async function loadMissingAssignments(
   options: Options
 ): Promise<FinalAssignment[]> {
   const startDate = new Date('2000-01-01');
-  return isDemo() ? [] : await processAssignments(startDate, endDate, options);
+  return await processAssignments(startDate, endDate, options);
 }

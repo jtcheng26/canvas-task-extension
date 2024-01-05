@@ -14,6 +14,7 @@ interface ContentLoaderProps {
   startDate: Date;
   endDate: Date;
   loadedCallback: () => void;
+  MIN_LOAD_TIME?: number; // delay between load and render so animations have time to play
 }
 
 /*
@@ -27,15 +28,20 @@ function ContentLoader({
   startDate,
   endDate,
   loadedCallback,
+  MIN_LOAD_TIME = 350,
 }: ContentLoaderProps): JSX.Element {
   const {
     data: plannerData,
-    isError,
-    isSuccess, // "isLoading"
+    isError: assignmentsError,
+    isSuccess,
+    errorMessage: assignmentsErrorMessage,
   } = useAssignments(startDate, endDate, options);
-  const { data: courseData } = useCourses(options.theme_color);
+  const {
+    data: courseData,
+    isError: coursesError,
+    errorMessage: coursesErrorMessage,
+  } = useCourses(options.theme_color);
   const animationStart = useRef(0); // for counting load time
-  const MIN_LOAD_TIME = 350; // delay between load and render so animations have time to play
 
   function filterAnnouncements(
     data: FinalAssignment[],
@@ -76,17 +82,24 @@ function ContentLoader({
     courseData.forEach((c) => map.add(c.id));
     return {
       assignments: filterAnnouncements(plannerData, false).map((a) => {
-        if (!map.has(a.course_id)) a.course_id = '0';
+        if (!map.has(a.course_id))
+          return {
+            ...a,
+            course_id: '0',
+          };
         return a;
       }),
       announcements: filterAnnouncements(plannerData, true).map((a) => {
-        if (!map.has(a.course_id)) a.course_id = '0';
+        if (!map.has(a.course_id))
+          return {
+            ...a,
+            course_id: '0',
+          };
         return a;
       }),
     };
   }, [plannerData, courseData]);
 
-  const failed = 'Failed to load';
   const onCourse = onCoursePage();
   const isLoading = !firstLoad && !clickable;
 
@@ -111,7 +124,20 @@ function ContentLoader({
     }
   }, [isLoading, assignmentData, courseData, startDate, endDate]);
 
-  if (isError) return <h1>{failed}</h1>;
+  if (assignmentsError)
+    return (
+      <ErrorRender
+        error={
+          new Error('Assignments Failed to load: ' + assignmentsErrorMessage)
+        }
+      />
+    );
+  if (coursesError)
+    return (
+      <ErrorRender
+        error={new Error('Courses failed to load: ' + coursesErrorMessage)}
+      />
+    );
   return (
     <ErrorBoundary fallbackRender={ErrorRender}>
       <TaskContainer

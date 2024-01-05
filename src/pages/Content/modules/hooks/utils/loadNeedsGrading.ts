@@ -2,7 +2,11 @@ import { AssignmentType, FinalAssignment, Options } from '../../types';
 import baseURL from '../../utils/baseURL';
 import { AssignmentDefaults } from '../../constants';
 import isDemo from '../../utils/isDemo';
-import { getPaginatedRequest, processAssignmentList } from '../useAssignments';
+import {
+  getPaginatedRequest,
+  mergePartial,
+  processAssignmentList,
+} from '../useAssignments';
 import { TodoAssignment, TodoResponse } from '../../types/assignment';
 import graphqlReq from './gqlReq';
 import { DemoNeedsGrading, DemoTeacherAssignments } from '../../tests/demo';
@@ -67,12 +71,26 @@ async function getAllTodoRequest(allPages = true): Promise<TodoResponse[]> {
   return await getPaginatedRequest<TodoResponse>(initialURL, allPages);
 }
 
+const TodoResponseDefaults: TodoResponse = {
+  assignment: {
+    html_url: '#',
+    name: 'Untitled Instructor Task',
+    id: '0',
+    due_at: '',
+    points_possible: 50,
+    course_id: '0',
+    needs_grading_count: 1,
+  },
+  needs_grading_count: 1,
+};
+
 /* Merge api objects into Assignment objects. */
 export function convertTodoAssignments(
   assignments: TodoResponse[]
 ): FinalAssignment[] {
   return assignments
     .filter((a) => a.assignment && a.needs_grading_count)
+    .map((assignment) => mergePartial(assignment, TodoResponseDefaults))
     .map((a) => a.assignment as TodoAssignment)
     .map((assignment) => {
       const converted: Partial<FinalAssignment> = {
@@ -89,16 +107,7 @@ export function convertTodoAssignments(
         needs_grading_count: assignment.needs_grading_count,
       };
 
-      const full: FinalAssignment = {
-        ...AssignmentDefaults,
-      };
-
-      Object.keys(converted).forEach((k) => {
-        const prop = k as keyof FinalAssignment;
-        if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-          full[prop] = converted[prop] as never;
-      });
-
+      const full = mergePartial(converted, AssignmentDefaults);
       return full;
     });
 }
@@ -113,6 +122,8 @@ export async function getAllTodos(): Promise<FinalAssignment[]> {
     (a) =>
       ({
         ...a,
+        needs_grading_count:
+          a.id in counts ? counts[a.id].needs_grading : a.needs_grading_count,
         total_submissions:
           a.id in counts ? counts[a.id].total : a.needs_grading_count,
       } as FinalAssignment)

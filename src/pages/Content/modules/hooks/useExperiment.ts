@@ -1,12 +1,12 @@
 import { ExperimentConfig } from '../types';
-import { CLIENT_ID_LENGTH, EXPERIMENT_CONFIG_URL } from '../constants';
+import { CLIENT_ID_LENGTH } from '../constants';
 import { useEffect, useState, useMemo, useContext } from 'react';
 import isDemo from '../utils/isDemo';
 import { ExperimentsContext } from '../contexts/contexts';
 
 // cryptographically secure random number of length N
 // https://codeql.github.com/codeql-query-help/javascript/js-biased-cryptographic-random/
-function generateClientId(length: number): string {
+function generateRandomNumber(length: number): string {
   let num = '';
   let i = 0;
   while (num.length < length) {
@@ -31,7 +31,7 @@ async function getClientId(): Promise<string> {
     chrome.storage.sync.get(['client_id'], function (result) {
       let client_id = result['client_id'];
       if (!client_id) {
-        client_id = generateClientId(CLIENT_ID_LENGTH);
+        client_id = generateRandomNumber(CLIENT_ID_LENGTH);
         chrome.storage.sync.set({ client_id: client_id }, () => {
           resolve(client_id);
         });
@@ -41,13 +41,13 @@ async function getClientId(): Promise<string> {
 }
 
 async function getExperimentConfigs(): Promise<ExperimentConfig[]> {
-  if (isDemo()) return [];
-  try {
-    const res = await fetch(EXPERIMENT_CONFIG_URL);
-    return (await res.json())['experiments'] as ExperimentConfig[];
-  } catch (err) {
-    return [];
-  }
+  return [];
+  // try {
+  //   const res = await axios.get(EXPERIMENT_CONFIG_URL);
+  //   return (await res.data)['experiments'] as ExperimentConfig[];
+  // } catch (err) {
+  //   return [];
+  // }
 }
 
 export interface ExperimentsHubInterface {
