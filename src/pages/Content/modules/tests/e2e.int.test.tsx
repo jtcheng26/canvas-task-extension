@@ -1,6 +1,6 @@
 import React from 'react';
 import { generateTestSample } from './utils/generate';
-import { PlannerAssignment } from '../types';
+import { Course, PlannerAssignment } from '../types';
 import { OptionsDefaults } from '../constants';
 import axios from 'axios';
 import baseURL from '../utils/baseURL';
@@ -27,13 +27,15 @@ import {
   screen,
   cleanup,
 } from '@testing-library/react';
+import RealPlannerData from './data/api/planner.json';
+import RealColorsData from './data/api/colors.json';
+import RealPosData from './data/api/dashboard_positions.json';
+import RealCourseData from './data/api/courses.json';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../utils/baseURL');
 const mockedBaseURL = baseURL as jest.MockedFunction<() => string>;
-jest.useFakeTimers();
-jest.setTimeout(10000);
 
 beforeAll(() => {
   fs.mkdirSync('./log/tests/smoke', { recursive: true });
@@ -43,7 +45,15 @@ beforeAll(() => {
   global.chrome = chrome as unknown as typeof global.chrome;
 });
 
-afterEach(() => cleanup());
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
+afterEach(() => {
+  cleanup();
+  jest.runOnlyPendingTimers();
+  jest.useRealTimers();
+});
 
 function logTestToFile(
   filename: string,
@@ -84,7 +94,11 @@ async function renderAppTest(
     );
     return app;
   } catch (err) {
-    logTestToFile('./log/tests/failed/tfc-test-log-fail', test, seed);
+    logTestToFile(
+      './log/tests/failed/tfc-test-log-fail',
+      data ? data.planner_items : test,
+      seed
+    );
     throw err;
   }
 }
@@ -97,10 +111,24 @@ describe('end-to-end', () => {
     const app = await renderAppTest(tests, seed, FAILED_TEST_DATA);
     expect(await screen.findByText('Complete')).toBeTruthy();
     fs.writeFileSync(
-      './log/tests/smoke/tfc-test-log.xml',
+      './log/tests/smoke/tfc-test-log.html',
       prettyDOM(app.container, 1000000, { highlight: false }) + '\n'
     );
     logTestToFile('./log/tests/smoke/tfc-test-log', tests, seed);
+    expect(app.container.querySelectorAll('#tfc-fail-load')).toHaveLength(0); // <Header /> and <ContentLoader />
+  });
+
+  it('works on real data', async () => {
+    jest.useFakeTimers().setSystemTime(new Date('2021-12-14'));
+    const TEST_DATA = {
+      planner_items: RealPlannerData,
+      courses: RealCourseData as unknown as Course[],
+      colors: RealColorsData,
+      positions: RealPosData,
+    } as APITestData;
+    const app = await renderAppTest([], [], TEST_DATA);
+    expect(await screen.findByText('Complete')).toBeTruthy();
+    expect(await screen.findByText('Literary Criticism Essay')).toBeTruthy();
     expect(app.container.querySelectorAll('#tfc-fail-load')).toHaveLength(0); // <Header /> and <ContentLoader />
   });
 

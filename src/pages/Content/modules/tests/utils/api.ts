@@ -118,31 +118,35 @@ export function mockAPIData(
     return Promise.resolve({ headers: {}, data: null });
   });
   mockedAxios.post.mockImplementation((url) => {
-    if (urlMatches(url, '/api/graphql'))
+    if (urlMatches(url, '/api/graphql')) {
+      const retData: Record<string, unknown> = {};
+      const n = Math.floor(Math.random() * 10);
+      for (let i = 0; i < n; i++) {
+        retData['item' + i] =
+          Math.random() < 0.25
+            ? null
+            : {
+                submissionsConnection: {
+                  nodes: [
+                    {
+                      gradingStatus:
+                        Math.random() < 0.5 ? 'graded' : 'ungraded',
+                      grade: ['0', 'A', 'Excused', '25'][
+                        Math.floor(Math.random() * 4)
+                      ],
+                      score: Math.random() < 0.5 ? 0 : 25.0,
+                    },
+                  ],
+                },
+              };
+      }
       return Promise.resolve({
         headers: {},
         data: {
-          data: {
-            item0:
-              Math.random() < 0.25
-                ? null
-                : {
-                    submissionsConnection: {
-                      nodes: [
-                        {
-                          gradingStatus:
-                            Math.random() < 0.5 ? 'graded' : 'ungraded',
-                          grade: ['0', 'A', 'Excused', '25'][
-                            Math.floor(Math.random() * 4)
-                          ],
-                          score: Math.random() < 0.5 ? 0 : 25.0,
-                        },
-                      ],
-                    },
-                  },
-          },
+          data: retData,
         },
       });
+    }
     return Promise.resolve({ headers: {}, data: null });
   });
 }
