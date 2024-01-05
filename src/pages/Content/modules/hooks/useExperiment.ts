@@ -42,13 +42,13 @@ async function getClientId(): Promise<string> {
 }
 
 async function getExperimentConfigs(): Promise<ExperimentConfig[]> {
-  if (isDemo()) return [];
-  try {
-    const res = await axios.get(EXPERIMENT_CONFIG_URL);
-    return (await res.data.json())['experiments'] as ExperimentConfig[];
-  } catch (err) {
-    return [];
-  }
+  return [];
+  // try {
+  //   const res = await axios.get(EXPERIMENT_CONFIG_URL);
+  //   return (await res.data)['experiments'] as ExperimentConfig[];
+  // } catch (err) {
+  //   return [];
+  // }
 }
 
 export interface ExperimentsHubInterface {
