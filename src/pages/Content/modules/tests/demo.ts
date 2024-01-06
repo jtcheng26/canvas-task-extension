@@ -340,13 +340,21 @@ const DemoCourses: Course[] = [
     course_code: 'Biology - McCoy',
     position: 3,
   },
+  {
+    id: '5',
+    color: '#FFB300',
+    name: 'Computer Science — Susan',
+    course_code: 'Computer Science — Susan',
+    position: 4,
+  },
 ];
 
 const DemoPositions: Record<string, number> = {
-  '1': 3,
-  '2': 2,
-  '3': 1,
-  '4': 0,
+  '1': 4,
+  '2': 3,
+  '3': 2,
+  '4': 1,
+  '5': 0,
 };
 
 const DemoColors: Record<string, string> = {
@@ -354,6 +362,7 @@ const DemoColors: Record<string, string> = {
   2: '#DC4B3F', //'#1770AB',
   3: '#7E57C2', //'#FF2717',
   4: '#1AA260', //'#009606',
+  5: '#FFB300',
 };
 
 const DemoNames: Record<string, string> = {
@@ -361,6 +370,7 @@ const DemoNames: Record<string, string> = {
   2: 'English Literature - Russell',
   3: 'US History - Jones',
   4: 'Biology - McCoy',
+  5: 'Computer Science — Susan',
 };
 
 const DemoTeacherAssignments: TodoResponse[] = [

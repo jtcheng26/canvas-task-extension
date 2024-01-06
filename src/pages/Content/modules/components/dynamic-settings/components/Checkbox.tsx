@@ -15,6 +15,7 @@ const CheckboxWrapper = styled.div<CheckboxProps>`
   border-radius: 100px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   height: 52px;
   div {
     margin-right: 12px;

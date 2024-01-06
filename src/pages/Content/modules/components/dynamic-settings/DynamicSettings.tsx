@@ -10,10 +10,7 @@ import { SettingsIcon } from '../../icons';
 const SettingsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-
-  > * + * {
-    margin-top: 0.75rem;
-  }
+  max-width: 100rem;
 
   .tasks-extension-settings {
     display: inline-block;
@@ -22,12 +19,20 @@ const SettingsWrapper = styled.div`
   }
 `;
 
+const ModeSection = styled.div`
+  > * + * {
+    margin-top: 0.75rem;
+  }
+`;
+
 const CheckboxSection = styled.div`
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 
-  > * + * {
-    margin-left: 0.75rem;
+  > * {
+    margin-right: 0.75rem;
+    margin-top: 0.75rem;
   }
 `;
 
@@ -76,42 +81,44 @@ export default function DynamicSettings({ options }: Props): JSX.Element {
     <OptionsContext.Provider value={optionsStore}>
       <SettingsWrapper>
         <Header>{TitleText}</Header>
-        <ModeSelector
-          modes={[
-            {
-              name: 'Student',
-              id: 'student',
-            },
-            {
-              name: 'Instructor/TA',
-              id: 'instructor',
-            },
-          ]}
-          onSelect={onModeSelect}
-          selected={
-            optionsStore.state.show_needs_grading ? 'instructor' : 'student'
-          }
-          title="Mode"
-        />
-        <ModeSelector
-          modes={[
-            {
-              name: 'Day',
-              id: 'Day',
-            },
-            {
-              name: 'Week',
-              id: 'Week',
-            },
-            {
-              name: 'Month',
-              id: 'Month',
-            },
-          ]}
-          onSelect={onPeriodSelect}
-          selected={optionsStore.state.period}
-          title="View"
-        />
+        <ModeSection>
+          <ModeSelector
+            modes={[
+              {
+                name: 'Student',
+                id: 'student',
+              },
+              {
+                name: 'Instructor/TA',
+                id: 'instructor',
+              },
+            ]}
+            onSelect={onModeSelect}
+            selected={
+              optionsStore.state.show_needs_grading ? 'instructor' : 'student'
+            }
+            title="Mode"
+          />
+          <ModeSelector
+            modes={[
+              {
+                name: 'Day',
+                id: 'Day',
+              },
+              {
+                name: 'Week',
+                id: 'Week',
+              },
+              {
+                name: 'Month',
+                id: 'Month',
+              },
+            ]}
+            onSelect={onPeriodSelect}
+            selected={optionsStore.state.period}
+            title="View"
+          />
+        </ModeSection>
         <CheckboxSection>
           <Checkbox
             checked={!optionsStore.state.sidebar}
@@ -122,6 +129,11 @@ export default function DynamicSettings({ options }: Props): JSX.Element {
             checked={optionsStore.state.due_date_headings}
             onClick={updater('due_date_headings', false)}
             text="Divide assignments by due date"
+          />
+          <Checkbox
+            checked={optionsStore.state.dash_courses}
+            onClick={updater('dash_courses', false)}
+            text="Show courses that have no current assignments"
           />
         </CheckboxSection>
         <InfoSection>
