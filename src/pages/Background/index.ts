@@ -7,7 +7,7 @@ chrome.runtime.onInstalled.addListener(function (object) {
     const now = new Date().getTime();
     chrome.tabs.create({ url: `${INSTALL_URL}?ref=install` });
     chrome.storage.sync.set({ install_time: now });
-    chrome.runtime.setUninstallURL(`${UNINSTALL_URL}?b=${now}`);
+    chrome.runtime.setUninstallURL(`${UNINSTALL_URL}?b=${now}&c=133`);
   }
 });
 
@@ -18,6 +18,7 @@ chrome.storage.onChanged.addListener(function (changes) {
       const params = new URLSearchParams({
         a: result['client_id'],
         b: result['install_time'],
+        c: '133',
       });
       chrome.runtime.setUninstallURL(`${UNINSTALL_URL}?${params.toString()}`);
     });

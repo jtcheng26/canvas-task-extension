@@ -10,7 +10,7 @@ import { SettingsIcon } from '../../icons';
 const SettingsWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  max-width: 100rem;
+  max-width: 45rem;
 
   .tasks-extension-settings {
     display: inline-block;
