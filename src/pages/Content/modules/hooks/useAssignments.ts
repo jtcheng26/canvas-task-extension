@@ -82,7 +82,7 @@ const PlannerAssignmentDefaults: PlannerAssignment = {
   plannable_date: undefined,
   submissions: false, // remember to check properties if not false
   plannable: {
-    assignment_id: '0', // use this for graphql requests
+    assignment_id: undefined, // use this for graphql requests
     id: '0',
     title: 'Untitled Assignment',
     details: '',
@@ -126,9 +126,11 @@ export function convertPlannerAssignments(
         : assignment.plannable_id?.toString(),
       plannable_id: assignment.plannable_id?.toString(), // just in case it changes in the future
       override_id: assignment.planner_override?.id.toString(),
-      course_id: (
-        assignment.course_id || assignment.plannable.course_id
-      )?.toString(),
+      course_id: assignment.plannable.course_id
+        ? assignment.plannable.course_id.toString()
+        : assignment.course_id
+        ? assignment.course_id.toString()
+        : '0',
       name: assignment.plannable.title,
       due_at:
         assignment.plannable.due_at ||
@@ -169,11 +171,14 @@ export function convertPlannerAssignments(
         try {
           if (parsed.length >= 3)
             converted.html_url = parsed[2].split(' ')[0].trim();
-          if (parsed.length >= 4)
+          if (
+            parsed.length >= 4 &&
+            (!converted.course_id || converted.course_id === '0')
+          )
             converted.course_id = parsed[3].split(' ')[0].trim();
         } catch {
           converted.html_url = '/';
-          converted.course_id = '0';
+          converted.course_id = converted.course_id || '0';
         }
       }
     }
