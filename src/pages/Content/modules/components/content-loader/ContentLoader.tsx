@@ -39,6 +39,7 @@ function ContentLoader({
   const {
     data: courseData,
     isError: coursesError,
+    isSuccess: coursesSuccess,
     errorMessage: coursesErrorMessage,
   } = useCourses(options.theme_color);
   const animationStart = useRef(0); // for counting load time
@@ -55,7 +56,7 @@ function ContentLoader({
   }
 
   useEffect(() => {
-    if (!isSuccess) {
+    if (!isSuccess || !coursesSuccess) {
       animationStart.current = Date.now();
     } else {
       const loadTime = Date.now() - animationStart.current;
@@ -72,7 +73,7 @@ function ContentLoader({
         loadedCallback();
       }
     }
-  }, [isSuccess]);
+  }, [isSuccess, coursesSuccess]);
 
   const assignmentData = useMemo(() => {
     /* IMPORTANT: validates all `course_id` in assignments. This is the first point where both assignment and course data are synchronized. */
