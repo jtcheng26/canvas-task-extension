@@ -2,11 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import RadialBarChart, { ChartData } from '../radial-bar-chart';
 import BeatLoader from '../spinners';
-import { Course, FinalAssignment } from '../../types';
+import { FinalAssignment } from '../../types';
 import useChartData from './hooks/useChartData';
 import useSelectChartData from './hooks/useBar';
 import Confetti from 'react-dom-confetti';
 import { OptionsDefaults } from '../../constants';
+import useCourseStore from '../../hooks/useCourseStore';
 
 /*
   Renders progress chart
@@ -50,7 +51,7 @@ const ConfettiWrapper = styled.div`
 
 export interface TaskChartProps {
   assignments: FinalAssignment[];
-  courses: Course[];
+  courses: string[];
   colorOverride?: string;
   loading?: boolean;
   onCoursePage?: boolean;
@@ -73,17 +74,19 @@ export default function TaskChart({
   themeColor = OptionsDefaults.theme_color,
   weekKey = '',
 }: TaskChartProps): JSX.Element {
+  const courseStore = useCourseStore();
   /* useMemo so it doesn't animate the bars when switching courses. */
-  const [chartData, setChartData] = useState(
-    useChartData(assignments, courses, colorOverride || themeColor, weekKey)
-  );
+  const [chartData, setChartData] = useState<ChartData>({
+    bars: [{ id: '0', value: 0, max: 1, color: colorOverride || themeColor }],
+    key: '-1',
+  });
 
-  const [currKey, setCurrKey] = useState(weekKey);
   function compareData(a: ChartData, b: ChartData) {
     if (a.bars.length !== b.bars.length) return false;
     return a.bars.reduce(
       (prev, curr, i) =>
         prev &&
+        b.bars[i].color === curr.color &&
         b.bars[i].id === curr.id &&
         b.bars[i].max === curr.max &&
         b.bars[i].value === curr.value,
@@ -91,31 +94,21 @@ export default function TaskChart({
     );
   }
 
-  function isEmpty(a: ChartData) {
-    return a.bars.length === 0 || (a.bars.length === 1 && a.bars[0].max === 0);
-  }
-
   useEffect(() => {
     // if assignments is same but weekkey different just change currkey
     // else update assignments
     // in order for everything to re-animate when weeks change, the key has to change at the same time as the data
+    if (loading) return;
     const newData = useChartData(
       assignments,
       courses,
+      courseStore,
       colorOverride || themeColor,
-      currKey
+      weekKey
     );
-    if (weekKey !== currKey) setCurrKey(weekKey);
-    else if (
-      (!loading &&
-        isEmpty(chartData) &&
-        isEmpty(newData) &&
-        chartData.key !== newData.key) ||
-      !compareData(newData, chartData)
-    ) {
+    if (chartData.key !== newData.key || !compareData(chartData, newData))
       setChartData(newData);
-    }
-  }, [assignments, courses, loading, currKey, weekKey]);
+  }, [assignments, courses, courseStore, loading, weekKey]);
 
   const [done, total, color] = useMemo(
     () => useSelectChartData(selectedCourseId, chartData),
@@ -179,7 +172,6 @@ export default function TaskChart({
         ''
       )}
       <RadialBarChart
-        // bgColor="rgba(127, 127, 127, 10%)"
         data={chartData}
         onSelect={handleClick}
         selectedBar={colorOverride ? '' : selectedCourseId}

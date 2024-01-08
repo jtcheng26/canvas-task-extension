@@ -1,4 +1,8 @@
+import { DemoCourses } from '../tests/demo';
+import isDemo from './isDemo';
+
 export default function dashCourses(): Set<string> | undefined {
+  if (isDemo()) return new Set(DemoCourses.map((d) => d.id));
   const links = Array.from(
     document.getElementsByClassName('ic-DashboardCard__link')
   );

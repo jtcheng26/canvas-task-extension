@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import { DarkProps } from '../../types/props';
 import BeatLoader from '../spinners';
 import TaskList from '../task-list';

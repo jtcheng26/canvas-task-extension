@@ -14,12 +14,12 @@ import { AssignmentStatus } from '../../types/assignment';
 import NodeGroup from 'react-move/NodeGroup';
 import { TransitionState } from '../task-card/TaskCard';
 import { easeQuadInOut } from 'd3-ease';
-import { DarkContext } from '../../contexts/darkContext';
+import { DarkContext } from '../../contexts/contexts';
 import AnnouncementCard from '../task-card/AnnouncementCard';
 import IconSubTabs from '../sub-tabs/IconSubTabs';
 import useOptions from '../../hooks/useOptions';
 import { THEME_COLOR } from '../../constants';
-import useCourseColors from '../../hooks/useCourseColors';
+import useCourseStore from '../../hooks/useCourseStore';
 
 const ListContainer = styled.div`
   width: 100%;
@@ -70,6 +70,59 @@ export interface TaskListProps {
   weekKey: string; // unique key value for same headings between different weeks
 }
 
+function startTransition() {
+  return {
+    height: 0,
+    opacity: 0,
+  };
+}
+function enterTransition() {
+  return {
+    height: [65],
+    opacity: [1],
+    timing: { duration: 500, ease: easeQuadInOut },
+  };
+}
+function leaveTransition() {
+  return {
+    height: [0],
+    opacity: [0],
+    timing: { duration: 300, ease: easeQuadInOut },
+  };
+}
+
+// some animations become "updates" instead of "enters" when switching tabs during them
+function updateTransition() {
+  return {
+    height: [65],
+    opacity: [1],
+    timing: { duration: 500, ease: easeQuadInOut },
+  };
+}
+
+function processRenderList(
+  assignments: FinalAssignment[],
+  tab: TaskTypeTab,
+  selectedCourseId: string,
+  viewingMore: boolean,
+  showDateHeadings: boolean
+) {
+  const selected = useSelectedCourse(selectedCourseId, assignments);
+  const filtered = filterByTab(tab, selected);
+  const sorted = sortByTab(tab, filtered);
+  const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
+  const headings = useHeadings(tab, renderedTasks);
+  const allRendered = Object.keys(headings).reduce<
+    (FinalAssignment | string)[]
+  >((prev, curr) => {
+    let nxt = prev;
+    if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
+    nxt = nxt.concat(headings[curr]);
+    return nxt;
+  }, []);
+  return [allRendered, sorted as FinalAssignment[]];
+}
+
 /*
   Renders all unfinished assignments
 */
@@ -85,31 +138,12 @@ export default function TaskList({
   skeleton,
   weekKey,
 }: TaskListProps): JSX.Element {
+  const courseStore = useCourseStore();
+  const darkMode = useContext(DarkContext);
+  const { state: options } = useOptions();
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
-  function processRenderList(
-    assignments: FinalAssignment[],
-    tab: TaskTypeTab,
-    selectedCourseId: string,
-    viewingMore: boolean,
-    showDateHeadings: boolean
-  ) {
-    const selected = useSelectedCourse(selectedCourseId, assignments);
-    const filtered = filterByTab(tab, selected);
-    const sorted = sortByTab(tab, filtered);
-    const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
-    const headings = useHeadings(tab, renderedTasks);
-    const allRendered = Object.keys(headings).reduce<
-      (FinalAssignment | string)[]
-    >((prev, curr) => {
-      let nxt = prev;
-      if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
-      nxt = nxt.concat(headings[curr]);
-      return nxt;
-    }, []);
-    return [allRendered, sorted as FinalAssignment[]];
-  }
 
   const [unfinishedList, allUnfinishedList] = useMemo(
     () =>
@@ -179,12 +213,6 @@ export default function TaskList({
     setViewingMore(!viewingMore);
   }
 
-  const viewMoreText = !viewingMore
-    ? `View ${allList[currentTab].length - 4} more`
-    : 'View less';
-
-  const noneText = 'None';
-
   function markAssignmentFunc(
     id: string,
     tab: TaskTypeTab,
@@ -195,7 +223,7 @@ export default function TaskList({
       return () => {
         console.log('Failed to mark as complete');
       };
-    else if (tab === 'Unfinished') {
+    else if (tab === 'Unfinished' || tab === 'NeedsGrading') {
       return () => {
         setTimeout(() => {
           setConfetti(true);
@@ -226,16 +254,13 @@ export default function TaskList({
   const assignmentToTaskCard = (
     tab: TaskTypeTab,
     { key, data: assignment, state }: TaskCardTransitionProps
-  ) =>
-    tab !== 'Announcements' ? (
+  ) => {
+    return tab !== 'Announcements' ? (
       <TaskCard
-        color={assignment.color}
+        assignment={assignment}
+        color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
-        course_name={assignment.course_name}
-        due_at={assignment.due_at}
-        graded={assignment.graded}
-        graded_at={assignment.graded_at}
-        html_url={assignment.html_url}
+        course_name={courseStore.state[assignment.course_id].name}
         key={key}
         markComplete={markAssignmentFunc(
           assignment.id,
@@ -249,20 +274,14 @@ export default function TaskList({
           AssignmentStatus.DELETED,
           markAssignment
         )}
-        name={assignment.name}
-        needs_grading_count={assignment.needs_grading_count}
-        points_possible={assignment.points_possible}
-        submitted={assignment.submitted}
         transitionState={state}
-        type={assignment.type}
       />
     ) : (
       <AnnouncementCard
-        color={assignment.color}
+        assignment={assignment}
+        color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
-        course_name={assignment.course_name}
-        due_at={assignment.due_at}
-        html_url={assignment.html_url}
+        course_name={courseStore.state[assignment.course_id].name}
         key={key}
         markComplete={markAssignmentFunc(
           assignment.id,
@@ -270,11 +289,10 @@ export default function TaskList({
           AssignmentStatus.SEEN,
           markAssignment
         )}
-        name={assignment.name}
         transitionState={state}
-        type={assignment.type}
       />
     );
+  };
 
   interface HeadingTransitionProps {
     key: string;
@@ -315,44 +333,33 @@ export default function TaskList({
     };
   }
 
-  function startTransition() {
-    return {
-      height: 0,
-      opacity: 0,
-    };
-  }
-  function enterTransition() {
-    return {
-      height: [65],
-      opacity: [1],
-      timing: { duration: 500, ease: easeQuadInOut },
-    };
-  }
-  function leaveTransition() {
-    return {
-      height: [0],
-      opacity: [0],
-      timing: { duration: 300, ease: easeQuadInOut },
-    };
-  }
   function keyAccess(a: FinalAssignment | string) {
-    return typeof a === 'string' ? a + '-' + weekKey : a.id;
+    return typeof a === 'string' ? a + '-' + weekKey : a.id + '-' + weekKey;
   }
-
-  const darkMode = useContext(DarkContext);
 
   const numNotifs = announcements.filter((x) => !x.marked_complete).length;
 
-  const { data: options } = useOptions();
-
-  const { data: colors } = useCourseColors();
   const iconColor = useMemo(() => {
-    if (selectedCourseId && colors && selectedCourseId in colors)
-      return colors[selectedCourseId];
+    if (selectedCourseId && selectedCourseId in courseStore.state)
+      return courseStore.state[selectedCourseId].color;
     if (options?.color_tabs) return options?.theme_color || THEME_COLOR;
     if (darkMode) return '#6c757c';
     return 'var(--ic-brand-font-color-dark)';
-  }, [options, selectedCourseId, colors]);
+  }, [options, selectedCourseId, courseStore]);
+
+  const hideUnfinishedList: boolean =
+    unfinishedList.length === 0 && options.show_needs_grading;
+
+  const visibleTab =
+    currentTab === 'Unfinished' && hideUnfinishedList
+      ? 'NeedsGrading'
+      : currentTab;
+
+  const viewMoreText = !viewingMore
+    ? `View ${allList[visibleTab].length - 4} more`
+    : 'View less';
+
+  const noneText = 'None';
 
   if (skeleton)
     return (
@@ -369,11 +376,12 @@ export default function TaskList({
     <ListWrapper>
       <IconSubTabs
         activeColor={iconColor}
+        assignmentsEmpty={unfinishedList.length === 0}
         dark={darkMode}
-        gradebook={!!allGradingList.length}
+        gradebook={options.show_needs_grading}
         notifs={numNotifs}
         setTaskListState={setCurrentTab}
-        taskListState={currentTab}
+        taskListState={visibleTab}
       />
       {showConfetti && (
         <ConfettiWrapper>
@@ -387,7 +395,7 @@ export default function TaskList({
           />
         </ConfettiWrapper>
       )}
-      <HideDiv visible={currentTab === 'Announcements'}>
+      <HideDiv visible={visibleTab === 'Announcements'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : announcementList}
@@ -395,13 +403,14 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Announcements'))}</>}
           </NodeGroup>
           {announcementList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      <HideDiv visible={currentTab === 'Unfinished'}>
+      <HideDiv visible={visibleTab === 'Unfinished'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : unfinishedList}
@@ -409,6 +418,7 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Unfinished'))}</>}
           </NodeGroup>
@@ -420,7 +430,7 @@ export default function TaskList({
           )}
         </ListContainer>
       </HideDiv>
-      <HideDiv visible={currentTab === 'NeedsGrading'}>
+      <HideDiv visible={visibleTab === 'NeedsGrading'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : gradingList}
@@ -428,14 +438,21 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('NeedsGrading'))}</>}
           </NodeGroup>
-          {gradingList.length === 0 && <span>{noneText}</span>}
+          {(allList['NeedsGrading'].length <= 4 || viewingMore) && (
+            <CreateTaskCard
+              grading
+              onSubmit={createAssignment}
+              selectedCourse={selectedCourseId}
+            />
+          )}
         </ListContainer>
       </HideDiv>
 
-      <HideDiv visible={currentTab === 'Completed'}>
+      <HideDiv visible={visibleTab === 'Completed'}>
         <ListContainer>
           <NodeGroup
             data={loading ? [] : completedList}
@@ -443,13 +460,14 @@ export default function TaskList({
             keyAccessor={keyAccess}
             leave={leaveTransition}
             start={startTransition}
+            update={updateTransition}
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Completed'))}</>}
           </NodeGroup>
           {completedList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      {allList[currentTab].length > 4 && (
+      {allList[visibleTab].length > 4 && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>

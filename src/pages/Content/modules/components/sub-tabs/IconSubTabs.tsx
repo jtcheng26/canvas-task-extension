@@ -71,6 +71,7 @@ const BorderBottom = styled.div<ColorProps & AnimatedProps>`
 export interface SubTabsProps {
   activeColor?: string;
   gradebook?: boolean;
+  assignmentsEmpty?: boolean; // so this tab can be hidden in instructor mode
   dark?: boolean;
   setTaskListState?: (state: TaskTypeTab) => void;
   taskListState?: TaskTypeTab;
@@ -84,6 +85,7 @@ export default function IconSubTabs({
   activeColor,
   dark,
   gradebook,
+  assignmentsEmpty,
   setTaskListState,
   taskListState,
   notifs = 0,
@@ -101,11 +103,13 @@ export default function IconSubTabs({
     return () => setTaskListState(state);
   }
 
+  const threeTabs: boolean = (assignmentsEmpty && gradebook) || !gradebook;
+
   const positions = {
     Announcements: 0,
     Unfinished: 1,
-    NeedsGrading: 2,
-    Completed: gradebook ? 3 : 2,
+    NeedsGrading: assignmentsEmpty && gradebook ? 1 : 2,
+    Completed: threeTabs ? 2 : 3,
   };
 
   return (
@@ -126,20 +130,24 @@ export default function IconSubTabs({
             variant={taskListState === 'Announcements' ? 'solid' : 'outline'}
           />
         </SubtitleTab>
-        <SubtitleTab
-          active={taskListState === 'Unfinished'}
-          color={activeColor}
-          dark={dark}
-          iconClassname="tfc-todo-tab"
-          onClick={setTaskListStateFunc('Unfinished')}
-          opacity={taskListState === 'Unfinished' ? 1 : 0.5}
-        >
-          <AssignmentIconComponent
-            color={taskListState === 'Unfinished' ? activeColor : '#6c757c'}
-            flat
-            variant={taskListState === 'Unfinished' ? 'solid' : 'outline'}
-          />
-        </SubtitleTab>
+        {!(assignmentsEmpty && gradebook) ? (
+          <SubtitleTab
+            active={taskListState === 'Unfinished'}
+            color={activeColor}
+            dark={dark}
+            iconClassname="tfc-todo-tab"
+            onClick={setTaskListStateFunc('Unfinished')}
+            opacity={taskListState === 'Unfinished' ? 1 : 0.5}
+          >
+            <AssignmentIconComponent
+              color={taskListState === 'Unfinished' ? activeColor : '#6c757c'}
+              flat
+              variant={taskListState === 'Unfinished' ? 'solid' : 'outline'}
+            />
+          </SubtitleTab>
+        ) : (
+          ''
+        )}
         {gradebook ? (
           <SubtitleTab
             active={taskListState === 'NeedsGrading'}
@@ -174,7 +182,7 @@ export default function IconSubTabs({
       </SubtitleDiv>
       <BorderBottom
         color={activeColor}
-        numTabs={gradebook ? 4 : 3}
+        numTabs={threeTabs ? 3 : 4}
         pos={positions[taskListState ?? 'Unfinished']}
         visible
       />

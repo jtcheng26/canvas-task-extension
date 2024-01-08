@@ -1,6 +1,6 @@
 export type Period = 'Day' | 'Week' | 'Month';
 
-interface Options {
+type Options = {
   color_tabs: boolean;
   complete_assignments?: number[];
   rolling_period: boolean;
@@ -16,6 +16,7 @@ interface Options {
   theme_color: string;
   dark_mode: boolean;
   show_needs_grading: boolean;
-}
+  show_long_overdue: boolean;
+};
 
 export default Options;

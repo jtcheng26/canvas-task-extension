@@ -1,12 +1,14 @@
 import { AssignmentDefaults } from '../../../constants';
-import { Course, FinalAssignment } from '../../../types';
+import { CourseStoreInterface } from '../../../hooks/useCourseStore';
+import { FinalAssignment } from '../../../types';
 import { Bar, ChartData } from '../../radial-bar-chart';
 import { ringProgress } from '../utils/ringProgress';
 import sortByPosition from '../utils/sortByPosition';
 
 export default function useChartData(
   assignments: FinalAssignment[],
-  courses: Course[],
+  courses: string[],
+  courseStore: CourseStoreInterface,
   defaultColor: string,
   key = ''
 ): ChartData {
@@ -17,17 +19,15 @@ export default function useChartData(
     courseExists[a.course_id] = 1;
   });
   courses.forEach((c) => {
-    if (!courseExists[c.id] && c.id !== '0') {
+    if (!courseExists[c] && c !== '0') {
       tempAssignments.push({
         ...AssignmentDefaults,
-        course_id: c.id,
-        position: c.position,
+        course_id: c,
         name: EMPTY_COURSE_ID,
-        color: c.color,
       });
     }
   });
-  const sortedAssignments = sortByPosition(tempAssignments);
+  const sortedAssignments = sortByPosition(tempAssignments, courseStore);
   const data: ChartData = {
     bars: sortedAssignments.reduce((a: Bar[], b: FinalAssignment) => {
       if (b.name === EMPTY_COURSE_ID) {
@@ -35,7 +35,7 @@ export default function useChartData(
           id: b.course_id,
           value: 0,
           max: 0,
-          color: b.color,
+          color: courseStore.state[b.course_id].color,
         });
         return a;
       }
@@ -45,7 +45,7 @@ export default function useChartData(
           id: b.course_id,
           value: 0,
           max: 0,
-          color: b.color || '#000000',
+          color: courseStore.state[b.course_id].color || '#000000',
         });
       }
 

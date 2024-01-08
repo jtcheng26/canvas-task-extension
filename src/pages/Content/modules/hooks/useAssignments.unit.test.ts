@@ -3,6 +3,7 @@ import {
   filterTimeBounds,
   getAllAssignments,
   filterAssignmentTypes,
+  mergePartial,
 } from './useAssignments';
 import { AssignmentType, FinalAssignment } from '../types';
 
@@ -21,7 +22,7 @@ import beforeEndMinute from '../tests/data/assignment-list/due_at/beforeEndMinut
 import beforeStartDay from '../tests/data/assignment-list/due_at/beforeStartDay.json';
 import afterEndDay from '../tests/data/assignment-list/due_at/afterEndDay.json';
 import forEachTZ from '../tests/utils/forEachTZ';
-import { AssignmentDefaults } from '../constants';
+import { AssignmentDefaults, OptionsDefaults } from '../constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -32,7 +33,8 @@ describe('getAllAssignment', () => {
 
     const assignments = await getAllAssignments(
       new Date('2022-01-01'),
-      new Date('2022-01-01')
+      new Date('2022-01-01'),
+      OptionsDefaults
     );
     expect(assignments.length).toBe(plannerRes.length);
     expect(assignments[0].course_id).toBe(plannerRes[0].course_id.toString());
@@ -44,7 +46,8 @@ describe('getAllAssignment', () => {
 
     const assignments = await getAllAssignments(
       new Date('2022-01-01'),
-      new Date('2022-01-01')
+      new Date('2022-01-01'),
+      OptionsDefaults
     );
     // good values
     expect(assignments[0].name).toBe(plannerRes[0].plannable.title);
@@ -55,14 +58,14 @@ describe('getAllAssignment', () => {
     );
     expect(assignments[0].submitted).toBe(AssignmentDefaults.submitted);
     expect(assignments[0].graded).toBe(AssignmentDefaults.graded);
-    expect(assignments[0].color).toBe(AssignmentDefaults.color);
   });
   it('filters to assignment types', async () => {
     mockedAxios.get.mockResolvedValueOnce({ data: plannerRes, headers: {} });
 
     let assignments = await getAllAssignments(
       new Date('2022-01-01'),
-      new Date('2022-01-01')
+      new Date('2022-01-01'),
+      OptionsDefaults
     );
     assignments = filterAssignmentTypes(assignments);
     expect(assignments.length).toBe(5);
@@ -206,6 +209,76 @@ describe('filterTimeBounds', () => {
       (res) => {
         expect(res.length).toBe(0);
       }
+    );
+  });
+});
+
+describe('mergePartial', () => {
+  it('returns a copy on the same object', () => {
+    const res = mergePartial(AssignmentDefaults, AssignmentDefaults);
+    Object.keys(AssignmentDefaults).forEach((k) =>
+      expect(res[k as keyof FinalAssignment]).toBe(
+        AssignmentDefaults[k as keyof FinalAssignment]
+      )
+    );
+    res.course_id = '12345';
+    expect(res.course_id).not.toBe(AssignmentDefaults.course_id);
+  });
+
+  it('keeps default values in a partial with undefined keys', () => {
+    const partial: Partial<FinalAssignment> = {
+      ...AssignmentDefaults,
+    };
+    delete partial.course_id;
+    delete partial.id;
+    delete partial.name;
+    const res = mergePartial(partial, AssignmentDefaults);
+    expect(res.course_id).toBe(AssignmentDefaults.course_id);
+    expect(res.id).toBe(AssignmentDefaults.id);
+    expect(res.name).toBe(AssignmentDefaults.name);
+    expect('course_id' in partial).toBe(false);
+    expect('id' in partial).toBe(false);
+    expect('name' in partial).toBe(false);
+  });
+
+  it('keeps new values', () => {
+    const partial: Partial<FinalAssignment> = {
+      ...AssignmentDefaults,
+      needs_grading_count: 1234,
+      name: 'Test name different from default',
+    };
+    const res = mergePartial(partial, AssignmentDefaults);
+    expect(partial.needs_grading_count).not.toBe(
+      AssignmentDefaults.needs_grading_count
+    );
+    expect(res.needs_grading_count).toBe(partial.needs_grading_count);
+    expect(partial.name).not.toBe(AssignmentDefaults.name);
+    expect(res.name).toBe(partial.name);
+  });
+
+  it('keeps new values and fills in default values', () => {
+    const partial: Partial<FinalAssignment> = {
+      ...AssignmentDefaults,
+      needs_grading_count: 1234,
+      name: 'Test name different from default',
+      marked_complete: !AssignmentDefaults.marked_complete,
+    };
+    delete partial.course_id;
+    delete partial.id;
+    const res = mergePartial(partial, AssignmentDefaults);
+    expect(res.course_id).toBe(AssignmentDefaults.course_id);
+    expect(res.id).toBe(AssignmentDefaults.id);
+    expect('course_id' in partial).toBe(false);
+    expect('id' in partial).toBe(false);
+    expect(res.name).toBe(partial.name);
+    expect(res.needs_grading_count).toBe(partial.needs_grading_count);
+    expect(res.marked_complete).toBe(partial.marked_complete);
+    expect(partial.name).not.toBe(AssignmentDefaults.name);
+    expect(partial.needs_grading_count).not.toBe(
+      AssignmentDefaults.needs_grading_count
+    );
+    expect(partial.marked_complete).not.toBe(
+      AssignmentDefaults.marked_complete
     );
   });
 });

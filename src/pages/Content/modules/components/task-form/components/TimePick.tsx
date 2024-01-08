@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { Course } from '../../../types';
 import CourseDropdown from '../../course-dropdown';
+import { DropdownChoice } from '../../course-dropdown/CourseDropdown';
 
 function fmtTime(minutes: number): string {
   const h =
@@ -24,12 +24,11 @@ export default function TimePick({
   setSelected,
 }: Props): JSX.Element {
   const timeChoices = useMemo(() => {
-    const times: Course[] = [];
+    const times: DropdownChoice[] = [];
     for (let i = 0; i < 48; i++) {
       times.push({
         id: i * 30 + '',
         name: fmtTime(i * 30),
-        position: i,
         color: dark ? 'var(--tfc-dark-mode-text-primary)' : '#2d3b45',
       });
     }
@@ -37,7 +36,6 @@ export default function TimePick({
     times.push({
       id: '1439',
       name: fmtTime(1439),
-      position: 48,
       color: dark ? 'var(--tfc-dark-mode-text-primary)' : '#2d3b45',
     });
 
@@ -50,14 +48,14 @@ export default function TimePick({
 
   return (
     <CourseDropdown
-      courses={timeChoices}
+      choices={timeChoices}
       defaultColor={color}
       instructureStyle
       maxHeight={150}
       noDefault
       onCoursePage={false}
-      selectedCourseId={selected}
-      setCourse={chooseTime}
+      selectedId={selected}
+      setChoice={chooseTime}
       zIndex={30} // above the course dropdown under this
     />
   );

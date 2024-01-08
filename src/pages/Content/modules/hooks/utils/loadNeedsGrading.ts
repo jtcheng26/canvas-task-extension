@@ -1,19 +1,30 @@
-import { AssignmentType, FinalAssignment, Options } from '../types';
-import { useQuery, UseQueryResult } from 'react-query';
-import useCourseNames from './useCourseNames';
-import useCourseColors from './useCourseColors';
-import baseURL from '../utils/baseURL';
-import { AssignmentDefaults, OptionsDefaults } from '../constants';
-import useCoursePositions from './useCoursePositions';
-import isDemo from '../utils/isDemo';
-import { getPaginatedRequest, processAssignmentList } from './useAssignments';
-import { TodoAssignment, TodoResponse } from '../types/assignment';
-import apiReq from '../utils/apiReq';
+import { AssignmentType, FinalAssignment, Options } from '../../types';
+import baseURL from '../../utils/baseURL';
+import { AssignmentDefaults } from '../../constants';
+import isDemo from '../../utils/isDemo';
+import {
+  getPaginatedRequest,
+  mergePartial,
+  processAssignmentList,
+} from '../useAssignments';
+import { TodoAssignment, TodoResponse } from '../../types/assignment';
+import graphqlReq from './gqlReq';
+import { DemoNeedsGrading, DemoTeacherAssignments } from '../../tests/demo';
 
-interface NeedsGradingCount {
+export interface NeedsGradingCount {
   id: string;
   needs_grading: number;
   total: number;
+}
+
+interface GQLResponse {
+  [key: string]: {
+    submissionsConnection?: {
+      nodes: {
+        gradingStatus: string;
+      }[];
+    };
+  };
 }
 
 async function queryNeedsGradingCounts(
@@ -32,16 +43,8 @@ async function queryNeedsGradingCounts(
 
   const queries = ids.map((id, idx) => newQuery(id, idx));
 
-  const data = {
-    query: `query MyQuery {
-      ${queries.reduce((prev, curr) => prev + '\n' + curr, '')}
-    }`,
-  };
-
   try {
-    const resp = await apiReq('/graphql', JSON.stringify(data), 'post');
-    if ('errors' in resp.data || resp.status / 100 != 2) return {};
-    const counts = resp.data.data;
+    const counts = await graphqlReq<GQLResponse>(queries);
 
     const keys = Object.keys(counts);
 
@@ -68,12 +71,26 @@ async function getAllTodoRequest(allPages = true): Promise<TodoResponse[]> {
   return await getPaginatedRequest<TodoResponse>(initialURL, allPages);
 }
 
+const TodoResponseDefaults: TodoResponse = {
+  assignment: {
+    html_url: '#',
+    name: 'Untitled Instructor Task',
+    id: '0',
+    due_at: '',
+    points_possible: 50,
+    course_id: '0',
+    needs_grading_count: 1,
+  },
+  needs_grading_count: 1,
+};
+
 /* Merge api objects into Assignment objects. */
 export function convertTodoAssignments(
   assignments: TodoResponse[]
 ): FinalAssignment[] {
   return assignments
     .filter((a) => a.assignment && a.needs_grading_count)
+    .map((assignment) => mergePartial(assignment, TodoResponseDefaults))
     .map((a) => a.assignment as TodoAssignment)
     .map((assignment) => {
       const converted: Partial<FinalAssignment> = {
@@ -90,29 +107,23 @@ export function convertTodoAssignments(
         needs_grading_count: assignment.needs_grading_count,
       };
 
-      const full: FinalAssignment = {
-        ...AssignmentDefaults,
-      };
-
-      Object.keys(converted).forEach((k) => {
-        const prop = k as keyof FinalAssignment;
-        if (converted[prop] !== null && typeof converted[prop] !== 'undefined')
-          full[prop] = converted[prop] as never;
-      });
-
+      const full = mergePartial(converted, AssignmentDefaults);
       return full;
     });
 }
 
 export async function getAllTodos(): Promise<FinalAssignment[]> {
-  const data = isDemo() ? [] : await getAllTodoRequest();
+  const data = isDemo() ? DemoTeacherAssignments : await getAllTodoRequest();
   const assignments = convertTodoAssignments(data as TodoResponse[]);
-  // if (!assignments.length) return [];
-  const counts = await queryNeedsGradingCounts(assignments.map((a) => a.id));
+  const counts = isDemo()
+    ? DemoNeedsGrading
+    : await queryNeedsGradingCounts(assignments.map((a) => a.id));
   return assignments.map(
     (a) =>
       ({
         ...a,
+        needs_grading_count:
+          a.id in counts ? counts[a.id].needs_grading : a.needs_grading_count,
         total_submissions:
           a.id in counts ? counts[a.id].total : a.needs_grading_count,
       } as FinalAssignment)
@@ -122,52 +133,18 @@ export async function getAllTodos(): Promise<FinalAssignment[]> {
 async function processAssignments(
   startDate: Date,
   endDate: Date,
-  options: Options,
-  colors?: Record<string, string>,
-  names?: Record<string, string>,
-  positions?: Record<string, number>
+  options: Options
 ): Promise<FinalAssignment[]> {
   if (!options.show_needs_grading) return [];
   const assignments: FinalAssignment[] = await getAllTodos();
-  return processAssignmentList(
-    assignments,
-    startDate,
-    endDate,
-    options,
-    colors,
-    names,
-    positions
-  );
+  return processAssignmentList(assignments, startDate, endDate, options);
 }
 
 // only respects end date: assignments due after will not be included, but all assignments due before that need grading are included.
-export default function useNeedsGrading(
-  //   startDate: Date,
+export default async function loadNeedsGrading(
   endDate: Date,
   options: Options
-): UseQueryResult<FinalAssignment[]> {
-  const { data: colors } = useCourseColors(
-    options.theme_color !== OptionsDefaults.theme_color
-      ? options.theme_color
-      : undefined
-  );
-  const { data: names } = useCourseNames();
-  const { data: positions } = useCoursePositions();
+): Promise<FinalAssignment[]> {
   const startDate = new Date('2000-01-01');
-  return useQuery(
-    ['names', startDate, endDate],
-    () =>
-      processAssignments(
-        startDate,
-        endDate,
-        options,
-        colors as Record<string, string>,
-        names as Record<string, string>,
-        positions as Record<string, number>
-      ),
-    {
-      staleTime: Infinity,
-      enabled: !!colors && !!names,
-    }
-  );
+  return await processAssignments(startDate, endDate, options);
 }

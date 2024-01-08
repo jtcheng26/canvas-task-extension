@@ -3,34 +3,43 @@ import styled from 'styled-components';
 import Header from './header';
 import ContentLoader from './content-loader';
 import getPeriod from '../utils/getPeriod';
-import useOptions from '../hooks/useOptions';
+import { useOptionsStore } from '../hooks/useOptions';
+import { OptionsContext } from '../contexts/contexts';
+import { Options } from '../types';
 
 const AppContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
-export default function App(): JSX.Element {
-  const [delta, setDelta] = useState(0);
-  const [clickable, setClickable] = useState(false);
-  const { data: options } = useOptions();
-  const { start, end } = useMemo(() => {
-    if (options) {
-      return getPeriod(
-        options.period,
-        options.start_date,
-        options.start_hour,
-        options.start_minutes,
-        delta,
-        options.rolling_period
-      );
-    }
+interface AppProps {
+  options: Options;
+  MIN_LOAD_TIME?: number; // for testing only
+}
 
-    return {
-      start: new Date(),
-      end: new Date(),
-    };
-  }, [options, delta]);
+export default function App({
+  options,
+  MIN_LOAD_TIME = 350,
+}: AppProps): JSX.Element {
+  const [delta, setDelta] = useState(0);
+  const [clickableState, setClickableState] = useState({
+    clickable: false,
+    firstLoad: true,
+  });
+  const optionsStore = useOptionsStore(options, () =>
+    setClickableState({ clickable: false, firstLoad: false })
+  );
+  const { start, end } = useMemo(() => {
+    setClickableState({ clickable: false, firstLoad: false });
+    return getPeriod(
+      optionsStore.state.period,
+      optionsStore.state.start_date,
+      optionsStore.state.start_hour,
+      optionsStore.state.start_minutes,
+      delta,
+      optionsStore.state.rolling_period
+    );
+  }, [optionsStore.state, delta]);
 
   /*
     when prev/next buttons clicked
@@ -42,34 +51,38 @@ export default function App(): JSX.Element {
     only allow prev/next buttons to be clicked once content is loaded
   */
   function loadedCallback() {
-    setClickable(true);
+    setClickableState({ clickable: true, firstLoad: false });
   }
   function onPrevClick() {
-    setClickable(false);
+    setClickableState({ clickable: false, firstLoad: false });
     incrementDelta(-1);
   }
   function onNextClick() {
-    setClickable(false);
+    setClickableState({ clickable: false, firstLoad: false });
     incrementDelta(1);
   }
-  return options ? (
+  // options will always be available to children
+  return (
     <AppContainer id="tfc-wall-sina">
-      <Header
-        clickable={clickable}
-        dark={options.dark_mode}
-        onNextClick={onNextClick}
-        onPrevClick={onPrevClick}
-        weekEnd={end}
-        weekStart={start}
-      />
-      <ContentLoader
-        endDate={end}
-        loadedCallback={loadedCallback}
-        options={options}
-        startDate={start}
-      />
+      <OptionsContext.Provider value={optionsStore}>
+        <Header
+          clickable={clickableState.clickable}
+          dark={options.dark_mode}
+          onNextClick={onNextClick}
+          onPrevClick={onPrevClick}
+          weekEnd={end}
+          weekStart={start}
+        />
+        <ContentLoader
+          MIN_LOAD_TIME={MIN_LOAD_TIME}
+          clickable={clickableState.clickable}
+          endDate={end}
+          firstLoad={clickableState.firstLoad}
+          loadedCallback={loadedCallback}
+          options={optionsStore.state}
+          startDate={start}
+        />
+      </OptionsContext.Provider>
     </AppContainer>
-  ) : (
-    <div />
   );
 }
