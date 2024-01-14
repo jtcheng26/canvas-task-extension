@@ -8,6 +8,7 @@ export default function markAssignment(
   complete: AssignmentStatus,
   assignment: FinalAssignment
 ): FinalAssignment {
+  const retAssignment = { ...assignment };
   const method = assignment.override_id ? 'put' : 'post';
   if (complete === AssignmentStatus.DELETED) deleteAssignment(assignment);
   else if (complete === AssignmentStatus.SEEN) {
@@ -17,7 +18,7 @@ export default function markAssignment(
       'put',
       'read'
     );
-    assignment.marked_complete = true;
+    retAssignment.marked_complete = true;
   } else {
     const json = JSON.stringify({
       plannable_type: assignment.type.toString(),
@@ -25,9 +26,9 @@ export default function markAssignment(
       marked_complete: complete === AssignmentStatus.COMPLETE,
     });
     apiReq('/v1/planner/overrides', json, method, assignment.override_id + '');
-    assignment.marked_complete = complete === AssignmentStatus.COMPLETE;
+    retAssignment.marked_complete = complete === AssignmentStatus.COMPLETE;
     if (complete === AssignmentStatus.UNFINISHED && !assignment.override_id)
-      assignment.override_id = '0';
+      retAssignment.override_id = '0';
   }
-  return assignment;
+  return retAssignment;
 }

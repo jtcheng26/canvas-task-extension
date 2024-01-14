@@ -5,7 +5,7 @@ import TaskList from '../task-list';
 import { Course, FinalAssignment, Options } from '../../types';
 import extractCourses from './utils/extractCourses';
 import { filterCourses, filterTimeBounds } from '../../hooks/useAssignments';
-import { AssignmentStatus, AssignmentType } from '../../types/assignment';
+import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
 import {
   CourseStoreContext,
@@ -88,8 +88,8 @@ function TaskContainer({
   const weekKey = useMemo(() => startDate.toISOString(), [updatedAssignments]);
 
   function markAssignmentAs(id: string, status: AssignmentStatus) {
-    if (assignmentStore.state[id].type === AssignmentType.ANNOUNCEMENT)
-      announcementStore.updateAssignment(assignmentStore.state[id], status);
+    if (id in announcementStore.state)
+      announcementStore.updateAssignment(announcementStore.state[id], status);
     else assignmentStore.updateAssignment(assignmentStore.state[id], status);
   }
 
