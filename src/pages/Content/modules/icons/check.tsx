@@ -84,8 +84,14 @@ function CheckIcon({
   onClick,
   checkStyle,
 }: CheckIconProps): React.ReactElement {
+  type CheckStyleTooltips = { [K in CheckIconProps['checkStyle']]: string };
+  let checkStyleTooltips: CheckStyleTooltips = {
+    Check: 'Mark as Complete',
+    Revert: 'Mark as Incomplete',
+    X: 'Delete',
+  };
   return (
-    <CheckIconWrapper dark={dark} onClick={onClick}>
+    <CheckIconWrapper dark={dark} onClick={onClick} title={checkStyleTooltips[checkStyle]}>
       {checkStyle === 'Check' ? Check : checkStyle === 'Revert' ? Revert : X}
     </CheckIconWrapper>
   );
