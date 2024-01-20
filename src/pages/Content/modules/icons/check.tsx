@@ -85,7 +85,7 @@ function CheckIcon({
   checkStyle,
 }: CheckIconProps): React.ReactElement {
   type CheckStyleTooltips = { [K in CheckIconProps['checkStyle']]: string };
-  let checkStyleTooltips: CheckStyleTooltips = {
+  const checkStyleTooltips: CheckStyleTooltips = {
     Check: 'Mark as Complete',
     Revert: 'Mark as Incomplete',
     X: 'Delete',
