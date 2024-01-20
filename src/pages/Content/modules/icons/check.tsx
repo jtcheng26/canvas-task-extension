@@ -91,7 +91,11 @@ function CheckIcon({
     X: 'Delete',
   };
   return (
-    <CheckIconWrapper dark={dark} onClick={onClick} title={checkStyleTooltips[checkStyle]}>
+    <CheckIconWrapper
+      dark={dark}
+      onClick={onClick}
+      title={checkStyleTooltips[checkStyle]}
+    >
       {checkStyle === 'Check' ? Check : checkStyle === 'Revert' ? Revert : X}
     </CheckIconWrapper>
   );
