@@ -76,6 +76,7 @@ function createSidebarWhenListview() {
       rightSideWrapper.style.top = '0px';
       rightSideWrapper.style.overflowY = 'scroll';
       rightSideWrapper.style.height = '100vh';
+      rightSideWrapper.classList.add('tfc-list-view-wrapper');
       createSidebar(rightSide);
       return true;
     }
