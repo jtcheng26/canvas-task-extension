@@ -6,6 +6,7 @@ import baseURL from '../utils/baseURL';
 import isDemo from '../utils/isDemo';
 import { useEffect, useState } from 'react';
 import { getPaginatedRequest } from './useAssignments';
+import { storeCanvasCourses } from '../components/gradescope/utils/store';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<Record<string, number>> {
@@ -105,6 +106,8 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
   applyColor(courses, colors);
   applyCourseNames(courses);
   applyCoursePositions(courses, positions);
+
+  if (courses.length) storeCanvasCourses(courses);
 
   return [CustomCourse].concat(courses);
 }
