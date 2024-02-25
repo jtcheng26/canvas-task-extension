@@ -145,5 +145,6 @@ export async function syncCourse(gid: string, cid: string) {
 // in the future, think about unsyncing all assignments from old courses after a time period
 export async function unsyncCourse(gid: string) {
   chrome.storage.sync.remove(`GSCOPE_INT_tasks_${gid}`);
+  chrome.storage.sync.remove(`GSCOPE_INT_tasks_overrides_${gid}`);
   setCourseMapping(gid, null);
 }

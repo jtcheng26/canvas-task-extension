@@ -1,5 +1,6 @@
 import { Course } from '../../../types';
-import { GradescopeTask } from '../types';
+import { AssignmentStatus } from '../../../types/assignment';
+import { GradescopeOverride, GradescopeTask } from '../types';
 
 // for use by Tasks for Canvas
 export async function storeCanvasCourses(courses: Course[]) {
@@ -22,6 +23,44 @@ export async function setGradescopeIntegrationStatus(active: boolean) {
 
 export async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {
   const key = `GSCOPE_INT_tasks_${gid}`;
+  const res = await chrome.storage.sync.get(key);
+  if (!(key in res)) return [];
+  return res[key] || [];
+}
+
+// ID isn't always present, so keep as many identifiers as possible
+export async function setGradescopeOverride(
+  id: string,
+  gid: string,
+  name: string,
+  due_date: string,
+  status:
+    | AssignmentStatus.COMPLETE
+    | AssignmentStatus.DELETED
+    | AssignmentStatus.UNFINISHED
+) {
+  const key = `GSCOPE_INT_tasks_overrides_${gid}`;
+  const overrides = (await chrome.storage.sync.get(key))[key] || [];
+  const newOverrides = overrides.filter(
+    (o: GradescopeOverride) =>
+      o.id !== id || o.gid !== gid || o.name !== name || o.due_date !== due_date
+  );
+  newOverrides.push({
+    id,
+    gid,
+    name,
+    due_date,
+    status: status,
+  });
+  chrome.storage.sync.set({ [key]: newOverrides });
+
+  return newOverrides;
+}
+
+export async function getGradescopeOverrides(
+  gid: string
+): Promise<GradescopeOverride[]> {
+  const key = `GSCOPE_INT_tasks_overrides_${gid}`;
   const res = await chrome.storage.sync.get(key);
   if (!(key in res)) return [];
   return res[key] || [];

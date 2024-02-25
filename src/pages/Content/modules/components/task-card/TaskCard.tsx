@@ -229,6 +229,10 @@ export default function TaskCard({
     }
   }
   const darkMode = useContext(DarkContext);
+  const canBeDeleted = [
+    AssignmentType.NOTE,
+    AssignmentType.GRADESCOPE,
+  ].includes(assignment.type);
   return (
     <TaskContainer
       dark={darkMode}
@@ -259,7 +263,7 @@ export default function TaskCard({
           ) : (
             ''
           )}
-          {!skeleton && complete && assignment.type === AssignmentType.NOTE ? (
+          {!skeleton && complete && canBeDeleted ? (
             <CheckIcon
               checkStyle="X"
               dark={darkMode}

@@ -1,13 +1,16 @@
 import { FinalAssignment } from '../../../types';
-import { AssignmentStatus } from '../../../types/assignment';
+import { AssignmentStatus, AssignmentType } from '../../../types/assignment';
 import apiReq from '../../../utils/apiReq';
 import deleteAssignment from './deleteAssignment';
+import markGradescopeAssignment from './markGradescopeAssignment';
 
 /* Mark an assignment either complete or incomplete via planner overrides.*/
 export default function markAssignment(
   complete: AssignmentStatus,
   assignment: FinalAssignment
 ): FinalAssignment {
+  if (assignment.type === AssignmentType.GRADESCOPE)
+    return markGradescopeAssignment(complete, assignment);
   const retAssignment = { ...assignment };
   const method = assignment.override_id ? 'put' : 'post';
   if (complete === AssignmentStatus.DELETED) deleteAssignment(assignment);
