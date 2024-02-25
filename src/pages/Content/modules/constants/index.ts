@@ -6,6 +6,7 @@ import {
   QuizIcon,
   NeedsGradingIcon,
 } from '../icons';
+import GradescopeIcon from '../icons/gradescope';
 import { AssignmentType, FinalAssignment, Options } from '../types';
 import JSONAssignmentDefaults from './defaults/assignmentDefaults.json';
 import JSONOptionsDefaults from './defaults/optionsDefaults.json';
@@ -20,6 +21,7 @@ export const ASSIGNMENT_ICON: Record<AssignmentType | 'ungraded', JSX.Element> =
     [AssignmentType.NOTE]: NoteIcon,
     [AssignmentType.ANNOUNCEMENT]: AnnouncementIcon,
     [AssignmentType.EVENT]: AssignmentIcon,
+    [AssignmentType.GRADESCOPE]: GradescopeIcon,
     ungraded: NeedsGradingIcon,
   };
 

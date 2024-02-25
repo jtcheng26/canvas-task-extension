@@ -1,4 +1,5 @@
 import { Course } from '../../../types';
+import { GradescopeTask } from '../types';
 
 // for use by Tasks for Canvas
 export async function storeCanvasCourses(courses: Course[]) {
@@ -17,4 +18,11 @@ export async function getGradescopeIntegrationStatus() {
 
 export async function setGradescopeIntegrationStatus(active: boolean) {
   chrome.storage.sync.set({ GSCOPE_INT_disabled: !active });
+}
+
+export async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {
+  const key = `GSCOPE_INT_tasks_${gid}`;
+  const res = await chrome.storage.sync.get(key);
+  if (!(key in res)) return [];
+  return res[key] || [];
 }

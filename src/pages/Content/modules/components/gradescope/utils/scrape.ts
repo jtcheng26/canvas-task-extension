@@ -130,7 +130,7 @@ async function setCourseMapping(gid: string, cid: string | null) {
   chrome.storage.sync.set({ GSCOPE_INT_course_id_map: newMap });
 }
 
-async function getSyncedCourses() {
+export async function getSyncedCourses() {
   const { GSCOPE_INT_course_id_map } = await chrome.storage.sync.get(
     'GSCOPE_INT_course_id_map'
   );

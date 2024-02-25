@@ -1,3 +1,5 @@
+import { AssignmentStatus } from '../../../types/assignment';
+
 export interface GradescopeCourse {
   gid: string; // gradescope id
   name: string;
@@ -17,4 +19,15 @@ export interface GradescopeIntegrationState {
   GSCOPE_INT_course_id_map: Record<string, string>; // gid to Canvas course_id (for Canvas), also is the record of enabled courses (for gscope)
   tasks_map: Record<string, GradescopeTask[]>; // list of gscope tasks per course (for Canvas), GSCOPE_INT_tasks_12345 <12345 is gid>
   courses_map: Record<string, GradescopeCourse[]>;
+}
+
+export interface GradescopeOverride {
+  id: string;
+  gid: string;
+  name: string;
+  status:
+    | AssignmentStatus.COMPLETE
+    | AssignmentStatus.UNFINISHED
+    | AssignmentStatus.DELETED;
+  due_date: string;
 }

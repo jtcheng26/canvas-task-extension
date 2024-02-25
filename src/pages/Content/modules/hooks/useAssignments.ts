@@ -17,6 +17,7 @@ import loadNeedsGrading from './utils/loadNeedsGrading';
 import loadMissingAssignments from './utils/loadMissingAssignments';
 import { queryGraded } from './utils/loadGraded';
 import assignmentIsDone from '../utils/assignmentIsDone';
+import loadGradescopeAssignments from './utils/loadGradescope';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -242,6 +243,7 @@ export function filterAssignmentTypes(
     AssignmentType.QUIZ,
     AssignmentType.NOTE,
     AssignmentType.ANNOUNCEMENT,
+    AssignmentType.GRADESCOPE,
   ];
   return assignments.filter((assignment) =>
     validAssignments.includes(assignment.type)
@@ -349,6 +351,7 @@ export default function useAssignments(
       loadNeedsGrading(endDate, options),
       loadMissingAssignments(endDate, options),
       loadAssignments(startDate, endDate, options),
+      loadGradescopeAssignments(startDate, endDate, options),
     ])
       .then((res: FinalAssignment[][]) => {
         // merge all lists of assignments together
