@@ -177,9 +177,9 @@ export default function TaskCard({
   transitionState,
 }: TaskProps): JSX.Element {
   const [due_date, due_time] = fmtDate(assignment.due_at);
-  const gradedSince = fmtDateSince(
-    assignment.graded_at ? assignment.graded_at : new Date().toISOString()
-  );
+  const gradedSince = assignment.graded_at
+    ? fmtDateSince(assignment.graded_at)
+    : '';
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
     window.location.href = assignment.html_url;
@@ -304,7 +304,7 @@ export default function TaskCard({
               )}
               {!display_grade ? <strong>{gradedText}</strong> : gradedText}
               <strong>{gradedAtText}</strong>
-              {gradedAtText ? ' | ' + gradedSince : ''}
+              {gradedAtText && gradedSince ? ' | ' + gradedSince : ''}
             </>
           )}
         </TaskDetailsText>

@@ -15,11 +15,23 @@ function getAssignmentURL(course: string, id: string) {
   return `https://www.gradescope.com/courses/${course}/assignments/${id}`;
 }
 
+function parseScore(status: string): [number, number] | null {
+  try {
+    const parts = status.split('/').map((s) => parseFloat(s.trim()));
+    if (parts.length === 2) return [parts[0], parts[1]];
+    return null;
+  } catch (e) {
+    console.error(e);
+    return null;
+  }
+}
+
 function convertToAssignment(
   task: GradescopeTask,
   canvasCourse: string
 ): FinalAssignment {
   AssignmentDefaults;
+  const parsedScore = parseScore(task.status) || null;
   return {
     ...AssignmentDefaults,
     name: task.name,
@@ -30,7 +42,9 @@ function convertToAssignment(
     due_at: task.due_date,
     course_id: canvasCourse,
     submitted: task.status !== 'No Submission',
-    graded: false, // TODO
+    graded: !!parsedScore, // TODO
+    points_possible: parsedScore ? parsedScore[1] : 0,
+    score: parsedScore ? parsedScore[0] : 0,
   };
 }
 
@@ -67,7 +81,7 @@ async function getCourseTasksAndOverrides(
 }
 
 async function getAllGradescope(): Promise<FinalAssignment[]> {
-  if (!getGradescopeIntegrationStatus()) return [];
+  if (!(await getGradescopeIntegrationStatus())) return [];
   const courses = await getSyncedCourses();
   const gscopeIds = Object.keys(courses);
   if (!gscopeIds.length) return [];

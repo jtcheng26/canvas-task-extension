@@ -1,54 +1,47 @@
-import {
-  GradescopeCourse,
-  GradescopeIntegrationState,
-  GradescopeTask,
-} from '../types';
+import { GradescopeIntegrationState, GradescopeTask } from '../types';
 
-export async function loadGradescopeState(): Promise<GradescopeIntegrationState> {
-  const [courses, canvasCourses, syncedMap] = await Promise.all([
-    getCourses(),
+// faster, skips the update step
+export async function loadSyncState(): Promise<GradescopeIntegrationState> {
+  const [canvasCourses, syncedMap] = await Promise.all([
     getCanvasCourses(),
     getSyncedCourses(),
   ]);
-  const enabledCourses = courses.filter((c) => c.gid in syncedMap);
-  const taskMap = await updateCourseTasks(enabledCourses.map((c) => c.gid));
+
   return {
     GSCOPE_INT_canvas_courses: canvasCourses,
     GSCOPE_INT_course_id_map: syncedMap,
-    tasks_map: taskMap,
-    courses_map: enabledCourses.reduce((sum, course) => {
-      return { ...sum, [course.gid]: course };
-    }, {}),
   };
 }
 
 // scrape courses from gradescope dashboard
-async function getCourses(): Promise<GradescopeCourse[]> {
-  const page = await (await fetch('/')).text();
-  // DOMParser is safe from XSS as long as nodes aren't injected into the window DOM
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(page, 'text/html');
-  const courseSection = doc.getElementsByClassName('courseList');
-  if (!courseSection) return []; // not logged in
-  const termSection = courseSection[0].getElementsByClassName(
-    'courseList--coursesForTerm'
-  );
-  const courseNodes = termSection[0].getElementsByTagName('a');
-  const courses = Array.from(courseNodes).map((c) => {
-    const id = c.href.split('/').pop();
-    const name = c.getElementsByClassName('courseBox--name')[0].textContent;
-    const shortName = c.getElementsByClassName('courseBox--shortname')[0]
-      .textContent;
-    return {
-      gid: id,
-      name: name,
-      course_code: shortName,
-    } as GradescopeCourse;
-  });
-  return courses;
-}
+// not really necessary at the moment since sync is opt-in per course
 
-async function updateCourseTasks(
+// async function getCourses(): Promise<GradescopeCourse[]> {
+//   const page = await (await fetch('/')).text();
+//   // DOMParser is safe from XSS as long as nodes aren't injected into the window DOM
+//   const parser = new DOMParser();
+//   const doc = parser.parseFromString(page, 'text/html');
+//   const courseSection = doc.getElementsByClassName('courseList');
+//   if (!courseSection) return []; // not logged in
+//   const termSection = courseSection[0].getElementsByClassName(
+//     'courseList--coursesForTerm'
+//   );
+//   const courseNodes = termSection[0].getElementsByTagName('a');
+//   const courses = Array.from(courseNodes).map((c) => {
+//     const id = c.href.split('/').pop();
+//     const name = c.getElementsByClassName('courseBox--name')[0].textContent;
+//     const shortName = c.getElementsByClassName('courseBox--shortname')[0]
+//       .textContent;
+//     return {
+//       gid: id,
+//       name: name,
+//       course_code: shortName,
+//     } as GradescopeCourse;
+//   });
+//   return courses;
+// }
+
+export async function updateCourseTasks(
   courses: string[]
 ): Promise<Record<string, GradescopeTask[]>> {
   const res = await Promise.all(
@@ -130,7 +123,7 @@ async function setCourseMapping(gid: string, cid: string | null) {
   chrome.storage.sync.set({ GSCOPE_INT_course_id_map: newMap });
 }
 
-export async function getSyncedCourses() {
+export async function getSyncedCourses(): Promise<Record<string, string>> {
   const { GSCOPE_INT_course_id_map } = await chrome.storage.sync.get(
     'GSCOPE_INT_course_id_map'
   );
@@ -144,7 +137,9 @@ export async function syncCourse(gid: string, cid: string) {
 
 // in the future, think about unsyncing all assignments from old courses after a time period
 export async function unsyncCourse(gid: string) {
-  chrome.storage.sync.remove(`GSCOPE_INT_tasks_${gid}`);
-  chrome.storage.sync.remove(`GSCOPE_INT_tasks_overrides_${gid}`);
+  chrome.storage.sync.remove([
+    `GSCOPE_INT_tasks_${gid}`,
+    `GSCOPE_INT_tasks_overrides_${gid}`,
+  ]);
   setCourseMapping(gid, null);
 }

@@ -1,6 +1,7 @@
 import { Course } from '../../../types';
 import { AssignmentStatus } from '../../../types/assignment';
 import { GradescopeOverride, GradescopeTask } from '../types';
+import { getSyncedCourses, unsyncCourse } from './scrape';
 
 // for use by Tasks for Canvas
 export async function storeCanvasCourses(courses: Course[]) {
@@ -19,6 +20,13 @@ export async function getGradescopeIntegrationStatus() {
 
 export async function setGradescopeIntegrationStatus(active: boolean) {
   chrome.storage.sync.set({ GSCOPE_INT_disabled: !active });
+  if (!active) clearAllGradescope();
+}
+
+async function clearAllGradescope() {
+  const synced = await getSyncedCourses();
+  await Promise.all(Object.keys(synced).map(unsyncCourse));
+  chrome.storage.sync.remove('GSCOPE_INT_course_id_map');
 }
 
 export async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {

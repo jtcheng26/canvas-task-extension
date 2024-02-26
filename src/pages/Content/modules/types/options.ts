@@ -17,6 +17,7 @@ type Options = {
   dark_mode: boolean;
   show_needs_grading: boolean;
   show_long_overdue: boolean;
+  GSCOPE_INT_disabled: boolean;
 };
 
 export default Options;
