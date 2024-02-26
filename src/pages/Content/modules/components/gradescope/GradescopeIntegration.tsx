@@ -9,11 +9,17 @@ import { viewPromo } from './utils/store';
 
 type Props = {
   course: string;
+  courseName: string;
   data: GradescopeIntegrationState;
   promo: boolean;
 };
 
-export default function GradescopeIntegration({ course, data, promo }: Props) {
+export default function GradescopeIntegration({
+  course,
+  courseName,
+  data,
+  promo,
+}: Props) {
   const [modalShowing, setModalShowing] = useState(false);
   const [synced, setSynced] = useState(course in data.GSCOPE_INT_course_id_map);
   const [showPromo, setShowPromo] = useState(promo);
@@ -60,6 +66,7 @@ export default function GradescopeIntegration({ course, data, promo }: Props) {
       {modalShowing && (
         <Modal onClick={hideModal}>
           <CoursePopup
+            courseName={courseName}
             courseToName={data.GSCOPE_INT_canvas_courses}
             onCancel={hideModal}
             onSubmit={handleSync}

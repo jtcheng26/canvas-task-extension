@@ -19,7 +19,7 @@ export async function GradescopeEntryPoint() {
     }
 
     // don't do anything on a quiz page
-    if (document.getElementsByClassName('js-submitAssignment').length) return;
+    // if (document.getElementsByClassName('js-submitAssignment').length) return;
 
     // get synced courses
     const state = await loadSyncState();
@@ -41,6 +41,9 @@ export async function GradescopeEntryPoint() {
     const isCoursePage = path[path.length - 2] === 'courses';
     const currentPageCourseId = path.pop();
     if (!isCoursePage || !currentPageCourseId) return;
+    const courseName =
+      document.getElementsByClassName('courseHeader--title')[0].textContent ||
+      '';
 
     // introduce this feature to users for the first time
     if (
@@ -53,7 +56,7 @@ export async function GradescopeEntryPoint() {
       )?.parentNode;
       if (container) {
         container.insertBefore(root, container.children[0]);
-        runGradescope(root, state, currentPageCourseId, true);
+        runGradescope(root, state, currentPageCourseId, courseName, true);
       }
     }
 
@@ -61,7 +64,7 @@ export async function GradescopeEntryPoint() {
     const root = document.createElement('div');
     container[0].appendChild(root);
 
-    runGradescope(root, state, currentPageCourseId, false);
+    runGradescope(root, state, currentPageCourseId, courseName, false);
   } catch (e) {
     console.error(e);
     return;

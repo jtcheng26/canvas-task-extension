@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import styled from 'styled-components';
 import CourseDropdown from '../../course-dropdown';
 import { GRADESCOPE_THEME_COLOR } from '../constants';
 import GradescopeButton from './GradescopeButton';
+import { compareTwoStrings } from 'string-similarity';
 
 const PopupDialog = styled.dialog`
   display: flex;
@@ -37,6 +38,7 @@ type Props = {
   onCancel: () => void;
   onSubmit: (id: string) => void;
   synced: boolean;
+  courseName: string;
 };
 
 export default function CoursePopup({
@@ -44,14 +46,29 @@ export default function CoursePopup({
   onSubmit,
   onCancel,
   synced,
+  courseName,
 }: Props) {
-  const initial = Object.keys(courseToName)[0];
+  const sim: Record<string, number> = useMemo(() => {
+    return Object.values(courseToName).reduce(
+      (sum, n) => ({
+        ...sum,
+        [n]: compareTwoStrings(n, courseName),
+      }),
+      {}
+    );
+  }, [courseToName, courseName]);
+  console.log(sim);
+  const choices = Object.keys(courseToName)
+    .map((course) => ({
+      id: course,
+      name: courseToName[course],
+      color: GRADESCOPE_THEME_COLOR,
+    }))
+    .sort((a, b) => {
+      return sim[b.name] - sim[a.name];
+    });
+  const initial = choices[0].id;
   const [selectedCourse, setSelectedCourse] = useState(initial);
-  const choices = Object.keys(courseToName).map((course) => ({
-    id: course,
-    name: courseToName[course],
-    color: GRADESCOPE_THEME_COLOR,
-  }));
   function handleClick(e: React.MouseEvent<HTMLDialogElement, MouseEvent>) {
     e.stopPropagation();
   }

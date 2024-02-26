@@ -36,6 +36,7 @@
     "react-dom-confetti": "^0.2.0",
     "react-error-boundary": "^4.0.12",
     "react-move": "^6.5.0",
+    "string-similarity": "^4.0.4",
     "styled-components": "^5.2.1"
   },
   "devDependencies": {
@@ -57,6 +58,7 @@
     "@types/jest": "^29.5.11",
     "@types/json-bigint": "^1.0.1",
     "@types/sinon-chrome": "^2.2.15",
+    "@types/string-similarity": "^4.0.2",
     "@types/styled-components": "^5.1.12",
     "@typescript-eslint/eslint-plugin": "^6.16.0",
     "@typescript-eslint/parser": "^6.16.0",
