@@ -58,6 +58,7 @@ export async function updateCourseTasks(
 
 async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {
   const page = await (await fetch('/courses/' + gid)).text();
+  // DOMParser is safe from XSS as long as nodes aren't injected into the window DOM
   const parser = new DOMParser();
   const doc = parser.parseFromString(page, 'text/html');
   const table = doc.getElementById('assignments-student-table');

@@ -28,7 +28,7 @@ export async function GradescopeEntryPoint() {
     if (!canvasCourses.length) return;
 
     // scrape all tasks for sync-enabled courses
-    const enabledCourses = Object.keys(state.GSCOPE_INT_canvas_courses);
+    const enabledCourses = Object.keys(state.GSCOPE_INT_course_id_map);
     updateCourseTasks(enabledCourses);
 
     // will insert at the end of this element's children

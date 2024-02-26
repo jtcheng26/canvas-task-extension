@@ -10,6 +10,7 @@ const SyncedDiv = styled.div<DivProps>`
   color: ${(p) => (p.synced ? GRADESCOPE_THEME_COLOR : '#878787')};
   font-weight: 400;
   padding: 10px;
+  line-height: normal;
   &:hover {
     cursor: pointer;
   }

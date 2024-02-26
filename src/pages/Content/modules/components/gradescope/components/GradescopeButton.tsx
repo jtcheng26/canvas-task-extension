@@ -19,7 +19,7 @@ const PrimaryButton = styled.button`
     cursor: pointer;
     opacity: 0.8;
   }
-  width: 90px;
+  padding: 0px 20px;
   height: 35px;
   display: flex;
   justify-content: center;
@@ -36,7 +36,7 @@ const SecondaryButton = styled.button`
     cursor: pointer;
     background-color: #e1e1e1;
   }
-  padding: 0px 30px;
+  padding: 0px 20px;
   height: 35px;
   display: flex;
   justify-content: center;
