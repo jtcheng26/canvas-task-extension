@@ -10,7 +10,7 @@ type Props = {
 
 const PrimaryButton = styled.button`
   background-color: ${GRADESCOPE_THEME_COLOR};
-  border-radius: 5px;
+  border-radius: 2px;
   color: white;
   font-weight: 600;
   outline: none;
@@ -27,7 +27,7 @@ const PrimaryButton = styled.button`
 `;
 
 const SecondaryButton = styled.button`
-  border-radius: 5px;
+  border-radius: 2px;
   font-weight: 600;
   border: 1px solid #cdcdcd;
   outline: none;

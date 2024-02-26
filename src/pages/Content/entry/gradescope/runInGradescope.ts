@@ -6,6 +6,7 @@ import {
 import {
   getGradescopeIntegrationStatus,
   setGradescopeIntegrationStatus,
+  shouldShowOnetimePromo,
 } from '../../modules/components/gradescope/utils/store';
 
 export async function GradescopeEntryPoint() {
@@ -41,11 +42,26 @@ export async function GradescopeEntryPoint() {
     const currentPageCourseId = path.pop();
     if (!isCoursePage || !currentPageCourseId) return;
 
+    // introduce this feature to users for the first time
+    if (
+      (await shouldShowOnetimePromo(currentPageCourseId)) &&
+      !(currentPageCourseId in state.GSCOPE_INT_course_id_map)
+    ) {
+      const root = document.createElement('div');
+      const container = document.getElementById(
+        'assignments-student-table_wrapper'
+      )?.parentNode;
+      if (container) {
+        container.insertBefore(root, container.children[0]);
+        runGradescope(root, state, currentPageCourseId, true);
+      }
+    }
+
     // inject the sync option
     const root = document.createElement('div');
     container[0].appendChild(root);
 
-    runGradescope(root, state, currentPageCourseId);
+    runGradescope(root, state, currentPageCourseId, false);
   } catch (e) {
     console.error(e);
     return;

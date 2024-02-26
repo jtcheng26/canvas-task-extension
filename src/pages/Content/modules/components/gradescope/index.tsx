@@ -10,11 +10,12 @@ import { GradescopeIntegrationState } from './types';
 export default function runGradescope(
   container: HTMLElement,
   data: GradescopeIntegrationState,
-  course: string
+  course: string,
+  promo: boolean
 ): void {
   ReactDOM.render(
     <React.StrictMode>
-      <GradescopeIntegration course={course} data={data} />
+      <GradescopeIntegration course={course} data={data} promo={promo} />
     </React.StrictMode>,
     container
   );

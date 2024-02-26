@@ -1,18 +1,41 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GradescopeIntegrationState } from './types';
 import Modal from './components/Modal';
 import CoursePopup from './components/CoursePopup';
-import { syncCourse, unsyncCourse } from './utils/scrape';
+import { syncCourse, unsyncCourse, updateCourseTasks } from './utils/scrape';
 import SyncStatus from './components/SyncStatus';
+import GradescopePromo from './components/GradescopePromo';
+import { viewPromo } from './utils/store';
 
 type Props = {
   course: string;
   data: GradescopeIntegrationState;
+  promo: boolean;
 };
 
-export default function GradescopeIntegration({ course, data }: Props) {
+export default function GradescopeIntegration({ course, data, promo }: Props) {
   const [modalShowing, setModalShowing] = useState(false);
   const [synced, setSynced] = useState(course in data.GSCOPE_INT_course_id_map);
+  const [showPromo, setShowPromo] = useState(promo);
+  useEffect(() => {
+    const listener = (changes: {
+      [key: string]: chrome.storage.StorageChange;
+    }) => {
+      const key = 'GSCOPE_INT_course_id_map';
+      if (key in changes) {
+        const isSynced = course in changes[key].newValue;
+        setSynced(isSynced);
+        if (isSynced) updateCourseTasks([course]);
+      }
+      if (promo) {
+        const key = 'GSCOPE_INT_promo';
+        if (key in changes && changes[key].newValue.includes(course))
+          setShowPromo(false);
+      }
+    };
+    chrome.storage.onChanged.addListener(listener);
+    return () => chrome.storage.onChanged.removeListener(listener);
+  }, []);
   function hideModal() {
     setModalShowing(false);
   }
@@ -23,11 +46,15 @@ export default function GradescopeIntegration({ course, data }: Props) {
     if (synced) unsyncCourse(course);
     else syncCourse(course, canvasCourse);
     setModalShowing(false);
-    setSynced(!synced);
+    hidePromo();
   }
   function handleSyncButton() {
     showModal();
   }
+  function hidePromo() {
+    viewPromo(course);
+  }
+  if (promo && !showPromo) return null;
   return (
     <div style={{ display: 'flex' }}>
       {modalShowing && (
@@ -40,7 +67,11 @@ export default function GradescopeIntegration({ course, data }: Props) {
           />
         </Modal>
       )}
-      <SyncStatus onClick={handleSyncButton} synced={synced} />
+      {!showPromo ? (
+        <SyncStatus onClick={handleSyncButton} synced={synced} />
+      ) : (
+        <GradescopePromo onExit={hidePromo} onSubmit={showModal} />
+      )}
     </div>
   );
 }

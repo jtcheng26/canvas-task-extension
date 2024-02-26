@@ -1,1 +1,0 @@
-export const GRADESCOPE_THEME_COLOR = '#1A5059';

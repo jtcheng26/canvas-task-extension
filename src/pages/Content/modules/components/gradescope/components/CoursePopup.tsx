@@ -7,22 +7,26 @@ import GradescopeButton from './GradescopeButton';
 const PopupDialog = styled.dialog`
   display: flex;
   width: 400px;
-  padding: 15px 30px;
+  padding: 20px 30px;
   flex-direction: column;
   > * + * {
-    margin-top: 15px;
+    margin-top: 20px;
   }
   font-size: 14px;
-  border-radius: 5px;
+  border-radius: 2px;
   line-height: normal;
   margin: 50px auto;
 `;
 
-const ButtonGroup = styled.div`
+type ButtonGroupProps = {
+  left?: boolean;
+};
+
+export const ButtonGroup = styled.div<ButtonGroupProps>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: flex-end;
+  ${(p) => (!p.left ? 'justify-content: flex-end;' : '')}
   > * + * {
     margin-left: 15px;
   }
