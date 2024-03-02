@@ -57,7 +57,6 @@ export default function CoursePopup({
       {}
     );
   }, [courseToName, courseName]);
-  console.log(sim);
   const choices = Object.keys(courseToName)
     .map((course) => ({
       id: course,

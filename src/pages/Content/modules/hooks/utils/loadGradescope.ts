@@ -1,3 +1,4 @@
+import { compareTwoStrings } from 'string-similarity';
 import { GradescopeTask } from '../../components/gradescope/types';
 import { getSyncedCourses } from '../../components/gradescope/utils/scrape';
 import {
@@ -104,6 +105,15 @@ async function processAssignments(
   const assignments: FinalAssignment[] = await getAllGradescope();
   const ret = processAssignmentList(assignments, startDate, endDate, options);
   return ret;
+}
+
+// check if a Gradescope assignment is already listed in Canvas
+export function isDuplicateAssignment(a: FinalAssignment, b: FinalAssignment) {
+  return (
+    a.course_id === b.course_id &&
+    new Date(a.due_at).valueOf() === new Date(b.due_at).valueOf() &&
+    compareTwoStrings(a.name, b.name) >= 0.9
+  );
 }
 
 export default async function loadGradescopeAssignments(

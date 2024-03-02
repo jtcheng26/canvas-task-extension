@@ -17,7 +17,9 @@ import loadNeedsGrading from './utils/loadNeedsGrading';
 import loadMissingAssignments from './utils/loadMissingAssignments';
 import { queryGraded } from './utils/loadGraded';
 import assignmentIsDone from '../utils/assignmentIsDone';
-import loadGradescopeAssignments from './utils/loadGradescope';
+import loadGradescopeAssignments, {
+  isDuplicateAssignment,
+} from './utils/loadGradescope';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -354,6 +356,10 @@ export default function useAssignments(
       loadGradescopeAssignments(startDate, endDate, options),
     ])
       .then((res: FinalAssignment[][]) => {
+        // eliminate duplicates between Gradescope/Canvas
+        res[3] = res[3].filter(
+          (a) => res[2].filter((b) => isDuplicateAssignment(a, b)).length === 0
+        );
         // merge all lists of assignments together
         setState({
           data: Array.prototype.concat(...res),
