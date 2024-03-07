@@ -78,10 +78,14 @@ export default function CoursePopup({
   const descText = synced
     ? 'Gradescope assignments for this course will be removed from Tasks for Canvas. They will return if you choose to sync again later.'
     : 'Gradescope tasks for this course will fall under your selected Canvas course.';
+  const strongText = synced
+    ? ''
+    : 'Note that new assignments will only be synced when you visit or reload Gradescope.';
   return (
     <PopupDialog onClick={handleClick}>
       <h1>{headerText}</h1>
       <span>{descText}</span>
+      <strong>{strongText}</strong>
       {!synced && (
         <CourseDropdown
           choices={choices}
