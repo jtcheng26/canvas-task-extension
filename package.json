@@ -1,6 +1,6 @@
 {
   "name": "canvas-task-extension",
-  "version": "1.3.7",
+  "version": "1.3.8",
   "description": "A chrome extension that improves the Canvas LMS To Do sidebar!",
   "homepage": "https://github.com/jtcheng26/canvas-task-extension",
   "license": "MIT",
