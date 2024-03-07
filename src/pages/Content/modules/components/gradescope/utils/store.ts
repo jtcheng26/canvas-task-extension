@@ -26,7 +26,11 @@ export async function setGradescopeIntegrationStatus(active: boolean) {
 async function clearAllGradescope() {
   const synced = await getSyncedCourses();
   await Promise.all(Object.keys(synced).map(unsyncCourse));
-  chrome.storage.sync.remove(['GSCOPE_INT_course_id_map', 'GSCOPE_INT_promo']);
+  chrome.storage.sync.remove([
+    'GSCOPE_INT_course_id_map',
+    'GSCOPE_INT_promo',
+    'GSCOPE_INT_last_sync',
+  ]);
 }
 
 export async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {

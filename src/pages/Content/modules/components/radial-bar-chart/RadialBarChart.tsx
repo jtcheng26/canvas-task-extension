@@ -16,6 +16,7 @@ const Wrapper = styled.div<WrapperProps>`
   justify-content: center;
   width: 100%;
   height: ${(p) => p.height}px;
+  position: relative;
 
   .svg {
     display: block;

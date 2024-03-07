@@ -3,7 +3,7 @@ import { FinalAssignment } from '../types';
 import { useObjectStore } from './useStore';
 import { AssignmentStoreContext } from '../contexts/contexts';
 import { AssignmentStatus } from '../types/assignment';
-import markAssignment from '../components/task-container/utils/markAssignment';
+import { LMSConfig } from '../types/config';
 
 export interface AssignmentStoreInterface {
   state: Record<string, FinalAssignment>; // for components that rely on individual values
@@ -19,6 +19,7 @@ export interface AssignmentStoreInterface {
 }
 
 export function useNewAssignmentStore(
+  config: LMSConfig,
   assignments: FinalAssignment[] = []
 ): AssignmentStoreInterface {
   const initial: Record<string, FinalAssignment> = {};
@@ -43,7 +44,7 @@ export function useNewAssignmentStore(
     status?: AssignmentStatus
   ) {
     if (status) {
-      assignment = markAssignment(status, assignment);
+      assignment = config.markAssignment(status, assignment);
       if (status == AssignmentStatus.DELETED)
         return deleteAssignment(assignment);
     }

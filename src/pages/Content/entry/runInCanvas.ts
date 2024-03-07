@@ -1,6 +1,23 @@
 import runApp from '../modules';
 import { getOptions } from '../modules/hooks/useOptions';
 import { Options } from '../modules/types';
+import { LMSConfig } from '../modules/types/config';
+import { isCanvas } from './detectCanvas';
+import { useCanvasAssignments } from '../modules/hooks/useAssignments';
+import { useCanvasCourses } from '../modules/hooks/useCourses';
+import dashCourses from '../modules/utils/dashCourses';
+import createCustomTask from '../modules/utils/createCustomTask';
+import markAssignment from '../modules/components/task-container/utils/markAssignment';
+
+export const CanvasLMSConfig: LMSConfig = {
+  isActive: !!isCanvas,
+  name: 'Canvas',
+  useAssignments: useCanvasAssignments,
+  useCourses: useCanvasCourses,
+  dashCourses: dashCourses,
+  createAssignment: createCustomTask,
+  markAssignment: markAssignment,
+};
 
 /* Standardizes school-specific CSS class choices so the sidebar works/looks right. */
 function prepareCanvasStyles() {
@@ -22,7 +39,7 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
     (document.getElementById('right-side') as HTMLElement).className +=
       ' hidden-sidebar';
   }
-  runApp(newContainer, data);
+  runApp(newContainer, CanvasLMSConfig, data);
 }
 
 async function runAppInChrome(container: HTMLElement) {

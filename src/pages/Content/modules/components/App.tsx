@@ -6,6 +6,8 @@ import getPeriod from '../utils/getPeriod';
 import { useOptionsStore } from '../hooks/useOptions';
 import { OptionsContext } from '../contexts/contexts';
 import { Options } from '../types';
+import { LMSConfig } from '../types/config';
+import { CanvasLMSConfig } from '../../entry/runInCanvas';
 
 const AppContainer = styled.div`
   display: flex;
@@ -13,12 +15,14 @@ const AppContainer = styled.div`
 `;
 
 interface AppProps {
+  lms?: LMSConfig;
   options: Options;
   MIN_LOAD_TIME?: number; // for testing only
 }
 
 export default function App({
   options,
+  lms = CanvasLMSConfig,
   MIN_LOAD_TIME = 350,
 }: AppProps): JSX.Element {
   const [delta, setDelta] = useState(0);
@@ -78,6 +82,7 @@ export default function App({
           clickable={clickableState.clickable}
           endDate={end}
           firstLoad={clickableState.firstLoad}
+          lms={lms}
           loadedCallback={loadedCallback}
           options={optionsStore.state}
           startDate={start}

@@ -1,11 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useContext, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { AssignmentDefaults, OptionsDefaults } from '../../constants';
 import useOptions from '../../hooks/useOptions';
 import { CheckIcon } from '../../icons';
 import { AssignmentType, FinalAssignment } from '../../types';
 import { DarkProps } from '../../types/props';
-import createCustomTask from '../../utils/createCustomTask';
 import isDemo from '../../utils/isDemo';
 import CourseDropdown from '../course-dropdown';
 import Button from './components/Button';
@@ -15,6 +14,7 @@ import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
 import dashCourses from '../../utils/dashCourses';
 import useCourseStore from '../../hooks/useCourseStore';
+import { LMSContext } from '../../contexts/contexts';
 
 type FormContainerProps = {
   visible?: boolean;
@@ -76,6 +76,7 @@ export default function TaskForm({
   selectedCourse,
   visible = false,
 }: Props): JSX.Element {
+  const lms = useContext(LMSContext);
   const courseStore = useCourseStore();
   const [title, setTitle] = useState('');
   const [link, setLink] = useState('');
@@ -139,7 +140,7 @@ export default function TaskForm({
       assignment.total_submissions = grading ? 1 : 0;
       assignment.html_url = link.trim();
 
-      const res = await createCustomTask(
+      const res = await lms.createAssignment(
         title,
         assignment.due_at,
         assignment.course_id,

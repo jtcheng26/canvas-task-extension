@@ -7,6 +7,7 @@ import { AssignmentListSample2 } from '../../../tests/data/assignment-list';
 import { FinalAssignment } from '../../../types';
 import Header from '../../header';
 import TaskContainer, { TaskContainerProps } from '../TaskContainer';
+import { CanvasLMSConfig } from '../../../../entry/runInCanvas';
 
 export default { title: 'Components/TaskContainer' } as ComponentMeta<
   typeof TaskContainer
@@ -16,6 +17,7 @@ const storyDefaults: TaskContainerProps = {
   assignments: AssignmentListSample2 as unknown as FinalAssignment[],
   announcements: [],
   courseData: [],
+  lms: CanvasLMSConfig,
   loading: false,
   options: OptionsDefaults,
   startDate: new Date(),
@@ -62,6 +64,7 @@ const Template: ComponentStory<typeof TaskContainer> = function ({
         courseData={courseData}
         courseId={courseId}
         endDate={endDate}
+        lms={CanvasLMSConfig}
         loading={loading}
         options={options}
         startDate={startDate}

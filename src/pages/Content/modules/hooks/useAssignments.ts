@@ -20,6 +20,7 @@ import assignmentIsDone from '../utils/assignmentIsDone';
 import loadGradescopeAssignments, {
   isDuplicateAssignment,
 } from './utils/loadGradescope';
+import { UseAssignmentsHookInterface } from '../types/config';
 
 const parseLinkHeader = (link: string) => {
   const re = /<([^>]+)>; rel="([^"]+)"/g;
@@ -324,59 +325,66 @@ export async function loadAssignments(
   });
 }
 
-interface UseAssignmentsHookInterface {
-  data: FinalAssignment[] | null;
-  isError: boolean;
-  isSuccess: boolean;
-  errorMessage: string;
-}
-
-export default function useAssignments(
+async function loadCanvas(
   startDate: Date,
   endDate: Date,
   options: Options
-): UseAssignmentsHookInterface {
-  const [state, setState] = useState<UseAssignmentsHookInterface>({
-    data: null,
-    isError: false,
-    isSuccess: false,
-    errorMessage: '',
-  });
-  useEffect(() => {
-    setState({
-      data: state.data,
+): Promise<FinalAssignment[]> {
+  const res = await Promise.all([
+    loadNeedsGrading(endDate, options),
+    loadMissingAssignments(endDate, options),
+    loadAssignments(startDate, endDate, options),
+    loadGradescopeAssignments(startDate, endDate, options),
+  ]);
+  res[3] = res[3].filter(
+    (a) => res[2].filter((b) => isDuplicateAssignment(a, b)).length === 0
+  );
+  return Array.prototype.concat(...res);
+}
+
+export function makeUseAssignments(
+  loader: (
+    startDate: Date,
+    endDate: Date,
+    options: Options
+  ) => Promise<FinalAssignment[]>
+) {
+  return (startDate: Date, endDate: Date, options: Options) => {
+    const [state, setState] = useState<UseAssignmentsHookInterface>({
+      data: null,
       isError: false,
       isSuccess: false,
       errorMessage: '',
     });
-    Promise.all([
-      loadNeedsGrading(endDate, options),
-      loadMissingAssignments(endDate, options),
-      loadAssignments(startDate, endDate, options),
-      loadGradescopeAssignments(startDate, endDate, options),
-    ])
-      .then((res: FinalAssignment[][]) => {
-        // eliminate duplicates between Gradescope/Canvas
-        res[3] = res[3].filter(
-          (a) => res[2].filter((b) => isDuplicateAssignment(a, b)).length === 0
-        );
-        // merge all lists of assignments together
-        setState({
-          data: Array.prototype.concat(...res),
-          isSuccess: true,
-          isError: false,
-          errorMessage: '',
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setState({
-          data: state.data,
-          isError: true,
-          isSuccess: false,
-          errorMessage: err.message,
-        });
+    useEffect(() => {
+      setState({
+        data: state.data,
+        isError: false,
+        isSuccess: false,
+        errorMessage: '',
       });
-  }, [startDate, endDate]);
-  return state;
+      loader(startDate, endDate, options)
+        .then((res: FinalAssignment[]) => {
+          // merge all lists of assignments together
+          setState({
+            data: res,
+            isSuccess: true,
+            isError: false,
+            errorMessage: '',
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          setState({
+            data: state.data,
+            isError: true,
+            isSuccess: false,
+            errorMessage: err.message,
+          });
+        });
+    }, [startDate, endDate]);
+    return state;
+  };
 }
+
+export const useCanvasAssignments = makeUseAssignments(loadCanvas);

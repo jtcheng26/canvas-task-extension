@@ -13,37 +13,11 @@ export async function loadSyncState(): Promise<GradescopeIntegrationState> {
   };
 }
 
-// scrape courses from gradescope dashboard
-// not really necessary at the moment since sync is opt-in per course
-
-// async function getCourses(): Promise<GradescopeCourse[]> {
-//   const page = await (await fetch('/')).text();
-//   // DOMParser is safe from XSS as long as nodes aren't injected into the window DOM
-//   const parser = new DOMParser();
-//   const doc = parser.parseFromString(page, 'text/html');
-//   const courseSection = doc.getElementsByClassName('courseList');
-//   if (!courseSection) return []; // not logged in
-//   const termSection = courseSection[0].getElementsByClassName(
-//     'courseList--coursesForTerm'
-//   );
-//   const courseNodes = termSection[0].getElementsByTagName('a');
-//   const courses = Array.from(courseNodes).map((c) => {
-//     const id = c.href.split('/').pop();
-//     const name = c.getElementsByClassName('courseBox--name')[0].textContent;
-//     const shortName = c.getElementsByClassName('courseBox--shortname')[0]
-//       .textContent;
-//     return {
-//       gid: id,
-//       name: name,
-//       course_code: shortName,
-//     } as GradescopeCourse;
-//   });
-//   return courses;
-// }
-
 export async function updateCourseTasks(
   courses: string[]
 ): Promise<Record<string, GradescopeTask[]>> {
+  if (courses.length)
+    chrome.storage.sync.set({ GSCOPE_INT_last_sync: new Date().valueOf() });
   const res = await Promise.all(
     courses.map(async (gid) => {
       const tasks = await getCourseTasks(gid);
@@ -51,13 +25,16 @@ export async function updateCourseTasks(
       return { tasks, gid };
     })
   );
+
   return res.reduce((sum, curr) => {
     return { ...sum, [curr.gid]: curr.tasks };
   }, {});
 }
 
 async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {
-  const page = await (await fetch('/courses/' + gid)).text();
+  const page = await (
+    await fetch('https://www.gradescope.com/courses/' + gid)
+  ).text();
   // DOMParser is safe from XSS as long as nodes aren't injected into the window DOM
   const parser = new DOMParser();
   const doc = parser.parseFromString(page, 'text/html');
@@ -143,4 +120,14 @@ export async function unsyncCourse(gid: string) {
     `GSCOPE_INT_tasks_overrides_${gid}`,
   ]);
   setCourseMapping(gid, null);
+}
+
+export async function getLastSync(): Promise<Date | null> {
+  let { GSCOPE_INT_last_sync } = await chrome.storage.sync.get(
+    'GSCOPE_INT_last_sync'
+  );
+  if (GSCOPE_INT_last_sync)
+    GSCOPE_INT_last_sync = new Date(GSCOPE_INT_last_sync);
+  else GSCOPE_INT_last_sync = null;
+  return GSCOPE_INT_last_sync;
 }
