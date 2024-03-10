@@ -3,7 +3,6 @@ import { GradescopeTask } from '../../components/gradescope/types';
 import { getSyncedCourses } from '../../components/gradescope/utils/scrape';
 import {
   getCourseTasks,
-  getGradescopeIntegrationStatus,
   getGradescopeOverrides,
 } from '../../components/gradescope/utils/store';
 import { AssignmentDefaults } from '../../constants';
@@ -82,7 +81,6 @@ async function getCourseTasksAndOverrides(
 }
 
 async function getAllGradescope(): Promise<FinalAssignment[]> {
-  if (!(await getGradescopeIntegrationStatus())) return [];
   const courses = await getSyncedCourses();
   const gscopeIds = Object.keys(courses);
   if (!gscopeIds.length) return [];
@@ -102,6 +100,7 @@ async function processAssignments(
   endDate: Date,
   options: Options
 ): Promise<FinalAssignment[]> {
+  if (options.GSCOPE_INT_disabled) return [];
   const assignments: FinalAssignment[] = await getAllGradescope();
   const ret = processAssignmentList(assignments, startDate, endDate, options);
   return ret;

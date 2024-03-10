@@ -198,11 +198,22 @@ export default function TaskCard({
       ? 'Submitted'
       : '';
   const dueText = ` ${due_date} at ${due_time}`;
+
+  function roundAssignmentScore(score: number | object) {
+    if (typeof score === 'number') return Math.round(score * 100) / 100;
+    else if (typeof score === 'object')
+      // BigNumber or bigint
+      return Math.round(parseFloat(score.toString()) * 100) / 100;
+    return assignment.score;
+  }
   const gradedAtText = !display_grade
     ? ''
     : assignment.grade === 'Excused'
     ? ' Excused'
-    : ` ${assignment.score}/${assignment.points_possible} points`;
+    : ` ${roundAssignmentScore(assignment.score)}/${
+        assignment.points_possible
+      } points`;
+
   const pointsPlural = !assignment.points_possible
     ? ''
     : assignment.points_possible > 1
