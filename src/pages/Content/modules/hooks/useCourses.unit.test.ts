@@ -9,6 +9,8 @@ import restricted from '../tests/data/api/courses/restrictedCourses.json';
 import customColors from '../tests/data/api/colors.json';
 import customPositions from '../tests/data/api/dashboard_positions.json';
 
+import chrome from 'sinon-chrome';
+
 jest.mock('axios');
 jest.mock('../utils/baseURL');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -17,6 +19,7 @@ const mockedBaseURLString = 'mockedURL';
 
 beforeAll(() => {
   mockedBaseURL.mockReturnValue(mockedBaseURLString);
+  global.chrome = chrome as unknown as typeof global.chrome;
 });
 
 test('useCourses hook gets all the courses', async () => {

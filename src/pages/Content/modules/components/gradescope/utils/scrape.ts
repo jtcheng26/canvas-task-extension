@@ -102,10 +102,8 @@ async function setCourseMapping(gid: string, cid: string | null) {
 }
 
 export async function getSyncedCourses(): Promise<Record<string, string>> {
-  const { GSCOPE_INT_course_id_map } = await chrome.storage.sync.get(
-    'GSCOPE_INT_course_id_map'
-  );
-  return GSCOPE_INT_course_id_map || {};
+  const res = await chrome.storage.sync.get('GSCOPE_INT_course_id_map');
+  return res ? res.GSCOPE_INT_course_id_map || {} : {};
 }
 
 export async function syncCourse(gid: string, cid: string) {
