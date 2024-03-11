@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import TaskContainer from '../task-container';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
-import useAssignments from '../../hooks/useAssignments';
 import onCoursePage from '../../utils/onCoursePage';
-import useCourses from '../../hooks/useCourses';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorRender from '../error/ErrorRender';
+import { LMSConfig } from '../../types/config';
 
 interface ContentLoaderProps {
   clickable: boolean;
@@ -15,6 +14,7 @@ interface ContentLoaderProps {
   endDate: Date;
   loadedCallback: () => void;
   MIN_LOAD_TIME?: number; // delay between load and render so animations have time to play
+  lms: LMSConfig;
 }
 
 /*
@@ -29,19 +29,20 @@ function ContentLoader({
   endDate,
   loadedCallback,
   MIN_LOAD_TIME = 350,
+  lms,
 }: ContentLoaderProps): JSX.Element {
   const {
     data: plannerData,
     isError: assignmentsError,
     isSuccess,
     errorMessage: assignmentsErrorMessage,
-  } = useAssignments(startDate, endDate, options);
+  } = lms.useAssignments(startDate, endDate, options);
   const {
     data: courseData,
     isError: coursesError,
     isSuccess: coursesSuccess,
     errorMessage: coursesErrorMessage,
-  } = useCourses(options.theme_color);
+  } = lms.useCourses(options.theme_color);
   const animationStart = useRef(0); // for counting load time
 
   function filterAnnouncements(
@@ -153,6 +154,7 @@ function ContentLoader({
         courseData={(isLoading ? prevData.current.courses : courseData) || []}
         courseId={onCourse}
         endDate={isLoading ? prevData.current.endDate : endDate}
+        lms={lms}
         loading={isLoading} // on first load, show immediately (no min delay)
         options={options}
         startDate={isLoading ? prevData.current.startDate : startDate}

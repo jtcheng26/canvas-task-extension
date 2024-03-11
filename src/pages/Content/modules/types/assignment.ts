@@ -120,6 +120,7 @@ enum AssignmentType {
   NOTE = 'planner_note',
   ANNOUNCEMENT = 'announcement',
   EVENT = 'calender_event',
+  GRADESCOPE = 'gradescope',
 }
 
 enum AssignmentStatus {

@@ -6,6 +6,8 @@ import baseURL from '../utils/baseURL';
 import isDemo from '../utils/isDemo';
 import { useEffect, useState } from 'react';
 import { getPaginatedRequest } from './useAssignments';
+import { storeCanvasCourses } from '../components/gradescope/utils/store';
+import { UseCoursesHookInterface } from '../types/config';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<Record<string, number>> {
@@ -106,45 +108,44 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
   applyCourseNames(courses);
   applyCoursePositions(courses, positions);
 
+  if (courses.length) storeCanvasCourses(courses);
+
   return [CustomCourse].concat(courses);
 }
 
-interface UseCoursesHookInterface {
-  data: Course[] | null;
-  isError: boolean;
-  errorMessage: string;
-  isSuccess: boolean;
-}
+export const makeUseCourses = (
+  loader: (defaultColor?: string) => Promise<Course[]>
+) => {
+  return (defaultColor?: string) => {
+    const [state, setState] = useState<UseCoursesHookInterface>({
+      data: null,
+      isError: false,
+      isSuccess: false,
+      errorMessage: '',
+    });
+    useEffect(() => {
+      loader(defaultColor)
+        .then((res) => {
+          setState({
+            data: res,
+            isSuccess: true,
+            isError: false,
+            errorMessage: '',
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+          setState({
+            data: null,
+            isSuccess: false,
+            isError: true,
+            errorMessage: err.message,
+          });
+        });
+    }, []);
+    return state;
+  };
+};
 
 /* Use cached course data */
-export default function useCourses(
-  defaultColor?: string
-): UseCoursesHookInterface {
-  const [state, setState] = useState<UseCoursesHookInterface>({
-    data: null,
-    isError: false,
-    isSuccess: false,
-    errorMessage: '',
-  });
-  useEffect(() => {
-    getCourses(defaultColor)
-      .then((res) => {
-        setState({
-          data: res,
-          isSuccess: true,
-          isError: false,
-          errorMessage: '',
-        });
-      })
-      .catch((err) => {
-        console.error(err);
-        setState({
-          data: null,
-          isSuccess: false,
-          isError: true,
-          errorMessage: err.message,
-        });
-      });
-  }, []);
-  return state;
-}
+export const useCanvasCourses = makeUseCourses(getCourses);

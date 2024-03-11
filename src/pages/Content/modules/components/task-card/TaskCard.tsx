@@ -162,6 +162,15 @@ export interface TransitionState {
   opacity: number;
   height: number;
 }
+
+function roundAssignmentScore(score: number | object) {
+  if (typeof score === 'number') return Math.round(score * 100) / 100;
+  else if (typeof score === 'object')
+    // BigNumber or bigint
+    return Math.round(parseFloat(score.toString()) * 100) / 100;
+  return score;
+}
+
 /*
     Renders an individual task item
 */
@@ -177,9 +186,9 @@ export default function TaskCard({
   transitionState,
 }: TaskProps): JSX.Element {
   const [due_date, due_time] = fmtDate(assignment.due_at);
-  const gradedSince = fmtDateSince(
-    assignment.graded_at ? assignment.graded_at : new Date().toISOString()
-  );
+  const gradedSince = assignment.graded_at
+    ? fmtDateSince(assignment.graded_at)
+    : '';
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
     window.location.href = assignment.html_url;
@@ -202,7 +211,10 @@ export default function TaskCard({
     ? ''
     : assignment.grade === 'Excused'
     ? ' Excused'
-    : ` ${assignment.score}/${assignment.points_possible} points`;
+    : ` ${roundAssignmentScore(assignment.score)}/${
+        assignment.points_possible
+      } points`;
+
   const pointsPlural = !assignment.points_possible
     ? ''
     : assignment.points_possible > 1
@@ -229,6 +241,10 @@ export default function TaskCard({
     }
   }
   const darkMode = useContext(DarkContext);
+  const canBeDeleted = [
+    AssignmentType.NOTE,
+    AssignmentType.GRADESCOPE,
+  ].includes(assignment.type);
   return (
     <TaskContainer
       dark={darkMode}
@@ -259,7 +275,7 @@ export default function TaskCard({
           ) : (
             ''
           )}
-          {!skeleton && complete && assignment.type === AssignmentType.NOTE ? (
+          {!skeleton && complete && canBeDeleted ? (
             <CheckIcon
               checkStyle="X"
               dark={darkMode}
@@ -300,7 +316,7 @@ export default function TaskCard({
               )}
               {!display_grade ? <strong>{gradedText}</strong> : gradedText}
               <strong>{gradedAtText}</strong>
-              {gradedAtText ? ' | ' + gradedSince : ''}
+              {gradedAtText && gradedSince ? ' | ' + gradedSince : ''}
             </>
           )}
         </TaskDetailsText>

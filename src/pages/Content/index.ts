@@ -3,6 +3,8 @@ import {
   InstallSettingsEntryPoint,
   isInstallSettings,
 } from './entry/detectSettings';
+import { isGradescope } from './entry/gradescope/detectGscope';
+import { GradescopeEntryPoint } from './entry/gradescope/runInGradescope';
 /* 
 
 Performance overhead on websites that aren't Canvas:
@@ -25,4 +27,8 @@ if (isCanvas) {
   if (isInstallSettings) {
     InstallSettingsEntryPoint();
   }
+} else if (isGradescope) {
+  console.log('Tasks for Canvas: Gradescope detected');
+
+  GradescopeEntryPoint();
 }

@@ -11,11 +11,13 @@ import {
   CourseStoreContext,
   DarkContext,
   ExperimentsContext,
+  LMSContext,
 } from '../../contexts/contexts';
 import dashCourses from '../../utils/dashCourses';
 import { useNewCourseStore } from '../../hooks/useCourseStore';
 import { useExperiments } from '../../hooks/useExperiment';
 import { useNewAssignmentStore } from '../../hooks/useAssignmentStore';
+import { LMSConfig } from '../../types/config';
 
 export interface TaskContainerProps {
   assignments: FinalAssignment[];
@@ -26,6 +28,7 @@ export interface TaskContainerProps {
   options: Options;
   startDate: Date;
   endDate: Date;
+  lms: LMSConfig;
 }
 
 /*
@@ -41,6 +44,7 @@ function TaskContainer({
   options,
   startDate,
   endDate,
+  lms,
 }: TaskContainerProps): JSX.Element {
   const courseStore = useNewCourseStore(courseData);
   const courseList = Object.keys(courseStore.state);
@@ -48,8 +52,8 @@ function TaskContainer({
     I'm not sure if assigment and announcement ids could collide, so I'm using two separate stores.
     A better solution might be using plannable_id as the unique key or, even better, assigning my own unique keys.
   */
-  const assignmentStore = useNewAssignmentStore(assignments);
-  const announcementStore = useNewAssignmentStore(announcements);
+  const assignmentStore = useNewAssignmentStore(lms, assignments);
+  const announcementStore = useNewAssignmentStore(lms, announcements);
   const [delayLoad, setDelayLoad] = useState(false); // assignmentStore updates one tick after loading for TaskList, so this makes it consistent
   useEffect(() => {
     if (loading) setDelayLoad(true);
@@ -140,43 +144,45 @@ function TaskContainer({
 
   return (
     <DarkContext.Provider value={options.dark_mode}>
-      <CourseStoreContext.Provider value={courseStore}>
-        <ExperimentsContext.Provider value={exp}>
-          <CourseDropdown
-            choices={courseStore.getCourseList(chartCourses)}
-            onCoursePage={!!courseId}
-            selectedId={chosenCourseId}
-            setChoice={setSelectedCourseId}
-          />
-          <TaskChart
-            assignments={chartAssignments}
-            colorOverride={
-              courseId && chartCourses[0] in courseStore.state
-                ? courseStore.state[chartCourses[0]].color
-                : undefined
-            }
-            courses={chartCourses}
-            loading={loading}
-            onCoursePage={!!courseId}
-            selectedCourseId={chosenCourseId}
-            setCourse={setSelectedCourseId}
-            showConfetti={options.show_confetti}
-            themeColor={themeColor}
-            weekKey={weekKey}
-          />
-          <TaskList
-            announcements={updatedAnnouncements}
-            assignments={updatedAssignments}
-            createAssignment={createNewAssignment}
-            loading={loading || delayLoad}
-            markAssignment={markAssignmentAs}
-            selectedCourseId={chosenCourseId}
-            showConfetti={options.show_confetti}
-            showDateHeadings={options.due_date_headings}
-            weekKey={weekKey}
-          />
-        </ExperimentsContext.Provider>
-      </CourseStoreContext.Provider>
+      <LMSContext.Provider value={lms}>
+        <CourseStoreContext.Provider value={courseStore}>
+          <ExperimentsContext.Provider value={exp}>
+            <CourseDropdown
+              choices={courseStore.getCourseList(chartCourses)}
+              onCoursePage={!!courseId}
+              selectedId={chosenCourseId}
+              setChoice={setSelectedCourseId}
+            />
+            <TaskChart
+              assignments={chartAssignments}
+              colorOverride={
+                courseId && chartCourses[0] in courseStore.state
+                  ? courseStore.state[chartCourses[0]].color
+                  : undefined
+              }
+              courses={chartCourses}
+              loading={loading}
+              onCoursePage={!!courseId}
+              selectedCourseId={chosenCourseId}
+              setCourse={setSelectedCourseId}
+              showConfetti={options.show_confetti}
+              themeColor={themeColor}
+              weekKey={weekKey}
+            />
+            <TaskList
+              announcements={updatedAnnouncements}
+              assignments={updatedAssignments}
+              createAssignment={createNewAssignment}
+              loading={loading || delayLoad}
+              markAssignment={markAssignmentAs}
+              selectedCourseId={chosenCourseId}
+              showConfetti={options.show_confetti}
+              showDateHeadings={options.due_date_headings}
+              weekKey={weekKey}
+            />
+          </ExperimentsContext.Provider>
+        </CourseStoreContext.Provider>
+      </LMSContext.Provider>
     </DarkContext.Provider>
   );
 }

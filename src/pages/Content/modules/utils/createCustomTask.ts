@@ -1,4 +1,4 @@
-import { PlannerAssignment } from '../types';
+import { FinalAssignment } from '../types';
 import apiReq from './apiReq';
 
 /* Create a custom task item (Planner note). */
@@ -8,7 +8,7 @@ export default async function createCustomTask(
   course_id?: string,
   grading = false,
   link?: string
-): Promise<PlannerAssignment | null> {
+): Promise<FinalAssignment | null> {
   return new Promise((resolve) => {
     const data: Record<string, string> = {
       title: title,
@@ -32,7 +32,7 @@ export default async function createCustomTask(
     }
     apiReq('/v1/planner_notes', JSON.stringify(data), 'post')
       .then((res) => {
-        resolve(res?.data as PlannerAssignment);
+        resolve(res?.data as FinalAssignment);
       })
       .catch((err) => {
         console.error(err);
