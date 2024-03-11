@@ -1,3 +1,4 @@
+import runApp from '../../modules';
 import runGradescope from '../../modules/components/gradescope';
 import migrateGradescopeToLocal from '../../modules/components/gradescope/utils/migrate';
 import {
@@ -9,6 +10,15 @@ import {
   setGradescopeIntegrationStatus,
   shouldShowOnetimePromo,
 } from '../../modules/components/gradescope/utils/store';
+import markGradescopeAssignment from '../../modules/components/task-container/utils/markGradescopeAssignment';
+import {
+  useGradescopeAssignments,
+  useGradescopeCourses,
+} from '../../modules/hooks/useAssignmentsGradescope';
+import { getOptions } from '../../modules/hooks/useOptions';
+import { LMSConfig } from '../../modules/types/config';
+import createCustomTask from '../../modules/utils/createCustomTask';
+import { isGradescope } from './detectGscope';
 
 export async function GradescopeEntryPoint() {
   try {
@@ -31,6 +41,8 @@ export async function GradescopeEntryPoint() {
     // scrape all tasks for sync-enabled courses
     const enabledCourses = Object.keys(state.GSCOPE_INT_course_id_map);
     updateCourseTasks(enabledCourses);
+
+    // runTasksInGradescope();
 
     // will insert at the end of this element's children
     const container = document.getElementsByClassName('courseHeader--top');
@@ -69,4 +81,75 @@ export async function GradescopeEntryPoint() {
     console.error(e);
     return;
   }
+}
+
+const GradescopeLMSConfig: LMSConfig = {
+  isActive: isGradescope,
+  name: 'Demo',
+  useAssignments: useGradescopeAssignments,
+  useCourses: useGradescopeCourses,
+  createAssignment: createCustomTask, // todo
+  markAssignment: markGradescopeAssignment,
+  dashCourses: () => undefined,
+};
+
+function prepareGradescopeTasksStyles() {
+  const mainPage = document.querySelector('.l-mainWrapper') as HTMLElement;
+  const sidebarWidthElems = document.querySelectorAll(
+    '.l-sidebar, .sidebar--userProfile'
+  );
+  const sidebarScrollview = document.querySelector(
+    '.sidebar--content'
+  ) as HTMLElement;
+  const sidebarBorder = document.querySelector('.sidebar--userProfileBorder');
+  const toggleButton = document.querySelector('.js-toggleSidebar');
+  const introText = document.querySelector('.sidebar--introText');
+  const assignmentTable = document.getElementById('assignments-student-table');
+  (sidebarScrollview as HTMLElement).style.transition = 'none';
+  mainPage?.classList.add('tfc-gradescope-main');
+  sidebarWidthElems.forEach((e) => e.classList.add('tfc-gradescope-sidebar'));
+  toggleButton?.classList.add('tfc-gradescope-toggle');
+  introText?.classList.add('tfc-gradescope-text');
+  sidebarBorder?.classList.add('tfc-gradescope-border');
+  sidebarScrollview?.classList.add('tfc-gradescope-scroll');
+  if (assignmentTable) assignmentTable.style.width = 'calc(100vw - 360px)';
+  return () => {
+    toggleButton?.classList.remove('tfc-gradescope-toggle');
+    mainPage?.classList.remove('tfc-gradescope-main');
+    sidebarWidthElems.forEach((e) =>
+      e.classList.remove('tfc-gradescope-sidebar')
+    );
+    introText?.classList.remove('tfc-gradescope-text');
+    sidebarBorder?.classList.remove('tfc-gradescope-border');
+    sidebarScrollview?.classList.remove('tfc-gradescope-scroll');
+  };
+}
+
+export async function runTasksInGradescope() {
+  const container = document.getElementsByClassName('sidebar--content')[0];
+  if (!container || !container.parentElement) return;
+  const root = document.createElement('div');
+  root.style.lineHeight = 'normal';
+  root.style.width = '240px';
+  container.appendChild(root);
+
+  let removeStyles = prepareGradescopeTasksStyles();
+
+  Array.from(document.getElementsByClassName('js-toggleSidebar')).forEach(
+    (e) => {
+      e.addEventListener('click', () => {
+        if (root.style.display !== 'none') {
+          root.style.display = 'none';
+          removeStyles();
+        } else {
+          root.style.display = 'block';
+          removeStyles = prepareGradescopeTasksStyles();
+        }
+      });
+    }
+  );
+
+  prepareGradescopeTasksStyles();
+
+  runApp(root, GradescopeLMSConfig, await getOptions());
 }

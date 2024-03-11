@@ -20,6 +20,30 @@
   }
 }
 
+.tfc-gradescope-sidebar {
+  width: var(--tfc-sidebar-width) !important;
+}
+
+.tfc-gradescope-scroll {
+  overflow-x: hidden !important;
+}
+
+.tfc-gradescope-border {
+  left: 287px !important;
+}
+
+.tfc-gradescope-main {
+  padding-left: var(--tfc-sidebar-width) !important;
+}
+
+.tfc-gradescope-toggle {
+  left: 214px !important;
+}
+
+.tfc-gradescope-text {
+  width: 240px !important;
+}
+
 body {
   --tfc-dark-mode-text-primary: #e4e4e7;
   --tfc-dark-mode-text-secondary: #71717a;
