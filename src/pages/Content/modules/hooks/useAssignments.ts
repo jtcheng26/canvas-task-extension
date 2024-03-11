@@ -336,9 +336,11 @@ async function loadCanvas(
     loadAssignments(startDate, endDate, options),
     loadGradescopeAssignments(startDate, endDate, options),
   ]);
+  // remove duplicates between gradescope/canvas
   res[3] = res[3].filter(
     (a) => res[2].filter((b) => isDuplicateAssignment(a, b)).length === 0
   );
+  // merge all lists of assignments together
   return Array.prototype.concat(...res);
 }
 
@@ -365,7 +367,6 @@ export function makeUseAssignments(
       });
       loader(startDate, endDate, options)
         .then((res: FinalAssignment[]) => {
-          // merge all lists of assignments together
           setState({
             data: res,
             isSuccess: true,

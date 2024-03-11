@@ -162,6 +162,15 @@ export interface TransitionState {
   opacity: number;
   height: number;
 }
+
+function roundAssignmentScore(score: number | object) {
+  if (typeof score === 'number') return Math.round(score * 100) / 100;
+  else if (typeof score === 'object')
+    // BigNumber or bigint
+    return Math.round(parseFloat(score.toString()) * 100) / 100;
+  return score;
+}
+
 /*
     Renders an individual task item
 */
@@ -198,14 +207,6 @@ export default function TaskCard({
       ? 'Submitted'
       : '';
   const dueText = ` ${due_date} at ${due_time}`;
-
-  function roundAssignmentScore(score: number | object) {
-    if (typeof score === 'number') return Math.round(score * 100) / 100;
-    else if (typeof score === 'object')
-      // BigNumber or bigint
-      return Math.round(parseFloat(score.toString()) * 100) / 100;
-    return assignment.score;
-  }
   const gradedAtText = !display_grade
     ? ''
     : assignment.grade === 'Excused'
