@@ -73,8 +73,8 @@ body {
   border-radius: 10px;
   padding: 10px 0px;
   background-color: var(--bg-default);
-  max-height: 200px;
-  overflow-y: scroll;
+  /* max-height: 200px;
+  overflow-y: scroll; */
 }
 
 .dropdown-option {
