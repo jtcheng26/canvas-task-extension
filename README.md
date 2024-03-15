@@ -7,8 +7,8 @@ No? Well either way, the **Tasks Browser Extension for Canvas** is here to help!
 
 ## Download
 [![Download for Chrome](https://img.shields.io/badge/Download_for-Chrome-4c8bf5?style=for-the-badge&logo=Googlechrome)](https://chrome.google.com/webstore/detail/tasks-for-canvas/kabafodfnabokkkddjbnkgbcbmipdlmb)
-[![Download for Firefox](https://img.shields.io/badge/Download_for-Firefox-ff9400?style=for-the-badge&logo=Firefoxbrowser&logoColor=White)](https://addons.mozilla.org/en-US/firefox/addon/tasks-for-canvas)
-
+[![Download for Firefox](https://img.shields.io/badge/Download_for-Firefox-ff9400?style=for-the-badge&logo=Firefoxbrowser&logoColor=White)](https://addons.mozilla.org/en-US/firefox/addon/tasks-for-canvas)<br>
+Edge, Opera, and Vivaldi are compatible with the Chrome version.
 ## Features
 
 ### Stay on Track
