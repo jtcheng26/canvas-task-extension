@@ -77,6 +77,11 @@ body {
   overflow-y: scroll;
 }
 
+.dropdown-options#weekdays-options {
+  max-height: fit-content;
+  overflow-y: auto;
+}
+
 .dropdown-option {
   font-size: 20px;
   padding: 5px 10px;
