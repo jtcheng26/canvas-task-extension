@@ -82,14 +82,14 @@ async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {
 }
 
 async function getCanvasCourses(): Promise<Record<string, string>> {
-  const { GSCOPE_INT_canvas_courses } = await chrome.storage.sync.get(
+  const { GSCOPE_INT_canvas_courses } = await chrome.storage.local.get(
     'GSCOPE_INT_canvas_courses'
   );
   return GSCOPE_INT_canvas_courses || {};
 }
 
 async function setCourseTasks(gid: string, tasks: GradescopeTask[]) {
-  chrome.storage.sync.set({ [`GSCOPE_INT_tasks_${gid}`]: tasks });
+  chrome.storage.local.set({ [`GSCOPE_INT_tasks_${gid}`]: tasks });
 }
 
 async function setCourseMapping(gid: string, cid: string | null) {
@@ -113,7 +113,7 @@ export async function syncCourse(gid: string, cid: string) {
 
 // in the future, think about unsyncing all assignments from old courses after a time period
 export async function unsyncCourse(gid: string) {
-  chrome.storage.sync.remove([
+  chrome.storage.local.remove([
     `GSCOPE_INT_tasks_${gid}`,
     `GSCOPE_INT_tasks_overrides_${gid}`,
   ]);

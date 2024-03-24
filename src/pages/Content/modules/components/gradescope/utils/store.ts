@@ -5,7 +5,7 @@ import { getSyncedCourses, unsyncCourse } from './scrape';
 
 // for use by Tasks for Canvas
 export async function storeCanvasCourses(courses: Course[]) {
-  chrome.storage.sync.set({
+  chrome.storage.local.set({
     GSCOPE_INT_canvas_courses: courses.reduce((sum, c) => {
       return { ...sum, [c.id]: c.name };
     }, {}),
@@ -35,7 +35,7 @@ async function clearAllGradescope() {
 
 export async function getCourseTasks(gid: string): Promise<GradescopeTask[]> {
   const key = `GSCOPE_INT_tasks_${gid}`;
-  const res = await chrome.storage.sync.get(key);
+  const res = await chrome.storage.local.get(key);
   if (!(key in res)) return [];
   return res[key] || [];
 }
@@ -52,7 +52,7 @@ export async function setGradescopeOverride(
     | AssignmentStatus.UNFINISHED
 ) {
   const key = `GSCOPE_INT_tasks_overrides_${gid}`;
-  const overrides = (await chrome.storage.sync.get(key))[key] || [];
+  const overrides = (await chrome.storage.local.get(key))[key] || [];
   const newOverrides = overrides.filter(
     (o: GradescopeOverride) =>
       o.id !== id || o.gid !== gid || o.name !== name || o.due_date !== due_date
@@ -64,7 +64,7 @@ export async function setGradescopeOverride(
     due_date,
     status: status,
   });
-  chrome.storage.sync.set({ [key]: newOverrides });
+  chrome.storage.local.set({ [key]: newOverrides });
 
   return newOverrides;
 }
@@ -73,7 +73,7 @@ export async function getGradescopeOverrides(
   gid: string
 ): Promise<GradescopeOverride[]> {
   const key = `GSCOPE_INT_tasks_overrides_${gid}`;
-  const res = await chrome.storage.sync.get(key);
+  const res = await chrome.storage.local.get(key);
   if (!(key in res)) return [];
   return res[key] || [];
 }
