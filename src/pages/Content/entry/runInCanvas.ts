@@ -8,7 +8,6 @@ import { useCanvasCourses } from '../modules/hooks/useCourses';
 import dashCourses from '../modules/utils/dashCourses';
 import createCustomTask from '../modules/utils/createCustomTask';
 import markAssignment from '../modules/components/task-container/utils/markAssignment';
-import migrateGradescopeToLocal from '../modules/components/gradescope/utils/migrate';
 
 export const CanvasLMSConfig: LMSConfig = {
   isActive: !!isCanvas,
@@ -67,7 +66,6 @@ export function createSidebar(
   container: HTMLElement,
   observer?: MutationObserver
 ): void {
-  migrateGradescopeToLocal();
   prepareCanvasStyles();
   observer?.disconnect();
   /* IMPORTANT: Only load sidebar once when switching between list view and other views */
