@@ -1,12 +1,10 @@
 // move storage.sync items from older versions to storage.local
 // reason: storage.sync has very low limits (< 8kb)
 export default async function migrateGradescopeToLocal() {
-  const { GSCOPE_INT_course_id_map } = await chrome.storage.sync.get(
-    'GSCOPE_INT_course_id_map'
-  );
-  if (!GSCOPE_INT_course_id_map) return;
+  const res = await chrome.storage.sync.get('GSCOPE_INT_course_id_map');
+  if (!res || !('GSCOPE_INT_course_id_map' in res)) return;
   const localKeys = ['GSCOPE_INT_canvas_courses'];
-  Object.keys(GSCOPE_INT_course_id_map).forEach((gid) => {
+  Object.keys(res['GSCOPE_INT_course_id_map']).forEach((gid) => {
     localKeys.push(
       `GSCOPE_INT_tasks_${gid}`,
       `GSCOPE_INT_tasks_overrides_${gid}`
