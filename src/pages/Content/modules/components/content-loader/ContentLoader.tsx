@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react';
 import TaskContainer from '../task-container';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
-import onCoursePage from '../../utils/onCoursePage';
 import { ErrorBoundary } from 'react-error-boundary';
 import ErrorRender from '../error/ErrorRender';
 import { LMSConfig } from '../../types/config';
@@ -102,7 +101,7 @@ function ContentLoader({
     };
   }, [plannerData, courseData]);
 
-  const onCourse = onCoursePage();
+  const onCourse = lms.onCoursePage();
   const isLoading = !firstLoad && !clickable;
 
   // so props are "frozen" while loading and update in sync when done loading

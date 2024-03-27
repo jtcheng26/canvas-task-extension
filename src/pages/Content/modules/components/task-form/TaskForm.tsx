@@ -12,7 +12,6 @@ import DatePick from './components/DatePick';
 import RecurCheckbox from './components/RecurCheckbox';
 import TextInput from './components/TextInput';
 import TimePick from './components/TimePick';
-import dashCourses from '../../utils/dashCourses';
 import useCourseStore from '../../hooks/useCourseStore';
 import { LMSContext } from '../../contexts/contexts';
 
@@ -91,7 +90,7 @@ export default function TaskForm({
 
   const coursesWithoutCustom = useMemo(() => {
     if (options?.dash_courses) {
-      const dash = dashCourses();
+      const dash = lms.dashCourses();
       if (dash)
         return Object.keys(courseStore.state).filter((c) => dash.has(c));
     }

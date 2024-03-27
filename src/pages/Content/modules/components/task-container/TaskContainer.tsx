@@ -16,7 +16,6 @@ import {
   ExperimentsContext,
   LMSContext,
 } from '../../contexts/contexts';
-import dashCourses from '../../utils/dashCourses';
 import { useNewCourseStore } from '../../hooks/useCourseStore';
 import { useExperiments } from '../../hooks/useExperiment';
 import { useNewAssignmentStore } from '../../hooks/useAssignmentStore';
@@ -130,7 +129,7 @@ function TaskContainer({
     if (options.dash_courses && courseList) {
       const inExtracted = new Set();
       extracted.forEach((id) => inExtracted.add(id));
-      const dash = dashCourses();
+      const dash = lms.dashCourses();
       return dash
         ? extracted.concat(
             courseList.filter((c) => dash.has(c) && !inExtracted.has(c))
