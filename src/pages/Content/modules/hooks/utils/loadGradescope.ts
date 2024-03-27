@@ -9,6 +9,7 @@ import { AssignmentDefaults } from '../../constants';
 import { AssignmentType, FinalAssignment, Options } from '../../types';
 import { AssignmentStatus } from '../../types/assignment';
 import { processAssignmentList } from '../useAssignments';
+import migrateGradescopeToLocal from '../../components/gradescope/utils/migrate';
 
 function getAssignmentURL(course: string, id: string) {
   if (!id) return `https://www.gradescope.com/courses/${course}`;
@@ -81,6 +82,7 @@ async function getCourseTasksAndOverrides(
 }
 
 async function getAllGradescope(): Promise<FinalAssignment[]> {
+  await migrateGradescopeToLocal();
   const courses = await getSyncedCourses();
   const gscopeIds = Object.keys(courses);
   if (!gscopeIds.length) return [];
