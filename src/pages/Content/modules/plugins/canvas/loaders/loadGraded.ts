@@ -1,4 +1,4 @@
-import graphqlReq from './gqlReq';
+import graphqlReq from '../utils/gqlReq';
 
 interface GQLResponse {
   [key: string]: {

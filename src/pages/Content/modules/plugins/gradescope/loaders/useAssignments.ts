@@ -1,9 +1,9 @@
-import { GRADESCOPE_THEME_COLOR } from '../components/gradescope/constants';
-import { getSyncedCourses } from '../components/gradescope/utils/scrape';
-import { Course, FinalAssignment, Options } from '../types';
-import { makeUseAssignments } from './useAssignments';
-import { makeUseCourses } from './useCourses';
-import loadGradescopeAssignments from './utils/loadGradescope';
+import { makeUseAssignments } from '../../shared/useAssignments';
+import { makeUseCourses } from '../../shared/useCourses';
+import { GRADESCOPE_THEME_COLOR } from '../../../components/gradescope/constants';
+import { getSyncedCourses } from '../../../components/gradescope/utils/scrape';
+import { Course, FinalAssignment, Options } from '../../../types';
+import loadGradescopeAssignments from './loadGradescope';
 
 async function loadGradescope(
   startDate: Date,

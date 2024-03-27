@@ -1,10 +1,14 @@
-import { CanvasEntryPoint, isCanvas } from './entry/detectCanvas';
 import {
-  InstallSettingsEntryPoint,
+  CanvasLMSEntrypoint,
+  CanvasLMSConfig,
+  InstallSettingsEntrypoint,
   isInstallSettings,
-} from './entry/detectSettings';
-import { isGradescope } from './entry/gradescope/detectGscope';
-import { GradescopeEntryPoint } from './entry/gradescope/runInGradescope';
+} from './modules/plugins/canvas';
+import {
+  isGradescope,
+  GradescopeEntrypoint,
+} from './modules/plugins/gradescope';
+
 /* 
 
 Performance overhead on websites that aren't Canvas:
@@ -12,23 +16,23 @@ Performance overhead on websites that aren't Canvas:
 document.getElementById() is called once
 
 */
-if (isCanvas) {
+if (CanvasLMSConfig.isActive) {
   /*
   mutation observer waits for sidebar to load then injects content
   */
 
   console.log('Tasks for Canvas: Canvas detected');
 
-  CanvasEntryPoint();
+  CanvasLMSEntrypoint();
 
   /* 
   Allow user to modify critical settings directly on the install page
   */
   if (isInstallSettings) {
-    InstallSettingsEntryPoint();
+    InstallSettingsEntrypoint();
   }
 } else if (isGradescope) {
   console.log('Tasks for Canvas: Gradescope detected');
 
-  GradescopeEntryPoint();
+  GradescopeEntrypoint();
 }

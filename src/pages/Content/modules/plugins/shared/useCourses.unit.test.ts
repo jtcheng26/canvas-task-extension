@@ -1,13 +1,13 @@
 import axios from 'axios';
-import baseURL from '../utils/baseURL';
-import { getCourses } from './useCourses';
+import baseURL from '../../utils/baseURL';
+import { getCanvasCourses } from '../canvas/loaders/loadCourses';
 
-import activeAndRestricted from '../tests/data/api/courses/activeAndRestrictedCourses.json';
-import active from '../tests/data/api/courses/activeCourses.json';
-import restricted from '../tests/data/api/courses/restrictedCourses.json';
+import activeAndRestricted from '../../tests/data/api/courses/activeAndRestrictedCourses.json';
+import active from '../../tests/data/api/courses/activeCourses.json';
+import restricted from '../../tests/data/api/courses/restrictedCourses.json';
 
-import customColors from '../tests/data/api/colors.json';
-import customPositions from '../tests/data/api/dashboard_positions.json';
+import customColors from '../../tests/data/api/colors.json';
+import customPositions from '../../tests/data/api/dashboard_positions.json';
 
 import chrome from 'sinon-chrome';
 
@@ -34,7 +34,7 @@ test('useCourses hook gets all the courses', async () => {
     }
   });
 
-  const res = (await getCourses()).slice(1);
+  const res = (await getCanvasCourses()).slice(1);
   expect(res).toStrictEqual(active);
 });
 
@@ -50,7 +50,7 @@ test('useCourses hook filters date-restricted courses', async () => {
     }
   });
 
-  const res = (await getCourses()).slice(1);
+  const res = (await getCanvasCourses()).slice(1);
 
   expect(res.length).toBe(
     activeAndRestricted.reduce(
@@ -72,7 +72,7 @@ test('useCourses hook works when all courses are restricted', async () => {
     }
   });
 
-  const res = (await getCourses()).slice(1);
+  const res = (await getCanvasCourses()).slice(1);
   expect(res).toBeDefined();
   expect(res.length).toBe(0);
 });
@@ -99,7 +99,7 @@ test('useCourses hook applies course colors', async () => {
     }
   });
 
-  const res = (await getCourses()).slice(1);
+  const res = (await getCanvasCourses()).slice(1);
   expect(res).toBeDefined();
   expect(res.length).toBeGreaterThan(0);
   res.forEach((course) => {

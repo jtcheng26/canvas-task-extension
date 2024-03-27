@@ -4,7 +4,10 @@ import TaskChart from '../task-chart';
 import TaskList from '../task-list';
 import { Course, FinalAssignment, Options } from '../../types';
 import extractCourses from './utils/extractCourses';
-import { filterCourses, filterTimeBounds } from '../../hooks/useAssignments';
+import {
+  filterCourses,
+  filterTimeBounds,
+} from '../../plugins/shared/useAssignments';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
 import {

@@ -1,15 +1,15 @@
 import { compareTwoStrings } from 'string-similarity';
-import { GradescopeTask } from '../../components/gradescope/types';
-import { getSyncedCourses } from '../../components/gradescope/utils/scrape';
+import { GradescopeTask } from '../../../components/gradescope/types';
+import { getSyncedCourses } from '../../../components/gradescope/utils/scrape';
 import {
   getCourseTasks,
   getGradescopeOverrides,
-} from '../../components/gradescope/utils/store';
-import { AssignmentDefaults } from '../../constants';
-import { AssignmentType, FinalAssignment, Options } from '../../types';
-import { AssignmentStatus } from '../../types/assignment';
-import { processAssignmentList } from '../useAssignments';
-import migrateGradescopeToLocal from '../../components/gradescope/utils/migrate';
+} from '../../../components/gradescope/utils/store';
+import { AssignmentDefaults } from '../../../constants';
+import { AssignmentType, FinalAssignment, Options } from '../../../types';
+import { AssignmentStatus } from '../../../types/assignment';
+import { processAssignmentList } from '../../shared/useAssignments';
+import { GradescopeLMSConfig } from '..';
 
 function getAssignmentURL(course: string, id: string) {
   if (!id) return `https://www.gradescope.com/courses/${course}`;
@@ -82,7 +82,6 @@ async function getCourseTasksAndOverrides(
 }
 
 async function getAllGradescope(): Promise<FinalAssignment[]> {
-  await migrateGradescopeToLocal();
   const courses = await getSyncedCourses();
   const gscopeIds = Object.keys(courses);
   if (!gscopeIds.length) return [];
@@ -104,7 +103,14 @@ async function processAssignments(
 ): Promise<FinalAssignment[]> {
   if (options.GSCOPE_INT_disabled) return [];
   const assignments: FinalAssignment[] = await getAllGradescope();
-  const ret = processAssignmentList(assignments, startDate, endDate, options);
+  const ret = processAssignmentList(
+    assignments,
+    startDate,
+    endDate,
+    options,
+    GradescopeLMSConfig.onCoursePage,
+    GradescopeLMSConfig.dashCourses
+  );
   return ret;
 }
 

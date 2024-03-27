@@ -4,7 +4,7 @@ import {
   numUniqueInstances,
 } from './utils/generate';
 import { PlannerAssignment } from '../types';
-import { loadAssignments } from '../hooks/useAssignments';
+import { loadCanvas } from '../plugins/canvas/loaders/loadCanvas';
 import { getWeekEnd, getWeekStart } from '../utils/getPeriod';
 import { OptionsDefaults } from '../constants';
 import axios from 'axios';
@@ -76,7 +76,7 @@ describe('stress test fixtures', () => {
   });
 });
 
-describe('loadAssignments', () => {
+describe('loadCanvass', () => {
   it('Passes randomized tests', async () => {
     const tests = generateTestSample<PlannerAssignment>(
       1000,
@@ -88,11 +88,7 @@ describe('loadAssignments', () => {
       const seed = generateRandomNumberArray(3);
       mockAPI([t], seed, mockedAxios);
       try {
-        const res = await loadAssignments(
-          start_period,
-          end_period,
-          OptionsDefaults
-        );
+        const res = await loadCanvas(start_period, end_period, OptionsDefaults);
         expect(res).toBeTruthy();
       } catch (err) {
         if (err instanceof Error)
@@ -115,11 +111,7 @@ describe('loadAssignments', () => {
       const seed = generateRandomNumberArray(3);
       mockAPI(tests, seed, mockedAxios);
       try {
-        const res = await loadAssignments(
-          start_period,
-          end_period,
-          OptionsDefaults
-        );
+        const res = await loadCanvas(start_period, end_period, OptionsDefaults);
         expect(res).toBeTruthy();
       } catch (err) {
         if (err instanceof Error)

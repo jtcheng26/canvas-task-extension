@@ -15,6 +15,7 @@ export interface LMSConfig {
   ) => UseAssignmentsHookInterface; // read all assignments
   useCourses: (defaultColor?: string) => UseCoursesHookInterface; // read all the courses
   dashCourses: () => Set<string> | undefined; // for the active assignments/all courses option
+  onCoursePage: () => false | string;
   createAssignment: (
     title: string,
     date: string,

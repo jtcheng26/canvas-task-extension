@@ -1,26 +1,19 @@
-import runApp from '../../modules';
-import runGradescope from '../../modules/components/gradescope';
-import migrateGradescopeToLocal from '../../modules/components/gradescope/utils/migrate';
+import migrateGradescopeToLocal from '../../../modules/components/gradescope/utils/migrate';
+import runApp from '../..';
+import runGradescope from '../../components/gradescope';
 import {
   loadSyncState,
   updateCourseTasks,
-} from '../../modules/components/gradescope/utils/scrape';
+} from '../../components/gradescope/utils/scrape';
 import {
   getGradescopeIntegrationStatus,
   setGradescopeIntegrationStatus,
   shouldShowOnetimePromo,
-} from '../../modules/components/gradescope/utils/store';
-import markGradescopeAssignment from '../../modules/components/task-container/utils/markGradescopeAssignment';
-import {
-  useGradescopeAssignments,
-  useGradescopeCourses,
-} from '../../modules/hooks/useAssignmentsGradescope';
-import { getOptions } from '../../modules/hooks/useOptions';
-import { LMSConfig } from '../../modules/types/config';
-import createCustomTask from '../../modules/utils/createCustomTask';
-import { isGradescope } from './detectGscope';
+} from '../../components/gradescope/utils/store';
+import { getOptions } from '../../hooks/useOptions';
+import { GradescopeLMSConfig } from '.';
 
-export async function GradescopeEntryPoint() {
+export async function GradescopeEntrypoint() {
   try {
     // make sure option is not globally disabled
     const enabled = await getGradescopeIntegrationStatus();
@@ -42,7 +35,7 @@ export async function GradescopeEntryPoint() {
     const enabledCourses = Object.keys(state.GSCOPE_INT_course_id_map);
     updateCourseTasks(enabledCourses);
 
-    // runTasksInGradescope();
+    runTasksInGradescope();
 
     // will insert at the end of this element's children
     const container = document.getElementsByClassName('courseHeader--top');
@@ -82,16 +75,6 @@ export async function GradescopeEntryPoint() {
     return;
   }
 }
-
-const GradescopeLMSConfig: LMSConfig = {
-  isActive: isGradescope,
-  name: 'Demo',
-  useAssignments: useGradescopeAssignments,
-  useCourses: useGradescopeCourses,
-  createAssignment: createCustomTask, // todo
-  markAssignment: markGradescopeAssignment,
-  dashCourses: () => undefined,
-};
 
 function prepareGradescopeTasksStyles() {
   const mainPage = document.querySelector('.l-mainWrapper') as HTMLElement;

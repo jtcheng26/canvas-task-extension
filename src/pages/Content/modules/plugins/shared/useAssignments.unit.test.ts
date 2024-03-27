@@ -1,28 +1,28 @@
 import axios from 'axios';
 import {
   filterTimeBounds,
-  getAllAssignments,
   filterAssignmentTypes,
   mergePartial,
 } from './useAssignments';
-import { AssignmentType, FinalAssignment } from '../types';
+import { getAllAssignments } from '../canvas/loaders/loadCanvas';
+import { AssignmentType, FinalAssignment } from '../../types';
 
-import plannerRes from '../tests/data/api/planner.json';
+import plannerRes from '../../tests/data/api/planner.json';
 
-import beforeStartHour from '../tests/data/assignment-list/due_at/beforeStartHour.json';
-import afterStartHour from '../tests/data/assignment-list/due_at/afterStartHour.json';
-import beforeStartMinute from '../tests/data/assignment-list/due_at/beforeStartMinute.json';
-import afterStartMinute from '../tests/data/assignment-list/due_at/afterStartMinute.json';
+import beforeStartHour from '../../tests/data/assignment-list/due_at/beforeStartHour.json';
+import afterStartHour from '../../tests/data/assignment-list/due_at/afterStartHour.json';
+import beforeStartMinute from '../../tests/data/assignment-list/due_at/beforeStartMinute.json';
+import afterStartMinute from '../../tests/data/assignment-list/due_at/afterStartMinute.json';
 
-import afterEndHour from '../tests/data/assignment-list/due_at/afterEndHour.json';
-import beforeEndHour from '../tests/data/assignment-list/due_at/beforeEndHour.json';
-import afterEndMinute from '../tests/data/assignment-list/due_at/afterEndMinute.json';
-import beforeEndMinute from '../tests/data/assignment-list/due_at/beforeEndMinute.json';
+import afterEndHour from '../../tests/data/assignment-list/due_at/afterEndHour.json';
+import beforeEndHour from '../../tests/data/assignment-list/due_at/beforeEndHour.json';
+import afterEndMinute from '../../tests/data/assignment-list/due_at/afterEndMinute.json';
+import beforeEndMinute from '../../tests/data/assignment-list/due_at/beforeEndMinute.json';
 
-import beforeStartDay from '../tests/data/assignment-list/due_at/beforeStartDay.json';
-import afterEndDay from '../tests/data/assignment-list/due_at/afterEndDay.json';
-import forEachTZ from '../tests/utils/forEachTZ';
-import { AssignmentDefaults, OptionsDefaults } from '../constants';
+import beforeStartDay from '../../tests/data/assignment-list/due_at/beforeStartDay.json';
+import afterEndDay from '../../tests/data/assignment-list/due_at/afterEndDay.json';
+import forEachTZ from '../../tests/utils/forEachTZ';
+import { AssignmentDefaults, OptionsDefaults } from '../../constants';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;

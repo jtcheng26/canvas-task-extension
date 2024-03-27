@@ -1,13 +1,11 @@
 import axios from 'axios';
-import { THEME_COLOR } from '../constants';
-import { DemoColors, DemoCourses, DemoPositions } from '../tests/demo';
-import { Course } from '../types';
-import baseURL from '../utils/baseURL';
-import isDemo from '../utils/isDemo';
-import { useEffect, useState } from 'react';
-import { getPaginatedRequest } from './useAssignments';
-import { storeCanvasCourses } from '../components/gradescope/utils/store';
-import { UseCoursesHookInterface } from '../types/config';
+import { THEME_COLOR } from '../../../constants';
+import { DemoColors, DemoCourses, DemoPositions } from '../../../tests/demo';
+import { Course } from '../../../types';
+import baseURL from '../../../utils/baseURL';
+import isDemo from '../../../utils/isDemo';
+import { getPaginatedRequest } from './loadCanvas';
+import { storeCanvasCourses } from '../../../components/gradescope/utils/store';
 
 /* Get user dashboard course positions */
 async function getCoursePositions(): Promise<Record<string, number>> {
@@ -77,7 +75,9 @@ function applyCourseNames(courses: Course[]): Course[] {
 }
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
-export async function getCourses(defaultColor?: string): Promise<Course[]> {
+export async function getCanvasCourses(
+  defaultColor?: string
+): Promise<Course[]> {
   const [res, colors, positions] = isDemo()
     ? [DemoCourses, DemoColors, DemoPositions]
     : await Promise.all([
@@ -112,40 +112,3 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
 
   return [CustomCourse].concat(courses);
 }
-
-export const makeUseCourses = (
-  loader: (defaultColor?: string) => Promise<Course[]>
-) => {
-  return (defaultColor?: string) => {
-    const [state, setState] = useState<UseCoursesHookInterface>({
-      data: null,
-      isError: false,
-      isSuccess: false,
-      errorMessage: '',
-    });
-    useEffect(() => {
-      loader(defaultColor)
-        .then((res) => {
-          setState({
-            data: res,
-            isSuccess: true,
-            isError: false,
-            errorMessage: '',
-          });
-        })
-        .catch((err) => {
-          console.error(err);
-          setState({
-            data: null,
-            isSuccess: false,
-            isError: true,
-            errorMessage: err.message,
-          });
-        });
-    }, []);
-    return state;
-  };
-};
-
-/* Use cached course data */
-export const useCanvasCourses = makeUseCourses(getCourses);

@@ -1,7 +1,7 @@
-import runSettings from '../modules/components/dynamic-settings';
-import { HOME_WEBSITE } from '../modules/constants';
-import { getOptions } from '../modules/hooks/useOptions';
-import baseURL from '../modules/utils/baseURL';
+import runSettings from '../../components/dynamic-settings';
+import { HOME_WEBSITE } from '../../constants';
+import { getOptions } from '../../hooks/useOptions';
+import baseURL from '../../utils/baseURL';
 
 export const isInstallSettings =
   baseURL() == HOME_WEBSITE && document.getElementById('tfc-settings');

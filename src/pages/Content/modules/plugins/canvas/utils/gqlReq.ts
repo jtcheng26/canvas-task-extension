@@ -1,4 +1,4 @@
-import apiReq from '../../utils/apiReq';
+import apiReq from '../../../utils/apiReq';
 
 /* From my understanding, graphql never paginates unless client explicitly specifies it */
 export default async function graphqlReq<Type>(

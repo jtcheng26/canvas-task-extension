@@ -1,6 +1,6 @@
 import { FinalAssignment } from '../../../types';
 import { AssignmentStatus } from '../../../types/assignment';
-import { setGradescopeOverride } from '../../gradescope/utils/store';
+import { setGradescopeOverride } from '../../../components/gradescope/utils/store';
 
 /* Mark an assignment either complete or incomplete via planner overrides.*/
 export default function markGradescopeAssignment(

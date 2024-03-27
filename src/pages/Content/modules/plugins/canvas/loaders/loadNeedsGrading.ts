@@ -1,15 +1,17 @@
-import { AssignmentType, FinalAssignment, Options } from '../../types';
-import baseURL from '../../utils/baseURL';
-import { AssignmentDefaults } from '../../constants';
-import isDemo from '../../utils/isDemo';
+import { AssignmentType, FinalAssignment, Options } from '../../../types';
+import baseURL from '../../../utils/baseURL';
+import { AssignmentDefaults } from '../../../constants';
+import isDemo from '../../../utils/isDemo';
 import {
-  getPaginatedRequest,
   mergePartial,
   processAssignmentList,
-} from '../useAssignments';
-import { TodoAssignment, TodoResponse } from '../../types/assignment';
-import graphqlReq from './gqlReq';
-import { DemoNeedsGrading, DemoTeacherAssignments } from '../../tests/demo';
+} from '../../shared/useAssignments';
+import { getPaginatedRequest } from './loadCanvas';
+import { TodoAssignment, TodoResponse } from '../../../types/assignment';
+import graphqlReq from '../utils/gqlReq';
+import { DemoNeedsGrading, DemoTeacherAssignments } from '../../../tests/demo';
+import onCoursePageCanvas from '../utils/onCoursePage';
+import dashCoursesCanvas from '../utils/dashCourses';
 
 export interface NeedsGradingCount {
   id: string;
@@ -137,7 +139,14 @@ async function processAssignments(
 ): Promise<FinalAssignment[]> {
   if (!options.show_needs_grading) return [];
   const assignments: FinalAssignment[] = await getAllTodos();
-  return processAssignmentList(assignments, startDate, endDate, options);
+  return processAssignmentList(
+    assignments,
+    startDate,
+    endDate,
+    options,
+    onCoursePageCanvas,
+    dashCoursesCanvas
+  );
 }
 
 // only respects end date: assignments due after will not be included, but all assignments due before that need grading are included.
