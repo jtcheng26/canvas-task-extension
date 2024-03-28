@@ -1,6 +1,7 @@
 import { Course } from '../../types';
 import { LMSConfig } from '../../types/config';
-import markGradescopeAssignment from '../gradescope/utils/markAssignment';
+import { makeMarkAssignment } from '../shared/customOverride';
+import { makeCreateCustomTask } from '../shared/customTask';
 import { makeUseAssignments } from '../shared/useAssignments';
 import { makeUseCourses } from '../shared/useCourses';
 import BrightspaceEntrypoint from './entry';
@@ -15,8 +16,8 @@ export const BrightspaceLMSConfig: LMSConfig = {
   name: 'Demo',
   useAssignments: makeUseAssignments(loadBrightspaceAssignments),
   useCourses: makeUseCourses(loadBrightspaceCourses),
-  createAssignment: async () => null, // todo
-  markAssignment: markGradescopeAssignment,
+  createAssignment: makeCreateCustomTask('brightspace_custom'), // todo
+  markAssignment: makeMarkAssignment('brightspace_custom'),
   dashCourses: (courses?: Course[]) => {
     const res = new Set<string>();
     if (courses)

@@ -1,6 +1,7 @@
 import { FinalAssignment } from '../../../types';
-import { AssignmentStatus } from '../../../types/assignment';
+import { AssignmentStatus, AssignmentType } from '../../../types/assignment';
 import { setGradescopeOverride } from '../../../components/gradescope/utils/store';
+import { setCustomOverride } from '../../shared/customOverride';
 
 /* Mark an assignment either complete or incomplete via planner overrides.*/
 export default function markGradescopeAssignment(
@@ -16,12 +17,20 @@ export default function markGradescopeAssignment(
     retAssignment.submitted = false;
     retAssignment.graded = false;
   }
-  setGradescopeOverride(
-    assignment.id,
-    assignment.plannable_id,
-    assignment.name,
-    assignment.due_at,
-    complete
-  );
+  if (assignment.type === AssignmentType.NOTE)
+    setCustomOverride(
+      assignment.id,
+      assignment.course_id,
+      'gradescope_custom',
+      complete
+    );
+  else
+    setGradescopeOverride(
+      assignment.id,
+      assignment.plannable_id,
+      assignment.name,
+      assignment.due_at,
+      complete
+    );
   return retAssignment;
 }

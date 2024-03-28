@@ -1,11 +1,17 @@
 import { Course } from '../../types';
 import { useEffect, useState } from 'react';
 import { UseCoursesHookInterface } from '../../types/config';
+import { THEME_COLOR } from '../../constants';
 
-export const makeUseCourses = (
-  loader: (defaultColor?: string) => Promise<Course[]>
-) => {
+export const makeUseCourses = (loader: () => Promise<Course[]>) => {
   return (defaultColor?: string) => {
+    const CustomCourse: Course = {
+      id: '0',
+      color: defaultColor || THEME_COLOR,
+      position: 0,
+      name: 'Custom Task',
+      course_code: 'Custom Task',
+    };
     const [state, setState] = useState<UseCoursesHookInterface>({
       data: null,
       isError: false,
@@ -13,10 +19,10 @@ export const makeUseCourses = (
       errorMessage: '',
     });
     useEffect(() => {
-      loader(defaultColor)
+      loader()
         .then((res) => {
           setState({
-            data: res,
+            data: [CustomCourse].concat(res),
             isSuccess: true,
             isError: false,
             errorMessage: '',

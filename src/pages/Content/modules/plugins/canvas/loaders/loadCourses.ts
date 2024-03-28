@@ -75,9 +75,7 @@ function applyCourseNames(courses: Course[]): Course[] {
 }
 
 /* Get all courses (200 limit for now, will change to paginate in the future) */
-export async function getCanvasCourses(
-  defaultColor?: string
-): Promise<Course[]> {
+export async function getCanvasCourses(): Promise<Course[]> {
   const [res, colors, positions] = isDemo()
     ? [DemoCourses, DemoColors, DemoPositions]
     : await Promise.all([
@@ -88,14 +86,6 @@ export async function getCanvasCourses(
         getCourseColors(),
         getCoursePositions(),
       ]);
-
-  const CustomCourse: Course = {
-    id: '0',
-    color: defaultColor || THEME_COLOR,
-    position: 0,
-    name: 'Custom Task',
-    course_code: 'Custom Task',
-  };
 
   const courses = res
     .filter((course: Course) => !course.access_restricted_by_date)
@@ -110,5 +100,5 @@ export async function getCanvasCourses(
 
   if (courses.length) storeCanvasCourses(courses);
 
-  return [CustomCourse].concat(courses);
+  return courses;
 }

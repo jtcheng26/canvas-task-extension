@@ -11,6 +11,8 @@ import loadBrightspaceCourses, {
 import { AssignmentDefaults } from '../../../constants';
 import { processAssignmentList } from '../../shared/useAssignments';
 import { BrightspaceLMSConfig } from '..';
+import { loadCustomTasks } from '../../shared/customTask';
+import { applyCustomOverrides } from '../../shared/customOverride';
 
 type BrightspaceItem = {
   UserId: string;
@@ -76,10 +78,18 @@ export default async function loadBrightspaceAssignments(
   const endStr = en.toISOString().split('T')[0];
 
   const courses = await loadBrightspaceCourses();
-  const assignments = await getAssignmentsRequest(startStr, endStr, courses);
-  const parsed = parseAssignments(assignments);
+  const assignmentSources = await Promise.all([
+    (async () =>
+      parseAssignments(
+        await getAssignmentsRequest(startStr, endStr, courses)
+      ))(),
+    loadCustomTasks('brightspace_custom'),
+  ]);
+  const assignments = Array.prototype.concat(...assignmentSources);
+  console.log(assignments);
+  const marked = await applyCustomOverrides(assignments, 'brightspace_custom');
   return processAssignmentList(
-    parsed,
+    marked,
     startDate,
     endDate,
     options,

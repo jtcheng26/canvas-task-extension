@@ -5,6 +5,7 @@ import {
 } from './loaders/useAssignments';
 import markGradescopeAssignment from './utils/markAssignment';
 import { GradescopeEntrypoint } from './runInGradescope';
+import { makeCreateCustomTask } from '../shared/customTask';
 
 export const isGradescope = window.location.hostname === 'www.gradescope.com';
 
@@ -13,7 +14,7 @@ export const GradescopeLMSConfig: LMSConfig = {
   name: 'Demo',
   useAssignments: useGradescopeAssignments,
   useCourses: useGradescopeCourses,
-  createAssignment: async () => null, // todo
+  createAssignment: makeCreateCustomTask('gradescope_custom'), // todo
   markAssignment: markGradescopeAssignment,
   dashCourses: () => undefined,
   onCoursePage: () => false,
