@@ -220,7 +220,7 @@ export async function loadAssignments(
     endDate,
     options,
     onCoursePageCanvas,
-    dashCoursesCanvas
+    dashCoursesCanvas()
   );
   const gradeRecords = await queryGraded(
     filtered.filter((a) => a.graded).map((a) => a.id)

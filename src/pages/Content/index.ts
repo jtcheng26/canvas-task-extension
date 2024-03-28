@@ -1,4 +1,8 @@
 import {
+  BrightspaceEntrypoint,
+  isBrightspace,
+} from './modules/plugins/brightspace';
+import {
   CanvasLMSEntrypoint,
   CanvasLMSConfig,
   InstallSettingsEntrypoint,
@@ -35,4 +39,8 @@ if (CanvasLMSConfig.isActive) {
   console.log('Tasks for Canvas: Gradescope detected');
 
   GradescopeEntrypoint();
+} else if (isBrightspace) {
+  console.log('Tasks for Canvas: D2L Brightspace detected');
+
+  BrightspaceEntrypoint();
 }

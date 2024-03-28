@@ -113,7 +113,7 @@ async function processAssignments(
     endDate,
     options,
     onCoursePageCanvas,
-    dashCoursesCanvas
+    dashCoursesCanvas()
   );
 }
 

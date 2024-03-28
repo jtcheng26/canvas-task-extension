@@ -48,7 +48,10 @@ function TaskContainer({
   endDate,
   lms,
 }: TaskContainerProps): JSX.Element {
-  const courseStore = useNewCourseStore(courseData);
+  const courseStore = useNewCourseStore(
+    courseData,
+    lms.dashCourses(courseData)
+  );
   const courseList = Object.keys(courseStore.state);
   /* IMPORTANT
     I'm not sure if assigment and announcement ids could collide, so I'm using two separate stores.
@@ -129,7 +132,7 @@ function TaskContainer({
     if (options.dash_courses && courseList) {
       const inExtracted = new Set();
       extracted.forEach((id) => inExtracted.add(id));
-      const dash = lms.dashCourses();
+      const dash = courseStore.dashCourses;
       return dash
         ? extracted.concat(
             courseList.filter((c) => dash.has(c) && !inExtracted.has(c))

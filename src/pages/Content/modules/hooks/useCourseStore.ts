@@ -59,6 +59,7 @@ function watchOptionsThemeColor(callback: (id: string, color: string) => void) {
 
 export interface CourseStoreInterface {
   state: Record<string, Course>;
+  dashCourses?: Set<string>;
   addCourse: (course: Course) => void;
   updateCourseColor: (id: string, color: string) => void;
   getCourseList: (courses?: string[]) => Course[]; // return list of Course objects from subset of course ids (or return all if none specified)
@@ -66,7 +67,8 @@ export interface CourseStoreInterface {
 }
 
 export function useNewCourseStore(
-  courses: Course[] = []
+  courses: Course[] = [],
+  dashCourses?: Set<string>
 ): CourseStoreInterface {
   function toMap(list: Course[]) {
     const map: Record<string, Course> = {};
@@ -105,6 +107,7 @@ export function useNewCourseStore(
 
   return {
     state,
+    dashCourses,
     addCourse,
     updateCourseColor,
     getCourseList,

@@ -90,7 +90,7 @@ export default function TaskForm({
 
   const coursesWithoutCustom = useMemo(() => {
     if (options?.dash_courses) {
-      const dash = lms.dashCourses();
+      const dash = courseStore.dashCourses;
       if (dash)
         return Object.keys(courseStore.state).filter((c) => dash.has(c));
     }

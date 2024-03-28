@@ -109,8 +109,7 @@ async function processAssignments(
     startDate,
     endDate,
     options,
-    () => false,
-    () => undefined
+    () => false
   );
   return ret;
 }

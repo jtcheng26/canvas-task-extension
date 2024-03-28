@@ -12,6 +12,7 @@ import {
 } from '../../components/gradescope/utils/store';
 import { getOptions } from '../../hooks/useOptions';
 import { GradescopeLMSConfig } from '.';
+import { GRADESCOPE_THEME_COLOR } from '../../components/gradescope/constants';
 
 export async function GradescopeEntrypoint() {
   try {
@@ -77,6 +78,14 @@ export async function GradescopeEntrypoint() {
 }
 
 function prepareGradescopeTasksStyles() {
+  document.documentElement.style.setProperty(
+    '--ic-brand-font-color-dark', // used in subtabs and as a default elsewhere
+    'rgb(25, 25, 25)'
+  );
+  document.documentElement.style.setProperty(
+    '--ic-brand-global-nav-bgd', // used in subtabs and as a default elsewhere
+    GRADESCOPE_THEME_COLOR
+  );
   const mainPage = document.querySelector('.l-mainWrapper') as HTMLElement;
   const sidebarWidthElems = document.querySelectorAll(
     '.l-sidebar, .sidebar--userProfile'

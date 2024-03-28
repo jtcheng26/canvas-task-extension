@@ -78,7 +78,7 @@ export function processAssignmentList(
   endDate: Date,
   options: Options,
   onCoursePage: () => false | string,
-  dashCourses: () => Set<string> | undefined
+  dash?: Set<string>
 ): FinalAssignment[] {
   assignments = filterAssignmentTypes(assignments);
   assignments = filterTimeBounds(startDate, endDate, assignments);
@@ -90,7 +90,6 @@ export function processAssignmentList(
     assignments = filterCourses([coursePageId], assignments);
   } else {
     // if dash_courses set, only show assignments from courses on dashboard
-    const dash = dashCourses();
     if (options.dash_courses && dash)
       assignments = filterCourses(Array.from(dash).concat(['0']), assignments);
   }

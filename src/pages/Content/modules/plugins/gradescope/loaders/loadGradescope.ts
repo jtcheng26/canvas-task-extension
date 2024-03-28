@@ -109,7 +109,7 @@ async function processAssignments(
     endDate,
     options,
     GradescopeLMSConfig.onCoursePage,
-    GradescopeLMSConfig.dashCourses
+    GradescopeLMSConfig.dashCourses()
   );
   return ret;
 }
