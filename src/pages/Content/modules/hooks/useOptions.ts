@@ -4,10 +4,16 @@ import { Options } from '../types';
 import isDarkMode from '../utils/isDarkMode';
 import { useConfigStore } from './useStore';
 import { OptionsContext } from '../contexts/contexts';
+import { getExperimentGroup } from './useExperiment';
 
 const storedUserOptions = Object.keys(OptionsDefaults);
 
-function applyDefaults(options: Options): Options {
+async function applyDefaults(options: Options): Promise<Options> {
+  if (Object.keys(options).length === 0) {
+    const isTreated = await getExperimentGroup('courses_default_setting');
+    // experiment: show courses with active assignments only vs show all courses
+    options.dash_courses = isTreated;
+  }
   const opts = {
     ...OptionsDefaults,
     ...options,
@@ -18,12 +24,15 @@ function applyDefaults(options: Options): Options {
 
 export async function getOptions(): Promise<Options> {
   return new Promise((resolve) => {
-    chrome.storage.sync.get(storedUserOptions, function (result) {
-      chrome.storage.sync.set(applyDefaults(result as Options), function () {
-        chrome.storage.sync.get(null, function (result2) {
-          resolve(result2 as Options);
-        });
-      });
+    chrome.storage.sync.get(storedUserOptions, async function (result) {
+      chrome.storage.sync.set(
+        await applyDefaults(result as Options),
+        function () {
+          chrome.storage.sync.get(null, function (result2) {
+            resolve(result2 as Options);
+          });
+        }
+      );
     });
   });
 }

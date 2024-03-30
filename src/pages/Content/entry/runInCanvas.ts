@@ -8,6 +8,7 @@ import { useCanvasCourses } from '../modules/hooks/useCourses';
 import dashCourses from '../modules/utils/dashCourses';
 import createCustomTask from '../modules/utils/createCustomTask';
 import markAssignment from '../modules/components/task-container/utils/markAssignment';
+import { InstallSettingsEntryPoint, isInstallSettings } from './detectSettings';
 
 export const CanvasLMSConfig: LMSConfig = {
   isActive: !!isCanvas,
@@ -43,7 +44,14 @@ function runAppUsingOptions(container: HTMLElement, data: Options) {
 }
 
 async function runAppInChrome(container: HTMLElement) {
-  runAppUsingOptions(container, await getOptions());
+  const options = await getOptions();
+  runAppUsingOptions(container, options);
+  /* 
+  Allow user to modify critical settings directly on the install page
+  */
+  if (isInstallSettings) {
+    InstallSettingsEntryPoint(options);
+  }
 }
 
 /* Chrome APIs work fine in firefox currently, but firefox-native implementation is saved here for the future. */

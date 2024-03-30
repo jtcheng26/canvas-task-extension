@@ -1,8 +1,4 @@
 import { CanvasEntryPoint, isCanvas } from './entry/detectCanvas';
-import {
-  InstallSettingsEntryPoint,
-  isInstallSettings,
-} from './entry/detectSettings';
 import { isGradescope } from './entry/gradescope/detectGscope';
 import { GradescopeEntryPoint } from './entry/gradescope/runInGradescope';
 /* 
@@ -20,13 +16,6 @@ if (isCanvas) {
   console.log('Tasks for Canvas: Canvas detected');
 
   CanvasEntryPoint();
-
-  /* 
-  Allow user to modify critical settings directly on the install page
-  */
-  if (isInstallSettings) {
-    InstallSettingsEntryPoint();
-  }
 } else if (isGradescope) {
   console.log('Tasks for Canvas: Gradescope detected');
 
