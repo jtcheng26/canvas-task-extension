@@ -25,20 +25,20 @@ function generateRandomNumber(length: number): string {
 
 async function getClientId(): Promise<string> {
   const clientId = await chrome.storage.sync.get('client_id');
-  if ('client_id' in clientId && clientId['client_id'])
+  if (clientId && 'client_id' in clientId && clientId['client_id'])
     return clientId['client_id'];
   if (isDemo()) {
     // for an A/B test that starts before the user opens an LMS
     let future_id = generateRandomNumber(CLIENT_ID_LENGTH);
     const existing = await chrome.storage.local.get('client_id');
-    if ('client_id' in existing && existing['client_id'])
+    if (existing && 'client_id' in existing && existing['client_id'])
       future_id = existing['client_id'];
     else await chrome.storage.local.set({ client_id: future_id });
     return future_id;
   } else {
     let savedId = '';
     const result = await chrome.storage.local.get('client_id');
-    if ('client_id' in result && result['client_id'])
+    if (result && 'client_id' in result && result['client_id'])
       savedId = result['client_id'];
     else savedId = generateRandomNumber(CLIENT_ID_LENGTH);
     chrome.storage.sync.set({ client_id: savedId });
