@@ -108,7 +108,7 @@ export async function getCourses(defaultColor?: string): Promise<Course[]> {
   applyCourseNames(courses);
   applyCoursePositions(courses, positions);
 
-  if (courses.length) storeCanvasCourses(courses);
+  if (courses.length && !isDemo()) storeCanvasCourses(courses);
 
   return [CustomCourse].concat(courses);
 }
