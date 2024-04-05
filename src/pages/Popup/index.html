@@ -13,6 +13,26 @@
         font-weight: bold;
         font-family: Lato, sans-serif;
       }
+
+      .link-button,
+      .link-button:visited {
+        display: block;
+        background-color: black;
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+        width: 200px;
+        text-align: center;
+        box-sizing: border-box;
+        padding: 10px;
+        border-radius: 8px;
+        transition: opacity 0.1s ease-in-out;
+      }
+
+      .link-button:hover {
+        opacity: 0.7;
+        text-decoration: none;
+      }
     </style>
   </head>
 
@@ -22,6 +42,11 @@
       <br />
       <br />
       You should see the updated sidebar on your dashboard!
+      <br />
+      <br />
+      <a class="link-button" id="settings-button" href="options.html" target="_blank">
+        ⚙️ Settings
+      </a>
     </div>
   </body>
 </html>
