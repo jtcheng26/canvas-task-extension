@@ -16,6 +16,7 @@ const useCanvasCourses = makeUseCourses(getCanvasCourses);
 export const CanvasLMSConfig: LMSConfig = {
   isActive: !!isCanvas,
   name: 'Canvas',
+  storageKey: 'canvas_custom',
   useAssignments: useCanvasAssignments,
   useCourses: useCanvasCourses,
   dashCourses: dashCoursesCanvas,

@@ -50,7 +50,8 @@ function TaskContainer({
 }: TaskContainerProps): JSX.Element {
   const courseStore = useNewCourseStore(
     courseData,
-    lms.dashCourses(courseData)
+    lms.dashCourses(courseData),
+    lms.storageKey
   );
   const courseList = Object.keys(courseStore.state);
   /* IMPORTANT

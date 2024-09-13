@@ -8,6 +8,7 @@ export type SupportedLMS = 'Canvas' | 'Demo';
 export interface LMSConfig {
   isActive: boolean; // true for only one LMS (i.e. window.location.hostname === ...)
   name: SupportedLMS;
+  storageKey: string;
   useAssignments: (
     startDate: Date,
     endDate: Date,

@@ -36,7 +36,7 @@ export async function GradescopeEntrypoint() {
     const enabledCourses = Object.keys(state.GSCOPE_INT_course_id_map);
     updateCourseTasks(enabledCourses);
 
-    runTasksInGradescope();
+    // runTasksInGradescope();
 
     // will insert at the end of this element's children
     const container = document.getElementsByClassName('courseHeader--top');

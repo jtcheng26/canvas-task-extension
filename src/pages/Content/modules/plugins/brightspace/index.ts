@@ -14,6 +14,7 @@ export const isBrightspace =
 export const BrightspaceLMSConfig: LMSConfig = {
   isActive: isBrightspace,
   name: 'Demo',
+  storageKey: 'brightspace_custom',
   useAssignments: makeUseAssignments(loadBrightspaceAssignments),
   useCourses: makeUseCourses(loadBrightspaceCourses),
   createAssignment: makeCreateCustomTask('brightspace_custom'), // todo
