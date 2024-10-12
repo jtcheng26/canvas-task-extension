@@ -422,12 +422,6 @@ export default function TaskList({
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Unfinished'))}</>}
           </NodeGroup>
-          {(allList['Unfinished'].length <= 4 || viewingMore) && (
-            <CreateTaskCard
-              onSubmit={createAssignment}
-              selectedCourse={selectedCourseId}
-            />
-          )}
         </ListContainer>
       </HideDiv>
       <HideDiv visible={visibleTab === 'NeedsGrading'}>
@@ -442,13 +436,6 @@ export default function TaskList({
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('NeedsGrading'))}</>}
           </NodeGroup>
-          {(allList['NeedsGrading'].length <= 4 || viewingMore) && (
-            <CreateTaskCard
-              grading
-              onSubmit={createAssignment}
-              selectedCourse={selectedCourseId}
-            />
-          )}
         </ListContainer>
       </HideDiv>
 
@@ -471,6 +458,13 @@ export default function TaskList({
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>
+      )}
+      {(visibleTab === 'Unfinished' || visibleTab === 'NeedsGrading') && (
+        <CreateTaskCard
+          grading
+          onSubmit={createAssignment}
+          selectedCourse={selectedCourseId}
+        />
       )}
     </ListWrapper>
   );
