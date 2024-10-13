@@ -1,5 +1,8 @@
 /* Return the Feb 26, 8:00 PM format of the ISO string. */
-export default function fmtDate(date: string): [string, string] {
+export default function fmtDate(
+  date: string,
+  clock24hr: boolean
+): [string, string] {
   const as_date = new Date(date);
   const fmted_date = as_date.toLocaleString('en-US', {
     month: 'short',
@@ -8,7 +11,7 @@ export default function fmtDate(date: string): [string, string] {
   const fmted_time = as_date.toLocaleString('en-US', {
     hour: 'numeric',
     minute: 'numeric',
-    hour12: true,
+    hour12: !clock24hr,
   });
   return [fmted_date, fmted_time];
 }

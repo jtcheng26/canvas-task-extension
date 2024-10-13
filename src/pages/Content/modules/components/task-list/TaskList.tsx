@@ -258,6 +258,7 @@ export default function TaskList({
     return tab !== 'Announcements' ? (
       <TaskCard
         assignment={assignment}
+        clock24hr={options.clock_24hr}
         color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
         course_name={courseStore.state[assignment.course_id].name}

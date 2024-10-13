@@ -18,6 +18,7 @@ type Options = {
   show_needs_grading: boolean;
   show_long_overdue: boolean;
   GSCOPE_INT_disabled: boolean;
+  clock_24hr: boolean;
 };
 
 export default Options;

@@ -156,6 +156,7 @@ export interface TaskProps {
   markDeleted?: () => void;
   skeleton?: boolean;
   transitionState?: TransitionState;
+  clock24hr?: boolean;
 }
 
 export interface TransitionState {
@@ -184,8 +185,9 @@ export default function TaskCard({
   markDeleted,
   skeleton,
   transitionState,
+  clock24hr = false,
 }: TaskProps): JSX.Element {
-  const [due_date, due_time] = fmtDate(assignment.due_at);
+  const [due_date, due_time] = fmtDate(assignment.due_at, clock24hr);
   const gradedSince = assignment.graded_at
     ? fmtDateSince(assignment.graded_at)
     : '';

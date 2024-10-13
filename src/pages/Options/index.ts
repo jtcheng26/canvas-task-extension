@@ -195,6 +195,7 @@ const booleanOptions: Record<string, string> = {
   'show-needs-grading': 'show_needs_grading',
   'color-tabs': 'color_tabs',
   'long-overdue': 'show_long_overdue',
+  'clock-24hr': 'clock_24hr',
   GSCOPE_INT_disabled: 'GSCOPE_INT_disabled',
 };
 
@@ -326,6 +327,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   );
   setCheckbox('color-tabs', options.color_tabs);
   setCheckbox('long-overdue', options.show_long_overdue);
+  setCheckbox('clock-24hr', options.clock_24hr);
   setCheckbox('GSCOPE_INT_disabled', !options.GSCOPE_INT_disabled);
   setThemeColor(
     options.theme_color !== OptionsDefaults.theme_color
