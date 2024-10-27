@@ -100,6 +100,30 @@ function updateTransition() {
   };
 }
 
+const processRenderList = (
+  assignments: FinalAssignment[],
+  tab: TaskTypeTab,
+  selectedCourseId: string,
+  viewingMore: boolean,
+  showDateHeadings: boolean,
+  listLength: number
+) => {
+  const selected = useSelectedCourse(selectedCourseId, assignments);
+  const filtered = filterByTab(tab, selected);
+  const sorted = sortByTab(tab, filtered);
+  const renderedTasks = cutAssignmentList(!viewingMore, listLength, sorted);
+  const headings = useHeadings(tab, renderedTasks);
+  const allRendered = Object.keys(headings).reduce<
+    (FinalAssignment | string)[]
+  >((prev, curr) => {
+    let nxt = prev;
+    if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
+    nxt = nxt.concat(headings[curr]);
+    return nxt;
+  }, []);
+  return [allRendered, sorted as FinalAssignment[]];
+};
+
 /*
   Renders all unfinished assignments
 */
@@ -124,29 +148,6 @@ export default function TaskList({
 
   const listLength = options.default_list_length;
 
-  function processRenderList(
-    assignments: FinalAssignment[],
-    tab: TaskTypeTab,
-    selectedCourseId: string,
-    viewingMore: boolean,
-    showDateHeadings: boolean
-  ) {
-    const selected = useSelectedCourse(selectedCourseId, assignments);
-    const filtered = filterByTab(tab, selected);
-    const sorted = sortByTab(tab, filtered);
-    const renderedTasks = cutAssignmentList(!viewingMore, listLength, sorted);
-    const headings = useHeadings(tab, renderedTasks);
-    const allRendered = Object.keys(headings).reduce<
-      (FinalAssignment | string)[]
-    >((prev, curr) => {
-      let nxt = prev;
-      if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
-      nxt = nxt.concat(headings[curr]);
-      return nxt;
-    }, []);
-    return [allRendered, sorted as FinalAssignment[]];
-  }
-
   const [unfinishedList, allUnfinishedList] = useMemo(
     () =>
       skeleton
@@ -156,9 +157,17 @@ export default function TaskList({
             'Unfinished',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [assignments, skeleton, selectedCourseId, viewingMore, showDateHeadings]
+    [
+      assignments,
+      skeleton,
+      selectedCourseId,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const [completedList, allCompletedList] = useMemo(
@@ -170,9 +179,17 @@ export default function TaskList({
             'Completed',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [assignments, selectedCourseId, skeleton, viewingMore, showDateHeadings]
+    [
+      assignments,
+      selectedCourseId,
+      skeleton,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const [gradingList, allGradingList] = useMemo(
@@ -184,9 +201,17 @@ export default function TaskList({
             'NeedsGrading',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [assignments, skeleton, selectedCourseId, viewingMore, showDateHeadings]
+    [
+      assignments,
+      skeleton,
+      selectedCourseId,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const [announcementList, allAnnouncementList] = useMemo(
@@ -198,9 +223,17 @@ export default function TaskList({
             'Announcements',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [announcements, selectedCourseId, skeleton, viewingMore, showDateHeadings]
+    [
+      announcements,
+      selectedCourseId,
+      skeleton,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const allList: Record<TaskTypeTab, FinalAssignment[]> = {
@@ -464,7 +497,7 @@ export default function TaskList({
       )}
       {(visibleTab === 'Unfinished' || visibleTab === 'NeedsGrading') && (
         <CreateTaskCard
-          grading
+          grading={visibleTab === 'NeedsGrading'}
           onSubmit={createAssignment}
           selectedCourse={selectedCourseId}
         />
