@@ -1,11 +1,11 @@
 import React, { useContext } from 'react';
 import styled from 'styled-components';
 import { AssignmentType, FinalAssignment } from '../../types';
-import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
+import { AssignmentDefaults } from '../../constants';
 import { CheckIcon } from '../../icons';
 import fmtDate, { fmtDateSince } from './utils/fmtDate';
 import { DarkProps } from '../../types/props';
-import { DarkContext } from '../../contexts/contexts';
+import { DarkContext, LMSContext } from '../../contexts/contexts';
 import assignmentHasGrade from '../../utils/assignmentHasGrade';
 
 export interface AnimatedProps {
@@ -72,7 +72,9 @@ export const TaskContainer = styled.div.attrs(
         props.dark
           ? 'var(--tfc-dark-mode-text-primary)'
           : 'var(--ic-brand-font-color-dark)'};
+      text-decoration: underline;
     }
+    text-decoration: none;
     overflow-x: auto;
     white-space: nowrap;
     overflow: hidden;
@@ -187,6 +189,7 @@ export default function TaskCard({
   transitionState,
   clock24hr = false,
 }: TaskProps): JSX.Element {
+  const lms = useContext(LMSContext);
   const [due_date, due_time] = fmtDate(assignment.due_at, clock24hr);
   const gradedSince = assignment.graded_at
     ? fmtDateSince(assignment.graded_at)
@@ -199,7 +202,8 @@ export default function TaskCard({
   const display_grade = complete && assignmentHasGrade(assignment);
   const is_instructor =
     assignment.needs_grading_count && assignment.type !== AssignmentType.NOTE;
-  const icon = ASSIGNMENT_ICON[is_instructor ? 'ungraded' : assignment.type];
+  const icon =
+    lms.iconSet.assignments[is_instructor ? 'ungraded' : assignment.type];
 
   const due = 'Due';
   const submittedText =

@@ -198,6 +198,10 @@ body {
   margin-left: 20px;
 }
 
+#list-length-dropdown {
+  margin-left: 20px;
+}
+
 .label {
   width: 100%;
   text-align: left;

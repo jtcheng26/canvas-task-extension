@@ -19,6 +19,8 @@ type Options = {
   show_long_overdue: boolean;
   GSCOPE_INT_disabled: boolean;
   clock_24hr: boolean;
+  default_list_length: number;
+  show_rings: boolean;
 };
 
 export default Options;

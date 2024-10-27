@@ -1,4 +1,8 @@
-import { AssignmentStatus, FinalAssignment } from './assignment';
+import {
+  AssignmentStatus,
+  AssignmentType,
+  FinalAssignment,
+} from './assignment';
 import Course from './course';
 import Options from './options';
 
@@ -28,6 +32,7 @@ export interface LMSConfig {
     complete: AssignmentStatus,
     assignment: FinalAssignment
   ) => FinalAssignment; // update/delete assignments
+  iconSet: IconSet;
 }
 
 export interface UseAssignmentsHookInterface {
@@ -43,3 +48,8 @@ export interface UseCoursesHookInterface {
   errorMessage: string;
   isSuccess: boolean;
 }
+
+// TODO: move in other UI icons (i.e. check button) into this interface
+export type IconSet = {
+  assignments: Record<AssignmentType | 'ungraded', JSX.Element>;
+};

@@ -1,29 +1,8 @@
-import {
-  AnnouncementIcon,
-  AssignmentIcon,
-  DiscussionIcon,
-  NoteIcon,
-  QuizIcon,
-  NeedsGradingIcon,
-} from '../icons';
-import GradescopeIcon from '../icons/gradescope';
-import { AssignmentType, FinalAssignment, Options } from '../types';
+import { FinalAssignment, Options } from '../types';
 import JSONAssignmentDefaults from './defaults/assignmentDefaults.json';
 import JSONOptionsDefaults from './defaults/optionsDefaults.json';
 
 export const MAX_MARKED_ASSIGNMENTS = 400;
-
-export const ASSIGNMENT_ICON: Record<AssignmentType | 'ungraded', JSX.Element> =
-  {
-    [AssignmentType.ASSIGNMENT]: AssignmentIcon,
-    [AssignmentType.DISCUSSION]: DiscussionIcon,
-    [AssignmentType.QUIZ]: QuizIcon,
-    [AssignmentType.NOTE]: NoteIcon,
-    [AssignmentType.ANNOUNCEMENT]: AnnouncementIcon,
-    [AssignmentType.EVENT]: AssignmentIcon,
-    [AssignmentType.GRADESCOPE]: GradescopeIcon,
-    ungraded: NeedsGradingIcon,
-  };
 
 export const AssignmentDefaults = JSONAssignmentDefaults as FinalAssignment;
 export const OptionsDefaults = JSONOptionsDefaults as Options;

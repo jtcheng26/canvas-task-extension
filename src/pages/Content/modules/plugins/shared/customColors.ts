@@ -7,10 +7,14 @@ function colorsKey(platformKey: string) {
 }
 
 export function colorFromId(id: string | number) {
-  const num = id.toString();
-  return DEFAULT_DASHBOARD_COLORS[
-    parseInt(num) % DEFAULT_DASHBOARD_COLORS.length
-  ];
+  if (typeof id === 'number')
+    return DEFAULT_DASHBOARD_COLORS[id % DEFAULT_DASHBOARD_COLORS.length];
+  let hash = 0;
+  for (let i = 0, len = id.length; i < len; i++) {
+    hash = hash + id.charCodeAt(i);
+    hash |= 0;
+  }
+  return DEFAULT_DASHBOARD_COLORS[hash % DEFAULT_DASHBOARD_COLORS.length];
 }
 
 export async function loadCustomColors(

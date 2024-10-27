@@ -1,8 +1,4 @@
 import {
-  BrightspaceEntrypoint,
-  isBrightspace,
-} from './modules/plugins/brightspace';
-import {
   CanvasLMSEntrypoint,
   CanvasLMSConfig,
   InstallSettingsEntrypoint,
@@ -12,6 +8,10 @@ import {
   isGradescope,
   GradescopeEntrypoint,
 } from './modules/plugins/gradescope';
+import {
+  BlackboardEntrypoint,
+  isBlackboard,
+} from './modules/plugins/blackboard';
 
 /* 
 
@@ -39,8 +39,8 @@ if (CanvasLMSConfig.isActive) {
   console.log('Tasks for Canvas: Gradescope detected');
 
   GradescopeEntrypoint();
-} else if (isBrightspace) {
-  console.log('Tasks for Canvas: D2L Brightspace detected');
+} else if (isBlackboard) {
+  console.log('Tasks for Canvas: Blackboard detected');
 
-  BrightspaceEntrypoint();
+  BlackboardEntrypoint();
 }

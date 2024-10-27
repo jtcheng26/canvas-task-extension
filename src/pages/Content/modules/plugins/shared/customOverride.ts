@@ -53,10 +53,9 @@ export async function applyCustomOverrides(
     const key = `${a.id}_${a.course_id}`;
     return {
       ...a,
-      override_id: key,
+      override_id: key in overrides ? key : '',
       marked_complete:
-        `${a.id}_${a.course_id}` in overrides &&
-        overrides[key] === AssignmentStatus.COMPLETE,
+        key in overrides && overrides[key] === AssignmentStatus.COMPLETE,
     };
   });
 }

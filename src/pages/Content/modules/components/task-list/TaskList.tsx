@@ -100,29 +100,6 @@ function updateTransition() {
   };
 }
 
-function processRenderList(
-  assignments: FinalAssignment[],
-  tab: TaskTypeTab,
-  selectedCourseId: string,
-  viewingMore: boolean,
-  showDateHeadings: boolean
-) {
-  const selected = useSelectedCourse(selectedCourseId, assignments);
-  const filtered = filterByTab(tab, selected);
-  const sorted = sortByTab(tab, filtered);
-  const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
-  const headings = useHeadings(tab, renderedTasks);
-  const allRendered = Object.keys(headings).reduce<
-    (FinalAssignment | string)[]
-  >((prev, curr) => {
-    let nxt = prev;
-    if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
-    nxt = nxt.concat(headings[curr]);
-    return nxt;
-  }, []);
-  return [allRendered, sorted as FinalAssignment[]];
-}
-
 /*
   Renders all unfinished assignments
 */
@@ -144,6 +121,31 @@ export default function TaskList({
   const [confetti, setConfetti] = useState(false);
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
+
+  const listLength = options.default_list_length;
+
+  function processRenderList(
+    assignments: FinalAssignment[],
+    tab: TaskTypeTab,
+    selectedCourseId: string,
+    viewingMore: boolean,
+    showDateHeadings: boolean
+  ) {
+    const selected = useSelectedCourse(selectedCourseId, assignments);
+    const filtered = filterByTab(tab, selected);
+    const sorted = sortByTab(tab, filtered);
+    const renderedTasks = cutAssignmentList(!viewingMore, listLength, sorted);
+    const headings = useHeadings(tab, renderedTasks);
+    const allRendered = Object.keys(headings).reduce<
+      (FinalAssignment | string)[]
+    >((prev, curr) => {
+      let nxt = prev;
+      if (showDateHeadings && headings[curr].length > 0) nxt = nxt.concat(curr);
+      nxt = nxt.concat(headings[curr]);
+      return nxt;
+    }, []);
+    return [allRendered, sorted as FinalAssignment[]];
+  }
 
   const [unfinishedList, allUnfinishedList] = useMemo(
     () =>
@@ -357,7 +359,7 @@ export default function TaskList({
       : currentTab;
 
   const viewMoreText = !viewingMore
-    ? `View ${allList[visibleTab].length - 4} more`
+    ? `View ${allList[visibleTab].length - listLength} more`
     : 'View less';
 
   const noneText = 'None';
@@ -455,7 +457,7 @@ export default function TaskList({
           {completedList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      {allList[visibleTab].length > 4 && (
+      {allList[visibleTab].length > listLength && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>

@@ -159,22 +159,26 @@ function TaskContainer({
               selectedId={chosenCourseId}
               setChoice={setSelectedCourseId}
             />
-            <TaskChart
-              assignments={chartAssignments}
-              colorOverride={
-                courseId && chartCourses[0] in courseStore.state
-                  ? courseStore.state[chartCourses[0]].color
-                  : undefined
-              }
-              courses={chartCourses}
-              loading={loading}
-              onCoursePage={!!courseId}
-              selectedCourseId={chosenCourseId}
-              setCourse={setSelectedCourseId}
-              showConfetti={options.show_confetti}
-              themeColor={themeColor}
-              weekKey={weekKey}
-            />
+            {options.show_rings ? (
+              <TaskChart
+                assignments={chartAssignments}
+                colorOverride={
+                  courseId && chartCourses[0] in courseStore.state
+                    ? courseStore.state[chartCourses[0]].color
+                    : undefined
+                }
+                courses={chartCourses}
+                loading={loading}
+                onCoursePage={!!courseId}
+                selectedCourseId={chosenCourseId}
+                setCourse={setSelectedCourseId}
+                showConfetti={options.show_confetti}
+                themeColor={themeColor}
+                weekKey={weekKey}
+              />
+            ) : (
+              <div style={{ height: '10px' }} />
+            )}
             <TaskList
               announcements={updatedAnnouncements}
               assignments={updatedAssignments}
