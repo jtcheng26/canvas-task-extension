@@ -45,11 +45,17 @@ Task items and progress bars correspond with your chosen dashboard colors and po
 2. Clone this repository.
 3. Run `npm install` to install the dependencies.
 4. Run `npm start`
-5. Load the extension on Chrome following:
+5. If on Chrome: Load the extension following:
    1. Access `chrome://extensions/`
    2. Check `Developer mode`
    3. Click on `Load unpacked extension`
    4. Select the `build` folder.
-6. Happy hacking.
+5. If on Firefox: Load the extension following:
+   1. Copy `canvas-task-extension-main/src/manifest-firefox.json` to `canvas-task-extension-main/build/manifest.json`
+   2. Access `about:debugging`
+   3. Click on `This Firefox`
+   4. Click `Load Temporary Add-on`
+   5. Select the `build` folder and click on `manifest.json`
+7. Happy hacking.
 
 Built with [Chrome Extension Boilerplate with React 17 and Webpack 5](https://github.com/lxieyang/chrome-extension-boilerplate-react.git)
