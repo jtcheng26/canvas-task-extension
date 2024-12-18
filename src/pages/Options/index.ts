@@ -151,6 +151,7 @@ function getSelectedAmPm() {
 
 const periods: Record<string, string> = {
   day: 'Day',
+  three_day: 'ThreeDay',
   week: 'Week',
   month: 'Month',
 };

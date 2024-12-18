@@ -15,6 +15,18 @@ export function getDayEnd(startDate: Date): Date {
   return d;
 }
 
+export function getThreeDayStart(): Date {
+  const d = new Date();
+  d.setHours(0, 0, 0);
+  return d;
+}
+export function getThreeDayEnd(startDate: Date): Date {
+  const d = new Date(startDate);
+  d.setDate(d.getDate() + 3);
+  d.setHours(0, 0, 0);
+  return d;
+}
+
 /*
   functions to get the previous and next occurence of a specific day of the week
 */
@@ -74,6 +86,9 @@ export default function getPeriod(
     switch (period) {
       case 'Month':
         break;
+      case 'ThreeDay':
+        prevPeriodStart = getThreeDayStart();
+        break;
       case 'Day':
         prevPeriodStart = getDayStart();
         break;
@@ -90,6 +105,11 @@ export default function getPeriod(
     case 'Month':
       prevPeriodStart.setMonth(prevPeriodStart.getMonth() + delta);
       nextPeriodStart.setMonth(nextPeriodStart.getMonth() + delta);
+      break;
+    case 'ThreeDay':
+      nextPeriodStart = getThreeDayEnd(prevPeriodStart);
+      prevPeriodStart.setDate(prevPeriodStart.getDate() + delta);
+      nextPeriodStart.setDate(nextPeriodStart.getDate() + delta);
       break;
     case 'Day':
       nextPeriodStart = getDayEnd(prevPeriodStart);

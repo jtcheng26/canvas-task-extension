@@ -1,4 +1,4 @@
-export type Period = 'Day' | 'Week' | 'Month';
+export type Period = 'Day' | 'ThreeDay' | 'Week' | 'Month';
 
 type Options = {
   color_tabs: boolean;
