@@ -27,6 +27,7 @@ type BlackboardGradebookColumn = {
   };
   grading: {
     due?: string;
+    type: string;
   };
   scoreProviderHandle: 'resource/x-bb-assessment' | 'resource/x-bb-forumlink';
 };
@@ -181,7 +182,9 @@ async function collectAssignments(
   const assignments = await Promise.all(
     Array.prototype.concat(
       ...cols.map((course_cols, i) =>
-        course_cols.map((c) => parseAssignment(courses[i].id, c))
+        course_cols
+          .filter((c) => c.grading.type !== 'Calculated')
+          .map((c) => parseAssignment(courses[i].id, c))
       )
     )
   );
