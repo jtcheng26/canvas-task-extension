@@ -189,16 +189,20 @@ export default async function BlackboardEntrypoint() {
     mutations.forEach((mutationRecord) => {
       mutationRecord.addedNodes.forEach((node) => {
         const nodeElem = node as HTMLElement;
-        if (!setRoot) {
+        if (!setRoot && nodeElem.querySelector) {
           let container = nodeElem.querySelector(
             '.course-columns'
           ) as HTMLElement | null;
           if (!container) {
-            container = nodeElem.querySelector(
-              '#activity-stream'
-            ) as HTMLElement | null;
             if (nodeElem.id === 'activity-stream') container = nodeElem;
-            if (!container) return;
+            else {
+              container = nodeElem.querySelector(
+                '#activity-stream'
+              ) as HTMLElement | null;
+              if (!container) return;
+              container = container.parentElement;
+              if (!container) return;
+            }
             container.style.paddingRight = '20px';
           }
           container.style.display = 'flex';

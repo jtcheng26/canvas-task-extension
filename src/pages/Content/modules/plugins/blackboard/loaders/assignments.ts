@@ -183,7 +183,7 @@ async function collectAssignments(
     Array.prototype.concat(
       ...cols.map((course_cols, i) =>
         course_cols
-          .filter((c) => c.grading.type !== 'Calculated')
+          .filter((c) => c.grading.type === 'Attempts')
           .map((c) => parseAssignment(courses[i].id, c))
       )
     )
