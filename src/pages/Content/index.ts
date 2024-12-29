@@ -12,6 +12,10 @@ import {
   BlackboardEntrypoint,
   isBlackboard,
 } from './modules/plugins/blackboard';
+import {
+  BrightspaceEntrypoint,
+  isBrightspace,
+} from './modules/plugins/brightspace';
 
 /* 
 
@@ -43,4 +47,8 @@ if (CanvasLMSConfig.isActive) {
   console.log('Tasks for Canvas: Blackboard detected');
 
   BlackboardEntrypoint();
+} else if (isBrightspace) {
+  console.log('Tasks for Canvas: Brightspace detected');
+
+  BrightspaceEntrypoint();
 }
