@@ -12,6 +12,7 @@ import baseURL from '../utils/baseURL';
 import { mockAPI, mockedBaseURLString, urlMatches } from './utils/api';
 import { all_planner_tests } from './data/api/space';
 import { generateRandomNumberArray } from './utils/generate';
+import chrome from 'sinon-chrome';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -20,6 +21,7 @@ const mockedBaseURL = baseURL as jest.MockedFunction<() => string>;
 
 beforeAll(() => {
   mockedBaseURL.mockReturnValue(mockedBaseURLString);
+  global.chrome = chrome as unknown as typeof global.chrome;
 });
 
 describe('stress test fixtures', () => {

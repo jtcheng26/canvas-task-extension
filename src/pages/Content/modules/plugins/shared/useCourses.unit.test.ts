@@ -12,7 +12,7 @@ import customPositions from '../../tests/data/api/dashboard_positions.json';
 import chrome from 'sinon-chrome';
 
 jest.mock('axios');
-jest.mock('../utils/baseURL');
+jest.mock('../../utils/baseURL');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 const mockedBaseURL = baseURL as jest.MockedFunction<() => string>;
 const mockedBaseURLString = 'mockedURL';
@@ -34,7 +34,7 @@ test('useCourses hook gets all the courses', async () => {
     }
   });
 
-  const res = (await getCanvasCourses()).slice(1);
+  const res = await getCanvasCourses();
   expect(res).toStrictEqual(active);
 });
 
@@ -50,7 +50,7 @@ test('useCourses hook filters date-restricted courses', async () => {
     }
   });
 
-  const res = (await getCanvasCourses()).slice(1);
+  const res = await getCanvasCourses();
 
   expect(res.length).toBe(
     activeAndRestricted.reduce(
@@ -72,7 +72,7 @@ test('useCourses hook works when all courses are restricted', async () => {
     }
   });
 
-  const res = (await getCanvasCourses()).slice(1);
+  const res = await getCanvasCourses();
   expect(res).toBeDefined();
   expect(res.length).toBe(0);
 });
@@ -99,7 +99,7 @@ test('useCourses hook applies course colors', async () => {
     }
   });
 
-  const res = (await getCanvasCourses()).slice(1);
+  const res = await getCanvasCourses();
   expect(res).toBeDefined();
   expect(res.length).toBeGreaterThan(0);
   res.forEach((course) => {
