@@ -13,6 +13,7 @@ import { processAssignmentList } from '../../shared/useAssignments';
 import { BrightspaceLMSConfig } from '..';
 import { loadCustomTasks } from '../../shared/customTask';
 import { applyCustomOverrides } from '../../shared/customOverride';
+import loadGradescopeAssignments from '../../shared/loadGradescope';
 
 type BrightspaceItem = {
   UserId: string;
@@ -84,9 +85,9 @@ export default async function loadBrightspaceAssignments(
         await getAssignmentsRequest(startStr, endStr, courses)
       ))(),
     loadCustomTasks('brightspace_custom'),
+    loadGradescopeAssignments(st, en, options),
   ]);
   const assignments = Array.prototype.concat(...assignmentSources);
-  console.log(assignments);
   const marked = await applyCustomOverrides(assignments, 'brightspace_custom');
   return processAssignmentList(
     marked,

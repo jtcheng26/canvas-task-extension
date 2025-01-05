@@ -1,3 +1,4 @@
+import { storeCanvasCourses } from '../../../components/gradescope/utils/store';
 import { Course } from '../../../types';
 import baseURL from '../../../utils/baseURL';
 import { loadCustomColorsWithDefaults } from '../../shared/customColors';
@@ -40,7 +41,6 @@ export async function getPaginatedRequestBrightspace<T>(
   recurse = false
 ): Promise<T[]> {
   const res = (await (await fetch(url)).json()) as PaginatedAPIResponse<T>;
-  console.log(url, res);
   if (recurse) {
     if ('Next' in res && res.Next)
       return res.Objects.concat(
@@ -88,6 +88,8 @@ export default async function loadBrightspaceCourses() {
       color: colors[c.OrgUnit.Id.toString()],
     };
   });
+
+  if (coursesWithColors.length) storeCanvasCourses(coursesWithColors);
 
   return coursesWithColors;
 }

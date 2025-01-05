@@ -9,8 +9,7 @@ import BrightspaceEntrypoint from './entry';
 import loadBrightspaceAssignments from './loaders/assignments';
 import loadBrightspaceCourses from './loaders/courses';
 
-export const isBrightspace =
-  window.location.hostname === 'opencourses.desire2learn.com';
+export const isBrightspace = document.body.classList.contains('d2l-body');
 
 export const BrightspaceLMSConfig: LMSConfig = {
   isActive: isBrightspace,

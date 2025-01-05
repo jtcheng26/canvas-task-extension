@@ -1,15 +1,15 @@
 import { compareTwoStrings } from 'string-similarity';
-import { GradescopeTask } from '../../../components/gradescope/types';
-import { getSyncedCourses } from '../../../components/gradescope/utils/scrape';
+import { GradescopeTask } from '../../components/gradescope/types';
+import { getSyncedCourses } from '../../components/gradescope/utils/scrape';
 import {
   getCourseTasks,
   getGradescopeOverrides,
-} from '../../../components/gradescope/utils/store';
-import migrateGradescopeToLocal from '../../../components/gradescope/utils/migrate';
-import { AssignmentDefaults } from '../../../constants';
-import { AssignmentType, FinalAssignment, Options } from '../../../types';
-import { AssignmentStatus } from '../../../types/assignment';
-import { processAssignmentList } from '../../shared/useAssignments';
+} from '../../components/gradescope/utils/store';
+import migrateGradescopeToLocal from '../../components/gradescope/utils/migrate';
+import { AssignmentDefaults } from '../../constants';
+import { AssignmentType, FinalAssignment, Options } from '../../types';
+import { AssignmentStatus } from '../../types/assignment';
+import { processAssignmentList } from './useAssignments';
 
 function getAssignmentURL(course: string, id: string) {
   if (!id) return `https://www.gradescope.com/courses/${course}`;

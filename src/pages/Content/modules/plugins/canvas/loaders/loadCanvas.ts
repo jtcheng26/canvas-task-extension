@@ -15,7 +15,7 @@ import loadMissingAssignments from './loadMissingAssignments';
 import { queryGraded } from './loadGraded';
 import loadGradescopeAssignments, {
   isDuplicateAssignment,
-} from './loadGradescope';
+} from '../../shared/loadGradescope';
 import {
   mergePartial,
   processAssignmentList,

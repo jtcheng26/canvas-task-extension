@@ -13,6 +13,10 @@ function setStyles() {
     '--ic-brand-font-color-dark', // used in subtabs and as a default elsewhere
     'rgb(32, 33, 34)'
   );
+  document.documentElement.style.setProperty(
+    '--ic-brand-global-nav-bgd', // used in subtabs and as a default elsewhere
+    '#002040'
+  );
 }
 
 function makeColorPicker(

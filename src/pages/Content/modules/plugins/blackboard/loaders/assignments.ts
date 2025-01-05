@@ -9,6 +9,7 @@ import {
 import baseURL from '../../../utils/baseURL';
 import { applyCustomOverrides } from '../../shared/customOverride';
 import { loadCustomTasks } from '../../shared/customTask';
+import loadGradescopeAssignments from '../../shared/loadGradescope';
 import {
   filterTimeBounds,
   processAssignmentList,
@@ -213,6 +214,7 @@ export default async function loadBlackboardAssignments(
     collectAnnouncements(st, en, courses),
     collectAssignments(st, en, courses),
     loadCustomTasks('blackboard_custom'),
+    loadGradescopeAssignments(st, en, options),
   ]);
   const assignments = Array.prototype.concat(...assignmentSources);
   const marked = await applyCustomOverrides(assignments, 'blackboard_custom');

@@ -1,3 +1,4 @@
+import { storeCanvasCourses } from '../../../components/gradescope/utils/store';
 import { Course } from '../../../types';
 import baseURL from '../../../utils/baseURL';
 import { loadCustomColorsWithDefaults } from '../../shared/customColors';
@@ -65,5 +66,6 @@ export default async function loadBlackboardCourses() {
       position: 0,
     };
   });
+  if (courses.length) storeCanvasCourses(courses);
   return courses;
 }
