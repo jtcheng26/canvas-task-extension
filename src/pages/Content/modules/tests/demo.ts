@@ -1,4 +1,4 @@
-import { NeedsGradingCount } from '../hooks/utils/loadNeedsGrading';
+import { NeedsGradingCount } from '../plugins/canvas/loaders/loadNeedsGrading';
 import { Course, AssignmentType, PlannerAssignment } from '../types';
 import { TodoResponse } from '../types/assignment';
 import { MissingAssignment } from '../types/assignment';

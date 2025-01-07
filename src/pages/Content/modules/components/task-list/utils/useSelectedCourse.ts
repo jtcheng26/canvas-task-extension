@@ -1,4 +1,4 @@
-import { filterCourses } from '../../../hooks/useAssignments';
+import { filterCourses } from '../../../plugins/shared/useAssignments';
 import { FinalAssignment } from '../../../types';
 
 export default function useSelectedCourse(

@@ -1,4 +1,8 @@
-import { AssignmentStatus, FinalAssignment } from './assignment';
+import {
+  AssignmentStatus,
+  AssignmentType,
+  FinalAssignment,
+} from './assignment';
 import Course from './course';
 import Options from './options';
 
@@ -8,13 +12,15 @@ export type SupportedLMS = 'Canvas' | 'Demo';
 export interface LMSConfig {
   isActive: boolean; // true for only one LMS (i.e. window.location.hostname === ...)
   name: SupportedLMS;
+  storageKey: string;
   useAssignments: (
     startDate: Date,
     endDate: Date,
     options: Options
   ) => UseAssignmentsHookInterface; // read all assignments
   useCourses: (defaultColor?: string) => UseCoursesHookInterface; // read all the courses
-  dashCourses: () => Set<string> | undefined; // for the active assignments/all courses option
+  dashCourses: (courses?: Course[]) => Set<string> | undefined; // for the active assignments/all courses option
+  onCoursePage: () => false | string;
   createAssignment: (
     title: string,
     date: string,
@@ -26,6 +32,7 @@ export interface LMSConfig {
     complete: AssignmentStatus,
     assignment: FinalAssignment
   ) => FinalAssignment; // update/delete assignments
+  iconSet: IconSet;
 }
 
 export interface UseAssignmentsHookInterface {
@@ -41,3 +48,8 @@ export interface UseCoursesHookInterface {
   errorMessage: string;
   isSuccess: boolean;
 }
+
+// TODO: move in other UI icons (i.e. check button) into this interface
+export type IconSet = {
+  assignments: Record<AssignmentType | 'ungraded', JSX.Element>;
+};

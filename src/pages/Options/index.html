@@ -66,7 +66,7 @@
               <div class="dropdown-options hidden" id="hours-options"></div>
             </div>
             :
-            <div class="dropdown" id="minuts-dropdown">
+            <div class="dropdown" id="minutes-dropdown">
               <div class="dropdown-selected" id="minutes-selected">00</div>
               <div class="dropdown-options hidden" id="minutes-options"></div>
             </div>
@@ -99,7 +99,18 @@
           />
           <label for="color-choice">Theme Color</label>
         </div>
+
         <div id="boolean-options">
+          <div class="label" id="list-length-label">
+            Default list length
+            <div class="dropdown" id="list-length-dropdown">
+              <div class="dropdown-selected" id="list-length-selected">4</div>
+              <div
+                class="dropdown-options hidden"
+                id="list-length-options"
+              ></div>
+            </div>
+          </div>
           <div class="label">
             <div class="checkbox" id="custom-theme-color">
               <svg
@@ -126,7 +137,22 @@
             >
             to change the other rings' colors!
           </div>
-
+          <div class="label">
+            <div class="checkbox checked" id="show-rings">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                class="check"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M20.285 2l-11.285 11.567-5.286-5.011-3.714 3.716 9 8.728 15-15.285z"
+                />
+              </svg>
+            </div>
+            Show task completion rings
+          </div>
           <div class="label">
             <div class="checkbox checked" id="active-rings">
               <svg
@@ -233,8 +259,8 @@
             </div>
             Divide assignments by due date
           </div>
-          <!-- <div class="label">
-            <div class="checkbox checked" id="show-locked-assignments">
+          <div class="label">
+            <div class="checkbox" id="clock-24hr">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="18"
@@ -247,8 +273,8 @@
                 />
               </svg>
             </div>
-            Show locked assignments
-          </div> -->
+            Use 24-hour clock format
+          </div>
           <div class="label">
             <div class="checkbox checked" id="show-confetti">
               <svg

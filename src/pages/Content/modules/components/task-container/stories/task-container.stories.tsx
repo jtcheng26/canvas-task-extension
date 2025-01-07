@@ -7,7 +7,7 @@ import { AssignmentListSample2 } from '../../../tests/data/assignment-list';
 import { FinalAssignment } from '../../../types';
 import Header from '../../header';
 import TaskContainer, { TaskContainerProps } from '../TaskContainer';
-import { CanvasLMSConfig } from '../../../../entry/runInCanvas';
+import { CanvasLMSConfig } from '../../../plugins/canvas';
 
 export default { title: 'Components/TaskContainer' } as ComponentMeta<
   typeof TaskContainer

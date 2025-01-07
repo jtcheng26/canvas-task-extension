@@ -15,5 +15,8 @@
   "dark_mode": false,
   "show_needs_grading": false,
   "show_long_overdue": false,
-  "GSCOPE_INT_disabled": false
+  "GSCOPE_INT_disabled": false,
+  "clock_24hr": false,
+  "default_list_length": 4,
+  "show_rings": true
 }

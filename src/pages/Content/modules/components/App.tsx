@@ -7,7 +7,7 @@ import { useOptionsStore } from '../hooks/useOptions';
 import { OptionsContext } from '../contexts/contexts';
 import { Options } from '../types';
 import { LMSConfig } from '../types/config';
-import { CanvasLMSConfig } from '../../entry/runInCanvas';
+import { CanvasLMSConfig } from '../plugins/canvas';
 
 const AppContainer = styled.div`
   display: flex;

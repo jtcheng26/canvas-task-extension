@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect } from 'react';
 import { Course } from '../types';
 import { useObjectStore } from './useStore';
 import { CourseStoreContext } from '../contexts/contexts';
+import { watchCustomColors } from '../plugins/shared/customColors';
 
 // call the callback function whenever course colors change
 function watchDashboardColors(callback: (id: string, color: string) => void) {
@@ -59,6 +60,7 @@ function watchOptionsThemeColor(callback: (id: string, color: string) => void) {
 
 export interface CourseStoreInterface {
   state: Record<string, Course>;
+  dashCourses?: Set<string>;
   addCourse: (course: Course) => void;
   updateCourseColor: (id: string, color: string) => void;
   getCourseList: (courses?: string[]) => Course[]; // return list of Course objects from subset of course ids (or return all if none specified)
@@ -66,7 +68,9 @@ export interface CourseStoreInterface {
 }
 
 export function useNewCourseStore(
-  courses: Course[] = []
+  courses: Course[] = [],
+  dashCourses?: Set<string>,
+  platformKey?: string
 ): CourseStoreInterface {
   function toMap(list: Course[]) {
     const map: Record<string, Course> = {};
@@ -95,6 +99,10 @@ export function useNewCourseStore(
     // attach listeners here
     const observers = [watchDashboardColors(updateCourseColor)];
     const chromeStorageListeners = [watchOptionsThemeColor(updateCourseColor)];
+    if (platformKey)
+      chromeStorageListeners.push(
+        watchCustomColors(platformKey, updateCourseColor)
+      );
     return () => {
       observers.forEach((observer) => observer.disconnect());
       chromeStorageListeners.forEach((listener) =>
@@ -105,6 +113,7 @@ export function useNewCourseStore(
 
   return {
     state,
+    dashCourses,
     addCourse,
     updateCourseColor,
     getCourseList,

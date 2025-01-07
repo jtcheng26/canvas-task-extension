@@ -97,6 +97,11 @@ for (let m = 0; m < 60; m++) {
   minutes[(m < 10 ? '0' : '') + m] = m;
 }
 
+const listLength: Record<string, number> = {};
+for (let l = 4; l <= 10; l++) {
+  listLength[l + ''] = l;
+}
+
 function setWeekdayDropdown() {
   setDropdown(
     weekdays,
@@ -120,6 +125,19 @@ function setHoursDropdown() {
 
 function getSelectedHours() {
   return document.getElementById('hours-selected')?.textContent?.trim() || '0';
+}
+
+function setListLengthDropdown() {
+  setDropdown(
+    listLength,
+    'list-length-options',
+    'list-length-selected',
+    (key: string) => {
+      chrome.storage.sync.set({
+        default_list_length: listLength[key],
+      });
+    }
+  );
 }
 
 function setMinutesDropdown() {
@@ -195,6 +213,8 @@ const booleanOptions: Record<string, string> = {
   'show-needs-grading': 'show_needs_grading',
   'color-tabs': 'color_tabs',
   'long-overdue': 'show_long_overdue',
+  'clock-24hr': 'clock_24hr',
+  'show-rings': 'show_rings',
   GSCOPE_INT_disabled: 'GSCOPE_INT_disabled',
 };
 
@@ -307,12 +327,14 @@ setStoreLinks();
 setWeekdayDropdown();
 setHoursDropdown();
 setMinutesDropdown();
+setListLengthDropdown();
 setAmPmDropdown();
 setPeriods();
 
 chrome.storage.sync.get(storedUserOptions, (items) => {
   const options = applyDefaults(items as Options);
   setSelectedPeriod(options.period.toLowerCase());
+  setCheckbox('show-rings', options.show_rings);
   setCheckbox('rolling-period', options.rolling_period);
   setCheckbox('default-sidebar', !options.sidebar);
   setCheckbox('active-rings', !options.dash_courses);
@@ -326,6 +348,7 @@ chrome.storage.sync.get(storedUserOptions, (items) => {
   );
   setCheckbox('color-tabs', options.color_tabs);
   setCheckbox('long-overdue', options.show_long_overdue);
+  setCheckbox('clock-24hr', options.clock_24hr);
   setCheckbox('GSCOPE_INT_disabled', !options.GSCOPE_INT_disabled);
   setThemeColor(
     options.theme_color !== OptionsDefaults.theme_color

@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
-import { AssignmentDefaults, ASSIGNMENT_ICON } from '../../constants';
+import { AssignmentDefaults } from '../../constants';
 import { CheckIcon } from '../../icons';
 import { fmtDateSince } from './utils/fmtDate';
-import { DarkContext } from '../../contexts/contexts';
+import { DarkContext, LMSContext } from '../../contexts/contexts';
 import {
   TaskDetailsText,
   TaskInfo,
@@ -30,13 +30,14 @@ export default function AnnouncementCard({
   skeleton,
   transitionState,
 }: TaskProps): JSX.Element {
+  const lms = useContext(LMSContext);
   if (complete) color = color + '99';
   const posted_ago = fmtDateSince(assignment.due_at);
   function onClick(e: React.MouseEvent<HTMLInputElement>) {
     e.preventDefault();
     window.location.href = assignment.html_url;
   }
-  const icon = ASSIGNMENT_ICON[assignment.type];
+  const icon = lms.iconSet.assignments[assignment.type];
 
   const dueText = `${posted_ago}`;
   function markAssignmentAsComplete() {

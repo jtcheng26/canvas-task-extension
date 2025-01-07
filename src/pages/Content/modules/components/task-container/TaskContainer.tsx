@@ -4,7 +4,10 @@ import TaskChart from '../task-chart';
 import TaskList from '../task-list';
 import { Course, FinalAssignment, Options } from '../../types';
 import extractCourses from './utils/extractCourses';
-import { filterCourses, filterTimeBounds } from '../../hooks/useAssignments';
+import {
+  filterCourses,
+  filterTimeBounds,
+} from '../../plugins/shared/useAssignments';
 import { AssignmentStatus } from '../../types/assignment';
 import { OptionsDefaults } from '../../constants';
 import {
@@ -13,7 +16,6 @@ import {
   ExperimentsContext,
   LMSContext,
 } from '../../contexts/contexts';
-import dashCourses from '../../utils/dashCourses';
 import { useNewCourseStore } from '../../hooks/useCourseStore';
 import { useExperiments } from '../../hooks/useExperiment';
 import { useNewAssignmentStore } from '../../hooks/useAssignmentStore';
@@ -46,7 +48,11 @@ function TaskContainer({
   endDate,
   lms,
 }: TaskContainerProps): JSX.Element {
-  const courseStore = useNewCourseStore(courseData);
+  const courseStore = useNewCourseStore(
+    courseData,
+    lms.dashCourses(courseData),
+    lms.storageKey
+  );
   const courseList = Object.keys(courseStore.state);
   /* IMPORTANT
     I'm not sure if assigment and announcement ids could collide, so I'm using two separate stores.
@@ -127,7 +133,7 @@ function TaskContainer({
     if (options.dash_courses && courseList) {
       const inExtracted = new Set();
       extracted.forEach((id) => inExtracted.add(id));
-      const dash = dashCourses();
+      const dash = courseStore.dashCourses;
       return dash
         ? extracted.concat(
             courseList.filter((c) => dash.has(c) && !inExtracted.has(c))
@@ -153,22 +159,26 @@ function TaskContainer({
               selectedId={chosenCourseId}
               setChoice={setSelectedCourseId}
             />
-            <TaskChart
-              assignments={chartAssignments}
-              colorOverride={
-                courseId && chartCourses[0] in courseStore.state
-                  ? courseStore.state[chartCourses[0]].color
-                  : undefined
-              }
-              courses={chartCourses}
-              loading={loading}
-              onCoursePage={!!courseId}
-              selectedCourseId={chosenCourseId}
-              setCourse={setSelectedCourseId}
-              showConfetti={options.show_confetti}
-              themeColor={themeColor}
-              weekKey={weekKey}
-            />
+            {options.show_rings ? (
+              <TaskChart
+                assignments={chartAssignments}
+                colorOverride={
+                  courseId && chartCourses[0] in courseStore.state
+                    ? courseStore.state[chartCourses[0]].color
+                    : undefined
+                }
+                courses={chartCourses}
+                loading={loading}
+                onCoursePage={!!courseId}
+                selectedCourseId={chosenCourseId}
+                setCourse={setSelectedCourseId}
+                showConfetti={options.show_confetti}
+                themeColor={themeColor}
+                weekKey={weekKey}
+              />
+            ) : (
+              <div style={{ height: '10px' }} />
+            )}
             <TaskList
               announcements={updatedAnnouncements}
               assignments={updatedAssignments}

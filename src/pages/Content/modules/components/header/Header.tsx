@@ -13,7 +13,8 @@ const TitleDiv = styled.div<DarkProps>`
         : 'rgb(199, 205, 209)'};
   color: ${(props) =>
     props.dark ? 'var(--tfc-dark-mode-text-primary)' : 'inherit'};
-  height: 30px;
+  min-height: 30px;
+  font-size: 16px;
   font-weight: bold;
   display: inline-block;
 `;

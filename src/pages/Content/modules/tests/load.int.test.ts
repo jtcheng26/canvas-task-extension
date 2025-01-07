@@ -4,7 +4,7 @@ import {
   numUniqueInstances,
 } from './utils/generate';
 import { PlannerAssignment } from '../types';
-import { loadAssignments } from '../hooks/useAssignments';
+import { loadCanvas } from '../plugins/canvas/loaders/loadCanvas';
 import { getWeekEnd, getWeekStart } from '../utils/getPeriod';
 import { OptionsDefaults } from '../constants';
 import axios from 'axios';
@@ -12,6 +12,7 @@ import baseURL from '../utils/baseURL';
 import { mockAPI, mockedBaseURLString, urlMatches } from './utils/api';
 import { all_planner_tests } from './data/api/space';
 import { generateRandomNumberArray } from './utils/generate';
+import chrome from 'sinon-chrome';
 
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -20,6 +21,7 @@ const mockedBaseURL = baseURL as jest.MockedFunction<() => string>;
 
 beforeAll(() => {
   mockedBaseURL.mockReturnValue(mockedBaseURLString);
+  global.chrome = chrome as unknown as typeof global.chrome;
 });
 
 describe('stress test fixtures', () => {
@@ -76,7 +78,7 @@ describe('stress test fixtures', () => {
   });
 });
 
-describe('loadAssignments', () => {
+describe('loadCanvass', () => {
   it('Passes randomized tests', async () => {
     const tests = generateTestSample<PlannerAssignment>(
       1000,
@@ -88,11 +90,7 @@ describe('loadAssignments', () => {
       const seed = generateRandomNumberArray(3);
       mockAPI([t], seed, mockedAxios);
       try {
-        const res = await loadAssignments(
-          start_period,
-          end_period,
-          OptionsDefaults
-        );
+        const res = await loadCanvas(start_period, end_period, OptionsDefaults);
         expect(res).toBeTruthy();
       } catch (err) {
         if (err instanceof Error)
@@ -115,11 +113,7 @@ describe('loadAssignments', () => {
       const seed = generateRandomNumberArray(3);
       mockAPI(tests, seed, mockedAxios);
       try {
-        const res = await loadAssignments(
-          start_period,
-          end_period,
-          OptionsDefaults
-        );
+        const res = await loadCanvas(start_period, end_period, OptionsDefaults);
         expect(res).toBeTruthy();
       } catch (err) {
         if (err instanceof Error)

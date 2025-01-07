@@ -100,17 +100,18 @@ function updateTransition() {
   };
 }
 
-function processRenderList(
+const processRenderList = (
   assignments: FinalAssignment[],
   tab: TaskTypeTab,
   selectedCourseId: string,
   viewingMore: boolean,
-  showDateHeadings: boolean
-) {
+  showDateHeadings: boolean,
+  listLength: number
+) => {
   const selected = useSelectedCourse(selectedCourseId, assignments);
   const filtered = filterByTab(tab, selected);
   const sorted = sortByTab(tab, filtered);
-  const renderedTasks = cutAssignmentList(!viewingMore, 4, sorted);
+  const renderedTasks = cutAssignmentList(!viewingMore, listLength, sorted);
   const headings = useHeadings(tab, renderedTasks);
   const allRendered = Object.keys(headings).reduce<
     (FinalAssignment | string)[]
@@ -121,7 +122,7 @@ function processRenderList(
     return nxt;
   }, []);
   return [allRendered, sorted as FinalAssignment[]];
-}
+};
 
 /*
   Renders all unfinished assignments
@@ -145,6 +146,8 @@ export default function TaskList({
   const [currentTab, setCurrentTab] = useState<TaskTypeTab>('Unfinished');
   const [viewingMore, setViewingMore] = useState(false);
 
+  const listLength = options.default_list_length;
+
   const [unfinishedList, allUnfinishedList] = useMemo(
     () =>
       skeleton
@@ -154,9 +157,17 @@ export default function TaskList({
             'Unfinished',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [assignments, skeleton, selectedCourseId, viewingMore, showDateHeadings]
+    [
+      assignments,
+      skeleton,
+      selectedCourseId,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const [completedList, allCompletedList] = useMemo(
@@ -168,9 +179,17 @@ export default function TaskList({
             'Completed',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [assignments, selectedCourseId, skeleton, viewingMore, showDateHeadings]
+    [
+      assignments,
+      selectedCourseId,
+      skeleton,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const [gradingList, allGradingList] = useMemo(
@@ -182,9 +201,17 @@ export default function TaskList({
             'NeedsGrading',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [assignments, skeleton, selectedCourseId, viewingMore, showDateHeadings]
+    [
+      assignments,
+      skeleton,
+      selectedCourseId,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const [announcementList, allAnnouncementList] = useMemo(
@@ -196,9 +223,17 @@ export default function TaskList({
             'Announcements',
             selectedCourseId,
             viewingMore,
-            showDateHeadings
+            showDateHeadings,
+            listLength
           ),
-    [announcements, selectedCourseId, skeleton, viewingMore, showDateHeadings]
+    [
+      announcements,
+      selectedCourseId,
+      skeleton,
+      viewingMore,
+      showDateHeadings,
+      listLength,
+    ]
   );
 
   const allList: Record<TaskTypeTab, FinalAssignment[]> = {
@@ -258,6 +293,7 @@ export default function TaskList({
     return tab !== 'Announcements' ? (
       <TaskCard
         assignment={assignment}
+        clock24hr={options.clock_24hr}
         color={courseStore.state[assignment.course_id].color}
         complete={assignmentIsDone(assignment)}
         course_name={courseStore.state[assignment.course_id].name}
@@ -356,7 +392,7 @@ export default function TaskList({
       : currentTab;
 
   const viewMoreText = !viewingMore
-    ? `View ${allList[visibleTab].length - 4} more`
+    ? `View ${allList[visibleTab].length - listLength} more`
     : 'View less';
 
   const noneText = 'None';
@@ -422,12 +458,6 @@ export default function TaskList({
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('Unfinished'))}</>}
           </NodeGroup>
-          {(allList['Unfinished'].length <= 4 || viewingMore) && (
-            <CreateTaskCard
-              onSubmit={createAssignment}
-              selectedCourse={selectedCourseId}
-            />
-          )}
         </ListContainer>
       </HideDiv>
       <HideDiv visible={visibleTab === 'NeedsGrading'}>
@@ -442,13 +472,6 @@ export default function TaskList({
           >
             {(nodes) => <>{nodes.map(dataToComponentFunc('NeedsGrading'))}</>}
           </NodeGroup>
-          {(allList['NeedsGrading'].length <= 4 || viewingMore) && (
-            <CreateTaskCard
-              grading
-              onSubmit={createAssignment}
-              selectedCourse={selectedCourseId}
-            />
-          )}
         </ListContainer>
       </HideDiv>
 
@@ -467,10 +490,17 @@ export default function TaskList({
           {completedList.length === 0 && <span>{noneText}</span>}
         </ListContainer>
       </HideDiv>
-      {allList[visibleTab].length > 4 && (
+      {allList[visibleTab].length > listLength && (
         <ViewMore href="#" onClick={handleViewMoreClick}>
           {viewMoreText}
         </ViewMore>
+      )}
+      {(visibleTab === 'Unfinished' || visibleTab === 'NeedsGrading') && (
+        <CreateTaskCard
+          grading={visibleTab === 'NeedsGrading'}
+          onSubmit={createAssignment}
+          selectedCourse={selectedCourseId}
+        />
       )}
     </ListWrapper>
   );
